@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { Screen } from '../components/Screen'
 
-export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin }: { name: string; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void }) {
+export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin, onHistory }: { name: string; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void; onHistory: () => void }) {
   return (
     <Screen>
       <View style={styles.top}>
@@ -11,7 +11,10 @@ export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin }:
           <Text style={styles.brand}>سَنَد</Text>
           <Text style={styles.greeting}>أهلاً {name || 'فيك'} 👋</Text>
         </View>
-        <Pressable onPress={() => supabase.auth.signOut()} style={styles.logout}><Text style={styles.logoutText}>خروج</Text></Pressable>
+        <View style={styles.topActions}>
+          <Pressable onPress={onHistory} style={styles.logout}><Text style={styles.logoutText}>السجل 🕘</Text></Pressable>
+          <Pressable onPress={() => supabase.auth.signOut()} style={styles.logout}><Text style={styles.logoutText}>خروج</Text></Pressable>
+        </View>
       </View>
 
       <Text style={styles.title}>شو بدك تعمل هلق؟</Text>
@@ -46,6 +49,7 @@ export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin }:
 
 const styles = StyleSheet.create({
   top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 34 },
+  topActions: { flexDirection: 'row-reverse', gap: 8 },
   brand: { fontSize: 28, fontWeight: '900', color: colors.blueDark, textAlign: 'right' },
   greeting: { color: colors.muted, textAlign: 'right', marginTop: 3 },
   logout: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, paddingVertical: 9, paddingHorizontal: 13, borderRadius: 13 },

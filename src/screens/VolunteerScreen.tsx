@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Alert, Image, Linking, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
-import { getCurrentCoords, distanceKm } from '../lib/location'
+import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
+import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import type { HelpRequest, ServiceType } from '../types'
@@ -63,19 +64,23 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     try {
       if (!available) {
         const position = await getCurrentCoords()
+        const pushToken = await registerForPushNotificationsAsync().catch(() => null)
         const { error } = await supabase.from('volunteer_profiles').upsert({
           user_id: userId,
           is_available: true,
           latitude: position.latitude,
           longitude: position.longitude,
           services: myServices,
+          push_token: pushToken,
           updated_at: new Date().toISOString()
         })
         if (error) throw error
         setCoords(position)
         setAvailable(true)
         await loadRequests(position)
+        await startBackgroundLocationUpdates(userId).catch(() => {})
       } else {
+        await stopBackgroundLocationUpdates().catch(() => {})
         const { error } = await supabase.from('volunteer_profiles').upsert({ user_id: userId, is_available: false, updated_at: new Date().toISOString() })
         if (error) throw error
         setAvailable(false)

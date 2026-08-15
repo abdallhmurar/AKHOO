@@ -13,15 +13,36 @@
       }
     },
     "android": {
-      "package": "app.sanad.help"
+      "package": "app.sanad.help",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
+      ]
     },
     "plugins": [
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك."
+          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك.",
+          "locationAlwaysAndWhenInUsePermission": "سَنَد يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية.",
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#2F80FF"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "aa20e078-807b-4a20-ab29-b36f36d491de"
+      }
+    },
+    "owner": "abad003"
   }
 }

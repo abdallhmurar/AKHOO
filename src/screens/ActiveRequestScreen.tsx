@@ -3,6 +3,7 @@ import { Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import type { HelpRequest, Profile } from '../types'
+import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { MapPreview } from '../components/MapPreview'
@@ -16,7 +17,7 @@ const labels: Record<string, string> = {
   cancelled: 'تم إلغاء الطلب'
 }
 
-export function ActiveRequestScreen({ initialRequest, onDone }: { initialRequest: HelpRequest; onDone: () => void }) {
+export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initialRequest: HelpRequest; onBack: () => void; onDone: () => void }) {
   const [request, setRequest] = useState(initialRequest)
   const [volunteer, setVolunteer] = useState<Profile | null>(null)
   const [busy, setBusy] = useState(false)
@@ -52,6 +53,7 @@ export function ActiveRequestScreen({ initialRequest, onDone }: { initialRequest
 
   return (
     <Screen contentStyle={styles.content}>
+      <Header title="طلب المساعدة" onBack={onBack} />
       <View style={[styles.pulse, request.status === 'open' ? styles.searching : styles.found]}><Text style={styles.pulseIcon}>{request.status === 'open' ? '📡' : request.status === 'completed' ? '✅' : '🤝'}</Text></View>
       <Text style={styles.title}>{labels[request.status]}</Text>
       <Text style={styles.subtitle}>{request.status === 'open' ? 'أي متطوع متاح وقريب يقدر يشوف طلبك ويستلمه.' : request.status === 'completed' ? 'شكراً لاستخدام سَنَد ❤️' : 'حالة الطلب تتحدث مباشرة بينك وبين المتطوع.'}</Text>
