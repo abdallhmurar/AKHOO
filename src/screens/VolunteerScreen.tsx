@@ -1,14 +1,23 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Alert, Linking, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, Linking, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { getCurrentCoords, distanceKm } from '../lib/location'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
-import type { HelpRequest } from '../types'
+import type { HelpRequest, ServiceType } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
+import { MapPreview } from '../components/MapPreview'
 
 const serviceLabels: Record<string, string> = { battery: '🔋 بطارية', tire: '🛞 بنشر', fuel: '⛽ وقود', locked_car: '🔑 سيارة مقفلة', other: '🧰 مساعدة أخرى' }
+
+const services: { key: ServiceType; label: string }[] = [
+  { key: 'battery', label: '🔋 بطارية' },
+  { key: 'tire', label: '🛞 بنشر' },
+  { key: 'fuel', label: '⛽ وقود' },
+  { key: 'locked_car', label: '🔑 سيارة مقفلة' },
+  { key: 'other', label: '🧰 شيء آخر' }
+]
 
 type Nearby = HelpRequest & { distance: number }
 
@@ -16,6 +25,8 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   const [available, setAvailable] = useState(false)
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null)
   const [requests, setRequests] = useState<Nearby[]>([])
+  const [myServices, setMyServices] = useState<ServiceType[]>([])
+  const [expandedMap, setExpandedMap] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
 
@@ -43,6 +54,10 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     return () => { supabase.removeChannel(channel) }
   }, [available, coords, loadRequests])
 
+  function toggleService(key: ServiceType) {
+    setMyServices(current => current.includes(key) ? current.filter(s => s !== key) : [...current, key])
+  }
+
   async function toggleAvailability() {
     setLoading(true)
     try {
@@ -53,6 +68,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
           is_available: true,
           latitude: position.latitude,
           longitude: position.longitude,
+          services: myServices,
           updated_at: new Date().toISOString()
         })
         if (error) throw error
@@ -101,6 +117,20 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   return (
     <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.blue} colors={[colors.blue]} />}>
       <Header title="بدي أساعد" subtitle="فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك." onBack={onBack} />
+
+      {!available ? (
+        <View style={styles.skillsCard}>
+          <Text style={styles.skillsTitle}>شو بتقدر تساعد فيه؟ (اختياري)</Text>
+          <View style={styles.skillsGrid}>
+            {services.map(item => (
+              <Pressable key={item.key} onPress={() => toggleService(item.key)} style={[styles.skillChip, myServices.includes(item.key) && styles.skillChipActive]}>
+                <Text style={[styles.skillChipText, myServices.includes(item.key) && styles.skillChipTextActive]}>{item.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ) : null}
+
       <View style={styles.availability}>
         <View style={styles.availabilityText}>
           <Text style={styles.availabilityTitle}>{available ? 'أنت متاح الآن 🟢' : 'أنت غير متاح حالياً'}</Text>
@@ -119,11 +149,15 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
                 <Text style={styles.service}>{serviceLabels[request.service_type]}</Text>
                 <Text style={styles.distance}>{request.distance.toFixed(1)} كم</Text>
               </View>
+              {myServices.includes(request.service_type) ? <Text style={styles.matchBadge}>✓ ضمن مهاراتك</Text> : null}
               {request.note ? <Text style={styles.note}>{request.note}</Text> : null}
+              {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
               <View style={styles.actions}>
-                <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} style={styles.mapButton}><Text style={styles.mapText}>الموقع</Text></Pressable>
+                <Pressable onPress={() => setExpandedMap(expandedMap === request.id ? null : request.id)} style={styles.mapButton}><Text style={styles.mapText}>🗺️ الخريطة</Text></Pressable>
+                <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} style={styles.mapButton}><Text style={styles.mapText}>فتح خارجي</Text></Pressable>
                 <Pressable onPress={() => accept(request)} style={styles.acceptButton}><Text style={styles.acceptText}>استلام المهمة</Text></Pressable>
               </View>
+              {expandedMap === request.id ? <MapPreview latitude={request.latitude} longitude={request.longitude} /> : null}
             </View>
           ))}
         </>
@@ -133,6 +167,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
 }
 
 const styles = StyleSheet.create({
+  skillsCard: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 16, marginBottom: 14 },
+  skillsTitle: { color: colors.text, fontWeight: '900', textAlign: 'right', marginBottom: 10 },
+  skillsGrid: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: 8 },
+  skillChip: { backgroundColor: colors.blueSoft, borderRadius: 12, paddingVertical: 8, paddingHorizontal: 12, borderWidth: 1, borderColor: 'transparent' },
+  skillChipActive: { backgroundColor: colors.blue },
+  skillChipText: { color: colors.blueDark, fontWeight: '800', fontSize: 13 },
+  skillChipTextActive: { color: '#fff' },
   availability: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 16, gap: 14 },
   availabilityText: { alignItems: 'flex-end' },
   availabilityTitle: { color: colors.text, fontWeight: '900', fontSize: 17 },
@@ -147,10 +188,12 @@ const styles = StyleSheet.create({
   requestTop: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center' },
   service: { color: colors.text, fontSize: 17, fontWeight: '900' },
   distance: { color: colors.blueDark, fontWeight: '900', backgroundColor: colors.blueSoft, paddingVertical: 6, paddingHorizontal: 9, borderRadius: 10 },
+  matchBadge: { color: colors.green, fontWeight: '800', textAlign: 'right', marginTop: 8, fontSize: 13 },
   note: { color: colors.muted, textAlign: 'right', marginTop: 10, lineHeight: 20 },
-  actions: { flexDirection: 'row-reverse', gap: 9, marginTop: 14 },
+  photo: { width: '100%', height: 140, borderRadius: 14, marginTop: 10 },
+  actions: { flexDirection: 'row-reverse', gap: 8, marginTop: 14 },
   acceptButton: { flex: 1.6, backgroundColor: colors.blue, borderRadius: 14, alignItems: 'center', paddingVertical: 13 },
   acceptText: { color: '#fff', fontWeight: '900' },
   mapButton: { flex: 1, backgroundColor: colors.blueSoft, borderRadius: 14, alignItems: 'center', paddingVertical: 13 },
-  mapText: { color: colors.blueDark, fontWeight: '900' }
+  mapText: { color: colors.blueDark, fontWeight: '900', fontSize: 13 }
 })

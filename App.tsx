@@ -10,8 +10,9 @@ import { RequestHelpScreen } from './src/screens/RequestHelpScreen'
 import { ActiveRequestScreen } from './src/screens/ActiveRequestScreen'
 import { VolunteerScreen } from './src/screens/VolunteerScreen'
 import { VolunteerJobScreen } from './src/screens/VolunteerJobScreen'
+import { AdminScreen } from './src/screens/AdminScreen'
 
-type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job'
+type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin'
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -40,7 +41,7 @@ export default function App() {
       setProfile(null)
       return
     }
-    supabase.from('profiles').select('id,full_name,phone').eq('id', session.user.id).single().then(({ data }) => {
+    supabase.from('profiles').select('id,full_name,phone,is_admin,is_banned').eq('id', session.user.id).single().then(({ data }) => {
       if (data) setProfile(data as Profile)
     })
   }, [session?.user.id])
@@ -67,7 +68,19 @@ export default function App() {
     return <VolunteerJobScreen request={activeRequest} onDone={() => { setActiveRequest(null); setScreen('roles') }} />
   }
 
-  return <RoleScreen name={profile?.full_name ?? ''} onRequester={() => setScreen('request')} onVolunteer={() => setScreen('volunteer')} />
+  if (screen === 'admin') {
+    return <AdminScreen onBack={() => setScreen('roles')} />
+  }
+
+  return (
+    <RoleScreen
+      name={profile?.full_name ?? ''}
+      isAdmin={profile?.is_admin ?? false}
+      onRequester={() => setScreen('request')}
+      onVolunteer={() => setScreen('volunteer')}
+      onAdmin={() => setScreen('admin')}
+    />
+  )
 }
 
 const styles = StyleSheet.create({ loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg } })

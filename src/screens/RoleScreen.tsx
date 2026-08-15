@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { Screen } from '../components/Screen'
 
-export function RoleScreen({ name, onRequester, onVolunteer }: { name: string; onRequester: () => void; onVolunteer: () => void }) {
+export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin }: { name: string; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void }) {
   return (
     <Screen>
       <View style={styles.top}>
@@ -31,6 +31,12 @@ export function RoleScreen({ name, onRequester, onVolunteer }: { name: string; o
         <Text style={[styles.arrow, { color: colors.green }]}>شوف الطلبات ←</Text>
       </Pressable>
 
+      {isAdmin ? (
+        <Pressable onPress={onAdmin} style={styles.adminRow}>
+          <Text style={styles.adminText}>لوحة الإدارة ⚙️</Text>
+        </Pressable>
+      ) : null}
+
       <View style={styles.notice}>
         <Text style={styles.noticeText}>هذا هو أول إصدار: لا يوجد مركز اتصالات. توزيع الطلبات يتم مباشرة بين المستخدم والمتطوع.</Text>
       </View>
@@ -55,5 +61,7 @@ const styles = StyleSheet.create({
   roleText: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'right', marginTop: 6 },
   arrow: { color: colors.blueDark, fontWeight: '900', marginTop: 16, textAlign: 'left' },
   notice: { backgroundColor: colors.blueSoft, padding: 14, borderRadius: 17, marginTop: 4 },
-  noticeText: { color: colors.blueDark, fontSize: 13, lineHeight: 20, textAlign: 'right' }
+  noticeText: { color: colors.blueDark, fontSize: 13, lineHeight: 20, textAlign: 'right' },
+  adminRow: { alignItems: 'center', paddingVertical: 12, marginBottom: 8 },
+  adminText: { color: colors.muted, fontWeight: '800' }
 })

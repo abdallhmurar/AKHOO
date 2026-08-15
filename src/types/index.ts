@@ -13,10 +13,22 @@ export type HelpRequest = {
   created_at: string
   accepted_at: string | null
   completed_at: string | null
+  photo_url: string | null
 }
 
 export type Profile = {
   id: string
   full_name: string
   phone: string | null
+  is_admin: boolean
+  is_banned: boolean
+}
+
+export type VolunteerProfile = {
+  user_id: string
+  is_available: boolean
+  latitude: number | null
+  longitude: number | null
+  services: ServiceType[]
+  is_verified: boolean
 }
