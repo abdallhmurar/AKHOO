@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "سَنَد",
+    "slug": "sanad",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.sanad.help",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
+    },
+    "android": {
+      "package": "app.sanad.help"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك."
+        }
+      ]
+    ]
+  }
+}
