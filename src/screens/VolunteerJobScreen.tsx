@@ -30,7 +30,7 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   }, [request.id])
 
   useEffect(() => {
-    supabase.from('profiles').select('id,full_name,phone,is_admin,is_banned').eq('id', request.requester_id).single().then(({ data }) => {
+    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', request.requester_id).single().then(({ data }) => {
       if (data) setRequester(data as Profile)
     })
   }, [request.requester_id])

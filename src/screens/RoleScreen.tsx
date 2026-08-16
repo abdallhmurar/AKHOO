@@ -1,15 +1,18 @@
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { Screen } from '../components/Screen'
 
-export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin, onHistory }: { name: string; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void; onHistory: () => void }) {
+export function RoleScreen({ name, avatarUrl, isAdmin, onRequester, onVolunteer, onAdmin, onHistory }: { name: string; avatarUrl: string | null; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void; onHistory: () => void }) {
   return (
     <Screen>
       <View style={styles.top}>
-        <View>
-          <Text style={styles.brand}>سَنَد</Text>
-          <Text style={styles.greeting}>أهلاً {name || 'فيك'} 👋</Text>
+        <View style={styles.identity}>
+          {avatarUrl ? <Image source={{ uri: avatarUrl }} style={styles.avatar} /> : null}
+          <View>
+            <Text style={styles.brand}>سَنَد</Text>
+            <Text style={styles.greeting}>أهلاً {name || 'فيك'} 👋</Text>
+          </View>
         </View>
         <View style={styles.topActions}>
           <Pressable onPress={onHistory} style={styles.logout}><Text style={styles.logoutText}>السجل 🕘</Text></Pressable>
@@ -49,6 +52,8 @@ export function RoleScreen({ name, isAdmin, onRequester, onVolunteer, onAdmin, o
 
 const styles = StyleSheet.create({
   top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 34 },
+  identity: { flexDirection: 'row-reverse', alignItems: 'center', gap: 10 },
+  avatar: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, borderColor: colors.border },
   topActions: { flexDirection: 'row-reverse', gap: 8 },
   brand: { fontSize: 28, fontWeight: '900', color: colors.blueDark, textAlign: 'right' },
   greeting: { color: colors.muted, textAlign: 'right', marginTop: 3 },

@@ -36,7 +36,7 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       setVolunteer(null)
       return
     }
-    supabase.from('profiles').select('id,full_name,phone,is_admin,is_banned').eq('id', request.volunteer_id).single().then(({ data }) => {
+    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', request.volunteer_id).single().then(({ data }) => {
       if (data) setVolunteer(data as Profile)
     })
   }, [request.volunteer_id])

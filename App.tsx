@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import * as Linking from 'expo-linking'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
 import { colors } from './src/lib/theme'
@@ -12,10 +13,22 @@ import { VolunteerScreen } from './src/screens/VolunteerScreen'
 import { VolunteerJobScreen } from './src/screens/VolunteerJobScreen'
 import { AdminScreen } from './src/screens/AdminScreen'
 import { HistoryScreen } from './src/screens/HistoryScreen'
+import { ResetPasswordScreen } from './src/screens/ResetPasswordScreen'
 
 type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin' | 'history'
 
 const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
+
+function parseHashParams(url: string): Record<string, string> {
+  const hashIndex = url.indexOf('#')
+  if (hashIndex === -1) return {}
+  const params: Record<string, string> = {}
+  for (const pair of url.slice(hashIndex + 1).split('&')) {
+    const [key, value] = pair.split('=')
+    if (key) params[decodeURIComponent(key)] = decodeURIComponent(value ?? '')
+  }
+  return params
+}
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -24,6 +37,21 @@ export default function App() {
   const [recovering, setRecovering] = useState(true)
   const [screen, setScreen] = useState<ScreenName>('roles')
   const [activeRequest, setActiveRequest] = useState<HelpRequest | null>(null)
+  const [passwordRecovery, setPasswordRecovery] = useState(false)
+
+  useEffect(() => {
+    async function handleUrl(url: string | null) {
+      if (!url) return
+      const params = parseHashParams(url)
+      if (params.type === 'recovery' && params.access_token && params.refresh_token) {
+        setPasswordRecovery(true)
+        await supabase.auth.setSession({ access_token: params.access_token, refresh_token: params.refresh_token })
+      }
+    }
+    Linking.getInitialURL().then(handleUrl)
+    const subscription = Linking.addEventListener('url', ({ url }) => handleUrl(url))
+    return () => subscription.remove()
+  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -45,7 +73,7 @@ export default function App() {
       setProfile(null)
       return
     }
-    supabase.from('profiles').select('id,full_name,phone,is_admin,is_banned').eq('id', session.user.id).single().then(({ data }) => {
+    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', session.user.id).single().then(({ data }) => {
       if (data) setProfile(data as Profile)
     })
   }, [session?.user.id])
@@ -95,6 +123,10 @@ export default function App() {
     return <View style={styles.loading}><ActivityIndicator size="large" color={colors.blue} /></View>
   }
 
+  if (passwordRecovery) {
+    return <ResetPasswordScreen onDone={() => setPasswordRecovery(false)} />
+  }
+
   if (!session) return <AuthScreen />
 
   if (screen === 'request') {
@@ -133,6 +165,7 @@ export default function App() {
   return (
     <RoleScreen
       name={profile?.full_name ?? ''}
+      avatarUrl={profile?.avatar_url ?? null}
       isAdmin={profile?.is_admin ?? false}
       onRequester={() => setScreen('request')}
       onVolunteer={() => setScreen('volunteer')}

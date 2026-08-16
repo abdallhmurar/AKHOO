@@ -31,7 +31,7 @@ export function AdminScreen({ onBack }: { onBack: () => void }) {
       if (error) Alert.alert('خطأ', error.message)
       else setRequests(data as HelpRequest[])
     } else if (tab === 'users') {
-      const { data, error } = await supabase.from('profiles').select('id,full_name,phone,is_admin,is_banned').order('created_at', { ascending: false }).limit(100)
+      const { data, error } = await supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').order('created_at', { ascending: false }).limit(100)
       if (error) Alert.alert('خطأ', error.message)
       else setUsers(data as Profile[])
     } else {

@@ -2,6 +2,7 @@
   "expo": {
     "name": "سَنَد",
     "slug": "sanad",
+    "scheme": "sanad",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
