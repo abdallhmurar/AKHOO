@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Alert, Animated, Easing, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import type { HelpRequest, Profile } from '../types'
@@ -17,10 +17,22 @@ const labels: Record<string, string> = {
   cancelled: 'تم إلغاء الطلب'
 }
 
+function formatElapsed(ms: number) {
+  const minutes = Math.max(0, Math.floor(ms / 60000))
+  if (minutes < 1) return 'أقل من دقيقة'
+  if (minutes < 60) return `${minutes} دقيقة`
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+  return rest === 0 ? `${hours} ساعة` : `${hours} ساعة و${rest} دقيقة`
+}
+
 export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initialRequest: HelpRequest; onBack: () => void; onDone: () => void }) {
   const [request, setRequest] = useState(initialRequest)
   const [volunteer, setVolunteer] = useState<Profile | null>(null)
   const [busy, setBusy] = useState(false)
+  const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [now, setNow] = useState(Date.now())
+  const pulseAnim = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
     const channel = supabase.channel(`request-${request.id}`)
@@ -41,27 +53,60 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
     })
   }, [request.volunteer_id])
 
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (request.status !== 'open') {
+      pulseAnim.setValue(1)
+      return
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.15, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true })
+      ])
+    )
+    loop.start()
+    return () => loop.stop()
+  }, [request.status, pulseAnim])
+
   async function cancel() {
     if (request.status !== 'open') return
+    if (!confirmingCancel) {
+      setConfirmingCancel(true)
+      return
+    }
     setBusy(true)
     const { error } = await supabase.rpc('cancel_help_request', { p_request_id: request.id })
     setBusy(false)
+    setConfirmingCancel(false)
     if (error) Alert.alert('خطأ', error.message)
   }
 
   const finished = request.status === 'completed' || request.status === 'cancelled'
+  const elapsedSince = request.status === 'open' ? request.created_at : request.accepted_at ?? request.created_at
+  const elapsedLabel = request.status === 'open' ? 'بتنتظر منذ' : 'المتطوع معك منذ'
 
   return (
     <Screen contentStyle={styles.content}>
       <Header title="طلب المساعدة" onBack={onBack} />
-      <View style={[styles.pulse, request.status === 'open' ? styles.searching : styles.found]}><Text style={styles.pulseIcon}>{request.status === 'open' ? '📡' : request.status === 'completed' ? '✅' : '🤝'}</Text></View>
+      <Animated.View style={[styles.pulse, request.status === 'open' ? styles.searching : styles.found, { transform: [{ scale: pulseAnim }] }]}>
+        <Text style={styles.pulseIcon}>{request.status === 'open' ? '📡' : request.status === 'completed' ? '✅' : '🤝'}</Text>
+      </Animated.View>
       <Text style={styles.title}>{labels[request.status]}</Text>
       <Text style={styles.subtitle}>{request.status === 'open' ? 'أي متطوع متاح وقريب يقدر يشوف طلبك ويستلمه.' : request.status === 'completed' ? 'شكراً لاستخدام سَنَد ❤️' : 'حالة الطلب تتحدث مباشرة بينك وبين المتطوع.'}</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>رقم الطلب</Text><Text style={styles.value}>{request.id.slice(0, 8).toUpperCase()}</Text>
-        <View style={styles.line} />
-        <Text style={styles.label}>الحالة</Text><Text style={[styles.value, { color: request.status === 'open' ? colors.blue : colors.green }]}>{labels[request.status]}</Text>
+        {!finished ? (
+          <>
+            <View style={styles.line} />
+            <Text style={styles.label}>{elapsedLabel}</Text><Text style={styles.value}>{formatElapsed(now - new Date(elapsedSince).getTime())}</Text>
+          </>
+        ) : null}
       </View>
 
       {volunteer ? (
@@ -79,7 +124,17 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       <MapPreview latitude={request.latitude} longitude={request.longitude} />
 
       {finished ? <PrimaryButton title="العودة لاختيار الدور" onPress={onDone} /> : null}
-      {request.status === 'open' ? <PrimaryButton title="إلغاء الطلب" tone="light" onPress={cancel} loading={busy} /> : null}
+
+      {request.status === 'open' ? (
+        confirmingCancel ? (
+          <View style={styles.confirmRow}>
+            <PrimaryButton title="تراجع" tone="light" onPress={() => setConfirmingCancel(false)} style={styles.confirmButton} />
+            <PrimaryButton title="نعم، ألغي الطلب" tone="red" onPress={cancel} loading={busy} style={styles.confirmButton} />
+          </View>
+        ) : (
+          <PrimaryButton title="إلغاء الطلب" tone="light" onPress={cancel} />
+        )
+      ) : null}
     </Screen>
   )
 }
@@ -96,5 +151,7 @@ const styles = StyleSheet.create({
   photo: { width: '100%', height: 160, borderRadius: 18, marginBottom: 16 },
   label: { color: colors.muted, textAlign: 'right', fontSize: 13 },
   value: { color: colors.text, textAlign: 'right', fontSize: 17, fontWeight: '900', marginTop: 4 },
-  line: { height: 1, backgroundColor: colors.border, marginVertical: 14 }
+  line: { height: 1, backgroundColor: colors.border, marginVertical: 14 },
+  confirmRow: { flexDirection: 'row-reverse', gap: 10 },
+  confirmButton: { flex: 1 }
 })

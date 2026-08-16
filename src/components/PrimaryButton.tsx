@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
+import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native'
 import { colors } from '../lib/theme'
 
 export function PrimaryButton({
@@ -6,22 +6,24 @@ export function PrimaryButton({
   onPress,
   loading = false,
   disabled = false,
-  tone = 'blue'
+  tone = 'blue',
+  style
 }: {
   title: string
   onPress: () => void
   loading?: boolean
   disabled?: boolean
-  tone?: 'blue' | 'green' | 'light'
+  tone?: 'blue' | 'green' | 'light' | 'red'
+  style?: ViewStyle
 }) {
-  const backgroundColor = tone === 'green' ? colors.green : tone === 'light' ? colors.blueSoft : colors.blue
-  const textColor = tone === 'light' ? colors.blueDark : '#fff'
+  const backgroundColor = tone === 'green' ? colors.green : tone === 'red' ? colors.redSoft : tone === 'light' ? colors.blueSoft : colors.blue
+  const textColor = tone === 'red' ? colors.red : tone === 'light' ? colors.blueDark : '#fff'
 
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
-      style={({ pressed }) => [styles.button, { backgroundColor }, pressed && styles.pressed, (disabled || loading) && styles.disabled]}
+      style={({ pressed }) => [styles.button, { backgroundColor }, style, pressed && styles.pressed, (disabled || loading) && styles.disabled]}
     >
       {loading ? <ActivityIndicator color={textColor} /> : <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
     </Pressable>
