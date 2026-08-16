@@ -14,8 +14,9 @@ import { VolunteerJobScreen } from './src/screens/VolunteerJobScreen'
 import { AdminScreen } from './src/screens/AdminScreen'
 import { HistoryScreen } from './src/screens/HistoryScreen'
 import { ResetPasswordScreen } from './src/screens/ResetPasswordScreen'
+import { AccountScreen } from './src/screens/AccountScreen'
 
-type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin' | 'history'
+type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin' | 'history' | 'account'
 
 const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
 
@@ -162,15 +163,35 @@ export default function App() {
     )
   }
 
+  if (screen === 'account' && profile) {
+    return (
+      <AccountScreen
+        profile={profile}
+        email={session.user.email ?? ''}
+        onBack={() => setScreen('roles')}
+        onUpdated={setProfile}
+      />
+    )
+  }
+
+  const activeKind: 'request' | 'job' | null = !activeRequest
+    ? null
+    : activeRequest.requester_id === session.user.id
+      ? 'request'
+      : 'job'
+
   return (
     <RoleScreen
       name={profile?.full_name ?? ''}
       avatarUrl={profile?.avatar_url ?? null}
       isAdmin={profile?.is_admin ?? false}
+      activeKind={activeKind}
       onRequester={() => setScreen('request')}
       onVolunteer={() => setScreen('volunteer')}
       onAdmin={() => setScreen('admin')}
       onHistory={() => setScreen('history')}
+      onAccount={() => setScreen('account')}
+      onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
     />
   )
 }

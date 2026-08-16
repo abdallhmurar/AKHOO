@@ -1,9 +1,30 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { Screen } from '../components/Screen'
 
-export function RoleScreen({ name, avatarUrl, isAdmin, onRequester, onVolunteer, onAdmin, onHistory }: { name: string; avatarUrl: string | null; isAdmin: boolean; onRequester: () => void; onVolunteer: () => void; onAdmin: () => void; onHistory: () => void }) {
+export function RoleScreen({
+  name,
+  avatarUrl,
+  isAdmin,
+  activeKind,
+  onRequester,
+  onVolunteer,
+  onAdmin,
+  onHistory,
+  onAccount,
+  onResumeActive
+}: {
+  name: string
+  avatarUrl: string | null
+  isAdmin: boolean
+  activeKind: 'request' | 'job' | null
+  onRequester: () => void
+  onVolunteer: () => void
+  onAdmin: () => void
+  onHistory: () => void
+  onAccount: () => void
+  onResumeActive: () => void
+}) {
   return (
     <Screen>
       <View style={styles.top}>
@@ -15,10 +36,19 @@ export function RoleScreen({ name, avatarUrl, isAdmin, onRequester, onVolunteer,
           </View>
         </View>
         <View style={styles.topActions}>
-          <Pressable onPress={onHistory} style={styles.logout}><Text style={styles.logoutText}>السجل 🕘</Text></Pressable>
-          <Pressable onPress={() => supabase.auth.signOut()} style={styles.logout}><Text style={styles.logoutText}>خروج</Text></Pressable>
+          <Pressable onPress={onHistory} style={styles.topButton}><Text style={styles.topButtonText}>السجل 🕘</Text></Pressable>
+          <Pressable onPress={onAccount} style={styles.topButton}><Text style={styles.topButtonText}>حسابي 👤</Text></Pressable>
         </View>
       </View>
+
+      {activeKind ? (
+        <Pressable onPress={onResumeActive} style={styles.resumeCard}>
+          <Text style={styles.resumeArrow}>تابع ←</Text>
+          <Text style={styles.resumeText}>
+            {activeKind === 'request' ? 'لسا عندك طلب مساعدة نشط' : 'لسا عندك مهمة تطوّع نشطة'}
+          </Text>
+        </Pressable>
+      ) : null}
 
       <Text style={styles.title}>شو بدك تعمل هلق؟</Text>
       <Text style={styles.subtitle}>نفس الحساب بقدر يطلب مساعدة أو يساعد غيره. اختار دورك لهذه اللحظة.</Text>
@@ -44,21 +74,24 @@ export function RoleScreen({ name, avatarUrl, isAdmin, onRequester, onVolunteer,
       ) : null}
 
       <View style={styles.notice}>
-        <Text style={styles.noticeText}>هذا هو أول إصدار: لا يوجد مركز اتصالات. توزيع الطلبات يتم مباشرة بين المستخدم والمتطوع.</Text>
+        <Text style={styles.noticeText}>أول إصدار: توزيع الطلبات مباشر بين المستخدم والمتطوع، بلا مركز اتصالات.</Text>
       </View>
     </Screen>
   )
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 34 },
+  top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 },
   identity: { flexDirection: 'row-reverse', alignItems: 'center', gap: 10 },
   avatar: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, borderColor: colors.border },
   topActions: { flexDirection: 'row-reverse', gap: 8 },
+  topButton: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, paddingVertical: 9, paddingHorizontal: 13, borderRadius: 13 },
+  topButtonText: { color: colors.blueDark, fontWeight: '800', fontSize: 13 },
   brand: { fontSize: 28, fontWeight: '900', color: colors.blueDark, textAlign: 'right' },
   greeting: { color: colors.muted, textAlign: 'right', marginTop: 3 },
-  logout: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, paddingVertical: 9, paddingHorizontal: 13, borderRadius: 13 },
-  logoutText: { color: colors.blueDark, fontWeight: '800' },
+  resumeCard: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.blueDark, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 18, marginBottom: 18 },
+  resumeText: { color: '#fff', fontWeight: '800', fontSize: 14 },
+  resumeArrow: { color: '#fff', fontWeight: '900' },
   title: { color: colors.text, fontSize: 30, fontWeight: '900', textAlign: 'right' },
   subtitle: { color: colors.muted, fontSize: 15, lineHeight: 23, textAlign: 'right', marginTop: 8, marginBottom: 22 },
   roleCard: { backgroundColor: colors.card, borderRadius: 27, borderWidth: 1, padding: 21, marginBottom: 15 },
@@ -69,8 +102,8 @@ const styles = StyleSheet.create({
   roleTitle: { fontSize: 22, fontWeight: '900', color: colors.text, textAlign: 'right', marginTop: 14 },
   roleText: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'right', marginTop: 6 },
   arrow: { color: colors.blueDark, fontWeight: '900', marginTop: 16, textAlign: 'left' },
-  notice: { backgroundColor: colors.blueSoft, padding: 14, borderRadius: 17, marginTop: 4 },
-  noticeText: { color: colors.blueDark, fontSize: 13, lineHeight: 20, textAlign: 'right' },
+  notice: { backgroundColor: colors.blueSoft, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 14, marginTop: 4 },
+  noticeText: { color: colors.blueDark, fontSize: 12, lineHeight: 18, textAlign: 'right' },
   adminRow: { alignItems: 'center', paddingVertical: 12, marginBottom: 8 },
   adminText: { color: colors.muted, fontWeight: '800' }
 })
