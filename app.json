@@ -38,7 +38,8 @@
           "color": "#2F80FF"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "@maplibre/maplibre-react-native"
     ],
     "extra": {
       "eas": {

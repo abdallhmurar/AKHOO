@@ -8,7 +8,7 @@ import type { HelpRequest, ServiceType } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
-import { MapPreview } from '../components/MapPreview'
+import { SanadMap } from '../components/SanadMap'
 
 const serviceLabels: Record<string, string> = { battery: '🔋 بطارية', tire: '🛞 بنشر', fuel: '⛽ وقود', locked_car: '🔑 سيارة مقفلة', other: '🧰 مساعدة أخرى' }
 
@@ -162,7 +162,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
                 <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} style={styles.mapButton}><Text style={styles.mapText}>فتح خارجي</Text></Pressable>
                 <Pressable onPress={() => accept(request)} style={styles.acceptButton}><Text style={styles.acceptText}>استلام المهمة</Text></Pressable>
               </View>
-              {expandedMap === request.id ? <MapPreview latitude={request.latitude} longitude={request.longitude} /> : null}
+              {expandedMap === request.id ? <SanadMap latitude={request.latitude} longitude={request.longitude} /> : null}
             </View>
           ))}
         </>

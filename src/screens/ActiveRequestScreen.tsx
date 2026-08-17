@@ -6,7 +6,7 @@ import type { HelpRequest, Profile } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
-import { MapPreview } from '../components/MapPreview'
+import { SanadMap } from '../components/SanadMap'
 
 const labels: Record<string, string> = {
   open: 'نبحث عن متطوع',
@@ -121,7 +121,7 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
 
       {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
 
-      <MapPreview latitude={request.latitude} longitude={request.longitude} />
+      <SanadMap latitude={request.latitude} longitude={request.longitude} />
 
       {finished ? <PrimaryButton title="العودة لاختيار الدور" onPress={onDone} /> : null}
 

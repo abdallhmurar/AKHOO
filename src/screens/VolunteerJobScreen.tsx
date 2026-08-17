@@ -6,7 +6,7 @@ import type { HelpRequest, Profile, RequestStatus } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
-import { MapPreview } from '../components/MapPreview'
+import { SanadMap } from '../components/SanadMap'
 
 const statusLabels: Record<string, string> = {
   accepted: 'استلمت المهمة',
@@ -69,7 +69,7 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
 
       {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
 
-      <MapPreview latitude={request.latitude} longitude={request.longitude} />
+      <SanadMap latitude={request.latitude} longitude={request.longitude} />
 
       {!finished ? (
         <>
