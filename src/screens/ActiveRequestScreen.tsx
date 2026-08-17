@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Alert, Animated, Easing, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
+import { formatElapsed } from '../lib/time'
 import type { HelpRequest, Profile } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
@@ -15,15 +16,6 @@ const labels: Record<string, string> = {
   arrived: 'المتطوع وصل',
   completed: 'تمت المساعدة',
   cancelled: 'تم إلغاء الطلب'
-}
-
-function formatElapsed(ms: number) {
-  const minutes = Math.max(0, Math.floor(ms / 60000))
-  if (minutes < 1) return 'أقل من دقيقة'
-  if (minutes < 60) return `${minutes} دقيقة`
-  const hours = Math.floor(minutes / 60)
-  const rest = minutes % 60
-  return rest === 0 ? `${hours} ساعة` : `${hours} ساعة و${rest} دقيقة`
 }
 
 export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initialRequest: HelpRequest; onBack: () => void; onDone: () => void }) {

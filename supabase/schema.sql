@@ -92,11 +92,14 @@ drop policy if exists "volunteer update self" on public.volunteer_profiles;
 create policy "volunteer update self" on public.volunteer_profiles for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Requests: requester can create. Open requests are visible only to users
--- who explicitly marked themselves available as volunteers, and only within
+-- who explicitly marked themselves available as volunteers, only within
 -- the same 20km radius the app itself uses for matching (Haversine, mirrors
 -- src/lib/location.ts distanceKm) so a distant volunteer's own client-side
 -- filtering isn't the only thing standing between them and every open
--- request's exact coordinates nationwide.
+-- request's exact coordinates nationwide, and only if that volunteer's
+-- presence was refreshed in the last 20 minutes (VolunteerScreen's
+-- foreground heartbeat / background location tick) so a stale/dead session
+-- doesn't keep surfacing forever.
 drop policy if exists "request insert self" on public.help_requests;
 create policy "request insert self" on public.help_requests for insert to authenticated with check (auth.uid() = requester_id);
 
@@ -112,6 +115,7 @@ create policy "request read relevant" on public.help_requests for select to auth
         and vp.is_available = true
         and vp.latitude is not null
         and vp.longitude is not null
+        and vp.updated_at > now() - interval '20 minutes'
         and 2 * 6371 * asin(sqrt(
               sin(radians((help_requests.latitude - vp.latitude) / 2)) ^ 2
               + cos(radians(vp.latitude)) * cos(radians(help_requests.latitude))

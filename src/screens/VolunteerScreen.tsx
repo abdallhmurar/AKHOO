@@ -1,38 +1,45 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Alert, Image, Linking, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ArrowLeft, BatteryWarning, GasPump, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { supabase } from '../lib/supabase'
-import { colors } from '../lib/theme'
+import { colors, font, radius, space, shadow } from '../lib/theme'
+import { formatElapsed } from '../lib/time'
 import type { HelpRequest, ServiceType } from '../types'
+import { BottomSheet } from '../components/BottomSheet'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { SanadMap } from '../components/SanadMap'
+import { Tactile } from '../components/Tactile'
 
-const serviceLabels: Record<string, string> = { battery: '🔋 بطارية', tire: '🛞 بنشر', fuel: '⛽ وقود', locked_car: '🔑 سيارة مقفلة', other: '🧰 مساعدة أخرى' }
-
-const services: { key: ServiceType; label: string }[] = [
-  { key: 'battery', label: '🔋 بطارية' },
-  { key: 'tire', label: '🛞 بنشر' },
-  { key: 'fuel', label: '⛽ وقود' },
-  { key: 'locked_car', label: '🔑 سيارة مقفلة' },
-  { key: 'other', label: '🧰 شيء آخر' }
+const services: { key: ServiceType; label: string; Icon: typeof BatteryWarning }[] = [
+  { key: 'battery', label: 'بطارية', Icon: BatteryWarning },
+  { key: 'tire', label: 'بنشر', Icon: Tire },
+  { key: 'fuel', label: 'وقود', Icon: GasPump },
+  { key: 'locked_car', label: 'سيارة مقفلة', Icon: Lock },
+  { key: 'other', label: 'شيء آخر', Icon: Wrench }
 ]
+const serviceByKey = Object.fromEntries(services.map(item => [item.key, item])) as Record<ServiceType, (typeof services)[number]>
+
+const HEARTBEAT_MS = 5 * 60 * 1000
 
 type Nearby = HelpRequest & { distance: number }
 
 export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string; onBack: () => void; onAccepted: (request: HelpRequest) => void }) {
+  const [hydrated, setHydrated] = useState(false)
   const [available, setAvailable] = useState(false)
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null)
   const [requests, setRequests] = useState<Nearby[]>([])
   const [myServices, setMyServices] = useState<ServiceType[]>([])
-  const [expandedMap, setExpandedMap] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const [now, setNow] = useState(Date.now())
 
-  const loadRequests = useCallback(async (position = coords) => {
-    if (!position) return
+  const loadRequests = useCallback(async (position?: { latitude: number; longitude: number } | null) => {
+    const at = position ?? coords
+    if (!at) return
     const { data, error } = await supabase.from('help_requests').select('*').eq('status', 'open').order('created_at', { ascending: false }).limit(100)
     if (error) {
       Alert.alert('خطأ', error.message)
@@ -40,11 +47,33 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     }
     const nearby = (data as HelpRequest[])
       .filter(item => item.requester_id !== userId)
-      .map(item => ({ ...item, distance: distanceKm(position.latitude, position.longitude, item.latitude, item.longitude) }))
+      .map(item => ({ ...item, distance: distanceKm(at.latitude, at.longitude, item.latitude, item.longitude) }))
       .filter(item => item.distance <= 20)
       .sort((a, b) => a.distance - b.distance)
     setRequests(nearby)
   }, [coords, userId])
+
+  // Restore state from the DB on mount instead of assuming a fresh session -
+  // if the app was killed while still available server-side, pick that back
+  // up rather than forcing the user to re-toggle.
+  useEffect(() => {
+    let cancelled = false
+    supabase.from('volunteer_profiles').select('is_available, services, latitude, longitude').eq('user_id', userId).maybeSingle().then(async ({ data }) => {
+      if (cancelled) return
+      if (data) {
+        setMyServices(((data.services ?? []) as ServiceType[]))
+        if (data.is_available && data.latitude != null && data.longitude != null) {
+          const position = { latitude: data.latitude, longitude: data.longitude }
+          setCoords(position)
+          setAvailable(true)
+          await loadRequests(position)
+        }
+      }
+      if (!cancelled) setHydrated(true)
+    })
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId])
 
   useEffect(() => {
     if (!available || !coords) return
@@ -55,8 +84,39 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     return () => { supabase.removeChannel(channel) }
   }, [available, coords, loadRequests])
 
+  // Foreground heartbeat: keeps this volunteer's presence fresh for the RLS
+  // staleness bound even without background-location permission granted.
+  useEffect(() => {
+    if (!available) return
+    const interval = setInterval(() => {
+      supabase.from('volunteer_profiles').update({ updated_at: new Date().toISOString() }).eq('user_id', userId)
+    }, HEARTBEAT_MS)
+    return () => clearInterval(interval)
+  }, [available, userId])
+
+  useEffect(() => {
+    if (!available) return
+    const interval = setInterval(() => setNow(Date.now()), 30000)
+    return () => clearInterval(interval)
+  }, [available])
+
+  // If the currently open sheet's request disappears (another volunteer
+  // accepted it - realtime already refreshes `requests`), close it instead
+  // of leaving it open on stale data.
+  useEffect(() => {
+    if (!selectedId) return
+    if (!requests.some(item => item.id === selectedId)) {
+      setSelectedId(null)
+      Alert.alert('سبقك متطوع', 'هذا الطلب انأخذ قبل لحظات.')
+    }
+  }, [requests, selectedId])
+
   function toggleService(key: ServiceType) {
-    setMyServices(current => current.includes(key) ? current.filter(s => s !== key) : [...current, key])
+    setMyServices(current => {
+      const next = current.includes(key) ? current.filter(item => item !== key) : [...current, key]
+      if (available) supabase.from('volunteer_profiles').update({ services: next }).eq('user_id', userId).then(() => {})
+      return next
+    })
   }
 
   async function toggleAvailability() {
@@ -85,19 +145,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
         if (error) throw error
         setAvailable(false)
         setRequests([])
+        setSelectedId(null)
       }
     } catch (error: any) {
       Alert.alert('ما زبطت العملية', error.message ?? 'حدث خطأ')
     } finally {
       setLoading(false)
     }
-  }
-
-  async function onRefresh() {
-    if (!available) return
-    setRefreshing(true)
-    await loadRequests()
-    setRefreshing(false)
   }
 
   async function accept(request: Nearby) {
@@ -107,6 +161,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       if (error) throw error
       const accepted = Array.isArray(data) ? data[0] : data
       if (!accepted) {
+        setSelectedId(null)
         Alert.alert('سبقك متطوع', 'هذا الطلب انأخذ قبل لحظات.')
         await loadRequests()
         return
@@ -119,86 +174,150 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     }
   }
 
-  return (
-    <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.blue} colors={[colors.blue]} />}>
-      <Header title="بدي أساعد" subtitle="فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك." onBack={onBack} />
+  const selectedRequest = requests.find(item => item.id === selectedId) ?? null
 
-      {!available ? (
+  if (!hydrated) {
+    return (
+      <Screen scroll={false} contentStyle={styles.loadingContent}>
+        <ActivityIndicator color={colors.forest} />
+      </Screen>
+    )
+  }
+
+  if (!available) {
+    return (
+      <Screen>
+        <Header title="بدي أساعد" subtitle="فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك على الخريطة." onBack={onBack} />
+
         <View style={styles.skillsCard}>
           <Text style={styles.skillsTitle}>شو بتقدر تساعد فيه؟ (اختياري)</Text>
           <View style={styles.skillsGrid}>
-            {services.map(item => (
-              <Pressable key={item.key} onPress={() => toggleService(item.key)} style={[styles.skillChip, myServices.includes(item.key) && styles.skillChipActive]}>
-                <Text style={[styles.skillChipText, myServices.includes(item.key) && styles.skillChipTextActive]}>{item.label}</Text>
-              </Pressable>
-            ))}
+            {services.map(item => {
+              const active = myServices.includes(item.key)
+              return (
+                <Tactile key={item.key} onPress={() => toggleService(item.key)} style={[styles.skillChip, active && styles.skillChipActive]}>
+                  <item.Icon size={16} color={active ? '#fff' : colors.forest} weight={active ? 'fill' : 'regular'} />
+                  <Text style={[styles.skillChipText, active && styles.skillChipTextActive]}>{item.label}</Text>
+                </Tactile>
+              )
+            })}
           </View>
         </View>
+
+        <View style={styles.availability}>
+          <Text style={styles.availabilityTitle}>أنت غير متاح حالياً</Text>
+          <Text style={styles.small}>موقعك لا يُرسل إلا عند تفعيل التوفر، وتظهر لك الطلبات القريبة على خريطة مباشرة.</Text>
+          <PrimaryButton title="تفعيل التوفر" onPress={toggleAvailability} loading={loading} />
+        </View>
+      </Screen>
+    )
+  }
+
+  return (
+    <SafeAreaView style={styles.fill}>
+      {coords ? (
+        <SanadMap
+          latitude={coords.latitude}
+          longitude={coords.longitude}
+          zoom={12}
+          interactive
+          markers={requests.map(item => ({ id: item.id, latitude: item.latitude, longitude: item.longitude }))}
+          onMarkerPress={setSelectedId}
+          style={styles.map}
+        />
       ) : null}
 
-      <View style={styles.availability}>
-        <View style={styles.availabilityText}>
-          <Text style={styles.availabilityTitle}>{available ? 'أنت متاح الآن 🟢' : 'أنت غير متاح حالياً'}</Text>
-          <Text style={styles.small}>{available ? 'الطلبات ضمن 20 كم تظهر تحت.' : 'موقعك لا يُرسل إلا عند تفعيل التوفر.'}</Text>
+      <View style={styles.topBar}>
+        <Tactile onPress={onBack} style={styles.backButton} scaleTo={0.92}>
+          <ArrowLeft size={18} color={colors.text} />
+        </Tactile>
+        <View style={styles.statusPill}>
+          <View style={styles.statusDot} />
+          <Text style={styles.statusText} numberOfLines={1}>متاح الآن{requests.length ? ` · ${requests.length} طلب قريب` : ''}</Text>
         </View>
-        <PrimaryButton title={available ? 'إيقاف' : 'تفعيل'} tone={available ? 'light' : 'green'} onPress={toggleAvailability} loading={loading} />
+        <Tactile onPress={toggleAvailability} style={styles.stopButton} scaleTo={0.94}>
+          {loading ? <ActivityIndicator color={colors.text} size="small" /> : <Text style={styles.stopText}>إيقاف</Text>}
+        </Tactile>
       </View>
 
-      {available ? (
-        <>
-          <View style={styles.sectionRow}><Text style={styles.sectionTitle}>طلبات قريبة</Text><Text onPress={() => loadRequests()} style={styles.refresh}>تحديث</Text></View>
-          {requests.length === 0 ? <View style={styles.empty}><Text style={styles.emptyIcon}>🤍</Text><Text style={styles.emptyTitle}>ما في طلبات قريبة هلق</Text><Text style={styles.small}>إذا ظهر طلب جديد، Realtime يحدث القائمة تلقائياً.</Text></View> : null}
-          {requests.map(request => (
-            <View key={request.id} style={styles.requestCard}>
-              <View style={styles.requestTop}>
-                <Text style={styles.service}>{serviceLabels[request.service_type]}</Text>
-                <Text style={styles.distance}>{request.distance.toFixed(1)} كم</Text>
-              </View>
-              {myServices.includes(request.service_type) ? <Text style={styles.matchBadge}>✓ ضمن مهاراتك</Text> : null}
-              {request.note ? <Text style={styles.note}>{request.note}</Text> : null}
-              {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
-              <View style={styles.actions}>
-                <Pressable onPress={() => setExpandedMap(expandedMap === request.id ? null : request.id)} style={styles.mapButton}><Text style={styles.mapText}>🗺️ الخريطة</Text></Pressable>
-                <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} style={styles.mapButton}><Text style={styles.mapText}>فتح خارجي</Text></Pressable>
-                <Pressable onPress={() => accept(request)} style={styles.acceptButton}><Text style={styles.acceptText}>استلام المهمة</Text></Pressable>
-              </View>
-              {expandedMap === request.id ? <SanadMap latitude={request.latitude} longitude={request.longitude} /> : null}
-            </View>
-          ))}
-        </>
+      {requests.length === 0 ? (
+        <View pointerEvents="none" style={styles.emptyBanner}>
+          <Text style={styles.emptyBannerText}>ما في طلبات قريبة هلق — رح تظهر تلقائياً أول ما تنفتح.</Text>
+        </View>
       ) : null}
-    </Screen>
+
+      <BottomSheet visible={!!selectedRequest} onClose={() => setSelectedId(null)}>
+        {selectedRequest ? (
+          <>
+            <View style={styles.sheetTop}>
+              <View style={styles.sheetIcon}>
+                <ServiceIcon type={selectedRequest.service_type} />
+              </View>
+              <View style={styles.sheetTopText}>
+                <Text style={styles.sheetTitle}>{serviceByKey[selectedRequest.service_type].label}</Text>
+                <Text style={styles.sheetMeta}>{selectedRequest.distance.toFixed(1)} كم · منذ {formatElapsed(now - new Date(selectedRequest.created_at).getTime())}</Text>
+              </View>
+            </View>
+            {myServices.includes(selectedRequest.service_type) ? <Text style={styles.matchBadge}>✓ ضمن مهاراتك</Text> : null}
+            {selectedRequest.note ? <Text style={styles.note}>{selectedRequest.note}</Text> : null}
+            {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.photo} /> : null}
+            <View style={styles.sheetActions}>
+              <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${selectedRequest.latitude},${selectedRequest.longitude}`)} style={styles.mapButton}>
+                <MapPin size={16} color={colors.forest} />
+                <Text style={styles.mapText}>فتح خارجي</Text>
+              </Pressable>
+              <PrimaryButton title="استلام المهمة" onPress={() => accept(selectedRequest)} loading={loading} style={styles.acceptButton} />
+            </View>
+          </>
+        ) : null}
+      </BottomSheet>
+    </SafeAreaView>
   )
 }
 
+function ServiceIcon({ type }: { type: ServiceType }) {
+  const Icon = serviceByKey[type].Icon
+  return <Icon size={26} color={colors.forest} weight="duotone" />
+}
+
 const styles = StyleSheet.create({
-  skillsCard: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 16, marginBottom: 14 },
-  skillsTitle: { color: colors.text, fontWeight: '900', textAlign: 'right', marginBottom: 10 },
-  skillsGrid: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: 8 },
-  skillChip: { backgroundColor: colors.blueSoft, borderRadius: 12, paddingVertical: 8, paddingHorizontal: 12, borderWidth: 1, borderColor: 'transparent' },
-  skillChipActive: { backgroundColor: colors.blue },
-  skillChipText: { color: colors.blueDark, fontWeight: '800', fontSize: 13 },
+  fill: { flex: 1, backgroundColor: colors.bg },
+  loadingContent: { alignItems: 'center', justifyContent: 'center' },
+  map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
+
+  skillsCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, marginBottom: space.lg },
+  skillsTitle: { color: colors.text, fontFamily: font.bold, fontSize: 15, textAlign: 'right', marginBottom: space.md },
+  skillsGrid: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: space.sm },
+  skillChip: { flexDirection: 'row-reverse', alignItems: 'center', gap: 6, backgroundColor: colors.sageSoft, borderRadius: radius.pill, paddingVertical: 9, paddingHorizontal: space.md },
+  skillChipActive: { backgroundColor: colors.forest },
+  skillChipText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 },
   skillChipTextActive: { color: '#fff' },
-  availability: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 16, gap: 14 },
-  availabilityText: { alignItems: 'flex-end' },
-  availabilityTitle: { color: colors.text, fontWeight: '900', fontSize: 17 },
-  small: { color: colors.muted, textAlign: 'right', lineHeight: 20, marginTop: 5 },
-  sectionRow: { marginTop: 24, marginBottom: 10, flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center' },
-  sectionTitle: { color: colors.text, fontSize: 20, fontWeight: '900' },
-  refresh: { color: colors.blueDark, fontWeight: '800' },
-  empty: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 24, alignItems: 'center' },
-  emptyIcon: { fontSize: 32 },
-  emptyTitle: { marginTop: 8, color: colors.text, fontWeight: '900', fontSize: 17 },
-  requestCard: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 16, marginBottom: 12 },
-  requestTop: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center' },
-  service: { color: colors.text, fontSize: 17, fontWeight: '900' },
-  distance: { color: colors.blueDark, fontWeight: '900', backgroundColor: colors.blueSoft, paddingVertical: 6, paddingHorizontal: 9, borderRadius: 10 },
-  matchBadge: { color: colors.green, fontWeight: '800', textAlign: 'right', marginTop: 8, fontSize: 13 },
-  note: { color: colors.muted, textAlign: 'right', marginTop: 10, lineHeight: 20 },
-  photo: { width: '100%', height: 140, borderRadius: 14, marginTop: 10 },
-  actions: { flexDirection: 'row-reverse', gap: 8, marginTop: 14 },
-  acceptButton: { flex: 1.6, backgroundColor: colors.blue, borderRadius: 14, alignItems: 'center', paddingVertical: 13 },
-  acceptText: { color: '#fff', fontWeight: '900' },
-  mapButton: { flex: 1, backgroundColor: colors.blueSoft, borderRadius: 14, alignItems: 'center', paddingVertical: 13 },
-  mapText: { color: colors.blueDark, fontWeight: '900', fontSize: 13 }
+
+  availability: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, gap: space.md, alignItems: 'flex-end' },
+  availabilityTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18, textAlign: 'right' },
+  small: { color: colors.muted, textAlign: 'right', fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
+
+  topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, flexDirection: 'row-reverse', alignItems: 'center', gap: space.sm },
+  backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.soft },
+  statusPill: { flex: 1, flexDirection: 'row-reverse', alignItems: 'center', gap: 7, backgroundColor: colors.surface, borderRadius: radius.pill, paddingVertical: 10, paddingHorizontal: space.md, ...shadow.soft },
+  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.success },
+  statusText: { color: colors.text, fontFamily: font.bold, fontSize: 13 },
+  stopButton: { minWidth: 60, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, ...shadow.soft },
+  stopText: { color: colors.danger, fontFamily: font.bold, fontSize: 13 },
+
+  emptyBanner: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xl, backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, ...shadow.soft },
+  emptyBannerText: { color: colors.muted, fontFamily: font.medium, fontSize: 12.5, textAlign: 'center', lineHeight: 18 },
+
+  sheetTop: { flexDirection: 'row-reverse', alignItems: 'center', gap: space.md },
+  sheetIcon: { width: 52, height: 52, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  sheetTopText: { flex: 1, alignItems: 'flex-end' },
+  sheetTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18, textAlign: 'right' },
+  sheetMeta: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, textAlign: 'right', marginTop: 3 },
+  matchBadge: { color: colors.success, fontFamily: font.bold, fontSize: 12.5, textAlign: 'right', marginTop: space.md },
+  note: { color: colors.text, fontFamily: font.regular, fontSize: 14, textAlign: 'right', lineHeight: 21, marginTop: space.md },
+  photo: { width: '100%', height: 150, borderRadius: radius.md, marginTop: space.md },
+  sheetActions: { flexDirection: 'row-reverse', gap: space.sm, marginTop: space.lg },
+  acceptButton: { flex: 1.6 },
+  mapButton: { flex: 1, flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: colors.sageSoft, borderRadius: radius.sm, minHeight: 54 },
+  mapText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 }
 })
