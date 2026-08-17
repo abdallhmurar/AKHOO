@@ -2,6 +2,8 @@ import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Animated, Pressable, StyleProp, ViewStyle } from 'react-native'
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
 export function Tactile({ onPress, style, children, scaleTo = 0.97 }: { onPress: () => void; style?: StyleProp<ViewStyle>; children: ReactNode; scaleTo?: number }) {
   const scale = useRef(new Animated.Value(1)).current
 
@@ -13,10 +15,8 @@ export function Tactile({ onPress, style, children, scaleTo = 0.97 }: { onPress:
   }
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} style={style}>
-        {children}
-      </Pressable>
-    </Animated.View>
+    <AnimatedPressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} style={[style, { transform: [{ scale }] }]}>
+      {children}
+    </AnimatedPressable>
   )
 }
