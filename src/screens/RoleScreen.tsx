@@ -1,6 +1,8 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import { colors } from '../lib/theme'
+import { Image, StyleSheet, Text, View } from 'react-native'
+import { ArrowLeft, CarProfile, ClockCounterClockwise, GearSix, HandHeart, UserCircle } from 'phosphor-react-native'
+import { colors, font, radius, space } from '../lib/theme'
 import { Screen } from '../components/Screen'
+import { Tactile } from '../components/Tactile'
 
 export function RoleScreen({
   name,
@@ -29,48 +31,57 @@ export function RoleScreen({
     <Screen>
       <View style={styles.top}>
         <View style={styles.identity}>
-          {avatarUrl ? <Image source={{ uri: avatarUrl }} style={styles.avatar} /> : null}
+          {avatarUrl ? (
+            <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatarFallback}><UserCircle size={22} color={colors.muted} weight="light" /></View>
+          )}
           <View>
             <Text style={styles.brand}>سَنَد</Text>
-            <Text style={styles.greeting}>أهلاً {name || 'فيك'} 👋</Text>
+            <Text style={styles.greeting}>أهلاً {name || 'فيك'}</Text>
           </View>
         </View>
         <View style={styles.topActions}>
-          <Pressable onPress={onHistory} style={styles.topButton}><Text style={styles.topButtonText}>السجل 🕘</Text></Pressable>
-          <Pressable onPress={onAccount} style={styles.topButton}><Text style={styles.topButtonText}>حسابي 👤</Text></Pressable>
+          <Tactile onPress={onHistory} style={styles.topButton}><ClockCounterClockwise size={18} color={colors.forest} /></Tactile>
+          <Tactile onPress={onAccount} style={styles.topButton}><UserCircle size={18} color={colors.forest} /></Tactile>
         </View>
       </View>
 
       {activeKind ? (
-        <Pressable onPress={onResumeActive} style={styles.resumeCard}>
-          <Text style={styles.resumeArrow}>تابع ←</Text>
+        <Tactile onPress={onResumeActive} style={styles.resumeCard}>
+          <ArrowLeft size={18} color="#fff" />
           <Text style={styles.resumeText}>
-            {activeKind === 'request' ? 'لسا عندك طلب مساعدة نشط' : 'لسا عندك مهمة تطوّع نشطة'}
+            {activeKind === 'request' ? 'لسا عندك طلب مساعدة نشط — تابعه' : 'لسا عندك مهمة تطوّع نشطة — تابعها'}
           </Text>
-        </Pressable>
+        </Tactile>
       ) : null}
 
       <Text style={styles.title}>شو بدك تعمل هلق؟</Text>
-      <Text style={styles.subtitle}>نفس الحساب بقدر يطلب مساعدة أو يساعد غيره. اختار دورك لهذه اللحظة.</Text>
+      <Text style={styles.subtitle}>اختر دورك لهذه اللحظة.</Text>
 
-      <Pressable onPress={onRequester} style={[styles.roleCard, styles.requestCard]}>
-        <View style={[styles.icon, { backgroundColor: colors.redSoft }]}><Text style={styles.iconText}>🆘</Text></View>
+      <Tactile onPress={onRequester} style={[styles.roleCard, styles.requestCard]} scaleTo={0.98}>
+        <View style={styles.roleCardTop}>
+          <View style={[styles.icon, { backgroundColor: colors.sandSoft }]}><CarProfile size={30} color={colors.sand} weight="duotone" /></View>
+          <ArrowLeft size={18} color={colors.text} />
+        </View>
         <Text style={styles.roleTitle}>بدي مساعدة</Text>
-        <Text style={styles.roleText}>افتح طلب، شارك موقعك، وأقرب متطوع متاح يقدر يستلمه.</Text>
-        <Text style={styles.arrow}>ابدأ ←</Text>
-      </Pressable>
+        <Text style={styles.roleText}>عندي مشكلة وبدي متطوع قريب يساعدني.</Text>
+      </Tactile>
 
-      <Pressable onPress={onVolunteer} style={[styles.roleCard, styles.volunteerCard]}>
-        <View style={[styles.icon, { backgroundColor: colors.blueSoft }]}><Text style={styles.iconText}>🤝</Text></View>
+      <Tactile onPress={onVolunteer} style={[styles.roleCard, styles.volunteerCard]} scaleTo={0.98}>
+        <View style={styles.roleCardTop}>
+          <View style={[styles.icon, { backgroundColor: colors.sageSoft }]}><HandHeart size={30} color={colors.forest} weight="duotone" /></View>
+          <ArrowLeft size={18} color={colors.forest} />
+        </View>
         <Text style={styles.roleTitle}>بدي أساعد</Text>
-        <Text style={styles.roleText}>فعّل توفرّك وشوف طلبات المساعدة القريبة منك حسب موقعك.</Text>
-        <Text style={[styles.arrow, { color: colors.green }]}>شوف الطلبات ←</Text>
-      </Pressable>
+        <Text style={styles.roleText}>أنا متاح أساعد شخص قريب مني.</Text>
+      </Tactile>
 
       {isAdmin ? (
-        <Pressable onPress={onAdmin} style={styles.adminRow}>
-          <Text style={styles.adminText}>لوحة الإدارة ⚙️</Text>
-        </Pressable>
+        <Tactile onPress={onAdmin} style={styles.adminRow}>
+          <GearSix size={16} color={colors.muted} />
+          <Text style={styles.adminText}>لوحة الإدارة</Text>
+        </Tactile>
       ) : null}
 
       <View style={styles.notice}>
@@ -81,29 +92,27 @@ export function RoleScreen({
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 },
-  identity: { flexDirection: 'row-reverse', alignItems: 'center', gap: 10 },
-  avatar: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, borderColor: colors.border },
-  topActions: { flexDirection: 'row-reverse', gap: 8 },
-  topButton: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, paddingVertical: 9, paddingHorizontal: 13, borderRadius: 13 },
-  topButtonText: { color: colors.blueDark, fontWeight: '800', fontSize: 13 },
-  brand: { fontSize: 28, fontWeight: '900', color: colors.blueDark, textAlign: 'right' },
-  greeting: { color: colors.muted, textAlign: 'right', marginTop: 3 },
-  resumeCard: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.blueDark, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 18, marginBottom: 18 },
-  resumeText: { color: '#fff', fontWeight: '800', fontSize: 14 },
-  resumeArrow: { color: '#fff', fontWeight: '900' },
-  title: { color: colors.text, fontSize: 30, fontWeight: '900', textAlign: 'right' },
-  subtitle: { color: colors.muted, fontSize: 15, lineHeight: 23, textAlign: 'right', marginTop: 8, marginBottom: 22 },
-  roleCard: { backgroundColor: colors.card, borderRadius: 27, borderWidth: 1, padding: 21, marginBottom: 15 },
-  requestCard: { borderColor: '#FFD8DE' },
+  top: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.xxl },
+  identity: { flexDirection: 'row-reverse', alignItems: 'center', gap: space.md },
+  avatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.border },
+  avatarFallback: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' },
+  brand: { fontSize: 20, fontFamily: font.extraBold, color: colors.text, textAlign: 'right' },
+  greeting: { color: colors.muted, fontFamily: font.regular, fontSize: 13, textAlign: 'right', marginTop: 2 },
+  topActions: { flexDirection: 'row-reverse', gap: space.sm },
+  topButton: { width: 40, height: 40, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  resumeCard: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.forest, borderRadius: radius.md, paddingVertical: space.lg, paddingHorizontal: space.xl, marginBottom: space.xl, gap: space.md },
+  resumeText: { flex: 1, color: '#fff', fontFamily: font.bold, fontSize: 14, textAlign: 'right' },
+  title: { color: colors.text, fontSize: 28, fontFamily: font.extraBold, textAlign: 'right' },
+  subtitle: { color: colors.muted, fontSize: 14.5, fontFamily: font.regular, textAlign: 'right', marginTop: 6, marginBottom: space.xxl },
+  roleCard: { backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, padding: space.xl, marginBottom: space.lg },
+  requestCard: { borderColor: colors.sandSoft },
   volunteerCard: { borderColor: colors.border },
-  icon: { width: 58, height: 58, borderRadius: 19, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end' },
-  iconText: { fontSize: 28 },
-  roleTitle: { fontSize: 22, fontWeight: '900', color: colors.text, textAlign: 'right', marginTop: 14 },
-  roleText: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'right', marginTop: 6 },
-  arrow: { color: colors.blueDark, fontWeight: '900', marginTop: 16, textAlign: 'left' },
-  notice: { backgroundColor: colors.blueSoft, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 14, marginTop: 4 },
-  noticeText: { color: colors.blueDark, fontSize: 12, lineHeight: 18, textAlign: 'right' },
-  adminRow: { alignItems: 'center', paddingVertical: 12, marginBottom: 8 },
-  adminText: { color: colors.muted, fontWeight: '800' }
+  roleCardTop: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center' },
+  icon: { width: 60, height: 60, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  roleTitle: { fontSize: 20, fontFamily: font.extraBold, color: colors.text, textAlign: 'right', marginTop: space.lg },
+  roleText: { color: colors.muted, fontSize: 13.5, fontFamily: font.regular, lineHeight: 20, textAlign: 'right', marginTop: 4 },
+  adminRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: space.md, marginBottom: space.sm },
+  adminText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },
+  notice: { backgroundColor: colors.sageSoft, paddingVertical: space.md, paddingHorizontal: space.lg, borderRadius: radius.md, marginTop: space.xs },
+  noticeText: { color: colors.forest, fontSize: 12, fontFamily: font.regular, lineHeight: 18, textAlign: 'right' }
 })

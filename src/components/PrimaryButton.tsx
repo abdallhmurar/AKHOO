@@ -1,6 +1,6 @@
-import { useRef } from 'react'
-import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, ViewStyle } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, ViewStyle } from 'react-native'
 import { colors, font, radius } from '../lib/theme'
+import { Tactile } from './Tactile'
 
 export function PrimaryButton({
   title,
@@ -17,8 +17,6 @@ export function PrimaryButton({
   tone?: 'forest' | 'sage' | 'light' | 'red' | 'blue' | 'green'
   style?: ViewStyle
 }) {
-  const scale = useRef(new Animated.Value(1)).current
-
   const backgroundColor =
     tone === 'sage' || tone === 'green' ? colors.forest :
     tone === 'red' ? colors.dangerSoft :
@@ -26,25 +24,10 @@ export function PrimaryButton({
     colors.forest
   const textColor = tone === 'red' ? colors.danger : tone === 'light' ? colors.forest : '#fff'
 
-  function pressIn() {
-    Animated.spring(scale, { toValue: 0.97, useNativeDriver: true, speed: 40, bounciness: 4 }).start()
-  }
-  function pressOut() {
-    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 30, bounciness: 6 }).start()
-  }
-
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable
-        onPress={onPress}
-        onPressIn={pressIn}
-        onPressOut={pressOut}
-        disabled={disabled || loading}
-        style={[styles.button, { backgroundColor }, style, (disabled || loading) && styles.disabled]}
-      >
-        {loading ? <ActivityIndicator color={textColor} /> : <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
-      </Pressable>
-    </Animated.View>
+    <Tactile onPress={disabled || loading ? () => {} : onPress} style={[styles.button, { backgroundColor }, style, (disabled || loading) && styles.disabled]}>
+      {loading ? <ActivityIndicator color={textColor} /> : <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
+    </Tactile>
   )
 }
 
