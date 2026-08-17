@@ -1,38 +1,55 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native'
-import { colors } from '../lib/theme'
+import { useRef } from 'react'
+import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, ViewStyle } from 'react-native'
+import { colors, font, radius } from '../lib/theme'
 
 export function PrimaryButton({
   title,
   onPress,
   loading = false,
   disabled = false,
-  tone = 'blue',
+  tone = 'forest',
   style
 }: {
   title: string
   onPress: () => void
   loading?: boolean
   disabled?: boolean
-  tone?: 'blue' | 'green' | 'light' | 'red'
+  tone?: 'forest' | 'sage' | 'light' | 'red' | 'blue' | 'green'
   style?: ViewStyle
 }) {
-  const backgroundColor = tone === 'green' ? colors.green : tone === 'red' ? colors.redSoft : tone === 'light' ? colors.blueSoft : colors.blue
-  const textColor = tone === 'red' ? colors.red : tone === 'light' ? colors.blueDark : '#fff'
+  const scale = useRef(new Animated.Value(1)).current
+
+  const backgroundColor =
+    tone === 'sage' || tone === 'green' ? colors.forest :
+    tone === 'red' ? colors.dangerSoft :
+    tone === 'light' ? colors.sageSoft :
+    colors.forest
+  const textColor = tone === 'red' ? colors.danger : tone === 'light' ? colors.forest : '#fff'
+
+  function pressIn() {
+    Animated.spring(scale, { toValue: 0.97, useNativeDriver: true, speed: 40, bounciness: 4 }).start()
+  }
+  function pressOut() {
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 30, bounciness: 6 }).start()
+  }
 
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled || loading}
-      style={({ pressed }) => [styles.button, { backgroundColor }, style, pressed && styles.pressed, (disabled || loading) && styles.disabled]}
-    >
-      {loading ? <ActivityIndicator color={textColor} /> : <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
-    </Pressable>
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={pressIn}
+        onPressOut={pressOut}
+        disabled={disabled || loading}
+        style={[styles.button, { backgroundColor }, style, (disabled || loading) && styles.disabled]}
+      >
+        {loading ? <ActivityIndicator color={textColor} /> : <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
+      </Pressable>
+    </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: { minHeight: 54, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18 },
-  text: { fontSize: 17, fontWeight: '800' },
-  pressed: { opacity: 0.86, transform: [{ scale: 0.995 }] },
+  button: { minHeight: 54, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18 },
+  text: { fontSize: 16, fontFamily: font.bold },
   disabled: { opacity: 0.5 }
 })

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { colors } from '../lib/theme'
+import { colors, font } from '../lib/theme'
 
 function scorePassword(password: string) {
   if (!password) return 0
@@ -14,10 +14,10 @@ function scorePassword(password: string) {
 
 const levels = [
   { label: '', color: colors.border },
-  { label: 'ضعيفة', color: colors.red },
-  { label: 'مقبولة', color: '#F5A623' },
-  { label: 'جيدة', color: colors.blue },
-  { label: 'قوية', color: colors.green }
+  { label: 'ضعيفة', color: colors.danger },
+  { label: 'مقبولة', color: colors.warning },
+  { label: 'جيدة', color: colors.sage },
+  { label: 'قوية', color: colors.success }
 ]
 
 export function PasswordStrength({ password }: { password: string }) {
@@ -41,5 +41,5 @@ const styles = StyleSheet.create({
   wrap: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, marginTop: -4 },
   track: { flex: 1, flexDirection: 'row-reverse', gap: 4 },
   segment: { flex: 1, height: 5, borderRadius: 3 },
-  label: { fontSize: 12, fontWeight: '800', minWidth: 44, textAlign: 'left' }
+  label: { fontSize: 12, fontFamily: font.bold, minWidth: 44, textAlign: 'left' }
 })

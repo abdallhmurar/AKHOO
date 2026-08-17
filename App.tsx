@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import * as Linking from 'expo-linking'
+import { useFonts, Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold } from '@expo-google-fonts/tajawal'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
-import { colors } from './src/lib/theme'
+import { colors, font } from './src/lib/theme'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { RoleScreen } from './src/screens/RoleScreen'
@@ -32,6 +33,7 @@ function parseHashParams(url: string): Record<string, string> {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({ Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold })
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -120,8 +122,14 @@ export default function App() {
     })()
   }, [session?.user.id])
 
-  if (loading || recovering) {
-    return <View style={styles.loading}><ActivityIndicator size="large" color={colors.blue} /></View>
+  if (!fontsLoaded || loading || recovering) {
+    return (
+      <View style={styles.loading}>
+        <View style={styles.splashMark}><Text style={styles.splashMarkText}>س</Text></View>
+        {fontsLoaded ? <Text style={styles.splashWord}>سَنَد</Text> : null}
+        <ActivityIndicator size="small" color={colors.forest} style={styles.splashSpinner} />
+      </View>
+    )
   }
 
   if (passwordRecovery) {
@@ -196,4 +204,10 @@ export default function App() {
   )
 }
 
-const styles = StyleSheet.create({ loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg } })
+const styles = StyleSheet.create({
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
+  splashMark: { width: 72, height: 72, borderRadius: 24, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },
+  splashMarkText: { color: '#fff', fontSize: 34, fontFamily: font.extraBold },
+  splashWord: { color: colors.text, fontSize: 20, fontFamily: font.bold, marginBottom: 22 },
+  splashSpinner: { marginTop: 4 }
+})
