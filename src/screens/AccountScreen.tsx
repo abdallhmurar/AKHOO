@@ -1,15 +1,22 @@
 import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
+import { normalizePhone } from '../lib/phone'
+import { dirStyles, useIsRTL } from '../lib/direction'
 import type { Profile } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { PasswordStrength } from '../components/PasswordStrength'
+import { LanguagePicker } from '../components/LanguagePicker'
 
 export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: Profile; email: string; onBack: () => void; onUpdated: (profile: Profile) => void }) {
+  const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  const dir = dirStyles(isRTL)
   const [name, setName] = useState(profile.full_name)
   const [phone, setPhone] = useState(profile.phone ?? '')
   const [avatarUri, setAvatarUri] = useState<string | null>(null)
@@ -23,7 +30,7 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
   async function pickAvatar() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (permission.status !== 'granted') {
-      Alert.alert('لازم إذن الصور', 'لازم تسمح بالوصول لمكتبة الصور حتى تغيّر صورتك.')
+      Alert.alert(t('auth.signup.permissionPhotos.title'), t('auth.signup.permissionPhotos.message'))
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
@@ -33,8 +40,13 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
 
   async function saveProfile() {
     setProfileError(null)
+    const normalizedPhone = phone.trim() ? normalizePhone(phone.trim()) : null
     if (!name.trim() || !phone.trim()) {
-      setProfileError('الاسم ورقم الهاتف إجباريين.')
+      setProfileError(t('account.errors.requiredFields'))
+      return
+    }
+    if (!normalizedPhone) {
+      setProfileError(t('account.errors.phoneInvalid'))
       return
     }
     setSavingProfile(true)
@@ -50,15 +62,15 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
       }
       const { data, error } = await supabase
         .from('profiles')
-        .update({ full_name: name.trim(), phone: phone.trim(), avatar_url: avatarUrl })
+        .update({ full_name: name.trim(), phone: normalizedPhone, avatar_url: avatarUrl })
         .eq('id', profile.id)
         .select()
         .single()
       if (error) throw error
       onUpdated(data as Profile)
-      Alert.alert('تم', 'تحدّث حسابك بنجاح.')
+      Alert.alert(t('account.success.title'), t('account.success.profileUpdated'))
     } catch (error: any) {
-      setProfileError(error.message ?? 'حدث خطأ غير متوقع')
+      setProfileError(error.message ?? t('common.error'))
     } finally {
       setSavingProfile(false)
     }
@@ -67,7 +79,7 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
   async function savePassword() {
     setPasswordError(null)
     if (newPassword.length < 6) {
-      setPasswordError('كلمة المرور لازم تكون 6 أحرف على الأقل.')
+      setPasswordError(t('account.errors.passwordTooShort'))
       return
     }
     setSavingPassword(true)
@@ -78,12 +90,12 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
       return
     }
     setNewPassword('')
-    Alert.alert('تم', 'كلمة المرور تغيّرت بنجاح.')
+    Alert.alert(t('account.success.title'), t('account.success.passwordUpdated'))
   }
 
   return (
     <Screen>
-      <Header title="حسابي" subtitle="عدّل معلوماتك الشخصية وكلمة المرور." onBack={onBack} />
+      <Header title={t('account.title')} subtitle={t('account.subtitle')} onBack={onBack} />
 
       <Pressable onPress={pickAvatar} style={styles.avatarPicker}>
         {avatarUri || profile.avatar_url ? (
@@ -92,42 +104,46 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
           <Text style={styles.avatarPlaceholder}>📷</Text>
         )}
       </Pressable>
-      <Text style={styles.avatarHint}>اضغط على الصورة لتغييرها</Text>
+      <Text style={styles.avatarHint}>{t('account.changePhoto')}</Text>
 
       <View style={styles.card}>
-        <Text style={styles.label}>البريد الإلكتروني</Text>
-        <Text style={styles.readonly}>{email}</Text>
+        <Text style={[styles.label, dir.textStart]}>{t('account.emailLabel')}</Text>
+        <Text style={[styles.readonly, dir.textStart]}>{email}</Text>
 
         <View style={styles.line} />
 
-        <Text style={styles.label}>الاسم الكامل</Text>
-        <TextInput value={name} onChangeText={t => { setName(t); setProfileError(null) }} style={styles.input} textAlign="right" />
+        <Text style={[styles.label, dir.textStart]}>{t('account.nameLabel')}</Text>
+        <TextInput value={name} onChangeText={t => { setName(t); setProfileError(null) }} style={[styles.input, dir.textStart]} />
 
-        <Text style={styles.label}>رقم الهاتف</Text>
-        <TextInput value={phone} onChangeText={t => { setPhone(t); setProfileError(null) }} style={styles.input} keyboardType="phone-pad" textAlign="right" />
+        <Text style={[styles.label, dir.textStart]}>{t('account.phoneLabel')}</Text>
+        <TextInput value={phone} onChangeText={t => { setPhone(t); setProfileError(null) }} style={[styles.input, dir.textStart]} keyboardType="phone-pad" />
 
-        {profileError ? <Text style={styles.error}>{profileError}</Text> : null}
-        <PrimaryButton title="حفظ التغييرات" onPress={saveProfile} loading={savingProfile} />
+        {profileError ? <Text style={[styles.error, dir.textStart]}>{profileError}</Text> : null}
+        <PrimaryButton title={t('account.saveChanges')} onPress={saveProfile} loading={savingProfile} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>تغيير كلمة المرور</Text>
+        <Text style={[styles.cardTitle, dir.textStart]}>{t('account.changePassword')}</Text>
         <TextInput
           value={newPassword}
           onChangeText={t => { setNewPassword(t); setPasswordError(null) }}
-          placeholder="كلمة مرور جديدة"
+          placeholder={t('account.newPasswordPlaceholder')}
           placeholderTextColor={colors.muted}
-          style={styles.input}
+          style={[styles.input, dir.textStart]}
           secureTextEntry
-          textAlign="right"
         />
         <PasswordStrength password={newPassword} />
-        {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-        <PrimaryButton title="تحديث كلمة المرور" tone="light" onPress={savePassword} loading={savingPassword} />
+        {passwordError ? <Text style={[styles.error, dir.textStart]}>{passwordError}</Text> : null}
+        <PrimaryButton title={t('account.updatePassword')} tone="light" onPress={savePassword} loading={savingPassword} />
+      </View>
+
+      <View style={styles.card}>
+        <Text style={[styles.cardTitle, dir.textStart]}>{t('account.language')}</Text>
+        <LanguagePicker />
       </View>
 
       <Pressable onPress={() => supabase.auth.signOut()} style={styles.logoutRow}>
-        <Text style={styles.logoutText}>تسجيل خروج</Text>
+        <Text style={styles.logoutText}>{t('account.logout')}</Text>
       </Pressable>
     </Screen>
   )
@@ -139,12 +155,12 @@ const styles = StyleSheet.create({
   avatarPlaceholder: { fontSize: 30 },
   avatarHint: { color: colors.muted, textAlign: 'center', fontSize: 12, marginTop: 8, marginBottom: 22 },
   card: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 18, marginBottom: 16, gap: 10 },
-  cardTitle: { color: colors.text, fontWeight: '900', fontSize: 17, textAlign: 'right', marginBottom: 2 },
-  label: { color: colors.muted, textAlign: 'right', fontSize: 13 },
-  readonly: { color: colors.text, textAlign: 'right', fontWeight: '800', fontSize: 15 },
+  cardTitle: { color: colors.text, fontWeight: '900', fontSize: 17, marginBottom: 2 },
+  label: { color: colors.muted, fontSize: 13 },
+  readonly: { color: colors.text, fontWeight: '800', fontSize: 15 },
   line: { height: 1, backgroundColor: colors.border, marginVertical: 4 },
   input: { minHeight: 52, borderRadius: 15, backgroundColor: '#F9FCFF', borderWidth: 1, borderColor: colors.border, paddingHorizontal: 14, color: colors.text, fontSize: 15 },
-  error: { color: colors.red, textAlign: 'right', fontSize: 13, fontWeight: '700' },
+  error: { color: colors.red, fontSize: 13, fontWeight: '700' },
   logoutRow: { alignItems: 'center', paddingVertical: 14, marginBottom: 10 },
   logoutText: { color: colors.red, fontWeight: '800' }
 })

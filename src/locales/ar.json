@@ -1,0 +1,310 @@
+{
+  "common": {
+    "back": "رجوع",
+    "next": "التالي",
+    "loading": "...تحميل",
+    "error": "خطأ",
+    "done": "تم"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "أهلاً فيك من جديد.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "noAccount": "ما عندك حساب؟",
+      "signUpLink": "إنشاء حساب جديد",
+      "errors": {
+        "emailRequired": "أدخل البريد الإلكتروني.",
+        "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+      }
+    },
+    "signup": {
+      "title": "إنشاء حساب",
+      "subtitle": "ابدأ رحلتك في المساعدة والعطاء.",
+      "avatarHint": "صورة شخصية (اختياري)",
+      "nameLabel": "الاسم الكامل",
+      "namePlaceholder": "مثال: أحمد محمود",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "05X-XXX-XXXX",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "كلمة المرور",
+      "submit": "إنشاء الحساب",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "loginLink": "تسجيل الدخول",
+      "errors": {
+        "nameRequired": "أدخل اسمك الكامل.",
+        "phoneRequired": "رقم الهاتف إجباري.",
+        "phoneInvalid": "رقم هاتف غير صحيح.",
+        "emailRequired": "أدخل البريد الإلكتروني.",
+        "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+      },
+      "permissionPhotos": {
+        "title": "لازم إذن الصور",
+        "message": "لازم تسمح بالوصول لمكتبة الصور حتى تضيف صورة شخصية."
+      },
+      "created": {
+        "title": "تم إنشاء الحساب",
+        "message": "إذا كان تأكيد البريد مفعّلاً، افتح رسالة التأكيد ثم سجّل دخولك."
+      }
+    },
+    "forgot": {
+      "title": "نسيت كلمة المرور؟",
+      "subtitle": "لا تقلق، بنرسلّك رابط آمن لإعادة تعيين كلمة المرور.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "submit": "إرسال رابط الاستعادة",
+      "backLink": "العودة لتسجيل الدخول",
+      "errors": {
+        "emailRequired": "أدخل بريدك الإلكتروني."
+      },
+      "sent": {
+        "title": "تحقق من بريدك",
+        "text": "بعتنالك رابط لإعادة تعيين كلمة المرور على {{email}}.",
+        "resend": "ما وصلتني الرسالة؟ إعادة الإرسال"
+      }
+    },
+    "reset": {
+      "title": "كلمة مرور جديدة",
+      "subtitle": "اختار كلمة مرور جديدة لحسابك.",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "submit": "حفظ كلمة المرور",
+      "errors": {
+        "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+      },
+      "success": {
+        "title": "تم",
+        "message": "كلمة المرور تغيّرت بنجاح."
+      }
+    },
+    "passwordStrength": {
+      "weak": "ضعيفة",
+      "fair": "مقبولة",
+      "good": "جيدة",
+      "strong": "قوية"
+    }
+  },
+  "home": {
+    "brand": "سَنَد",
+    "greeting": "أهلاً {{name}}",
+    "guestName": "فيك",
+    "resumeRequest": "لسا عندك طلب مساعدة نشط — تابعه",
+    "resumeJob": "لسا عندك مهمة تطوّع نشطة — تابعها",
+    "title": "شو بدك تعمل هلق؟",
+    "subtitle": "اختر دورك لهذه اللحظة.",
+    "needHelp": { "title": "بدي مساعدة", "text": "عندي مشكلة وبدي متطوع قريب يساعدني." },
+    "wantToHelp": { "title": "بدي أساعد", "text": "أنا متاح أساعد شخص قريب مني." },
+    "adminLink": "لوحة الإدارة",
+    "notice": "أول إصدار: توزيع الطلبات مباشر بين المستخدم والمتطوع، بلا مركز اتصالات."
+  },
+  "request": {
+    "battery": "بطارية",
+    "tire": "بنشر",
+    "fuel": "وقود",
+    "lockedCar": "سيارة مقفلة",
+    "other": "شيء آخر",
+    "step": {
+      "type": { "title": "كيف نقدر نساعدك؟", "subtitle": "اختار المشكلة اللي بتواجهك." },
+      "details": { "title": "التفاصيل", "subtitle": "ملاحظة أو صورة بتساعد المتطوع يفهم أكتر (اختياري)." },
+      "location": { "title": "الموقع", "subtitle": "بنشارك موقعك الحالي مع المتطوع اللي رح يستلم طلبك." }
+    },
+    "noteLabel": "ملاحظة للمتطوع (اختياري)",
+    "notePlaceholder": "مثال: بطارية السيارة فاضية بالكامل، موجود بموقف عام.",
+    "addPhoto": "أضف صورة (اختياري)",
+    "locating": "عم نحدد موقعك...",
+    "retryLocation": "حاول مرة ثانية",
+    "currentLocation": "موقعك الحالي",
+    "refreshLocation": "تحديث الموقع",
+    "submit": "إرسال طلب المساعدة",
+    "errors": {
+      "selectType": "اختار المشكلة",
+      "selectTypeMessage": "اختار نوع المساعدة اللي بتحتاجها.",
+      "locationFailed": "ما قدرنا نحدد موقعك.",
+      "createFailedTitle": "ما قدرنا نفتح الطلب"
+    },
+    "pilotZone": {
+      "title": "خارج منطقة التجربة",
+      "message": "سَنَد متاح حاليًا ضمن منطقة التجربة في القدس."
+    }
+  },
+  "activeRequest": {
+    "status": {
+      "open": "نبحث عن متطوع",
+      "accepted": "متطوع استلم الطلب",
+      "on_the_way": "المتطوع في الطريق",
+      "arrived": "المتطوع وصل",
+      "completed": "تمت المساعدة",
+      "cancelled": "تم إلغاء الطلب"
+    },
+    "title": "طلب المساعدة",
+    "subtitleSearching": "أي متطوع متاح وقريب يقدر يشوف طلبك ويستلمه.",
+    "subtitleCompleted": "شكراً لاستخدام سَنَد ❤️",
+    "subtitleTracking": "حالة الطلب تتحدث مباشرة بينك وبين المتطوع.",
+    "requestId": "رقم الطلب",
+    "waitingSince": "بتنتظر منذ",
+    "volunteerSince": "المتطوع معك منذ",
+    "volunteerLabel": "المتطوع",
+    "defaultVolunteerName": "متطوع",
+    "callButton": "اتصل بـ {{phone}}",
+    "backToHome": "العودة لاختيار الدور",
+    "cancel": "إلغاء الطلب",
+    "cancelConfirm": "نعم، ألغي الطلب",
+    "cancelBack": "تراجع",
+    "elapsed": {
+      "lessThanMinute": "أقل من دقيقة",
+      "minutes": "{{count}} دقيقة",
+      "hours": "{{count}} ساعة",
+      "hoursAndMinutes": "{{hours}} ساعة و{{minutes}} دقيقة"
+    }
+  },
+  "volunteerJob": {
+    "status": {
+      "accepted": "استلمت المهمة",
+      "on_the_way": "أنت بالطريق",
+      "arrived": "أنت وصلت",
+      "completed": "تمت المساعدة",
+      "cancelled": "أُلغي الطلب"
+    },
+    "title": "المهمة",
+    "subtitle": "حدّث حالة المهمة حتى صاحب الطلب يعرف وين وصلت.",
+    "requestId": "رقم الطلب",
+    "requesterLabel": "صاحب الطلب",
+    "defaultRequesterName": "مستخدم",
+    "callButton": "اتصل بـ {{phone}}",
+    "openInGoogleMaps": "افتح الموقع بخرائط جوجل",
+    "onMyWay": "أنا في الطريق",
+    "arrivedButton": "وصلت للموقع",
+    "completeButton": "تمت المساعدة ✓",
+    "back": "رجوع"
+  },
+  "volunteer": {
+    "title": "بدي أساعد",
+    "subtitle": "فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك على الخريطة.",
+    "capabilitiesTitle": "شو بتقدر تساعد فيه؟ (اختياري)",
+    "notAvailableTitle": "أنت غير متاح حالياً",
+    "notAvailableText": "موقعك لا يُرسل إلا عند تفعيل التوفر، وتظهر لك الطلبات القريبة على خريطة مباشرة.",
+    "enable": "تفعيل التوفر",
+    "disable": "إيقاف",
+    "availableNow": "متاح الآن",
+    "nearbyCount": "{{count}} طلب قريب",
+    "emptyBanner": "ما في طلبات قريبة هلق — رح تظهر تلقائياً أول ما تنفتح.",
+    "matchBadge": "✓ ضمن مهاراتك",
+    "openExternal": "فتح خارجي",
+    "accept": "استلام المهمة",
+    "distanceKm": "{{distance}} كم",
+    "since": "منذ {{time}}",
+    "errors": {
+      "claimedTitle": "سبقك متطوع",
+      "claimedMessage": "هذا الطلب انأخذ قبل لحظات.",
+      "toggleFailedTitle": "ما زبطت العملية",
+      "acceptFailedTitle": "ما قدرنا نستلم الطلب"
+    },
+    "backgroundNotification": {
+      "title": "سَنَد - أنت متاح كمتطوع",
+      "body": "موقعك يتحدث حتى تشوف طلبات المساعدة القريبة، حتى لو التطبيق بالخلفية."
+    }
+  },
+  "activity": {
+    "title": "السجل",
+    "subtitle": "كل طلباتك والمهام اللي ساعدت فيها.",
+    "empty": "ما في شي بالسجل لسا",
+    "roleRequester": "طلبت مساعدة",
+    "roleVolunteer": "ساعدت",
+    "activeNow": "نشط الآن",
+    "status": {
+      "open": "نبحث عن متطوع",
+      "accepted": "متطوع استلم الطلب",
+      "on_the_way": "بالطريق",
+      "arrived": "وصل",
+      "completed": "تمت المساعدة",
+      "cancelled": "ملغي"
+    }
+  },
+  "account": {
+    "title": "حسابي",
+    "subtitle": "عدّل معلوماتك الشخصية وكلمة المرور.",
+    "changePhoto": "اضغط على الصورة لتغييرها",
+    "emailLabel": "البريد الإلكتروني",
+    "nameLabel": "الاسم الكامل",
+    "phoneLabel": "رقم الهاتف",
+    "saveChanges": "حفظ التغييرات",
+    "changePassword": "تغيير كلمة المرور",
+    "newPasswordPlaceholder": "كلمة مرور جديدة",
+    "updatePassword": "تحديث كلمة المرور",
+    "logout": "تسجيل خروج",
+    "language": "اللغة",
+    "errors": {
+      "requiredFields": "الاسم ورقم الهاتف إجباريين.",
+      "phoneInvalid": "رقم هاتف غير صحيح.",
+      "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+    },
+    "success": {
+      "title": "تم",
+      "profileUpdated": "تحدّث حسابك بنجاح.",
+      "passwordUpdated": "كلمة المرور تغيّرت بنجاح."
+    }
+  },
+  "admin": {
+    "title": "لوحة الإدارة",
+    "subtitle": "إدارة الطلبات والمستخدمين والمتطوعين.",
+    "tabs": { "requests": "الطلبات", "users": "المستخدمون", "volunteers": "توثيق المتطوعين" },
+    "loading": "...تحميل",
+    "requesterLabel": "صاحب الطلب: {{id}}",
+    "volunteerLabel": "المتطوع: {{id}}",
+    "cancelRequest": "إلغاء الطلب",
+    "noName": "(بدون اسم)",
+    "banned": "· محظور",
+    "noPhone": "بدون رقم",
+    "unban": "رفع الحظر",
+    "ban": "حظر المستخدم",
+    "noVolunteersPending": "ما في متطوعين بانتظار التوثيق",
+    "servicesLabel": "الخدمات: {{services}}",
+    "servicesUnset": "غير محدد",
+    "verifyVolunteer": "توثيق المتطوع",
+    "status": {
+      "open": "مفتوح",
+      "accepted": "مستلم",
+      "on_the_way": "بالطريق",
+      "arrived": "وصل",
+      "completed": "تمت",
+      "cancelled": "ملغي"
+    }
+  },
+  "perks": {
+    "title": "مزايا سَنَد",
+    "subtitle": "عضوية SANAD+ وخصومات عند شركائنا.",
+    "categoriesTitle": "تصنيفات الشركاء",
+    "categories": {
+      "battery": "بطاريات",
+      "tire": "إطارات",
+      "maintenance": "زيوت وصيانة",
+      "towing": "ونش وسحب",
+      "locksmith": "فتح مركبات",
+      "mobile_mechanic": "ميكانيكي متنقل",
+      "car_wash": "غسيل سيارات",
+      "inspection": "فحص مركبات",
+      "other": "خدمات أخرى"
+    },
+    "partnerCountSuffix": "{{count}} شريك",
+    "comingSoon": "قريباً",
+    "membership": {
+      "brand": "SANAD+",
+      "activeStatus": "عضويتك فعالة",
+      "inactiveStatus": "عضوية غير مفعّلة بعد",
+      "expiresLabel": "تنتهي في",
+      "expiresUnknown": "—",
+      "teaser": "مساعدة المتطوعين تبقى مجانية دائماً. SANAD+ يضيف خصومات عند شركائنا وخيارات احتياط احترافية — {{price}} {{currency}} / سنة، قريباً."
+    }
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "perks": "مزايا سَنَد",
+    "activity": "نشاطي",
+    "account": "حسابي"
+  }
+}

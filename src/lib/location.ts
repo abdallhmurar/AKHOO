@@ -20,7 +20,7 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
   })
 })
 
-export async function startBackgroundLocationUpdates(userId: string) {
+export async function startBackgroundLocationUpdates(userId: string, notification: { title: string; body: string }) {
   backgroundUserId = userId
   const permission = await Location.requestBackgroundPermissionsAsync()
   if (permission.status !== 'granted') return false
@@ -34,8 +34,8 @@ export async function startBackgroundLocationUpdates(userId: string) {
     distanceInterval: 100,
     showsBackgroundLocationIndicator: true,
     foregroundService: {
-      notificationTitle: 'سَنَد - أنت متاح كمتطوع',
-      notificationBody: 'موقعك يتحدث حتى تشوف طلبات المساعدة القريبة، حتى لو التطبيق بالخلفية.'
+      notificationTitle: notification.title,
+      notificationBody: notification.body
     }
   })
   return true
@@ -52,7 +52,7 @@ export async function stopBackgroundLocationUpdates() {
 export async function getCurrentCoords() {
   const permission = await Location.requestForegroundPermissionsAsync()
   if (permission.status !== 'granted') {
-    throw new Error('لازم تسمح للتطبيق باستخدام الموقع حتى نقدر نكمل.')
+    throw new Error('LOCATION_PERMISSION_DENIED')
   }
 
   const position = await Location.getCurrentPositionAsync({
@@ -74,4 +74,15 @@ export function distanceKm(lat1: number, lon1: number, lat2: number, lon2: numbe
     Math.sin(dLat / 2) ** 2 +
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
   return earth * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+export type PilotZone = { center_lat: number; center_lng: number; radius_km: number }
+
+export async function getActivePilotZones(): Promise<PilotZone[]> {
+  const { data } = await supabase.from('pilot_zones').select('center_lat, center_lng, radius_km').eq('active', true)
+  return (data ?? []) as PilotZone[]
+}
+
+export function isWithinAnyZone(lat: number, lng: number, zones: PilotZone[]) {
+  return zones.some(zone => distanceKm(lat, lng, zone.center_lat, zone.center_lng) <= zone.radius_km)
 }

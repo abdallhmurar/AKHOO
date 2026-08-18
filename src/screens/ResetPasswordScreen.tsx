@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Alert, Pressable } from 'react-native'
 import { Eye, EyeSlash } from 'phosphor-react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { AuthShell } from '../components/AuthShell'
@@ -9,6 +10,7 @@ import { PrimaryButton } from '../components/PrimaryButton'
 import { PasswordStrength } from '../components/PasswordStrength'
 
 export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
+  const { t } = useTranslation()
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -17,7 +19,7 @@ export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
   async function submit() {
     setError(null)
     if (password.length < 6) {
-      setError('كلمة المرور لازم تكون 6 أحرف على الأقل.')
+      setError(t('auth.reset.errors.passwordTooShort'))
       return
     }
     setLoading(true)
@@ -27,14 +29,14 @@ export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
       setError(updateError.message)
       return
     }
-    Alert.alert('تم', 'كلمة المرور تغيّرت بنجاح.')
+    Alert.alert(t('auth.reset.success.title'), t('auth.reset.success.message'))
     onDone()
   }
 
   return (
-    <AuthShell scene="success" title="كلمة مرور جديدة" subtitle="اختار كلمة مرور جديدة لحسابك.">
+    <AuthShell scene="success" title={t('auth.reset.title')} subtitle={t('auth.reset.subtitle')}>
       <TextField
-        label="كلمة المرور الجديدة"
+        label={t('auth.reset.passwordLabel')}
         value={password}
         onChangeText={t => { setPassword(t); setError(null) }}
         error={error ?? undefined}
@@ -46,7 +48,7 @@ export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
         }
       />
       <PasswordStrength password={password} />
-      <PrimaryButton title="حفظ كلمة المرور" onPress={submit} loading={loading} />
+      <PrimaryButton title={t('auth.reset.submit')} onPress={submit} loading={loading} />
     </AuthShell>
   )
 }

@@ -1,6 +1,7 @@
 import type { PropsWithChildren, ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { colors, font, radius, space } from '../lib/theme'
+import { dirStyles, useIsRTL } from '../lib/direction'
 import { Screen } from './Screen'
 import { IllustrationHero } from './IllustrationHero'
 import type { IllustrationScene } from '../illustrations'
@@ -12,13 +13,15 @@ export function AuthShell({
   back,
   children
 }: PropsWithChildren<{ scene: IllustrationScene; title: string; subtitle?: string; back?: ReactNode }>) {
+  const dir = dirStyles(useIsRTL())
+
   return (
     <Screen contentStyle={styles.screenContent}>
       <IllustrationHero scene={scene} height={230} showWordmark={!back} />
       <View style={styles.sheet}>
         {back}
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <Text style={[styles.title, dir.textStart]}>{title}</Text>
+        {subtitle ? <Text style={[styles.subtitle, dir.textStart]}>{subtitle}</Text> : null}
         <View style={styles.body}>{children}</View>
       </View>
     </Screen>
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     padding: space.xxl,
     paddingTop: space.xxl + 4
   },
-  title: { fontFamily: font.extraBold, fontSize: 24, color: colors.text, textAlign: 'right' },
-  subtitle: { fontFamily: font.regular, fontSize: 14, color: colors.muted, textAlign: 'right', marginTop: 6, lineHeight: 21 },
+  title: { fontFamily: font.extraBold, fontSize: 24, color: colors.text },
+  subtitle: { fontFamily: font.regular, fontSize: 14, color: colors.muted, marginTop: 6, lineHeight: 21 },
   body: { marginTop: space.xl, gap: space.lg }
 })

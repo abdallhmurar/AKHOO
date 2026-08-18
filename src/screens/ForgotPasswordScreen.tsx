@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { ArrowLeft, CheckCircle } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, CheckCircle } from 'phosphor-react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius } from '../lib/theme'
+import { useIsRTL } from '../lib/direction'
 import { AuthShell } from '../components/AuthShell'
 import { TextField } from '../components/TextField'
 import { PrimaryButton } from '../components/PrimaryButton'
 
 export function ForgotPasswordScreen({ initialEmail, onBack }: { initialEmail: string; onBack: () => void }) {
+  const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const [email, setEmail] = useState(initialEmail)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -16,7 +21,7 @@ export function ForgotPasswordScreen({ initialEmail, onBack }: { initialEmail: s
   async function submit() {
     setError(null)
     if (!email.trim()) {
-      setError('أدخل بريدك الإلكتروني.')
+      setError(t('auth.forgot.errors.emailRequired'))
       return
     }
     setLoading(true)
@@ -32,30 +37,30 @@ export function ForgotPasswordScreen({ initialEmail, onBack }: { initialEmail: s
   return (
     <AuthShell
       scene="forgotPassword"
-      title="نسيت كلمة المرور؟"
-      subtitle={sent ? undefined : 'لا تقلق، بنرسلّك رابط آمن لإعادة تعيين كلمة المرور.'}
-      back={<Pressable onPress={onBack} style={styles.backButton}><ArrowLeft size={18} color={colors.forest} /></Pressable>}
+      title={t('auth.forgot.title')}
+      subtitle={sent ? undefined : t('auth.forgot.subtitle')}
+      back={<Pressable onPress={onBack} style={[styles.backButton, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}><BackIcon size={18} color={colors.forest} /></Pressable>}
     >
       {sent ? (
         <>
           <CheckCircle size={44} color={colors.success} weight="fill" style={styles.sentIcon} />
-          <Text style={styles.sentTitle}>تحقق من بريدك</Text>
-          <Text style={styles.sentText}>بعتنالك رابط لإعادة تعيين كلمة المرور على {email.trim()}.</Text>
-          <Text onPress={submit} style={styles.resend}>ما وصلتني الرسالة؟ إعادة الإرسال</Text>
+          <Text style={styles.sentTitle}>{t('auth.forgot.sent.title')}</Text>
+          <Text style={styles.sentText}>{t('auth.forgot.sent.text', { email: email.trim() })}</Text>
+          <Text onPress={submit} style={styles.resend}>{t('auth.forgot.sent.resend')}</Text>
         </>
       ) : (
         <>
           <TextField
-            label="البريد الإلكتروني"
-            placeholder="you@example.com"
+            label={t('auth.forgot.emailLabel')}
+            placeholder={t('auth.forgot.emailPlaceholder')}
             value={email}
             onChangeText={t => { setEmail(t); setError(null) }}
             error={error ?? undefined}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <PrimaryButton title="إرسال رابط الاستعادة" onPress={submit} loading={loading} />
-          <Text onPress={onBack} style={styles.backLink}>العودة لتسجيل الدخول</Text>
+          <PrimaryButton title={t('auth.forgot.submit')} onPress={submit} loading={loading} />
+          <Text onPress={onBack} style={styles.backLink}>{t('auth.forgot.backLink')}</Text>
         </>
       )}
     </AuthShell>
@@ -63,7 +68,7 @@ export function ForgotPasswordScreen({ initialEmail, onBack }: { initialEmail: s
 }
 
 const styles = StyleSheet.create({
-  backButton: { alignSelf: 'flex-start', width: 38, height: 38, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  backButton: { width: 38, height: 38, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
   sentIcon: { alignSelf: 'center', marginBottom: 4 },
   sentTitle: { fontFamily: font.extraBold, fontSize: 18, color: colors.text, textAlign: 'center' },
   sentText: { fontFamily: font.regular, fontSize: 14, color: colors.muted, textAlign: 'center', lineHeight: 21 },

@@ -1,10 +1,13 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useTranslation } from 'react-i18next'
 import { colors, font } from '../lib/theme'
 import { illustrations, type IllustrationScene } from '../illustrations'
 
 export function IllustrationHero({ scene, height = 260, showWordmark = true }: { scene: IllustrationScene; height?: number; showWordmark?: boolean }) {
+  const { t } = useTranslation()
   const spec = illustrations[scene]
+  const brand = t('home.brand')
 
   return (
     <View style={[styles.wrap, { height }]}>
@@ -20,8 +23,8 @@ export function IllustrationHero({ scene, height = 260, showWordmark = true }: {
 
       {showWordmark ? (
         <View style={styles.wordmarkWrap}>
-          <View style={styles.mark}><Text style={styles.markText}>س</Text></View>
-          <Text style={styles.wordmark}>سَنَد</Text>
+          <View style={styles.mark}><Text style={styles.markText}>{brand.charAt(0)}</Text></View>
+          <Text style={styles.wordmark}>{brand}</Text>
         </View>
       ) : null}
     </View>

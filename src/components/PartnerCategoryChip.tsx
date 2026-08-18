@@ -1,17 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { colors, font, radius, space } from '../lib/theme'
 import type { partnerCategories } from '../lib/partnerCategories'
 
 type CategoryDef = (typeof partnerCategories)[number]
 
 export function PartnerCategoryChip({ category, count }: { category: CategoryDef; count: number }) {
+  const { t } = useTranslation()
   return (
     <View style={styles.chip}>
       <View style={styles.iconWrap}>
         <category.Icon size={22} color={colors.forest} weight="duotone" />
       </View>
-      <Text style={styles.label}>{category.label}</Text>
-      <Text style={styles.count}>{count > 0 ? `${count} شريك` : 'قريباً'}</Text>
+      <Text style={styles.label}>{t(`perks.categories.${category.key}`)}</Text>
+      <Text style={styles.count}>{count > 0 ? t('perks.partnerCountSuffix', { count }) : t('perks.comingSoon')}</Text>
     </View>
   )
 }

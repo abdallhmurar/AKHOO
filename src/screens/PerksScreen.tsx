@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { CURRENT_MARKET_CODE } from '../lib/market'
 import { partnerCategories } from '../lib/partnerCategories'
 import { colors, font, space } from '../lib/theme'
+import { dirStyles, useIsRTL } from '../lib/direction'
 import type { PartnerCategory } from '../types'
 import { Header } from '../components/Header'
 import { MembershipCard } from '../components/MembershipCard'
@@ -11,6 +13,8 @@ import { PartnerCategoryChip } from '../components/PartnerCategoryChip'
 import { Screen } from '../components/Screen'
 
 export function PerksScreen({ userId }: { userId: string }) {
+  const { t } = useTranslation()
+  const dir = dirStyles(useIsRTL())
   const [counts, setCounts] = useState<Partial<Record<PartnerCategory, number>>>({})
 
   useEffect(() => {
@@ -33,12 +37,12 @@ export function PerksScreen({ userId }: { userId: string }) {
 
   return (
     <Screen>
-      <Header title="مزايا سَنَد" subtitle="عضوية SANAD+ وخصومات عند شركائنا." />
+      <Header title={t('perks.title')} subtitle={t('perks.subtitle')} />
 
       <MembershipCard userId={userId} />
 
-      <Text style={styles.sectionTitle}>تصنيفات الشركاء</Text>
-      <View style={styles.grid}>
+      <Text style={[styles.sectionTitle, dir.textStart]}>{t('perks.categoriesTitle')}</Text>
+      <View style={[styles.grid, dir.row]}>
         {partnerCategories.map(category => (
           <PartnerCategoryChip key={category.key} category={category} count={counts[category.key] ?? 0} />
         ))}
@@ -48,6 +52,6 @@ export function PerksScreen({ userId }: { userId: string }) {
 }
 
 const styles = StyleSheet.create({
-  sectionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 17, textAlign: 'right', marginBottom: space.md },
-  grid: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: space.sm }
+  sectionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 17, marginBottom: space.md },
+  grid: { flexWrap: 'wrap', gap: space.sm }
 })

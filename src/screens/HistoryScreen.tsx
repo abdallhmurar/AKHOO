@@ -1,37 +1,32 @@
 import { useEffect, useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
+import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest } from '../types'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
 
-const statusLabels: Record<string, string> = {
-  open: 'نبحث عن متطوع',
-  accepted: 'متطوع استلم الطلب',
-  on_the_way: 'بالطريق',
-  arrived: 'وصل',
-  completed: 'تمت المساعدة',
-  cancelled: 'ملغي'
-}
-
-const serviceLabels: Record<string, string> = {
-  battery: '🔋 بطارية',
-  tire: '🛞 بنشر',
-  fuel: '⛽ وقود',
-  locked_car: '🔑 سيارة مقفلة',
-  other: '🧰 مساعدة أخرى'
-}
-
 const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleString('ar', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+const serviceLabelKeys: Record<string, string> = {
+  battery: 'request.battery',
+  tire: 'request.tire',
+  fuel: 'request.fuel',
+  locked_car: 'request.lockedCar',
+  other: 'request.other'
 }
 
 export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBack: () => void; onOpen: (request: HelpRequest) => void }) {
+  const { t, i18n } = useTranslation()
+  const dir = dirStyles(useIsRTL())
   const [items, setItems] = useState<HelpRequest[]>([])
   const [loading, setLoading] = useState(true)
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleString(i18n.language, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  }
 
   useEffect(() => {
     supabase
@@ -41,22 +36,22 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
       .order('created_at', { ascending: false })
       .limit(50)
       .then(({ data, error }) => {
-        if (error) Alert.alert('خطأ', error.message)
+        if (error) Alert.alert(t('common.error'), error.message)
         else setItems((data ?? []) as HelpRequest[])
         setLoading(false)
       })
-  }, [userId])
+  }, [userId, t])
 
   return (
     <Screen>
-      <Header title="السجل" subtitle="كل طلباتك والمهام اللي ساعدت فيها." onBack={onBack} />
+      <Header title={t('activity.title')} subtitle={t('activity.subtitle')} onBack={onBack} />
 
-      {loading ? <Text style={styles.empty}>...تحميل</Text> : null}
+      {loading ? <Text style={styles.empty}>{t('common.loading')}</Text> : null}
 
       {!loading && items.length === 0 ? (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyIcon}>🕘</Text>
-          <Text style={styles.emptyTitle}>ما في شي بالسجل لسا</Text>
+          <Text style={styles.emptyTitle}>{t('activity.empty')}</Text>
         </View>
       ) : null}
 
@@ -65,13 +60,13 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
         const active = ACTIVE_STATUSES.includes(item.status)
         return (
           <Pressable key={item.id} onPress={() => onOpen(item)} style={styles.card}>
-            <View style={styles.cardTop}>
-              <Text style={styles.roleBadge}>{role === 'requester' ? 'طلبت مساعدة' : 'ساعدت'}</Text>
-              {active ? <Text style={styles.activeBadge}>نشط الآن</Text> : null}
+            <View style={[styles.cardTop, dir.row]}>
+              <Text style={styles.roleBadge}>{role === 'requester' ? t('activity.roleRequester') : t('activity.roleVolunteer')}</Text>
+              {active ? <Text style={styles.activeBadge}>{t('activity.activeNow')}</Text> : null}
             </View>
-            <Text style={styles.service}>{serviceLabels[item.service_type] ?? item.service_type}</Text>
-            <Text style={styles.status}>{statusLabels[item.status] ?? item.status}</Text>
-            <Text style={styles.date}>{formatDate(item.created_at)}</Text>
+            <Text style={[styles.service, dir.textStart]}>{t(serviceLabelKeys[item.service_type] ?? 'request.other')}</Text>
+            <Text style={[styles.status, dir.textStart]}>{t(`activity.status.${item.status}`)}</Text>
+            <Text style={[styles.date, dir.textStart]}>{formatDate(item.created_at)}</Text>
           </Pressable>
         )
       })}
@@ -85,10 +80,10 @@ const styles = StyleSheet.create({
   emptyIcon: { fontSize: 32, marginBottom: 8 },
   emptyTitle: { color: colors.text, fontWeight: '900', fontSize: 16 },
   card: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 20, padding: 16, marginBottom: 10 },
-  cardTop: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  cardTop: { justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   roleBadge: { color: colors.blueDark, backgroundColor: colors.blueSoft, fontWeight: '800', fontSize: 12, paddingVertical: 4, paddingHorizontal: 9, borderRadius: 8 },
   activeBadge: { color: colors.green, backgroundColor: colors.greenSoft, fontWeight: '800', fontSize: 12, paddingVertical: 4, paddingHorizontal: 9, borderRadius: 8 },
-  service: { color: colors.text, fontWeight: '900', fontSize: 16, textAlign: 'right' },
-  status: { color: colors.muted, textAlign: 'right', marginTop: 4 },
-  date: { color: colors.muted, textAlign: 'right', marginTop: 6, fontSize: 12 }
+  service: { color: colors.text, fontWeight: '900', fontSize: 16 },
+  status: { color: colors.muted, marginTop: 4 },
+  date: { color: colors.muted, marginTop: 6, fontSize: 12 }
 })

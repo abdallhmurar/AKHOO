@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
+import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, Profile, RequestStatus } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { SanadMap } from '../components/SanadMap'
 
-const statusLabels: Record<string, string> = {
-  accepted: 'استلمت المهمة',
-  on_the_way: 'أنت بالطريق',
-  arrived: 'أنت وصلت',
-  completed: 'تمت المساعدة',
-  cancelled: 'أُلغي الطلب'
-}
-
 export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: { request: HelpRequest; onBack: () => void; onDone: () => void }) {
+  const { t } = useTranslation()
+  const dir = dirStyles(useIsRTL())
   const [request, setRequest] = useState(initialRequest)
   const [requester, setRequester] = useState<Profile | null>(null)
 
@@ -38,31 +34,34 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   async function setStatus(status: RequestStatus) {
     const { error } = await supabase.rpc('update_help_request_status', { p_request_id: request.id, p_status: status })
     if (error) {
-      Alert.alert('خطأ', error.message)
+      Alert.alert(t('common.error'), error.message)
       return
     }
     if (status === 'completed') onDone()
   }
 
   const finished = request.status === 'completed' || request.status === 'cancelled'
+  const title = (['accepted', 'on_the_way', 'arrived', 'completed', 'cancelled'] as const).includes(request.status as any)
+    ? t(`volunteerJob.status.${request.status}`)
+    : t('volunteerJob.title')
 
   return (
     <Screen contentStyle={styles.content}>
-      <Header title={statusLabels[request.status] ?? 'المهمة'} onBack={onBack} />
+      <Header title={title} onBack={onBack} />
       <View style={[styles.icon, finished && styles.iconFinished]}><Text style={styles.iconText}>{request.status === 'completed' ? '✅' : request.status === 'cancelled' ? '🚫' : '🚗'}</Text></View>
-      {!finished ? <Text style={styles.subtitle}>حدّث حالة المهمة حتى صاحب الطلب يعرف وين وصلت.</Text> : null}
+      {!finished ? <Text style={styles.subtitle}>{t('volunteerJob.subtitle')}</Text> : null}
 
       <View style={styles.card}>
-        <Text style={styles.label}>رقم الطلب</Text>
-        <Text style={styles.value}>{request.id.slice(0, 8).toUpperCase()}</Text>
+        <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requestId')}</Text>
+        <Text style={[styles.value, dir.textStart]}>{request.id.slice(0, 8).toUpperCase()}</Text>
       </View>
 
       {requester ? (
         <View style={styles.card}>
-          <Text style={styles.label}>صاحب الطلب</Text>
-          <Text style={styles.value}>{requester.full_name || 'مستخدم'}</Text>
+          <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requesterLabel')}</Text>
+          <Text style={[styles.value, dir.textStart]}>{requester.full_name || t('volunteerJob.defaultRequesterName')}</Text>
           {!finished && requester.phone ? (
-            <PrimaryButton title={`📞 اتصل بـ ${requester.phone}`} tone="green" onPress={() => Linking.openURL(`tel:${requester.phone}`)} />
+            <PrimaryButton title={`📞 ${t('volunteerJob.callButton', { phone: requester.phone })}`} tone="green" onPress={() => Linking.openURL(`tel:${requester.phone}`)} />
           ) : null}
         </View>
       ) : null}
@@ -73,13 +72,13 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
 
       {!finished ? (
         <>
-          <PrimaryButton title="افتح الموقع بخرائط جوجل" tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
-          <PrimaryButton title="أنا في الطريق" onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted'} />
-          <PrimaryButton title="وصلت للموقع" tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way'} />
-          <PrimaryButton title="تمت المساعدة ✓" tone="green" onPress={() => setStatus('completed')} disabled={request.status !== 'arrived'} />
+          <PrimaryButton title={t('volunteerJob.openInGoogleMaps')} tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
+          <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted'} />
+          <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way'} />
+          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('completed')} disabled={request.status !== 'arrived'} />
         </>
       ) : (
-        <PrimaryButton title="رجوع" onPress={onBack} />
+        <PrimaryButton title={t('volunteerJob.back')} onPress={onBack} />
       )}
     </Screen>
   )
@@ -93,6 +92,6 @@ const styles = StyleSheet.create({
   subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, marginBottom: 14 },
   card: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 20, padding: 16, marginBottom: 10, gap: 8 },
   photo: { width: '100%', height: 150, borderRadius: 18, marginBottom: 10 },
-  label: { color: colors.muted, textAlign: 'right' },
-  value: { color: colors.text, textAlign: 'right', fontWeight: '900', fontSize: 17, marginTop: 5 }
+  label: { color: colors.muted },
+  value: { color: colors.text, fontWeight: '900', fontSize: 17, marginTop: 5 }
 })

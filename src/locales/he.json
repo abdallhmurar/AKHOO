@@ -1,0 +1,310 @@
+{
+  "common": {
+    "back": "חזרה",
+    "next": "הבא",
+    "loading": "...טוען",
+    "error": "שגיאה",
+    "done": "בוצע"
+  },
+  "auth": {
+    "login": {
+      "title": "התחברות",
+      "subtitle": "ברוך שובך.",
+      "emailLabel": "אימייל",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "סיסמה",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "שכחת סיסמה?",
+      "submit": "התחברות",
+      "noAccount": "אין לך חשבון?",
+      "signUpLink": "יצירת חשבון חדש",
+      "errors": {
+        "emailRequired": "הזן/י כתובת אימייל.",
+        "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+      }
+    },
+    "signup": {
+      "title": "יצירת חשבון",
+      "subtitle": "התחל/י את מסע העזרה והנתינה שלך.",
+      "avatarHint": "תמונת פרופיל (אופציונלי)",
+      "nameLabel": "שם מלא",
+      "namePlaceholder": "לדוגמה: אחמד מחמוד",
+      "phoneLabel": "מספר טלפון",
+      "phonePlaceholder": "05X-XXX-XXXX",
+      "emailLabel": "אימייל",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "סיסמה",
+      "submit": "יצירת חשבון",
+      "haveAccount": "כבר יש לך חשבון?",
+      "loginLink": "התחברות",
+      "errors": {
+        "nameRequired": "הזן/י את שמך המלא.",
+        "phoneRequired": "מספר טלפון הוא שדה חובה.",
+        "phoneInvalid": "מספר טלפון לא תקין.",
+        "emailRequired": "הזן/י כתובת אימייל.",
+        "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+      },
+      "permissionPhotos": {
+        "title": "נדרשת הרשאת גישה לתמונות",
+        "message": "יש לאשר גישה לספריית התמונות כדי להוסיף תמונת פרופיל."
+      },
+      "created": {
+        "title": "החשבון נוצר בהצלחה",
+        "message": "אם אימות אימייל מופעל, פתח/י את הודעת האימות ואז התחבר/י."
+      }
+    },
+    "forgot": {
+      "title": "שכחת סיסמה?",
+      "subtitle": "אל דאגה, נשלח לך קישור מאובטח לאיפוס הסיסמה.",
+      "emailLabel": "אימייל",
+      "emailPlaceholder": "you@example.com",
+      "submit": "שליחת קישור לאיפוס",
+      "backLink": "חזרה להתחברות",
+      "errors": {
+        "emailRequired": "הזן/י את כתובת האימייל שלך."
+      },
+      "sent": {
+        "title": "בדוק/י את תיבת הדואר שלך",
+        "text": "שלחנו קישור לאיפוס הסיסמה אל {{email}}.",
+        "resend": "לא קיבלת את ההודעה? שליחה מחדש"
+      }
+    },
+    "reset": {
+      "title": "סיסמה חדשה",
+      "subtitle": "בחר/י סיסמה חדשה לחשבונך.",
+      "passwordLabel": "סיסמה חדשה",
+      "submit": "שמירת סיסמה",
+      "errors": {
+        "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+      },
+      "success": {
+        "title": "בוצע",
+        "message": "הסיסמה שונתה בהצלחה."
+      }
+    },
+    "passwordStrength": {
+      "weak": "חלשה",
+      "fair": "סבירה",
+      "good": "טובה",
+      "strong": "חזקה"
+    }
+  },
+  "home": {
+    "brand": "סנד",
+    "greeting": "שלום {{name}}",
+    "guestName": "אליך",
+    "resumeRequest": "יש לך בקשת עזרה פעילה — המשך/י אותה",
+    "resumeJob": "יש לך משימת התנדבות פעילה — המשך/י אותה",
+    "title": "מה תרצה/י לעשות עכשיו?",
+    "subtitle": "בחר/י את התפקיד שלך כרגע.",
+    "needHelp": { "title": "אני צריך/ה עזרה", "text": "יש לי בעיה ואני צריך/ה מתנדב קרוב שיעזור לי." },
+    "wantToHelp": { "title": "אני רוצה לעזור", "text": "אני זמין/ה לעזור למישהו בקרבתי." },
+    "adminLink": "לוח ניהול",
+    "notice": "גרסה ראשונה: בקשות מותאמות ישירות בין המשתמש למתנדב, ללא מוקד טלפוני."
+  },
+  "request": {
+    "battery": "מצבר",
+    "tire": "פנצ'ר",
+    "fuel": "דלק",
+    "lockedCar": "רכב נעול",
+    "other": "משהו אחר",
+    "step": {
+      "type": { "title": "איך נוכל לעזור לך?", "subtitle": "בחר/י את הבעיה שאיתה את/ה מתמודד/ת." },
+      "details": { "title": "פרטים", "subtitle": "הערה או תמונה יעזרו למתנדב להבין יותר (אופציונלי)." },
+      "location": { "title": "מיקום", "subtitle": "נשתף את המיקום הנוכחי שלך עם המתנדב שיקבל את הבקשה." }
+    },
+    "noteLabel": "הערה למתנדב (אופציונלי)",
+    "notePlaceholder": "לדוגמה: מצבר הרכב ריק לגמרי, אני בחניון ציבורי.",
+    "addPhoto": "הוספת תמונה (אופציונלי)",
+    "locating": "מאתרים את מיקומך...",
+    "retryLocation": "נסה/י שוב",
+    "currentLocation": "המיקום הנוכחי שלך",
+    "refreshLocation": "רענון מיקום",
+    "submit": "שליחת בקשת עזרה",
+    "errors": {
+      "selectType": "בחר/י את הבעיה",
+      "selectTypeMessage": "בחר/י את סוג העזרה שאת/ה זקוק/ה לה.",
+      "locationFailed": "לא הצלחנו לאתר את מיקומך.",
+      "createFailedTitle": "לא הצלחנו לפתוח את הבקשה"
+    },
+    "pilotZone": {
+      "title": "מחוץ לאזור הפיילוט",
+      "message": "סנד זמין כרגע באזור הפיילוט בירושלים."
+    }
+  },
+  "activeRequest": {
+    "status": {
+      "open": "מחפשים מתנדב",
+      "accepted": "מתנדב קיבל את הבקשה",
+      "on_the_way": "המתנדב בדרך",
+      "arrived": "המתנדב הגיע",
+      "completed": "העזרה הושלמה",
+      "cancelled": "הבקשה בוטלה"
+    },
+    "title": "בקשת עזרה",
+    "subtitleSearching": "כל מתנדב זמין וקרוב יכול לראות את בקשתך ולקבל אותה.",
+    "subtitleCompleted": "תודה שהשתמשת בסנד ❤️",
+    "subtitleTracking": "סטטוס הבקשה מתעדכן בזמן אמת בינך לבין המתנדב.",
+    "requestId": "מספר בקשה",
+    "waitingSince": "ממתין/ה מאז",
+    "volunteerSince": "המתנדב איתך מאז",
+    "volunteerLabel": "המתנדב",
+    "defaultVolunteerName": "מתנדב",
+    "callButton": "התקשר/י אל {{phone}}",
+    "backToHome": "חזרה לבחירת תפקיד",
+    "cancel": "ביטול הבקשה",
+    "cancelConfirm": "כן, בטל/י את הבקשה",
+    "cancelBack": "בעצם לא",
+    "elapsed": {
+      "lessThanMinute": "פחות מדקה",
+      "minutes": "{{count}} דקות",
+      "hours": "{{count}} שעות",
+      "hoursAndMinutes": "{{hours}} שעות ו-{{minutes}} דקות"
+    }
+  },
+  "volunteerJob": {
+    "status": {
+      "accepted": "המשימה התקבלה",
+      "on_the_way": "את/ה בדרך",
+      "arrived": "הגעת",
+      "completed": "העזרה הושלמה",
+      "cancelled": "הבקשה בוטלה"
+    },
+    "title": "משימה",
+    "subtitle": "עדכן/י את סטטוס המשימה כדי שמבקש/ת העזרה ידע/תדע איפה את/ה.",
+    "requestId": "מספר בקשה",
+    "requesterLabel": "מבקש/ת העזרה",
+    "defaultRequesterName": "משתמש",
+    "callButton": "התקשר/י אל {{phone}}",
+    "openInGoogleMaps": "פתח/י את המיקום במפות גוגל",
+    "onMyWay": "אני בדרך",
+    "arrivedButton": "הגעתי",
+    "completeButton": "העזרה הושלמה ✓",
+    "back": "חזרה"
+  },
+  "volunteer": {
+    "title": "אני רוצה לעזור",
+    "subtitle": "הפעל/י את הזמינות שלך כדי לראות בקשות קרובות על המפה.",
+    "capabilitiesTitle": "באילו תחומים תוכל/י לעזור? (אופציונלי)",
+    "notAvailableTitle": "את/ה לא זמין/ה כרגע",
+    "notAvailableText": "מיקומך משותף רק כאשר הזמינות מופעלת, ובקשות קרובות יוצגו במפה בזמן אמת.",
+    "enable": "הפעלת זמינות",
+    "disable": "כיבוי",
+    "availableNow": "זמין/ה כעת",
+    "nearbyCount": "{{count}} בקשות קרובות",
+    "emptyBanner": "אין כרגע בקשות קרובות — הן יופיעו אוטומטית כשתיפתח בקשה.",
+    "matchBadge": "✓ תואם לכישוריך",
+    "openExternal": "פתיחה חיצונית",
+    "accept": "קבלת המשימה",
+    "distanceKm": "{{distance}} ק\"מ",
+    "since": "לפני {{time}}",
+    "errors": {
+      "claimedTitle": "מתנדב אחר הקדים אותך",
+      "claimedMessage": "הבקשה הזו נתפסה לפני רגע.",
+      "toggleFailedTitle": "משהו השתבש",
+      "acceptFailedTitle": "לא הצלחנו לקבל את הבקשה"
+    },
+    "backgroundNotification": {
+      "title": "סנד - את/ה זמין/ה כמתנדב/ת",
+      "body": "המיקום שלך מתעדכן כדי שתוכל/י לראות בקשות עזרה קרובות, גם כשהאפליקציה ברקע."
+    }
+  },
+  "activity": {
+    "title": "היסטוריה",
+    "subtitle": "כל הבקשות שלך והמשימות שבהן עזרת.",
+    "empty": "אין עדיין פעילות",
+    "roleRequester": "ביקשת עזרה",
+    "roleVolunteer": "עזרת",
+    "activeNow": "פעיל כעת",
+    "status": {
+      "open": "מחפשים מתנדב",
+      "accepted": "מתנדב קיבל",
+      "on_the_way": "בדרך",
+      "arrived": "הגיע",
+      "completed": "הושלם",
+      "cancelled": "בוטל"
+    }
+  },
+  "account": {
+    "title": "החשבון שלי",
+    "subtitle": "ערוך/י את הפרטים האישיים והסיסמה שלך.",
+    "changePhoto": "הקש/י על התמונה כדי לשנות אותה",
+    "emailLabel": "אימייל",
+    "nameLabel": "שם מלא",
+    "phoneLabel": "מספר טלפון",
+    "saveChanges": "שמירת שינויים",
+    "changePassword": "שינוי סיסמה",
+    "newPasswordPlaceholder": "סיסמה חדשה",
+    "updatePassword": "עדכון סיסמה",
+    "logout": "התנתקות",
+    "language": "שפה",
+    "errors": {
+      "requiredFields": "שם ומספר טלפון הם שדות חובה.",
+      "phoneInvalid": "מספר טלפון לא תקין.",
+      "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+    },
+    "success": {
+      "title": "בוצע",
+      "profileUpdated": "החשבון שלך עודכן בהצלחה.",
+      "passwordUpdated": "הסיסמה שונתה בהצלחה."
+    }
+  },
+  "admin": {
+    "title": "לוח ניהול",
+    "subtitle": "ניהול בקשות, משתמשים ומתנדבים.",
+    "tabs": { "requests": "בקשות", "users": "משתמשים", "volunteers": "אימות מתנדבים" },
+    "loading": "...טוען",
+    "requesterLabel": "מבקש/ת העזרה: {{id}}",
+    "volunteerLabel": "המתנדב: {{id}}",
+    "cancelRequest": "ביטול הבקשה",
+    "noName": "(ללא שם)",
+    "banned": "· חסום",
+    "noPhone": "אין מספר",
+    "unban": "הסרת חסימה",
+    "ban": "חסימת משתמש",
+    "noVolunteersPending": "אין מתנדבים הממתינים לאימות",
+    "servicesLabel": "שירותים: {{services}}",
+    "servicesUnset": "לא הוגדר",
+    "verifyVolunteer": "אימות מתנדב",
+    "status": {
+      "open": "פתוח",
+      "accepted": "התקבל",
+      "on_the_way": "בדרך",
+      "arrived": "הגיע",
+      "completed": "הושלם",
+      "cancelled": "בוטל"
+    }
+  },
+  "perks": {
+    "title": "הטבות סנד",
+    "subtitle": "חברות SANAD+ והנחות אצל השותפים שלנו.",
+    "categoriesTitle": "קטגוריות שותפים",
+    "categories": {
+      "battery": "מצברים",
+      "tire": "צמיגים",
+      "maintenance": "שמנים ותחזוקה",
+      "towing": "גרירה",
+      "locksmith": "פתיחת רכבים",
+      "mobile_mechanic": "מכונאי נייד",
+      "car_wash": "שטיפת רכבים",
+      "inspection": "בדיקת רכב",
+      "other": "שירותים נוספים"
+    },
+    "partnerCountSuffix": "{{count}} שותפים",
+    "comingSoon": "בקרוב",
+    "membership": {
+      "brand": "SANAD+",
+      "activeStatus": "החברות שלך פעילה",
+      "inactiveStatus": "עדיין לא חבר/ה",
+      "expiresLabel": "בתוקף עד",
+      "expiresUnknown": "—",
+      "teaser": "עזרת המתנדבים תמיד תישאר חינמית. SANAD+ מוסיפה הנחות אצל השותפים שלנו ואפשרויות גיבוי מקצועי — {{price}} {{currency}} לשנה, בקרוב."
+    }
+  },
+  "navigation": {
+    "home": "בית",
+    "perks": "הטבות",
+    "activity": "היסטוריה",
+    "account": "חשבון"
+  }
+}

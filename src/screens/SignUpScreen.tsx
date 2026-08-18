@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Camera, Eye, EyeSlash } from 'phosphor-react-native'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors, font } from '../lib/theme'
+import { normalizePhone } from '../lib/phone'
 import { AuthShell } from '../components/AuthShell'
 import { TextField } from '../components/TextField'
 import { PrimaryButton } from '../components/PrimaryButton'
@@ -12,6 +14,7 @@ import { PasswordStrength } from '../components/PasswordStrength'
 type Errors = { name?: string; phone?: string; email?: string; password?: string; form?: string }
 
 export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCreated: () => void }) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -28,7 +31,7 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
   async function pickAvatar() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (permission.status !== 'granted') {
-      Alert.alert('لازم إذن الصور', 'لازم تسمح بالوصول لمكتبة الصور حتى تضيف صورة شخصية.')
+      Alert.alert(t('auth.signup.permissionPhotos.title'), t('auth.signup.permissionPhotos.message'))
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
@@ -38,10 +41,12 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
 
   async function submit() {
     const next: Errors = {}
-    if (!name.trim()) next.name = 'أدخل اسمك الكامل.'
-    if (!phone.trim()) next.phone = 'رقم الهاتف إجباري.'
-    if (!email.trim()) next.email = 'أدخل البريد الإلكتروني.'
-    if (password.length < 6) next.password = 'كلمة المرور لازم تكون 6 أحرف على الأقل.'
+    if (!name.trim()) next.name = t('auth.signup.errors.nameRequired')
+    const normalizedPhone = phone.trim() ? normalizePhone(phone.trim()) : null
+    if (!phone.trim()) next.phone = t('auth.signup.errors.phoneRequired')
+    else if (!normalizedPhone) next.phone = t('auth.signup.errors.phoneInvalid')
+    if (!email.trim()) next.email = t('auth.signup.errors.emailRequired')
+    if (password.length < 6) next.password = t('auth.signup.errors.passwordTooShort')
     setErrors(next)
     if (Object.keys(next).length > 0) return
 
@@ -50,7 +55,7 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { data: { full_name: name.trim(), phone: phone.trim() } }
+        options: { data: { full_name: name.trim(), phone: normalizedPhone } }
       })
       if (error) throw error
 
@@ -68,18 +73,18 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
       }
 
       if (!data.session) {
-        Alert.alert('تم إنشاء الحساب', 'إذا كان تأكيد البريد مفعّلاً، افتح رسالة التأكيد ثم سجّل دخولك.')
+        Alert.alert(t('auth.signup.created.title'), t('auth.signup.created.message'))
         onCreated()
       }
     } catch (error: any) {
-      setErrors({ form: error.message ?? 'حدث خطأ غير متوقع' })
+      setErrors({ form: error.message ?? t('common.error') })
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <AuthShell scene="signup" title="إنشاء حساب" subtitle="ابدأ رحلتك في المساعدة والعطاء.">
+    <AuthShell scene="signup" title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')}>
       <Pressable onPress={pickAvatar} style={styles.avatarPicker}>
         {avatarUri ? (
           <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
@@ -89,14 +94,14 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
           </View>
         )}
       </Pressable>
-      <Text style={styles.avatarHint}>صورة شخصية (اختياري)</Text>
+      <Text style={styles.avatarHint}>{t('auth.signup.avatarHint')}</Text>
 
-      <TextField label="الاسم الكامل" placeholder="مثال: أحمد محمود" value={name} onChangeText={t => { setName(t); clearError('name') }} error={errors.name} />
-      <TextField label="رقم الهاتف" placeholder="+962 7X XXX XXXX" value={phone} onChangeText={t => { setPhone(t); clearError('phone') }} error={errors.phone} keyboardType="phone-pad" />
-      <TextField label="البريد الإلكتروني" placeholder="you@example.com" value={email} onChangeText={t => { setEmail(t); clearError('email') }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
+      <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={t => { setName(t); clearError('name') }} error={errors.name} />
+      <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={t => { setPhone(t); clearError('phone') }} error={errors.phone} keyboardType="phone-pad" />
+      <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={t => { setEmail(t); clearError('email') }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <View>
         <TextField
-          label="كلمة المرور"
+          label={t('auth.signup.passwordLabel')}
           value={password}
           onChangeText={t => { setPassword(t); clearError('password') }}
           error={errors.password}
@@ -112,10 +117,10 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
 
       {errors.form ? <Text style={styles.formError}>{errors.form}</Text> : null}
 
-      <PrimaryButton title="إنشاء الحساب" onPress={submit} loading={loading} />
+      <PrimaryButton title={t('auth.signup.submit')} onPress={submit} loading={loading} />
 
       <Text style={styles.switch}>
-        لديك حساب بالفعل؟ <Text onPress={onLogin} style={styles.switchLink}>تسجيل الدخول</Text>
+        {t('auth.signup.haveAccount')} <Text onPress={onLogin} style={styles.switchLink}>{t('auth.signup.loginLink')}</Text>
       </Text>
     </AuthShell>
   )

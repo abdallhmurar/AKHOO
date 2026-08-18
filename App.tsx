@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { useFonts, Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold } from '@expo-google-fonts/tajawal'
+import { I18nextProvider } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
 import { colors, font } from './src/lib/theme'
+import { i18next, initI18n } from './src/lib/i18n'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { RoleScreen } from './src/screens/RoleScreen'
@@ -37,6 +39,7 @@ function parseHashParams(url: string): Record<string, string> {
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold })
+  const [i18nReady, setI18nReady] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -45,6 +48,10 @@ export default function App() {
   const [mainTab, setMainTab] = useState<MainTab>('home')
   const [activeRequest, setActiveRequest] = useState<HelpRequest | null>(null)
   const [passwordRecovery, setPasswordRecovery] = useState(false)
+
+  useEffect(() => {
+    initI18n().then(() => setI18nReady(true))
+  }, [])
 
   useEffect(() => {
     async function handleUrl(url: string | null) {
@@ -127,7 +134,7 @@ export default function App() {
     })()
   }, [session?.user.id])
 
-  if (!fontsLoaded || loading || recovering) {
+  if (!fontsLoaded || !i18nReady || loading || recovering) {
     return (
       <View style={styles.loading}>
         <View style={styles.splashMark}><Text style={styles.splashMarkText}>س</Text></View>
@@ -137,77 +144,81 @@ export default function App() {
     )
   }
 
-  if (passwordRecovery) {
-    return <ResetPasswordScreen onDone={() => setPasswordRecovery(false)} />
-  }
+  function renderScreen() {
+    if (passwordRecovery) {
+      return <ResetPasswordScreen onDone={() => setPasswordRecovery(false)} />
+    }
 
-  if (!session) return <AuthScreen />
+    if (!session) return <AuthScreen />
 
-  if (screen === 'request') {
-    return <RequestHelpScreen userId={session.user.id} onBack={() => setScreen('main')} onCreated={request => { setActiveRequest(request); setScreen('active-request') }} />
-  }
+    if (screen === 'request') {
+      return <RequestHelpScreen userId={session.user.id} onBack={() => setScreen('main')} onCreated={request => { setActiveRequest(request); setScreen('active-request') }} />
+    }
 
-  if (screen === 'active-request' && activeRequest) {
-    return <ActiveRequestScreen initialRequest={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
-  }
+    if (screen === 'active-request' && activeRequest) {
+      return <ActiveRequestScreen initialRequest={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
+    }
 
-  if (screen === 'volunteer') {
-    return <VolunteerScreen userId={session.user.id} onBack={() => setScreen('main')} onAccepted={request => { setActiveRequest(request); setScreen('volunteer-job') }} />
-  }
+    if (screen === 'volunteer') {
+      return <VolunteerScreen userId={session.user.id} onBack={() => setScreen('main')} onAccepted={request => { setActiveRequest(request); setScreen('volunteer-job') }} />
+    }
 
-  if (screen === 'volunteer-job' && activeRequest) {
-    return <VolunteerJobScreen request={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
-  }
+    if (screen === 'volunteer-job' && activeRequest) {
+      return <VolunteerJobScreen request={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
+    }
 
-  if (screen === 'admin') {
-    return <AdminScreen onBack={() => setScreen('main')} />
-  }
+    if (screen === 'admin') {
+      return <AdminScreen onBack={() => setScreen('main')} />
+    }
 
-  const activeKind: 'request' | 'job' | null = !activeRequest
-    ? null
-    : activeRequest.requester_id === session.user.id
-      ? 'request'
-      : 'job'
+    const activeKind: 'request' | 'job' | null = !activeRequest
+      ? null
+      : activeRequest.requester_id === session.user.id
+        ? 'request'
+        : 'job'
 
-  return (
-    <View style={styles.mainWrap}>
-      <View style={styles.tabContent}>
-        {mainTab === 'home' ? (
-          <RoleScreen
-            name={profile?.full_name ?? ''}
-            avatarUrl={profile?.avatar_url ?? null}
-            isAdmin={profile?.is_admin ?? false}
-            activeKind={activeKind}
-            onRequester={() => setScreen('request')}
-            onVolunteer={() => setScreen('volunteer')}
-            onAdmin={() => setScreen('admin')}
-            onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
-          />
-        ) : mainTab === 'perks' ? (
-          <PerksScreen userId={session.user.id} />
-        ) : mainTab === 'activity' ? (
-          <HistoryScreen
-            userId={session.user.id}
-            onBack={() => setMainTab('home')}
-            onOpen={request => {
-              setActiveRequest(request)
-              setScreen(request.volunteer_id === session.user.id && request.requester_id !== session.user.id ? 'volunteer-job' : 'active-request')
-            }}
-          />
-        ) : profile ? (
-          <AccountScreen
-            profile={profile}
-            email={session.user.email ?? ''}
-            onBack={() => setMainTab('home')}
-            onUpdated={setProfile}
-          />
-        ) : (
-          <View style={styles.tabLoading}><ActivityIndicator color={colors.forest} /></View>
-        )}
+    return (
+      <View style={styles.mainWrap}>
+        <View style={styles.tabContent}>
+          {mainTab === 'home' ? (
+            <RoleScreen
+              name={profile?.full_name ?? ''}
+              avatarUrl={profile?.avatar_url ?? null}
+              isAdmin={profile?.is_admin ?? false}
+              activeKind={activeKind}
+              onRequester={() => setScreen('request')}
+              onVolunteer={() => setScreen('volunteer')}
+              onAdmin={() => setScreen('admin')}
+              onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
+            />
+          ) : mainTab === 'perks' ? (
+            <PerksScreen userId={session.user.id} />
+          ) : mainTab === 'activity' ? (
+            <HistoryScreen
+              userId={session.user.id}
+              onBack={() => setMainTab('home')}
+              onOpen={request => {
+                setActiveRequest(request)
+                setScreen(request.volunteer_id === session.user.id && request.requester_id !== session.user.id ? 'volunteer-job' : 'active-request')
+              }}
+            />
+          ) : profile ? (
+            <AccountScreen
+              profile={profile}
+              email={session.user.email ?? ''}
+              onBack={() => setMainTab('home')}
+              onUpdated={setProfile}
+            />
+          ) : (
+            <View style={styles.tabLoading}><ActivityIndicator color={colors.forest} /></View>
+          )}
+        </View>
+        <TabBar active={mainTab} onChange={setMainTab} />
       </View>
-      <TabBar active={mainTab} onChange={setMainTab} />
-    </View>
-  )
+    )
+  }
+
+  return <I18nextProvider i18n={i18next}>{renderScreen()}</I18nextProvider>
 }
 
 const styles = StyleSheet.create({

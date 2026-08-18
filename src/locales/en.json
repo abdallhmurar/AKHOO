@@ -1,0 +1,310 @@
+{
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Error",
+    "done": "Done"
+  },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "subtitle": "Welcome back.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Log In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Create one",
+      "errors": {
+        "emailRequired": "Enter your email.",
+        "passwordTooShort": "Password must be at least 6 characters."
+      }
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Start your journey of helping and giving.",
+      "avatarHint": "Profile photo (optional)",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "e.g. Ahmad Mahmoud",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "05X-XXX-XXXX",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "submit": "Create Account",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log In",
+      "errors": {
+        "nameRequired": "Enter your full name.",
+        "phoneRequired": "Phone number is required.",
+        "phoneInvalid": "Invalid phone number.",
+        "emailRequired": "Enter your email.",
+        "passwordTooShort": "Password must be at least 6 characters."
+      },
+      "permissionPhotos": {
+        "title": "Photo Access Needed",
+        "message": "Please allow access to your photo library to add a profile photo."
+      },
+      "created": {
+        "title": "Account Created",
+        "message": "If email confirmation is enabled, open the confirmation email then log in."
+      }
+    },
+    "forgot": {
+      "title": "Forgot Password?",
+      "subtitle": "No worries, we'll send you a secure link to reset your password.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send Reset Link",
+      "backLink": "Back to Log In",
+      "errors": {
+        "emailRequired": "Enter your email."
+      },
+      "sent": {
+        "title": "Check Your Email",
+        "text": "We sent a password reset link to {{email}}.",
+        "resend": "Didn't get it? Resend"
+      }
+    },
+    "reset": {
+      "title": "New Password",
+      "subtitle": "Choose a new password for your account.",
+      "passwordLabel": "New Password",
+      "submit": "Save Password",
+      "errors": {
+        "passwordTooShort": "Password must be at least 6 characters."
+      },
+      "success": {
+        "title": "Done",
+        "message": "Your password has been changed."
+      }
+    },
+    "passwordStrength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    }
+  },
+  "home": {
+    "brand": "SANAD",
+    "greeting": "Hi {{name}}",
+    "guestName": "there",
+    "resumeRequest": "You have an active help request — continue it",
+    "resumeJob": "You have an active volunteer mission — continue it",
+    "title": "What do you want to do?",
+    "subtitle": "Choose your role for now.",
+    "needHelp": { "title": "I need help", "text": "I have a problem and need a nearby volunteer." },
+    "wantToHelp": { "title": "I want to help", "text": "I'm available to help someone nearby." },
+    "adminLink": "Admin Panel",
+    "notice": "First release: requests are matched directly between users and volunteers, no call center."
+  },
+  "request": {
+    "battery": "Battery",
+    "tire": "Flat Tire",
+    "fuel": "Fuel",
+    "lockedCar": "Locked Car",
+    "other": "Something Else",
+    "step": {
+      "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing." },
+      "details": { "title": "Details", "subtitle": "A note or photo helps the volunteer understand more (optional)." },
+      "location": { "title": "Location", "subtitle": "We'll share your current location with the volunteer who takes your request." }
+    },
+    "noteLabel": "Note for the volunteer (optional)",
+    "notePlaceholder": "e.g. Car battery is completely dead, I'm in a public parking lot.",
+    "addPhoto": "Add a photo (optional)",
+    "locating": "Locating you...",
+    "retryLocation": "Try again",
+    "currentLocation": "Your current location",
+    "refreshLocation": "Refresh location",
+    "submit": "Send Help Request",
+    "errors": {
+      "selectType": "Choose the problem",
+      "selectTypeMessage": "Choose the type of help you need.",
+      "locationFailed": "We couldn't determine your location.",
+      "createFailedTitle": "We couldn't create the request"
+    },
+    "pilotZone": {
+      "title": "Outside the Pilot Area",
+      "message": "SANAD is currently available within the Jerusalem pilot area."
+    }
+  },
+  "activeRequest": {
+    "status": {
+      "open": "Looking for a volunteer",
+      "accepted": "A volunteer accepted your request",
+      "on_the_way": "Volunteer is on the way",
+      "arrived": "Volunteer has arrived",
+      "completed": "Help completed",
+      "cancelled": "Request cancelled"
+    },
+    "title": "Help Request",
+    "subtitleSearching": "Any nearby available volunteer can see and accept your request.",
+    "subtitleCompleted": "Thank you for using SANAD ❤️",
+    "subtitleTracking": "The request status updates live between you and the volunteer.",
+    "requestId": "Request ID",
+    "waitingSince": "Waiting since",
+    "volunteerSince": "Volunteer with you since",
+    "volunteerLabel": "Volunteer",
+    "defaultVolunteerName": "Volunteer",
+    "callButton": "Call {{phone}}",
+    "backToHome": "Back to role selection",
+    "cancel": "Cancel Request",
+    "cancelConfirm": "Yes, cancel the request",
+    "cancelBack": "Never mind",
+    "elapsed": {
+      "lessThanMinute": "less than a minute",
+      "minutes": "{{count}} min",
+      "hours": "{{count}} hr",
+      "hoursAndMinutes": "{{hours}} hr {{minutes}} min"
+    }
+  },
+  "volunteerJob": {
+    "status": {
+      "accepted": "Mission accepted",
+      "on_the_way": "You're on the way",
+      "arrived": "You've arrived",
+      "completed": "Help completed",
+      "cancelled": "Request cancelled"
+    },
+    "title": "Mission",
+    "subtitle": "Update the mission status so the requester knows how far you are.",
+    "requestId": "Request ID",
+    "requesterLabel": "Requester",
+    "defaultRequesterName": "User",
+    "callButton": "Call {{phone}}",
+    "openInGoogleMaps": "Open location in Google Maps",
+    "onMyWay": "I'm on my way",
+    "arrivedButton": "I've arrived",
+    "completeButton": "Help completed ✓",
+    "back": "Back"
+  },
+  "volunteer": {
+    "title": "I want to help",
+    "subtitle": "Turn on your availability to see nearby requests on the map.",
+    "capabilitiesTitle": "What can you help with? (optional)",
+    "notAvailableTitle": "You're currently unavailable",
+    "notAvailableText": "Your location is only shared once you turn on availability, and nearby requests appear live on a map.",
+    "enable": "Turn on availability",
+    "disable": "Turn off",
+    "availableNow": "Available now",
+    "nearbyCount": "{{count}} nearby",
+    "emptyBanner": "No nearby requests right now — they'll appear automatically as soon as one opens.",
+    "matchBadge": "✓ Matches your skills",
+    "openExternal": "Open externally",
+    "accept": "Accept Mission",
+    "distanceKm": "{{distance}} km",
+    "since": "{{time}} ago",
+    "errors": {
+      "claimedTitle": "Another volunteer got there first",
+      "claimedMessage": "This request was just claimed.",
+      "toggleFailedTitle": "Something went wrong",
+      "acceptFailedTitle": "We couldn't accept the request"
+    },
+    "backgroundNotification": {
+      "title": "SANAD - You're available as a volunteer",
+      "body": "Your location updates so you can see nearby help requests, even while the app is in the background."
+    }
+  },
+  "activity": {
+    "title": "Activity",
+    "subtitle": "All your requests and the missions you've helped with.",
+    "empty": "No activity yet",
+    "roleRequester": "Requested help",
+    "roleVolunteer": "Helped",
+    "activeNow": "Active now",
+    "status": {
+      "open": "Looking for a volunteer",
+      "accepted": "Volunteer accepted",
+      "on_the_way": "On the way",
+      "arrived": "Arrived",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "account": {
+    "title": "My Account",
+    "subtitle": "Edit your personal info and password.",
+    "changePhoto": "Tap the photo to change it",
+    "emailLabel": "Email",
+    "nameLabel": "Full Name",
+    "phoneLabel": "Phone Number",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "newPasswordPlaceholder": "New password",
+    "updatePassword": "Update Password",
+    "logout": "Log Out",
+    "language": "Language",
+    "errors": {
+      "requiredFields": "Name and phone number are required.",
+      "phoneInvalid": "Invalid phone number.",
+      "passwordTooShort": "Password must be at least 6 characters."
+    },
+    "success": {
+      "title": "Done",
+      "profileUpdated": "Your account has been updated.",
+      "passwordUpdated": "Your password has been changed."
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Manage requests, users and volunteers.",
+    "tabs": { "requests": "Requests", "users": "Users", "volunteers": "Volunteer Verification" },
+    "loading": "Loading...",
+    "requesterLabel": "Requester: {{id}}",
+    "volunteerLabel": "Volunteer: {{id}}",
+    "cancelRequest": "Cancel Request",
+    "noName": "(no name)",
+    "banned": "· Banned",
+    "noPhone": "No number",
+    "unban": "Unban",
+    "ban": "Ban User",
+    "noVolunteersPending": "No volunteers pending verification",
+    "servicesLabel": "Services: {{services}}",
+    "servicesUnset": "Not set",
+    "verifyVolunteer": "Verify Volunteer",
+    "status": {
+      "open": "Open",
+      "accepted": "Accepted",
+      "on_the_way": "On the way",
+      "arrived": "Arrived",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "perks": {
+    "title": "SANAD Perks",
+    "subtitle": "SANAD+ membership and discounts with our partners.",
+    "categoriesTitle": "Partner Categories",
+    "categories": {
+      "battery": "Batteries",
+      "tire": "Tires",
+      "maintenance": "Maintenance & Oil",
+      "towing": "Towing",
+      "locksmith": "Locksmith",
+      "mobile_mechanic": "Mobile Mechanic",
+      "car_wash": "Car Wash",
+      "inspection": "Vehicle Inspection",
+      "other": "Other Services"
+    },
+    "partnerCountSuffix": "{{count}} partners",
+    "comingSoon": "Coming soon",
+    "membership": {
+      "brand": "SANAD+",
+      "activeStatus": "Your membership is active",
+      "inactiveStatus": "Not a member yet",
+      "expiresLabel": "Expires on",
+      "expiresUnknown": "—",
+      "teaser": "Volunteer help always stays free. SANAD+ adds partner discounts and professional backup options — {{price}} {{currency}} / year, coming soon."
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "perks": "Perks",
+    "activity": "Activity",
+    "account": "Account"
+  }
+}
