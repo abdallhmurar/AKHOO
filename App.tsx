@@ -8,6 +8,7 @@ import { colors, font } from './src/lib/theme'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { RoleScreen } from './src/screens/RoleScreen'
+import { PerksScreen } from './src/screens/PerksScreen'
 import { RequestHelpScreen } from './src/screens/RequestHelpScreen'
 import { ActiveRequestScreen } from './src/screens/ActiveRequestScreen'
 import { VolunteerScreen } from './src/screens/VolunteerScreen'
@@ -16,8 +17,10 @@ import { AdminScreen } from './src/screens/AdminScreen'
 import { HistoryScreen } from './src/screens/HistoryScreen'
 import { ResetPasswordScreen } from './src/screens/ResetPasswordScreen'
 import { AccountScreen } from './src/screens/AccountScreen'
+import { TabBar } from './src/components/TabBar'
+import type { MainTab } from './src/components/TabBar'
 
-type ScreenName = 'roles' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin' | 'history' | 'account'
+type ScreenName = 'main' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin'
 
 const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
 
@@ -38,7 +41,8 @@ export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [recovering, setRecovering] = useState(true)
-  const [screen, setScreen] = useState<ScreenName>('roles')
+  const [screen, setScreen] = useState<ScreenName>('main')
+  const [mainTab, setMainTab] = useState<MainTab>('home')
   const [activeRequest, setActiveRequest] = useState<HelpRequest | null>(null)
   const [passwordRecovery, setPasswordRecovery] = useState(false)
 
@@ -64,7 +68,8 @@ export default function App() {
     const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession)
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        setScreen('roles')
+        setScreen('main')
+        setMainTab('home')
         setActiveRequest(null)
       }
     })
@@ -139,47 +144,23 @@ export default function App() {
   if (!session) return <AuthScreen />
 
   if (screen === 'request') {
-    return <RequestHelpScreen userId={session.user.id} onBack={() => setScreen('roles')} onCreated={request => { setActiveRequest(request); setScreen('active-request') }} />
+    return <RequestHelpScreen userId={session.user.id} onBack={() => setScreen('main')} onCreated={request => { setActiveRequest(request); setScreen('active-request') }} />
   }
 
   if (screen === 'active-request' && activeRequest) {
-    return <ActiveRequestScreen initialRequest={activeRequest} onBack={() => setScreen('roles')} onDone={() => { setActiveRequest(null); setScreen('roles') }} />
+    return <ActiveRequestScreen initialRequest={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
   }
 
   if (screen === 'volunteer') {
-    return <VolunteerScreen userId={session.user.id} onBack={() => setScreen('roles')} onAccepted={request => { setActiveRequest(request); setScreen('volunteer-job') }} />
+    return <VolunteerScreen userId={session.user.id} onBack={() => setScreen('main')} onAccepted={request => { setActiveRequest(request); setScreen('volunteer-job') }} />
   }
 
   if (screen === 'volunteer-job' && activeRequest) {
-    return <VolunteerJobScreen request={activeRequest} onBack={() => setScreen('roles')} onDone={() => { setActiveRequest(null); setScreen('roles') }} />
+    return <VolunteerJobScreen request={activeRequest} onBack={() => setScreen('main')} onDone={() => { setActiveRequest(null); setScreen('main') }} />
   }
 
   if (screen === 'admin') {
-    return <AdminScreen onBack={() => setScreen('roles')} />
-  }
-
-  if (screen === 'history') {
-    return (
-      <HistoryScreen
-        userId={session.user.id}
-        onBack={() => setScreen('roles')}
-        onOpen={request => {
-          setActiveRequest(request)
-          setScreen(request.volunteer_id === session.user.id && request.requester_id !== session.user.id ? 'volunteer-job' : 'active-request')
-        }}
-      />
-    )
-  }
-
-  if (screen === 'account' && profile) {
-    return (
-      <AccountScreen
-        profile={profile}
-        email={session.user.email ?? ''}
-        onBack={() => setScreen('roles')}
-        onUpdated={setProfile}
-      />
-    )
+    return <AdminScreen onBack={() => setScreen('main')} />
   }
 
   const activeKind: 'request' | 'job' | null = !activeRequest
@@ -189,22 +170,50 @@ export default function App() {
       : 'job'
 
   return (
-    <RoleScreen
-      name={profile?.full_name ?? ''}
-      avatarUrl={profile?.avatar_url ?? null}
-      isAdmin={profile?.is_admin ?? false}
-      activeKind={activeKind}
-      onRequester={() => setScreen('request')}
-      onVolunteer={() => setScreen('volunteer')}
-      onAdmin={() => setScreen('admin')}
-      onHistory={() => setScreen('history')}
-      onAccount={() => setScreen('account')}
-      onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
-    />
+    <View style={styles.mainWrap}>
+      <View style={styles.tabContent}>
+        {mainTab === 'home' ? (
+          <RoleScreen
+            name={profile?.full_name ?? ''}
+            avatarUrl={profile?.avatar_url ?? null}
+            isAdmin={profile?.is_admin ?? false}
+            activeKind={activeKind}
+            onRequester={() => setScreen('request')}
+            onVolunteer={() => setScreen('volunteer')}
+            onAdmin={() => setScreen('admin')}
+            onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
+          />
+        ) : mainTab === 'perks' ? (
+          <PerksScreen userId={session.user.id} />
+        ) : mainTab === 'activity' ? (
+          <HistoryScreen
+            userId={session.user.id}
+            onBack={() => setMainTab('home')}
+            onOpen={request => {
+              setActiveRequest(request)
+              setScreen(request.volunteer_id === session.user.id && request.requester_id !== session.user.id ? 'volunteer-job' : 'active-request')
+            }}
+          />
+        ) : profile ? (
+          <AccountScreen
+            profile={profile}
+            email={session.user.email ?? ''}
+            onBack={() => setMainTab('home')}
+            onUpdated={setProfile}
+          />
+        ) : (
+          <View style={styles.tabLoading}><ActivityIndicator color={colors.forest} /></View>
+        )}
+      </View>
+      <TabBar active={mainTab} onChange={setMainTab} />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  mainWrap: { flex: 1, backgroundColor: colors.bg },
+  tabContent: { flex: 1 },
+  tabLoading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
   splashMark: { width: 72, height: 72, borderRadius: 24, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },
   splashMarkText: { color: '#fff', fontSize: 34, fontFamily: font.extraBold },

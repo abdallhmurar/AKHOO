@@ -33,3 +33,78 @@ export type VolunteerProfile = {
   services: ServiceType[]
   is_verified: boolean
 }
+
+export type MembershipStatus = 'pending' | 'active' | 'expired' | 'cancelled' | 'failed'
+
+export type Membership = {
+  id: string
+  user_id: string
+  plan: 'sanad_plus'
+  market: string
+  currency: string
+  amount: number
+  status: MembershipStatus
+  starts_at: string | null
+  expires_at: string | null
+  auto_renew: boolean
+  payment_provider: string | null
+  provider_subscription_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type PartnerCategory = 'battery' | 'tire' | 'maintenance' | 'towing' | 'locksmith' | 'mobile_mechanic' | 'car_wash' | 'inspection' | 'other'
+
+export type PartnerStatus = 'pending' | 'verified' | 'suspended' | 'rejected'
+
+export type Partner = {
+  id: string
+  name: string
+  slug: string
+  category: PartnerCategory
+  description: string | null
+  logo_url: string | null
+  phone: string | null
+  latitude: number | null
+  longitude: number | null
+  address: string | null
+  market: string
+  status: PartnerStatus
+  commission_type: 'none' | 'fixed' | 'percentage'
+  commission_value: number
+  created_at: string
+  updated_at: string
+}
+
+export type OfferDiscountType = 'percentage' | 'fixed' | 'special_price' | 'free_benefit'
+export type OfferStatus = 'draft' | 'submitted' | 'approved' | 'active' | 'paused' | 'expired' | 'rejected'
+
+export type PartnerOffer = {
+  id: string
+  partner_id: string
+  title: string
+  description: string | null
+  discount_type: OfferDiscountType
+  discount_value: number | null
+  member_only: boolean
+  starts_at: string | null
+  ends_at: string | null
+  terms: string | null
+  status: OfferStatus
+  created_at: string
+  updated_at: string
+}
+
+export type RedemptionStatus = 'active' | 'redeemed' | 'expired' | 'cancelled'
+
+export type OfferRedemption = {
+  id: string
+  offer_id: string
+  partner_id: string
+  user_id: string
+  code: string
+  status: RedemptionStatus
+  created_at: string
+  expires_at: string
+  redeemed_at: string | null
+}

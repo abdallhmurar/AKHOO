@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { ArrowLeft, CarProfile, ClockCounterClockwise, GearSix, HandHeart, UserCircle } from 'phosphor-react-native'
+import { ArrowLeft, CarProfile, GearSix, HandHeart, UserCircle } from 'phosphor-react-native'
 import { colors, font, radius, space } from '../lib/theme'
 import { Screen } from '../components/Screen'
 import { Tactile } from '../components/Tactile'
@@ -12,8 +12,6 @@ export function RoleScreen({
   onRequester,
   onVolunteer,
   onAdmin,
-  onHistory,
-  onAccount,
   onResumeActive
 }: {
   name: string
@@ -23,8 +21,6 @@ export function RoleScreen({
   onRequester: () => void
   onVolunteer: () => void
   onAdmin: () => void
-  onHistory: () => void
-  onAccount: () => void
   onResumeActive: () => void
 }) {
   return (
@@ -40,10 +36,6 @@ export function RoleScreen({
             <Text style={styles.brand}>سَنَد</Text>
             <Text style={styles.greeting}>أهلاً {name || 'فيك'}</Text>
           </View>
-        </View>
-        <View style={styles.topActions}>
-          <Tactile onPress={onHistory} style={styles.topButton}><ClockCounterClockwise size={18} color={colors.forest} /></Tactile>
-          <Tactile onPress={onAccount} style={styles.topButton}><UserCircle size={18} color={colors.forest} /></Tactile>
         </View>
       </View>
 
@@ -98,8 +90,6 @@ const styles = StyleSheet.create({
   avatarFallback: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' },
   brand: { fontSize: 20, fontFamily: font.extraBold, color: colors.text, textAlign: 'right' },
   greeting: { color: colors.muted, fontFamily: font.regular, fontSize: 13, textAlign: 'right', marginTop: 2 },
-  topActions: { flexDirection: 'row-reverse', gap: space.sm },
-  topButton: { width: 40, height: 40, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
   resumeCard: { flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.forest, borderRadius: radius.md, paddingVertical: space.lg, paddingHorizontal: space.xl, marginBottom: space.xl, gap: space.md },
   resumeText: { flex: 1, color: '#fff', fontFamily: font.bold, fontSize: 14, textAlign: 'right' },
   title: { color: colors.text, fontSize: 28, fontFamily: font.extraBold, textAlign: 'right' },
