@@ -288,6 +288,9 @@
     "title": "Volunteer Points",
     "completedCount": "{{count}} missions completed"
   },
+  "map": {
+    "loading": "Loading map..."
+  },
   "perks": {
     "title": "SANAD Perks",
     "subtitle": "SANAD+ membership and discounts with our partners.",

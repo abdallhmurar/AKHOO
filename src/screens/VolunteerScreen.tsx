@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
@@ -14,6 +14,7 @@ import { PrimaryButton } from '../components/PrimaryButton'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
 import { SanadMap } from '../components/SanadMap'
+import type { SanadMapRef } from '../components/SanadMap.types'
 import { Tactile } from '../components/Tactile'
 
 const services: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarning }[] = [
@@ -42,6 +43,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [now, setNow] = useState(Date.now())
+  const mapRef = useRef<SanadMapRef>(null)
 
   const loadRequests = useCallback(async (position?: { latitude: number; longitude: number } | null) => {
     const at = position ?? coords
@@ -105,6 +107,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     const interval = setInterval(() => setNow(Date.now()), 30000)
     return () => clearInterval(interval)
   }, [available])
+
+  // Keep the volunteer's own position plus every nearby request visible as
+  // the list changes, instead of a fixed zoom that could crop out requests.
+  useEffect(() => {
+    if (!coords || requests.length === 0) return
+    mapRef.current?.fitToMarkers([coords, ...requests.map(item => ({ latitude: item.latitude, longitude: item.longitude }))])
+  }, [coords, requests])
 
   // If the currently open sheet's request disappears (another volunteer
   // accepted it - realtime already refreshes `requests`), close it instead
@@ -223,11 +232,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     <SafeAreaView style={styles.fill}>
       {coords ? (
         <SanadMap
+          ref={mapRef}
           latitude={coords.latitude}
           longitude={coords.longitude}
-          zoom={12}
+          zoom={13}
           interactive
           markers={requests.map(item => ({ id: item.id, latitude: item.latitude, longitude: item.longitude }))}
+          selectedId={selectedId}
           onMarkerPress={setSelectedId}
           style={styles.map}
         />
@@ -247,6 +258,16 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
           {loading ? <ActivityIndicator color={colors.text} size="small" /> : <Text style={styles.stopText}>{t('volunteer.disable')}</Text>}
         </Tactile>
       </View>
+
+      {coords ? (
+        <Tactile
+          onPress={() => mapRef.current?.recenter(coords.latitude, coords.longitude, 13)}
+          style={[styles.locateButton, { [isRTL ? 'left' : 'right']: space.lg }]}
+          scaleTo={0.9}
+        >
+          <GpsFix size={20} color={colors.forest} />
+        </Tactile>
+      ) : null}
 
       {requests.length === 0 ? (
         <View pointerEvents="none" style={styles.emptyBanner}>
@@ -314,6 +335,8 @@ const styles = StyleSheet.create({
   statusText: { color: colors.text, fontFamily: font.bold, fontSize: 13 },
   stopButton: { minWidth: 60, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, ...shadow.soft },
   stopText: { color: colors.danger, fontFamily: font.bold, fontSize: 13 },
+
+  locateButton: { position: 'absolute', bottom: space.xxl + 70, width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.soft },
 
   emptyBanner: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xl, backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, ...shadow.soft },
   emptyBannerText: { color: colors.muted, fontFamily: font.medium, fontSize: 12.5, textAlign: 'center', lineHeight: 18 },
