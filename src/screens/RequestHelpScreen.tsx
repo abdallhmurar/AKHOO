@@ -5,6 +5,7 @@ import { ArrowClockwise, BatteryWarning, Camera, GasPump, Lock, MapPin, Tire, Wr
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../lib/location'
 import type { PilotZone } from '../lib/location'
+import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -25,6 +26,7 @@ const services: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarnin
 
 type Step = 'type' | 'details' | 'location'
 const steps: Step[] = ['type', 'details', 'location']
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: string; onBack: () => void; onCreated: (request: HelpRequest) => void }) {
   const { t } = useTranslation()
@@ -56,7 +58,12 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6 })
     if (result.canceled || !result.assets[0]) return
-    setPhotoUri(result.assets[0].uri)
+    const asset = result.assets[0]
+    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert(t('common.error'), t('account.errors.imageTooLarge'))
+      return
+    }
+    setPhotoUri(asset.uri)
   }
 
   async function fetchLocation() {
@@ -119,7 +126,7 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
       if (error) throw error
       onCreated(data as HelpRequest)
     } catch (error: any) {
-      Alert.alert(t('request.errors.createFailedTitle'), error.message ?? t('common.error'))
+      Alert.alert(t('request.errors.createFailedTitle'), translateActionError(t, error))
     } finally {
       setLoading(false)
     }

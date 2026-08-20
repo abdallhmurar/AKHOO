@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { Alert, Pressable } from 'react-native'
-import { Eye, EyeSlash } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Eye, EyeSlash } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { colors } from '../lib/theme'
+import { colors, radius } from '../lib/theme'
+import { useIsRTL } from '../lib/direction'
 import { AuthShell } from '../components/AuthShell'
 import { TextField } from '../components/TextField'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { PasswordStrength } from '../components/PasswordStrength'
 
-export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
+export function ResetPasswordScreen({ onCancel, onDone }: { onCancel: () => void; onDone: () => void }) {
   const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -23,18 +26,28 @@ export function ResetPasswordScreen({ onDone }: { onDone: () => void }) {
       return
     }
     setLoading(true)
-    const { error: updateError } = await supabase.auth.updateUser({ password })
-    setLoading(false)
-    if (updateError) {
-      setError(updateError.message)
-      return
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password })
+      if (updateError) {
+        setError(updateError.message)
+        return
+      }
+      Alert.alert(t('auth.reset.success.title'), t('auth.reset.success.message'))
+      onDone()
+    } catch (error: any) {
+      setError(error.message ?? t('common.error'))
+    } finally {
+      setLoading(false)
     }
-    Alert.alert(t('auth.reset.success.title'), t('auth.reset.success.message'))
-    onDone()
   }
 
   return (
-    <AuthShell scene="success" title={t('auth.reset.title')} subtitle={t('auth.reset.subtitle')}>
+    <AuthShell
+      scene="success"
+      title={t('auth.reset.title')}
+      subtitle={t('auth.reset.subtitle')}
+      back={<Pressable onPress={onCancel} style={{ alignSelf: isRTL ? 'flex-end' : 'flex-start', width: 38, height: 38, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}><BackIcon size={18} color={colors.forest} /></Pressable>}
+    >
       <TextField
         label={t('auth.reset.passwordLabel')}
         value={password}

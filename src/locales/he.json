@@ -4,7 +4,19 @@
     "next": "הבא",
     "loading": "...טוען",
     "error": "שגיאה",
-    "done": "בוצע"
+    "done": "בוצע",
+    "retry": "נסה שוב",
+    "rpcErrors": {
+      "notAuthenticated": "יש להתחבר מחדש.",
+      "volunteerNotAvailable": "יש להפעיל את הזמינות לפני קבלת בקשה.",
+      "accountBanned": "החשבון שלך הושעה.",
+      "invalidStatus": "פעולה זו אינה זמינה כרגע.",
+      "invalidTransition": "לא ניתן להשלים שלב זה כרגע.",
+      "requestNotFound": "בקשה זו כבר לא זמינה.",
+      "notAuthorized": "אין לך הרשאה לבצע פעולה זו.",
+      "locationDenied": "נדרשת גישה למיקום. יש לאשר אותה בהגדרות המכשיר.",
+      "alreadyHaveActiveRequest": "כבר יש לך בקשת עזרה פעילה."
+    }
   },
   "auth": {
     "login": {
@@ -80,6 +92,11 @@
       "success": {
         "title": "בוצע",
         "message": "הסיסמה שונתה בהצלחה."
+      },
+      "linkExpired": {
+        "title": "הקישור פג תוקף",
+        "message": "קישור איפוס הסיסמה הזה כבר לא תקף. יש לבקש קישור חדש ממסך ההתחברות.",
+        "backToLogin": "חזרה להתחברות"
       }
     },
     "passwordStrength": {
@@ -249,7 +266,9 @@
     "errors": {
       "requiredFields": "שם ומספר טלפון הם שדות חובה.",
       "phoneInvalid": "מספר טלפון לא תקין.",
-      "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+      "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים.",
+      "imageTooLarge": "התמונה גדולה מדי. יש לבחור תמונה קטנה יותר.",
+      "loadFailed": "לא הצלחנו לטעון את החשבון שלך. בדוק/י את החיבור ונסה/י שוב."
     },
     "success": {
       "title": "בוצע",

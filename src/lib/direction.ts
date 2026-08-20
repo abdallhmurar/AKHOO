@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Platform } from 'react-native'
 import type { TextStyle, ViewStyle } from 'react-native'
 
 const RTL_LANGUAGES = new Set(['ar', 'he'])
@@ -15,8 +16,19 @@ export function dirStyles(isRTL: boolean): {
   alignStart: ViewStyle
   alignEnd: ViewStyle
 } {
+  // On web, src/lib/i18n.ts sets document.documentElement.dir to 'rtl'/
+  // 'ltr' - CSS flexbox's `row` axis is direction-aware per spec, so the
+  // browser already visually mirrors a plain `row` once that ambient
+  // direction is 'rtl'. Applying row-reverse on top of that (confirmed via
+  // computed styles: flex-direction: row-reverse + direction: rtl together
+  // cancel out) silently renders every RTL row back in LTR visual order on
+  // web only - e.g. the bottom tab bar's items land in the same left-to-
+  // right order as English. Native has no such ambient mirroring (this app
+  // intentionally never touches I18nManager), so row-reverse is still the
+  // only way to get correct RTL ordering there.
+  const mirrorRow = isRTL && Platform.OS !== 'web'
   return {
-    row: { flexDirection: isRTL ? 'row-reverse' : 'row' },
+    row: { flexDirection: mirrorRow ? 'row-reverse' : 'row' },
     textStart: { textAlign: isRTL ? 'right' : 'left' },
     textEnd: { textAlign: isRTL ? 'left' : 'right' },
     alignStart: { alignItems: isRTL ? 'flex-end' : 'flex-start' },

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { normalizePhone } from '../lib/phone'
+import { stopBackgroundLocationUpdates } from '../lib/location'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { Profile } from '../types'
 import { Header } from '../components/Header'
@@ -13,6 +14,8 @@ import { Screen } from '../components/Screen'
 import { PasswordStrength } from '../components/PasswordStrength'
 import { LanguagePicker } from '../components/LanguagePicker'
 import { VolunteerPointsCard } from '../components/VolunteerPointsCard'
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: Profile; email: string; onBack: () => void; onUpdated: (profile: Profile) => void }) {
   const { t } = useTranslation()
@@ -36,7 +39,12 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
     if (result.canceled || !result.assets[0]) return
-    setAvatarUri(result.assets[0].uri)
+    const asset = result.assets[0]
+    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert(t('common.error'), t('account.errors.imageTooLarge'))
+      return
+    }
+    setAvatarUri(asset.uri)
   }
 
   async function saveProfile() {
@@ -84,14 +92,29 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
       return
     }
     setSavingPassword(true)
-    const { error } = await supabase.auth.updateUser({ password: newPassword })
-    setSavingPassword(false)
-    if (error) {
-      setPasswordError(error.message)
-      return
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) {
+        setPasswordError(error.message)
+        return
+      }
+      setNewPassword('')
+      Alert.alert(t('account.success.title'), t('account.success.passwordUpdated'))
+    } catch (error: any) {
+      setPasswordError(error.message ?? t('common.error'))
+    } finally {
+      setSavingPassword(false)
     }
-    setNewPassword('')
-    Alert.alert(t('account.success.title'), t('account.success.passwordUpdated'))
+  }
+
+  async function logout() {
+    // A volunteer who is currently "available" has a background location
+    // task running (src/lib/location.ts) - without stopping it first, the
+    // OS-level task keeps reporting GPS coordinates after logout, upserted
+    // under whatever user id was last active, including misattributing
+    // location to a different account that later logs in on this device.
+    await stopBackgroundLocationUpdates()
+    await supabase.auth.signOut()
   }
 
   return (
@@ -145,7 +168,7 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
         <LanguagePicker />
       </View>
 
-      <Pressable onPress={() => supabase.auth.signOut()} style={styles.logoutRow}>
+      <Pressable onPress={logout} style={styles.logoutRow}>
         <Text style={styles.logoutText}>{t('account.logout')}</Text>
       </Pressable>
     </Screen>

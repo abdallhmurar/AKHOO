@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, AppState, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -15,6 +16,7 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   const dir = dirStyles(useIsRTL())
   const [request, setRequest] = useState(initialRequest)
   const [requester, setRequester] = useState<Profile | null>(null)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     const channel = supabase.channel(`volunteer-job-${request.id}`)
@@ -23,6 +25,18 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
       })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
+  }, [request.id])
+
+  // Same reasoning as ActiveRequestScreen: realtime isn't guaranteed to
+  // deliver every UPDATE, so re-fetch authoritative status on foreground.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state !== 'active') return
+      supabase.from('help_requests').select('*').eq('id', request.id).maybeSingle().then(({ data }) => {
+        if (data) setRequest(data as HelpRequest)
+      })
+    })
+    return () => subscription.remove()
   }, [request.id])
 
   useEffect(() => {
@@ -39,8 +53,13 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   }, [request.status, onDone])
 
   async function setStatus(status: RequestStatus) {
-    const { error } = await supabase.rpc('update_help_request_status', { p_request_id: request.id, p_status: status })
-    if (error) Alert.alert(t('common.error'), error.message)
+    setBusy(true)
+    try {
+      const { error } = await supabase.rpc('update_help_request_status', { p_request_id: request.id, p_status: status })
+      if (error) Alert.alert(t('common.error'), translateActionError(t, error))
+    } finally {
+      setBusy(false)
+    }
   }
 
   const finished = request.status === 'completed' || request.status === 'cancelled'
@@ -87,9 +106,9 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
       {awaitingConfirmation ? null : !finished ? (
         <>
           <PrimaryButton title={t('volunteerJob.openInGoogleMaps')} tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
-          <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted'} />
-          <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way'} />
-          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('awaiting_confirmation')} disabled={request.status !== 'arrived'} />
+          <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted' || busy} loading={busy && request.status === 'accepted'} />
+          <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way' || busy} loading={busy && request.status === 'on_the_way'} />
+          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('awaiting_confirmation')} disabled={request.status !== 'arrived' || busy} loading={busy && request.status === 'arrived'} />
         </>
       ) : (
         <PrimaryButton title={t('volunteerJob.back')} onPress={onBack} />

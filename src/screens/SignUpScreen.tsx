@@ -12,6 +12,7 @@ import { PrimaryButton } from '../components/PrimaryButton'
 import { PasswordStrength } from '../components/PasswordStrength'
 
 type Errors = { name?: string; phone?: string; email?: string; password?: string; form?: string }
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCreated: () => void }) {
   const { t } = useTranslation()
@@ -36,7 +37,12 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
     if (result.canceled || !result.assets[0]) return
-    setAvatarUri(result.assets[0].uri)
+    const asset = result.assets[0]
+    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert(t('common.error'), t('account.errors.imageTooLarge'))
+      return
+    }
+    setAvatarUri(asset.uri)
   }
 
   async function submit() {

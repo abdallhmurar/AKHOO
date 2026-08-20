@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Alert, Animated, Easing, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import { Alert, Animated, AppState, Easing, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, space } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
@@ -29,6 +30,20 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
+  }, [request.id])
+
+  // Realtime UPDATE events aren't guaranteed to arrive (missed during a
+  // network drop, or filtered out by RLS re-evaluating against the new row)
+  // - re-fetch this specific request's authoritative status whenever the app
+  // returns to the foreground so a finished mission can never look "stuck".
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state !== 'active') return
+      supabase.from('help_requests').select('*').eq('id', request.id).maybeSingle().then(({ data }) => {
+        if (data) setRequest(data as HelpRequest)
+      })
+    })
+    return () => subscription.remove()
   }, [request.id])
 
   useEffect(() => {
@@ -71,14 +86,14 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
     const { error } = await supabase.rpc('cancel_help_request', { p_request_id: request.id })
     setBusy(false)
     setConfirmingCancel(false)
-    if (error) Alert.alert(t('common.error'), error.message)
+    if (error) Alert.alert(t('common.error'), translateActionError(t, error))
   }
 
   async function respondToCompletion(confirmed: boolean) {
     setRespondingToCompletion(true)
     const { error } = await supabase.rpc('confirm_help_request_completion', { p_request_id: request.id, p_confirmed: confirmed })
     setRespondingToCompletion(false)
-    if (error) Alert.alert(t('common.error'), error.message)
+    if (error) Alert.alert(t('common.error'), translateActionError(t, error))
   }
 
   const finished = request.status === 'completed' || request.status === 'cancelled'

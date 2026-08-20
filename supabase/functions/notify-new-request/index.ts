@@ -32,20 +32,27 @@ Deno.serve(async req => {
 
   const { data: request } = await supabase
     .from('help_requests')
-    .select('id, service_type, latitude, longitude')
+    .select('id, requester_id, service_type, latitude, longitude')
     .eq('id', request_id)
     .single()
 
   if (!request) return new Response('ok')
 
+  // Mirrors the 20-minute staleness bound the RLS "request read relevant"
+  // policy already applies (0007_volunteer_staleness.sql) - without it a
+  // volunteer whose app was killed/uninstalled without ever toggling
+  // availability off stays "available" forever and keeps getting a push
+  // attempted against a token that will never be delivered.
   const { data: volunteers } = await supabase
     .from('volunteer_profiles')
-    .select('latitude, longitude, push_token')
+    .select('user_id, latitude, longitude, push_token')
     .eq('is_available', true)
     .not('push_token', 'is', null)
+    .gt('updated_at', new Date(Date.now() - 20 * 60 * 1000).toISOString())
 
   const nearby = (volunteers ?? []).filter(v => {
     if (v.latitude == null || v.longitude == null) return false
+    if (v.user_id === request.requester_id) return false
     return distanceKm(request.latitude, request.longitude, v.latitude, v.longitude) <= 20
   })
 
@@ -57,11 +64,18 @@ Deno.serve(async req => {
   }))
 
   if (messages.length > 0) {
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(messages)
-    })
+    try {
+      const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messages)
+      })
+      if (!response.ok) {
+        console.error('[notify-new-request] Expo push API returned', response.status, await response.text())
+      }
+    } catch (err) {
+      console.error('[notify-new-request] push send failed:', err)
+    }
   }
 
   return new Response('ok')

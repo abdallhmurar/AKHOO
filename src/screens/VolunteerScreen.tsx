@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, AppState, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
+import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, space, shadow } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
@@ -50,7 +51,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     if (!at) return
     const { data, error } = await supabase.from('help_requests').select('*').eq('status', 'open').order('created_at', { ascending: false }).limit(100)
     if (error) {
-      Alert.alert(t('common.error'), error.message)
+      Alert.alert(t('common.error'), translateActionError(t, error))
       return
     }
     const nearby = (data as HelpRequest[])
@@ -90,6 +91,20 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       .on('postgres_changes', { event: '*', schema: 'public', table: 'help_requests' }, () => loadRequests(coords))
       .subscribe()
     return () => { supabase.removeChannel(channel) }
+  }, [available, coords, loadRequests])
+
+  // Realtime alone isn't a reliable source of truth here: an UPDATE that
+  // flips a request to 'accepted' for a different volunteer can fall outside
+  // this volunteer's own SELECT RLS policy on the new row, so they may never
+  // receive that event and would otherwise keep showing an already-claimed
+  // request until unrelated traffic happens to trigger a re-fetch. Re-query
+  // authoritative state whenever the app comes back to the foreground.
+  useEffect(() => {
+    if (!available || !coords) return
+    const subscription = AppState.addEventListener('change', state => {
+      if (state === 'active') loadRequests(coords)
+    })
+    return () => subscription.remove()
   }, [available, coords, loadRequests])
 
   // Foreground heartbeat: keeps this volunteer's presence fresh for the RLS
@@ -163,7 +178,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
         setSelectedId(null)
       }
     } catch (error: any) {
-      Alert.alert(t('volunteer.errors.toggleFailedTitle'), error.message ?? t('common.error'))
+      Alert.alert(t('volunteer.errors.toggleFailedTitle'), translateActionError(t, error))
     } finally {
       setLoading(false)
     }
@@ -183,7 +198,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       }
       onAccepted(accepted as HelpRequest)
     } catch (error: any) {
-      Alert.alert(t('volunteer.errors.acceptFailedTitle'), error.message ?? t('common.error'))
+      Alert.alert(t('volunteer.errors.acceptFailedTitle'), translateActionError(t, error))
     } finally {
       setLoading(false)
     }

@@ -77,7 +77,7 @@ export function SanadMap({
       const fitZoom = estimateZoomForSpan(north - south, east - west, MAP_FIT_BOUNDS_MAX_ZOOM)
       cameraRef.current?.easeTo({ center: [(west + east) / 2, (south + north) / 2], zoom: fitZoom, duration: 700 })
     }
-  }), [])
+  }), [zoom])
 
   return (
     <View style={[styles.wrap, { height }, style]}>

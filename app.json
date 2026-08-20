@@ -27,8 +27,8 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك.",
-          "locationAlwaysAndWhenInUsePermission": "سَنَد يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية.",
+          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك. / SANAD needs your location to send your help request to nearby volunteers. / לסָנָד דרוש המיקום שלך כדי לשלוח את בקשת העזרה למתנדבים קרובים.",
+          "locationAlwaysAndWhenInUsePermission": "سَنَد يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية. / SANAD needs your location while you're available as a volunteer, so nearby requests reach you even in the background. / לסָנָד דרוש המיקום שלך בזמן זמינותך כמתנדב, כדי שבקשות קרובות יגיעו אליך גם ברקע.",
           "isAndroidBackgroundLocationEnabled": true
         }
       ],

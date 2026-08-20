@@ -58,7 +58,7 @@ export function RoleScreen({
       <Text style={[styles.title, dir.textStart]}>{t('home.title')}</Text>
       <Text style={[styles.subtitle, dir.textStart]}>{t('home.subtitle')}</Text>
 
-      <Tactile onPress={onRequester} style={[styles.roleCard, styles.requestCard]} scaleTo={0.98}>
+      <Tactile onPress={activeKind === 'request' ? onResumeActive : onRequester} style={[styles.roleCard, styles.requestCard]} scaleTo={0.98}>
         <View style={[styles.roleCardTop, dir.row]}>
           <View style={[styles.icon, { backgroundColor: colors.sandSoft }]}><CarProfile size={30} color={colors.sand} weight="duotone" /></View>
           <ForwardIcon size={18} color={colors.text} />

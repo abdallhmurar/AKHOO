@@ -32,9 +32,14 @@ export function LoginScreen({ onSignUp, onForgotPassword }: { onSignUp: () => vo
     if (Object.keys(next).length > 0) return
 
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-    setLoading(false)
-    if (error) setErrors({ form: error.message })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (error) setErrors({ form: error.message })
+    } catch (error: any) {
+      setErrors({ form: error.message ?? t('common.error') })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

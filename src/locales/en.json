@@ -4,7 +4,19 @@
     "next": "Next",
     "loading": "Loading...",
     "error": "Error",
-    "done": "Done"
+    "done": "Done",
+    "retry": "Try Again",
+    "rpcErrors": {
+      "notAuthenticated": "Please log in again.",
+      "volunteerNotAvailable": "Turn on availability before accepting a request.",
+      "accountBanned": "Your account has been suspended.",
+      "invalidStatus": "This action isn't available right now.",
+      "invalidTransition": "This step can't be completed yet.",
+      "requestNotFound": "This request is no longer available.",
+      "notAuthorized": "You don't have permission to do this.",
+      "locationDenied": "Location access is required. Please allow it in your device settings.",
+      "alreadyHaveActiveRequest": "You already have an active help request."
+    }
   },
   "auth": {
     "login": {
@@ -80,6 +92,11 @@
       "success": {
         "title": "Done",
         "message": "Your password has been changed."
+      },
+      "linkExpired": {
+        "title": "Link Expired",
+        "message": "This password reset link is no longer valid. Request a new one from the login screen.",
+        "backToLogin": "Back to Log In"
       }
     },
     "passwordStrength": {
@@ -249,7 +266,9 @@
     "errors": {
       "requiredFields": "Name and phone number are required.",
       "phoneInvalid": "Invalid phone number.",
-      "passwordTooShort": "Password must be at least 6 characters."
+      "passwordTooShort": "Password must be at least 6 characters.",
+      "imageTooLarge": "This image is too large. Please choose a smaller photo.",
+      "loadFailed": "We couldn't load your account. Check your connection and try again."
     },
     "success": {
       "title": "Done",

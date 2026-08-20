@@ -4,7 +4,19 @@
     "next": "التالي",
     "loading": "...تحميل",
     "error": "خطأ",
-    "done": "تم"
+    "done": "تم",
+    "retry": "حاول مرة ثانية",
+    "rpcErrors": {
+      "notAuthenticated": "الرجاء تسجيل الدخول من جديد.",
+      "volunteerNotAvailable": "فعّل التوفر قبل قبول أي طلب.",
+      "accountBanned": "تم إيقاف حسابك.",
+      "invalidStatus": "هذا الإجراء مو متاح هلق.",
+      "invalidTransition": "هاي الخطوة ما بعد ممكن تصير.",
+      "requestNotFound": "هذا الطلب ما عاد متوفر.",
+      "notAuthorized": "ما عندك صلاحية تعمل هيك.",
+      "locationDenied": "لازم إذن الموقع. فعّله من إعدادات جهازك.",
+      "alreadyHaveActiveRequest": "عندك طلب مساعدة نشط أصلاً."
+    }
   },
   "auth": {
     "login": {
@@ -80,6 +92,11 @@
       "success": {
         "title": "تم",
         "message": "كلمة المرور تغيّرت بنجاح."
+      },
+      "linkExpired": {
+        "title": "انتهت صلاحية الرابط",
+        "message": "رابط إعادة تعيين كلمة المرور هذا ما عاد صالح. اطلب رابط جديد من شاشة تسجيل الدخول.",
+        "backToLogin": "الرجوع لتسجيل الدخول"
       }
     },
     "passwordStrength": {
@@ -249,7 +266,9 @@
     "errors": {
       "requiredFields": "الاسم ورقم الهاتف إجباريين.",
       "phoneInvalid": "رقم هاتف غير صحيح.",
-      "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+      "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل.",
+      "imageTooLarge": "هاي الصورة كبيرة كتير. اختار صورة أصغر.",
+      "loadFailed": "ما قدرنا نحمّل حسابك. تأكد من الاتصال وحاول مرة ثانية."
     },
     "success": {
       "title": "تم",

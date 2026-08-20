@@ -25,13 +25,18 @@ export function ForgotPasswordScreen({ initialEmail, onBack }: { initialEmail: s
       return
     }
     setLoading(true)
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: 'sanad://reset-password' })
-    setLoading(false)
-    if (resetError) {
-      setError(resetError.message)
-      return
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: 'sanad://reset-password' })
+      if (resetError) {
+        setError(resetError.message)
+        return
+      }
+      setSent(true)
+    } catch (error: any) {
+      setError(error.message ?? t('common.error'))
+    } finally {
+      setLoading(false)
     }
-    setSent(true)
   }
 
   return (

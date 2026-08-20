@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { useFonts, Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold } from '@expo-google-fonts/tajawal'
-import { I18nextProvider } from 'react-i18next'
+import { I18nextProvider, useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
 import { colors, font } from './src/lib/theme'
@@ -21,6 +21,8 @@ import { ResetPasswordScreen } from './src/screens/ResetPasswordScreen'
 import { AccountScreen } from './src/screens/AccountScreen'
 import { TabBar } from './src/components/TabBar'
 import type { MainTab } from './src/components/TabBar'
+import { AuthShell } from './src/components/AuthShell'
+import { PrimaryButton } from './src/components/PrimaryButton'
 
 type ScreenName = 'main' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin'
 
@@ -48,6 +50,10 @@ export default function App() {
   const [mainTab, setMainTab] = useState<MainTab>('home')
   const [activeRequest, setActiveRequest] = useState<HelpRequest | null>(null)
   const [passwordRecovery, setPasswordRecovery] = useState(false)
+  const [recoveryError, setRecoveryError] = useState(false)
+  const [urlHandled, setUrlHandled] = useState(false)
+  const [profileError, setProfileError] = useState(false)
+  const [profileRetryTick, setProfileRetryTick] = useState(0)
 
   useEffect(() => {
     initI18n().then(() => setI18nReady(true))
@@ -57,12 +63,25 @@ export default function App() {
     async function handleUrl(url: string | null) {
       if (!url) return
       const params = parseHashParams(url)
+      // Supabase appends #error=access_denied&error_code=otp_expired&... for
+      // an expired/already-used reset link - no type/tokens present at all,
+      // so this has to be checked before the recovery branch below.
+      if (params.error || params.error_code) {
+        setRecoveryError(true)
+        return
+      }
       if (params.type === 'recovery' && params.access_token && params.refresh_token) {
+        const { error } = await supabase.auth.setSession({ access_token: params.access_token, refresh_token: params.refresh_token })
+        if (error) {
+          setRecoveryError(true)
+          return
+        }
         setPasswordRecovery(true)
-        await supabase.auth.setSession({ access_token: params.access_token, refresh_token: params.refresh_token })
       }
     }
-    Linking.getInitialURL().then(handleUrl)
+    Linking.getInitialURL()
+      .then(handleUrl)
+      .finally(() => setUrlHandled(true))
     const subscription = Linking.addEventListener('url', ({ url }) => handleUrl(url))
     return () => subscription.remove()
   }, [])
@@ -86,12 +105,15 @@ export default function App() {
   useEffect(() => {
     if (!session?.user.id) {
       setProfile(null)
+      setProfileError(false)
       return
     }
-    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', session.user.id).single().then(({ data }) => {
+    setProfileError(false)
+    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', session.user.id).single().then(({ data, error }) => {
       if (data) setProfile(data as Profile)
+      else if (error) setProfileError(true)
     })
-  }, [session?.user.id])
+  }, [session?.user.id, profileRetryTick])
 
   // Recover an in-progress request/job after a reload or fresh app open, so
   // it doesn't just vanish - screen/activeRequest only ever lived in memory.
@@ -134,7 +156,7 @@ export default function App() {
     })()
   }, [session?.user.id])
 
-  if (!fontsLoaded || !i18nReady || loading || recovering) {
+  if (!fontsLoaded || !i18nReady || loading || recovering || !urlHandled) {
     return (
       <View style={styles.loading}>
         <View style={styles.splashMark}><Text style={styles.splashMarkText}>س</Text></View>
@@ -145,8 +167,12 @@ export default function App() {
   }
 
   function renderScreen() {
+    if (recoveryError) {
+      return <RecoveryLinkExpired onBack={() => setRecoveryError(false)} />
+    }
+
     if (passwordRecovery) {
-      return <ResetPasswordScreen onDone={() => setPasswordRecovery(false)} />
+      return <ResetPasswordScreen onCancel={() => setPasswordRecovery(false)} onDone={() => setPasswordRecovery(false)} />
     }
 
     if (!session) return <AuthScreen />
@@ -209,6 +235,8 @@ export default function App() {
               onBack={() => setMainTab('home')}
               onUpdated={setProfile}
             />
+          ) : profileError ? (
+            <ProfileLoadError onRetry={() => { setProfileError(false); setProfileRetryTick(tick => tick + 1) }} />
           ) : (
             <View style={styles.tabLoading}><ActivityIndicator color={colors.forest} /></View>
           )}
@@ -221,10 +249,30 @@ export default function App() {
   return <I18nextProvider i18n={i18next}>{renderScreen()}</I18nextProvider>
 }
 
+function RecoveryLinkExpired({ onBack }: { onBack: () => void }) {
+  const { t } = useTranslation()
+  return (
+    <AuthShell scene="forgotPassword" title={t('auth.reset.linkExpired.title')} subtitle={t('auth.reset.linkExpired.message')}>
+      <PrimaryButton title={t('auth.reset.linkExpired.backToLogin')} onPress={onBack} />
+    </AuthShell>
+  )
+}
+
+function ProfileLoadError({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation()
+  return (
+    <View style={styles.tabLoading}>
+      <Text style={styles.profileErrorText}>{t('account.errors.loadFailed')}</Text>
+      <PrimaryButton title={t('common.retry')} onPress={onRetry} />
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   mainWrap: { flex: 1, backgroundColor: colors.bg },
   tabContent: { flex: 1 },
-  tabLoading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  tabLoading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingHorizontal: 32 },
+  profileErrorText: { color: colors.text, fontSize: 14, fontFamily: font.medium, textAlign: 'center' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
   splashMark: { width: 72, height: 72, borderRadius: 24, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },
   splashMarkText: { color: '#fff', fontSize: 34, fontFamily: font.extraBold },

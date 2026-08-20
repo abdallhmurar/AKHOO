@@ -18,6 +18,10 @@ export function Screen({ children, scroll = true, contentStyle, refreshControl }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: 20, paddingBottom: 36 },
+  // maxWidth only ever engages on wide web viewports (phones are already
+  // narrower than 480) - keeps every screen from stretching into an
+  // unreadable full-bleed line on tablet/desktop without touching any
+  // individual screen's own layout.
+  content: { padding: 20, paddingBottom: 36, width: '100%', maxWidth: 480, alignSelf: 'center' },
   flex: { flex: 1 }
 })

@@ -117,7 +117,6 @@ export function SanadMap({
       return
     }
     mapRef.current.easeTo({ center: [resolved.longitude, resolved.latitude], duration: 600 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolved.latitude, resolved.longitude])
 
   useEffect(() => {
