@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { ArrowLeft, ArrowRight } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { colors } from '../lib/theme'
+import { colors, radius, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 
 export function Header({ title, subtitle, onBack }: { title: string; subtitle?: string; onBack?: () => void }) {
@@ -18,7 +18,7 @@ export function Header({ title, subtitle, onBack }: { title: string; subtitle?: 
       </View>
       {onBack ? (
         <Pressable style={[styles.back, dir.row]} onPress={onBack}>
-          <BackIcon size={16} color={colors.blueDark} />
+          <BackIcon size={16} color={colors.forestPressed} />
           <Text style={styles.backText}>{t('common.back')}</Text>
         </Pressable>
       ) : null}
@@ -27,10 +27,10 @@ export function Header({ title, subtitle, onBack }: { title: string; subtitle?: 
 }
 
 const styles = StyleSheet.create({
-  row: { alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20 },
+  row: { alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: space.xl },
   textWrap: { flex: 1 },
-  title: { color: colors.text, fontSize: 28, fontWeight: '900' },
-  subtitle: { color: colors.muted, fontSize: 14, marginTop: 5, lineHeight: 21 },
-  back: { alignItems: 'center', gap: 4, backgroundColor: colors.blueSoft, borderRadius: 13, paddingVertical: 9, paddingHorizontal: 12 },
-  backText: { color: colors.blueDark, fontWeight: '800' }
+  title: { ...type.h1, color: colors.text },
+  subtitle: { ...type.small, color: colors.muted, marginTop: 5 },
+  back: { alignItems: 'center', gap: 4, backgroundColor: colors.sageSoft, borderRadius: radius.sm, paddingVertical: 9, paddingHorizontal: space.md },
+  backText: { ...type.caption, fontFamily: type.button.fontFamily, color: colors.forestPressed }
 })

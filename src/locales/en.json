@@ -115,6 +115,7 @@
     "guestName": "there",
     "resumeRequest": "You have an active help request — continue it",
     "resumeJob": "You have an active volunteer mission — continue it",
+    "liveNow": "Live now",
     "title": "What do you want to do?",
     "subtitle": "Choose your role for now.",
     "needHelp": { "title": "I need help", "text": "I have a problem and need a nearby volunteer." },
