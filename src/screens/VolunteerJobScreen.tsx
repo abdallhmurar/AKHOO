@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../lib/theme'
@@ -31,25 +31,39 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
     })
   }, [request.requester_id])
 
+  // The volunteer's own action only ever reaches 'awaiting_confirmation' -
+  // 'completed' now happens on the requester's side, delivered here via the
+  // realtime subscription above, so this is where onDone actually fires.
+  useEffect(() => {
+    if (request.status === 'completed') onDone()
+  }, [request.status, onDone])
+
   async function setStatus(status: RequestStatus) {
     const { error } = await supabase.rpc('update_help_request_status', { p_request_id: request.id, p_status: status })
-    if (error) {
-      Alert.alert(t('common.error'), error.message)
-      return
-    }
-    if (status === 'completed') onDone()
+    if (error) Alert.alert(t('common.error'), error.message)
   }
 
   const finished = request.status === 'completed' || request.status === 'cancelled'
-  const title = (['accepted', 'on_the_way', 'arrived', 'completed', 'cancelled'] as const).includes(request.status as any)
+  const awaitingConfirmation = request.status === 'awaiting_confirmation'
+  const title = (['accepted', 'on_the_way', 'arrived', 'awaiting_confirmation', 'completed', 'cancelled'] as const).includes(request.status as any)
     ? t(`volunteerJob.status.${request.status}`)
     : t('volunteerJob.title')
 
   return (
     <Screen contentStyle={styles.content}>
       <Header title={title} onBack={onBack} />
-      <View style={[styles.icon, finished && styles.iconFinished]}><Text style={styles.iconText}>{request.status === 'completed' ? '✅' : request.status === 'cancelled' ? '🚫' : '🚗'}</Text></View>
-      {!finished ? <Text style={styles.subtitle}>{t('volunteerJob.subtitle')}</Text> : null}
+      <View style={[styles.icon, finished && styles.iconFinished]}>
+        {awaitingConfirmation ? (
+          <ActivityIndicator color={colors.forest} />
+        ) : (
+          <Text style={styles.iconText}>{request.status === 'completed' ? '✅' : request.status === 'cancelled' ? '🚫' : '🚗'}</Text>
+        )}
+      </View>
+      {awaitingConfirmation ? (
+        <Text style={styles.subtitle}>{t('volunteerJob.awaitingConfirmationText')}</Text>
+      ) : !finished ? (
+        <Text style={styles.subtitle}>{t('volunteerJob.subtitle')}</Text>
+      ) : null}
 
       <View style={styles.card}>
         <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requestId')}</Text>
@@ -70,12 +84,12 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
 
       <SanadMap latitude={request.latitude} longitude={request.longitude} />
 
-      {!finished ? (
+      {awaitingConfirmation ? null : !finished ? (
         <>
           <PrimaryButton title={t('volunteerJob.openInGoogleMaps')} tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
           <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted'} />
           <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way'} />
-          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('completed')} disabled={request.status !== 'arrived'} />
+          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('awaiting_confirmation')} disabled={request.status !== 'arrived'} />
         </>
       ) : (
         <PrimaryButton title={t('volunteerJob.back')} onPress={onBack} />

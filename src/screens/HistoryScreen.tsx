@@ -8,7 +8,7 @@ import type { HelpRequest } from '../types'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
 
-const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
+const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived', 'awaiting_confirmation']
 
 const serviceLabelKeys: Record<string, string> = {
   battery: 'request.battery',

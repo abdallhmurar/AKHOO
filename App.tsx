@@ -24,7 +24,7 @@ import type { MainTab } from './src/components/TabBar'
 
 type ScreenName = 'main' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin'
 
-const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived']
+const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived', 'awaiting_confirmation']
 
 function parseHashParams(url: string): Record<string, string> {
   const hashIndex = url.indexOf('#')

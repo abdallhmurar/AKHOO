@@ -138,13 +138,18 @@
       "accepted": "متطوع استلم الطلب",
       "on_the_way": "المتطوع في الطريق",
       "arrived": "المتطوع وصل",
+      "awaiting_confirmation": "بانتظار تأكيدك",
       "completed": "تمت المساعدة",
       "cancelled": "تم إلغاء الطلب"
     },
     "title": "طلب المساعدة",
     "subtitleSearching": "أي متطوع متاح وقريب يقدر يشوف طلبك ويستلمه.",
     "subtitleCompleted": "شكراً لاستخدام سَنَد ❤️",
+    "subtitleAwaitingConfirmation": "المتطوع قال إنه خلّص المساعدة — أكّد إذا وصلتك فعلاً.",
     "subtitleTracking": "حالة الطلب تتحدث مباشرة بينك وبين المتطوع.",
+    "confirmPrompt": "هل تمت المساعدة بنجاح؟",
+    "confirmAccept": "تمت المساعدة بنجاح",
+    "confirmReject": "المساعدة لم تكتمل",
     "requestId": "رقم الطلب",
     "waitingSince": "بتنتظر منذ",
     "volunteerSince": "المتطوع معك منذ",
@@ -167,11 +172,13 @@
       "accepted": "استلمت المهمة",
       "on_the_way": "أنت بالطريق",
       "arrived": "أنت وصلت",
+      "awaiting_confirmation": "بانتظار تأكيد صاحب الطلب",
       "completed": "تمت المساعدة",
       "cancelled": "أُلغي الطلب"
     },
     "title": "المهمة",
     "subtitle": "حدّث حالة المهمة حتى صاحب الطلب يعرف وين وصلت.",
+    "awaitingConfirmationText": "بلّغنا صاحب الطلب إنك خلّصت — بننتظر تأكيده حتى تنحسب المهمة كاملة.",
     "requestId": "رقم الطلب",
     "requesterLabel": "صاحب الطلب",
     "defaultRequesterName": "مستخدم",
@@ -221,6 +228,7 @@
       "accepted": "متطوع استلم الطلب",
       "on_the_way": "بالطريق",
       "arrived": "وصل",
+      "awaiting_confirmation": "بانتظار التأكيد",
       "completed": "تمت المساعدة",
       "cancelled": "ملغي"
     }
@@ -271,9 +279,14 @@
       "accepted": "مستلم",
       "on_the_way": "بالطريق",
       "arrived": "وصل",
+      "awaiting_confirmation": "بانتظار التأكيد",
       "completed": "تمت",
       "cancelled": "ملغي"
     }
+  },
+  "points": {
+    "title": "نقاط التطوع",
+    "completedCount": "{{count}} مساعدة مكتملة"
   },
   "perks": {
     "title": "مزايا سَنَد",

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Alert, Animated, Easing, Image, Linking, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { colors } from '../lib/theme'
+import { colors, font, radius, space } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, Profile } from '../types'
@@ -18,6 +18,7 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
   const [volunteer, setVolunteer] = useState<Profile | null>(null)
   const [busy, setBusy] = useState(false)
   const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [respondingToCompletion, setRespondingToCompletion] = useState(false)
   const [now, setNow] = useState(Date.now())
   const pulseAnim = useRef(new Animated.Value(1)).current
 
@@ -73,23 +74,43 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
     if (error) Alert.alert(t('common.error'), error.message)
   }
 
+  async function respondToCompletion(confirmed: boolean) {
+    setRespondingToCompletion(true)
+    const { error } = await supabase.rpc('confirm_help_request_completion', { p_request_id: request.id, p_confirmed: confirmed })
+    setRespondingToCompletion(false)
+    if (error) Alert.alert(t('common.error'), error.message)
+  }
+
   const finished = request.status === 'completed' || request.status === 'cancelled'
+  const awaitingConfirmation = request.status === 'awaiting_confirmation'
   const elapsedSince = request.status === 'open' ? request.created_at : request.accepted_at ?? request.created_at
   const elapsedLabel = request.status === 'open' ? t('activeRequest.waitingSince') : t('activeRequest.volunteerSince')
   const subtitle = request.status === 'open'
     ? t('activeRequest.subtitleSearching')
     : request.status === 'completed'
       ? t('activeRequest.subtitleCompleted')
-      : t('activeRequest.subtitleTracking')
+      : awaitingConfirmation
+        ? t('activeRequest.subtitleAwaitingConfirmation')
+        : t('activeRequest.subtitleTracking')
 
   return (
     <Screen contentStyle={styles.content}>
       <Header title={t('activeRequest.title')} onBack={onBack} />
       <Animated.View style={[styles.pulse, request.status === 'open' ? styles.searching : styles.found, { transform: [{ scale: pulseAnim }] }]}>
-        <Text style={styles.pulseIcon}>{request.status === 'open' ? '📡' : request.status === 'completed' ? '✅' : '🤝'}</Text>
+        <Text style={styles.pulseIcon}>{request.status === 'open' ? '📡' : request.status === 'completed' ? '✅' : awaitingConfirmation ? '🙋' : '🤝'}</Text>
       </Animated.View>
       <Text style={styles.title}>{t(`activeRequest.status.${request.status}`)}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
+
+      {awaitingConfirmation ? (
+        <View style={styles.confirmCard}>
+          <Text style={styles.confirmTitle}>{t('activeRequest.confirmPrompt')}</Text>
+          <View style={[styles.confirmRow, dir.row]}>
+            <PrimaryButton title={t('activeRequest.confirmReject')} tone="light" onPress={() => respondToCompletion(false)} loading={respondingToCompletion} style={styles.confirmButton} />
+            <PrimaryButton title={t('activeRequest.confirmAccept')} tone="green" onPress={() => respondToCompletion(true)} loading={respondingToCompletion} style={styles.confirmButton} />
+          </View>
+        </View>
+      ) : null}
 
       <View style={styles.card}>
         <Text style={[styles.label, dir.textStart]}>{t('activeRequest.requestId')}</Text><Text style={[styles.value, dir.textStart]}>{request.id.slice(0, 8).toUpperCase()}</Text>
@@ -139,6 +160,8 @@ const styles = StyleSheet.create({
   pulseIcon: { fontSize: 42 },
   title: { color: colors.text, fontSize: 27, fontWeight: '900', textAlign: 'center', marginTop: 20 },
   subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, marginTop: 8, marginBottom: 24 },
+  confirmCard: { backgroundColor: colors.sageSoft, borderRadius: radius.lg, padding: space.lg, marginBottom: 16, gap: space.md },
+  confirmTitle: { color: colors.forest, fontFamily: font.extraBold, fontSize: 16, textAlign: 'center' },
   card: { backgroundColor: colors.card, borderRadius: 22, borderWidth: 1, borderColor: colors.border, padding: 18, marginBottom: 16, gap: 10 },
   photo: { width: '100%', height: 160, borderRadius: 18, marginBottom: 16 },
   label: { color: colors.muted, fontSize: 13 },

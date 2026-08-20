@@ -1,5 +1,5 @@
 export type ServiceType = 'battery' | 'tire' | 'fuel' | 'locked_car' | 'other'
-export type RequestStatus = 'open' | 'accepted' | 'on_the_way' | 'arrived' | 'completed' | 'cancelled'
+export type RequestStatus = 'open' | 'accepted' | 'on_the_way' | 'arrived' | 'awaiting_confirmation' | 'completed' | 'cancelled'
 
 export type HelpRequest = {
   id: string
@@ -14,6 +14,8 @@ export type HelpRequest = {
   accepted_at: string | null
   completed_at: string | null
   photo_url: string | null
+  awaiting_confirmation_at: string | null
+  confirmation_rejected_at: string | null
 }
 
 export type Profile = {
@@ -32,6 +34,15 @@ export type VolunteerProfile = {
   longitude: number | null
   services: ServiceType[]
   is_verified: boolean
+}
+
+export type VolunteerPointTransaction = {
+  id: string
+  volunteer_id: string
+  request_id: string
+  points: number
+  reason: 'completed_verified_mission'
+  created_at: string
 }
 
 export type MembershipStatus = 'pending' | 'active' | 'expired' | 'cancelled' | 'failed'

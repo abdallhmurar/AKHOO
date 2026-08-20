@@ -12,6 +12,7 @@ import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { PasswordStrength } from '../components/PasswordStrength'
 import { LanguagePicker } from '../components/LanguagePicker'
+import { VolunteerPointsCard } from '../components/VolunteerPointsCard'
 
 export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: Profile; email: string; onBack: () => void; onUpdated: (profile: Profile) => void }) {
   const { t } = useTranslation()
@@ -105,6 +106,8 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
         )}
       </Pressable>
       <Text style={styles.avatarHint}>{t('account.changePhoto')}</Text>
+
+      <VolunteerPointsCard userId={profile.id} />
 
       <View style={styles.card}>
         <Text style={[styles.label, dir.textStart]}>{t('account.emailLabel')}</Text>

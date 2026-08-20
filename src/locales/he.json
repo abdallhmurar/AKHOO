@@ -138,13 +138,18 @@
       "accepted": "מתנדב קיבל את הבקשה",
       "on_the_way": "המתנדב בדרך",
       "arrived": "המתנדב הגיע",
+      "awaiting_confirmation": "ממתין לאישורך",
       "completed": "העזרה הושלמה",
       "cancelled": "הבקשה בוטלה"
     },
     "title": "בקשת עזרה",
     "subtitleSearching": "כל מתנדב זמין וקרוב יכול לראות את בקשתך ולקבל אותה.",
     "subtitleCompleted": "תודה שהשתמשת בסנד ❤️",
+    "subtitleAwaitingConfirmation": "המתנדב ציין שסיים לעזור — אשר/י שהעזרה אכן הגיעה אליך.",
     "subtitleTracking": "סטטוס הבקשה מתעדכן בזמן אמת בינך לבין המתנדב.",
+    "confirmPrompt": "האם העזרה אכן הושלמה?",
+    "confirmAccept": "כן, העזרה הושלמה",
+    "confirmReject": "העזרה לא הושלמה",
     "requestId": "מספר בקשה",
     "waitingSince": "ממתין/ה מאז",
     "volunteerSince": "המתנדב איתך מאז",
@@ -167,11 +172,13 @@
       "accepted": "המשימה התקבלה",
       "on_the_way": "את/ה בדרך",
       "arrived": "הגעת",
+      "awaiting_confirmation": "ממתין לאישור מבקש/ת העזרה",
       "completed": "העזרה הושלמה",
       "cancelled": "הבקשה בוטלה"
     },
     "title": "משימה",
     "subtitle": "עדכן/י את סטטוס המשימה כדי שמבקש/ת העזרה ידע/תדע איפה את/ה.",
+    "awaitingConfirmationText": "הודענו למבקש/ת העזרה שסיימת — ממתינים לאישור שלהם לפני שהמשימה תיחשב כהושלמה.",
     "requestId": "מספר בקשה",
     "requesterLabel": "מבקש/ת העזרה",
     "defaultRequesterName": "משתמש",
@@ -221,6 +228,7 @@
       "accepted": "מתנדב קיבל",
       "on_the_way": "בדרך",
       "arrived": "הגיע",
+      "awaiting_confirmation": "ממתין לאישור",
       "completed": "הושלם",
       "cancelled": "בוטל"
     }
@@ -271,9 +279,14 @@
       "accepted": "התקבל",
       "on_the_way": "בדרך",
       "arrived": "הגיע",
+      "awaiting_confirmation": "ממתין לאישור",
       "completed": "הושלם",
       "cancelled": "בוטל"
     }
+  },
+  "points": {
+    "title": "נקודות התנדבות",
+    "completedCount": "{{count}} משימות הושלמו"
   },
   "perks": {
     "title": "הטבות סנד",

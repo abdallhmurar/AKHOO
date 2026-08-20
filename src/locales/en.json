@@ -138,13 +138,18 @@
       "accepted": "A volunteer accepted your request",
       "on_the_way": "Volunteer is on the way",
       "arrived": "Volunteer has arrived",
+      "awaiting_confirmation": "Waiting for your confirmation",
       "completed": "Help completed",
       "cancelled": "Request cancelled"
     },
     "title": "Help Request",
     "subtitleSearching": "Any nearby available volunteer can see and accept your request.",
     "subtitleCompleted": "Thank you for using SANAD ❤️",
+    "subtitleAwaitingConfirmation": "The volunteer says they've finished helping — confirm it actually reached you.",
     "subtitleTracking": "The request status updates live between you and the volunteer.",
+    "confirmPrompt": "Did the help actually happen?",
+    "confirmAccept": "Yes, help was completed",
+    "confirmReject": "Help wasn't completed",
     "requestId": "Request ID",
     "waitingSince": "Waiting since",
     "volunteerSince": "Volunteer with you since",
@@ -167,11 +172,13 @@
       "accepted": "Mission accepted",
       "on_the_way": "You're on the way",
       "arrived": "You've arrived",
+      "awaiting_confirmation": "Waiting for the requester to confirm",
       "completed": "Help completed",
       "cancelled": "Request cancelled"
     },
     "title": "Mission",
     "subtitle": "Update the mission status so the requester knows how far you are.",
+    "awaitingConfirmationText": "We let the requester know you finished — waiting for them to confirm before the mission counts as complete.",
     "requestId": "Request ID",
     "requesterLabel": "Requester",
     "defaultRequesterName": "User",
@@ -221,6 +228,7 @@
       "accepted": "Volunteer accepted",
       "on_the_way": "On the way",
       "arrived": "Arrived",
+      "awaiting_confirmation": "Awaiting confirmation",
       "completed": "Completed",
       "cancelled": "Cancelled"
     }
@@ -271,9 +279,14 @@
       "accepted": "Accepted",
       "on_the_way": "On the way",
       "arrived": "Arrived",
+      "awaiting_confirmation": "Awaiting confirmation",
       "completed": "Completed",
       "cancelled": "Cancelled"
     }
+  },
+  "points": {
+    "title": "Volunteer Points",
+    "completedCount": "{{count}} missions completed"
   },
   "perks": {
     "title": "SANAD Perks",
