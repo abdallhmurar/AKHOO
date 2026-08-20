@@ -18,10 +18,13 @@ const serviceLabelKeys: Record<string, string> = {
   other: 'request.other'
 }
 
+type ReleaseEntry = { kind: 'release'; id: string; released_at: string }
+type HistoryEntry = ({ kind: 'request' } & HelpRequest) | ReleaseEntry
+
 export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBack: () => void; onOpen: (request: HelpRequest) => void }) {
   const { t, i18n } = useTranslation()
   const dir = dirStyles(useIsRTL())
-  const [items, setItems] = useState<HelpRequest[]>([])
+  const [items, setItems] = useState<HistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
 
   function formatDate(iso: string) {
@@ -29,17 +32,25 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
   }
 
   useEffect(() => {
-    supabase
-      .from('help_requests')
-      .select('*')
-      .or(`requester_id.eq.${userId},volunteer_id.eq.${userId}`)
-      .order('created_at', { ascending: false })
-      .limit(50)
-      .then(({ data, error }) => {
-        if (error) Alert.alert(t('common.error'), error.message)
-        else setItems((data ?? []) as HelpRequest[])
-        setLoading(false)
+    Promise.all([
+      supabase.from('help_requests').select('*').or(`requester_id.eq.${userId},volunteer_id.eq.${userId}`).order('created_at', { ascending: false }).limit(50),
+      // Once a released mission gets reassigned to a different volunteer,
+      // volunteer_id on the live row no longer points at this user - without
+      // this, a volunteer's own release would silently vanish from their
+      // history the moment someone else picks the request back up.
+      supabase.from('help_request_releases').select('id, released_at').eq('volunteer_id', userId).order('released_at', { ascending: false }).limit(50)
+    ]).then(([requestsResult, releasesResult]) => {
+      if (requestsResult.error) Alert.alert(t('common.error'), requestsResult.error.message)
+      const requestEntries: HistoryEntry[] = ((requestsResult.data ?? []) as HelpRequest[]).map(r => ({ kind: 'request', ...r }))
+      const releaseEntries: HistoryEntry[] = ((releasesResult.data ?? []) as { id: string; released_at: string }[]).map(r => ({ kind: 'release', id: r.id, released_at: r.released_at }))
+      const merged = [...requestEntries, ...releaseEntries].sort((a, b) => {
+        const aDate = a.kind === 'request' ? a.created_at : a.released_at
+        const bDate = b.kind === 'request' ? b.created_at : b.released_at
+        return new Date(bDate).getTime() - new Date(aDate).getTime()
       })
+      setItems(merged)
+      setLoading(false)
+    })
   }, [userId, t])
 
   return (
@@ -56,6 +67,18 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
       ) : null}
 
       {items.map(item => {
+        if (item.kind === 'release') {
+          return (
+            <View key={`release-${item.id}`} style={styles.card}>
+              <View style={[styles.cardTop, dir.row]}>
+                <Text style={styles.roleBadge}>{t('activity.roleVolunteer')}</Text>
+              </View>
+              <Text style={[styles.service, dir.textStart]}>{t('activity.releasedLabel')}</Text>
+              <Text style={[styles.status, dir.textStart]}>{t('activity.releasedReason')}</Text>
+              <Text style={[styles.date, dir.textStart]}>{formatDate(item.released_at)}</Text>
+            </View>
+          )
+        }
         const role = item.requester_id === userId ? 'requester' : 'volunteer'
         const active = ACTIVE_STATUSES.includes(item.status)
         return (

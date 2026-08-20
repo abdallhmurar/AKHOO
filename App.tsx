@@ -109,7 +109,7 @@ export default function App() {
       return
     }
     setProfileError(false)
-    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', session.user.id).single().then(({ data, error }) => {
+    supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned,created_at').eq('id', session.user.id).single().then(({ data, error }) => {
       if (data) setProfile(data as Profile)
       else if (error) setProfileError(true)
     })
@@ -234,6 +234,7 @@ export default function App() {
               email={session.user.email ?? ''}
               onBack={() => setMainTab('home')}
               onUpdated={setProfile}
+              onViewActivity={() => setMainTab('activity')}
             />
           ) : profileError ? (
             <ProfileLoadError onRetry={() => { setProfileError(false); setProfileRetryTick(tick => tick + 1) }} />

@@ -40,7 +40,6 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   const [available, setAvailable] = useState(false)
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null)
   const [requests, setRequests] = useState<Nearby[]>([])
-  const [myServices, setMyServices] = useState<ServiceType[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [now, setNow] = useState(Date.now())
@@ -67,10 +66,9 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   // up rather than forcing the user to re-toggle.
   useEffect(() => {
     let cancelled = false
-    supabase.from('volunteer_profiles').select('is_available, services, latitude, longitude').eq('user_id', userId).maybeSingle().then(async ({ data }) => {
+    supabase.from('volunteer_profiles').select('is_available, latitude, longitude').eq('user_id', userId).maybeSingle().then(async ({ data }) => {
       if (cancelled) return
       if (data) {
-        setMyServices(((data.services ?? []) as ServiceType[]))
         if (data.is_available && data.latitude != null && data.longitude != null) {
           const position = { latitude: data.latitude, longitude: data.longitude }
           setCoords(position)
@@ -141,14 +139,6 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     }
   }, [requests, selectedId, t])
 
-  function toggleService(key: ServiceType) {
-    setMyServices(current => {
-      const next = current.includes(key) ? current.filter(item => item !== key) : [...current, key]
-      if (available) supabase.from('volunteer_profiles').update({ services: next }).eq('user_id', userId).then(() => {})
-      return next
-    })
-  }
-
   async function toggleAvailability() {
     setLoading(true)
     try {
@@ -160,7 +150,6 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
           is_available: true,
           latitude: position.latitude,
           longitude: position.longitude,
-          services: myServices,
           push_token: pushToken,
           updated_at: new Date().toISOString()
         })
@@ -218,21 +207,6 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     return (
       <Screen>
         <Header title={t('volunteer.title')} subtitle={t('volunteer.subtitle')} onBack={onBack} />
-
-        <View style={styles.skillsCard}>
-          <Text style={[styles.skillsTitle, dir.textStart]}>{t('volunteer.capabilitiesTitle')}</Text>
-          <View style={[styles.skillsGrid, dir.row]}>
-            {services.map(item => {
-              const active = myServices.includes(item.key)
-              return (
-                <Tactile key={item.key} onPress={() => toggleService(item.key)} style={[styles.skillChip, dir.row, active && styles.skillChipActive]}>
-                  <item.Icon size={16} color={active ? '#fff' : colors.forest} weight={active ? 'fill' : 'regular'} />
-                  <Text style={[styles.skillChipText, active && styles.skillChipTextActive]}>{t(item.labelKey)}</Text>
-                </Tactile>
-              )
-            })}
-          </View>
-        </View>
 
         <View style={[styles.availability, dir.alignStart]}>
           <Text style={[styles.availabilityTitle, dir.textStart]}>{t('volunteer.notAvailableTitle')}</Text>
@@ -304,7 +278,6 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
                 </Text>
               </View>
             </View>
-            {myServices.includes(selectedRequest.service_type) ? <Text style={[styles.matchBadge, dir.textStart]}>{t('volunteer.matchBadge')}</Text> : null}
             {selectedRequest.note ? <Text style={[styles.note, dir.textStart]}>{selectedRequest.note}</Text> : null}
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.photo} /> : null}
             <View style={[styles.sheetActions, dir.row]}>
@@ -331,14 +304,6 @@ const styles = StyleSheet.create({
   loadingContent: { alignItems: 'center', justifyContent: 'center' },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
 
-  skillsCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, marginBottom: space.lg },
-  skillsTitle: { color: colors.text, fontFamily: font.bold, fontSize: 15, marginBottom: space.md },
-  skillsGrid: { flexWrap: 'wrap', gap: space.sm },
-  skillChip: { alignItems: 'center', gap: 6, backgroundColor: colors.sageSoft, borderRadius: radius.pill, paddingVertical: 9, paddingHorizontal: space.md },
-  skillChipActive: { backgroundColor: colors.forest },
-  skillChipText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 },
-  skillChipTextActive: { color: '#fff' },
-
   availability: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, gap: space.md },
   availabilityTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18 },
   small: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
@@ -361,7 +326,6 @@ const styles = StyleSheet.create({
   sheetTopText: { flex: 1 },
   sheetTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18 },
   sheetMeta: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, marginTop: 3 },
-  matchBadge: { color: colors.success, fontFamily: font.bold, fontSize: 12.5, marginTop: space.md },
   note: { color: colors.text, fontFamily: font.regular, fontSize: 14, lineHeight: 21, marginTop: space.md },
   photo: { width: '100%', height: 150, borderRadius: radius.md, marginTop: space.md },
   sheetActions: { gap: space.sm, marginTop: space.lg },

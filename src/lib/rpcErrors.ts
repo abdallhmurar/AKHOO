@@ -15,7 +15,10 @@ const KNOWN_MESSAGES: Record<string, string> = {
   'Invalid status transition': 'common.rpcErrors.invalidTransition',
   'Request not found': 'common.rpcErrors.requestNotFound',
   'Not authorized': 'common.rpcErrors.notAuthorized',
-  LOCATION_PERMISSION_DENIED: 'common.rpcErrors.locationDenied'
+  LOCATION_PERMISSION_DENIED: 'common.rpcErrors.locationDenied',
+  'Not your mission': 'common.rpcErrors.notYourMission',
+  'Mission cannot be released from its current state': 'common.rpcErrors.cannotRelease',
+  'You already released this mission': 'common.rpcErrors.alreadyReleased'
 }
 
 export function translateActionError(t: TFunction, error: { message?: string; code?: string } | null | undefined): string {

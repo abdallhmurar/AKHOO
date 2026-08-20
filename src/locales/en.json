@@ -15,7 +15,10 @@
       "requestNotFound": "This request is no longer available.",
       "notAuthorized": "You don't have permission to do this.",
       "locationDenied": "Location access is required. Please allow it in your device settings.",
-      "alreadyHaveActiveRequest": "You already have an active help request."
+      "alreadyHaveActiveRequest": "You already have an active help request.",
+      "notYourMission": "This mission isn't yours.",
+      "cannotRelease": "This mission can't be released from its current state.",
+      "alreadyReleased": "You already released this request, so you can't accept it again."
     }
   },
   "auth": {
@@ -164,6 +167,10 @@
     "subtitleCompleted": "Thank you for using SANAD ❤️",
     "subtitleAwaitingConfirmation": "The volunteer says they've finished helping — confirm it actually reached you.",
     "subtitleTracking": "The request status updates live between you and the volunteer.",
+    "releasedNotice": {
+      "title": "The previous volunteer could no longer complete this",
+      "message": "We're looking for another nearby volunteer."
+    },
     "confirmPrompt": "Did the help actually happen?",
     "confirmAccept": "Yes, help was completed",
     "confirmReject": "Help wasn't completed",
@@ -204,12 +211,30 @@
     "onMyWay": "I'm on my way",
     "arrivedButton": "I've arrived",
     "completeButton": "Help completed ✓",
-    "back": "Back"
+    "back": "Back",
+    "release": {
+      "button": "I can't complete this mission",
+      "confirmTitle": "Are you sure?",
+      "confirmMessage": "The request will return to nearby volunteers so someone else can help.",
+      "back": "Back",
+      "confirm": "Yes, return the request",
+      "reasons": {
+        "cannot_reach": "I can't get there",
+        "emergency": "An emergency came up",
+        "accepted_by_mistake": "I accepted by mistake",
+        "other": "Another reason"
+      }
+    },
+    "completion": {
+      "title": "Mission completed",
+      "message": "Thank you for being SANAD for someone today.",
+      "pointsEarned": "+{{points}} points",
+      "backHome": "Back to Home"
+    }
   },
   "volunteer": {
     "title": "I want to help",
     "subtitle": "Turn on your availability to see nearby requests on the map.",
-    "capabilitiesTitle": "What can you help with? (optional)",
     "notAvailableTitle": "You're currently unavailable",
     "notAvailableText": "Your location is only shared once you turn on availability, and nearby requests appear live on a map.",
     "enable": "Turn on availability",
@@ -217,7 +242,6 @@
     "availableNow": "Available now",
     "nearbyCount": "{{count}} nearby",
     "emptyBanner": "No nearby requests right now — they'll appear automatically as soon as one opens.",
-    "matchBadge": "✓ Matches your skills",
     "openExternal": "Open externally",
     "accept": "Accept Mission",
     "distanceKm": "{{distance}} km",
@@ -240,6 +264,8 @@
     "roleRequester": "Requested help",
     "roleVolunteer": "Helped",
     "activeNow": "Active now",
+    "releasedLabel": "Not completed",
+    "releasedReason": "Request was returned",
     "status": {
       "open": "Looking for a volunteer",
       "accepted": "Volunteer accepted",
@@ -263,6 +289,8 @@
     "updatePassword": "Update Password",
     "logout": "Log Out",
     "language": "Language",
+    "memberSince": "Member since {{date}}",
+    "viewActivity": "View my activity",
     "errors": {
       "requiredFields": "Name and phone number are required.",
       "phoneInvalid": "Invalid phone number.",
@@ -306,6 +334,13 @@
   "points": {
     "title": "Volunteer Points",
     "completedCount": "{{count}} missions completed"
+  },
+  "activityLevel": {
+    "bronze": "Bronze Volunteer",
+    "silver": "Silver Volunteer",
+    "gold": "Gold Volunteer",
+    "green": "SANAD Green Volunteer",
+    "levelUpMessage": "🎉 You've reached {{levelName}}"
   },
   "map": {
     "loading": "Loading map..."

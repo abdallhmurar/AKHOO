@@ -25,6 +25,7 @@ export type Profile = {
   avatar_url: string | null
   is_admin: boolean
   is_banned: boolean
+  created_at: string
 }
 
 export type VolunteerProfile = {

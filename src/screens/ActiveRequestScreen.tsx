@@ -11,12 +11,15 @@ import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
 import { SanadMap } from '../components/SanadMap'
+import { VolunteerActivityBadge } from '../components/VolunteerActivityBadge'
 
 export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initialRequest: HelpRequest; onBack: () => void; onDone: () => void }) {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
   const [request, setRequest] = useState(initialRequest)
   const [volunteer, setVolunteer] = useState<Profile | null>(null)
+  const [volunteerCompletedCount, setVolunteerCompletedCount] = useState(0)
+  const [justReleased, setJustReleased] = useState(false)
   const [busy, setBusy] = useState(false)
   const [confirmingCancel, setConfirmingCancel] = useState(false)
   const [respondingToCompletion, setRespondingToCompletion] = useState(false)
@@ -26,7 +29,17 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
   useEffect(() => {
     const channel = supabase.channel(`request-${request.id}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'help_requests', filter: `id=eq.${request.id}` }, payload => {
-        setRequest(payload.new as HelpRequest)
+        const next = payload.new as HelpRequest
+        setRequest(prev => {
+          // A volunteer released this mission if it had one and just
+          // reverted to 'open' with no assignment - distinct from a
+          // brand-new request, which starts 'open' from its very first
+          // fetch and never makes this transition.
+          if (prev.volunteer_id && !next.volunteer_id && next.status === 'open' && prev.status !== 'open') {
+            setJustReleased(true)
+          }
+          return next
+        })
       })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
@@ -49,10 +62,15 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
   useEffect(() => {
     if (!request.volunteer_id) {
       setVolunteer(null)
+      setVolunteerCompletedCount(0)
       return
     }
+    setJustReleased(false)
     supabase.from('profiles').select('id,full_name,phone,avatar_url,is_admin,is_banned').eq('id', request.volunteer_id).single().then(({ data }) => {
       if (data) setVolunteer(data as Profile)
+    })
+    supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: request.volunteer_id }).then(({ data }) => {
+      setVolunteerCompletedCount((data as number | null) ?? 0)
     })
   }, [request.volunteer_id])
 
@@ -117,6 +135,13 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       <Text style={styles.title}>{t(`activeRequest.status.${request.status}`)}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
 
+      {justReleased && request.status === 'open' ? (
+        <View style={styles.releasedNotice}>
+          <Text style={styles.releasedNoticeTitle}>{t('activeRequest.releasedNotice.title')}</Text>
+          <Text style={styles.releasedNoticeMessage}>{t('activeRequest.releasedNotice.message')}</Text>
+        </View>
+      ) : null}
+
       {awaitingConfirmation ? (
         <View style={styles.confirmCard}>
           <Text style={styles.confirmTitle}>{t('activeRequest.confirmPrompt')}</Text>
@@ -140,7 +165,11 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       {volunteer ? (
         <View style={styles.card}>
           <Text style={[styles.label, dir.textStart]}>{t('activeRequest.volunteerLabel')}</Text>
-          <Text style={[styles.value, dir.textStart]}>{volunteer.full_name || t('activeRequest.defaultVolunteerName')}</Text>
+          <View style={[styles.volunteerNameRow, dir.row]}>
+            <Text style={[styles.value, dir.textStart]}>{volunteer.full_name || t('activeRequest.defaultVolunteerName')}</Text>
+            <VolunteerActivityBadge completedCount={volunteerCompletedCount} />
+          </View>
+          <Text style={[styles.volunteerCompletedCount, dir.textStart]}>{t('points.completedCount', { count: volunteerCompletedCount })}</Text>
           {volunteer.phone ? (
             <PrimaryButton title={`📞 ${t('activeRequest.callButton', { phone: volunteer.phone })}`} tone="green" onPress={() => Linking.openURL(`tel:${volunteer.phone}`)} />
           ) : null}
@@ -177,10 +206,15 @@ const styles = StyleSheet.create({
   subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, marginTop: 8, marginBottom: 24 },
   confirmCard: { backgroundColor: colors.sageSoft, borderRadius: radius.lg, padding: space.lg, marginBottom: 16, gap: space.md },
   confirmTitle: { color: colors.forest, fontFamily: font.extraBold, fontSize: 16, textAlign: 'center' },
+  releasedNotice: { backgroundColor: colors.warningSoft, borderRadius: radius.lg, padding: space.lg, marginBottom: 16, gap: 4 },
+  releasedNoticeTitle: { color: colors.text, fontFamily: font.bold, fontSize: 14, textAlign: 'center' },
+  releasedNoticeMessage: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, textAlign: 'center' },
   card: { backgroundColor: colors.card, borderRadius: 22, borderWidth: 1, borderColor: colors.border, padding: 18, marginBottom: 16, gap: 10 },
   photo: { width: '100%', height: 160, borderRadius: 18, marginBottom: 16 },
   label: { color: colors.muted, fontSize: 13 },
   value: { color: colors.text, fontSize: 17, fontWeight: '900', marginTop: 4 },
+  volunteerNameRow: { alignItems: 'center', gap: 6, marginTop: 4 },
+  volunteerCompletedCount: { color: colors.muted, fontSize: 12.5, marginTop: -4 },
   line: { height: 1, backgroundColor: colors.border, marginVertical: 14 },
   confirmRow: { gap: 10 },
   confirmButton: { flex: 1 }

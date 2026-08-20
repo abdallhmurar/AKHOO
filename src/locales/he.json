@@ -15,7 +15,10 @@
       "requestNotFound": "בקשה זו כבר לא זמינה.",
       "notAuthorized": "אין לך הרשאה לבצע פעולה זו.",
       "locationDenied": "נדרשת גישה למיקום. יש לאשר אותה בהגדרות המכשיר.",
-      "alreadyHaveActiveRequest": "כבר יש לך בקשת עזרה פעילה."
+      "alreadyHaveActiveRequest": "כבר יש לך בקשת עזרה פעילה.",
+      "notYourMission": "המשימה הזו אינה שלך.",
+      "cannotRelease": "לא ניתן לשחרר את המשימה במצבה הנוכחי.",
+      "alreadyReleased": "כבר שחררת בקשה זו, ולכן לא ניתן לקבל אותה שוב."
     }
   },
   "auth": {
@@ -164,6 +167,10 @@
     "subtitleCompleted": "תודה שהשתמשת בסנד ❤️",
     "subtitleAwaitingConfirmation": "המתנדב ציין שסיים לעזור — אשר/י שהעזרה אכן הגיעה אליך.",
     "subtitleTracking": "סטטוס הבקשה מתעדכן בזמן אמת בינך לבין המתנדב.",
+    "releasedNotice": {
+      "title": "המתנדב הקודם כבר לא יכול להשלים את זה",
+      "message": "אנחנו מחפשים מתנדב קרוב נוסף."
+    },
     "confirmPrompt": "האם העזרה אכן הושלמה?",
     "confirmAccept": "כן, העזרה הושלמה",
     "confirmReject": "העזרה לא הושלמה",
@@ -204,12 +211,30 @@
     "onMyWay": "אני בדרך",
     "arrivedButton": "הגעתי",
     "completeButton": "העזרה הושלמה ✓",
-    "back": "חזרה"
+    "back": "חזרה",
+    "release": {
+      "button": "אני לא יכול/ה להשלים את המשימה",
+      "confirmTitle": "את/ה בטוח/ה?",
+      "confirmMessage": "הבקשה תחזור למתנדבים קרובים כדי שמישהו אחר יוכל לעזור.",
+      "back": "חזרה",
+      "confirm": "כן, החזר/י את הבקשה",
+      "reasons": {
+        "cannot_reach": "אני לא יכול/ה להגיע",
+        "emergency": "צצה בעיה דחופה",
+        "accepted_by_mistake": "קיבלתי בטעות",
+        "other": "סיבה אחרת"
+      }
+    },
+    "completion": {
+      "title": "המשימה הושלמה בהצלחה",
+      "message": "תודה שהיית סנד למישהו היום.",
+      "pointsEarned": "+{{points}} נקודות",
+      "backHome": "חזרה לדף הבית"
+    }
   },
   "volunteer": {
     "title": "אני רוצה לעזור",
     "subtitle": "הפעל/י את הזמינות שלך כדי לראות בקשות קרובות על המפה.",
-    "capabilitiesTitle": "באילו תחומים תוכל/י לעזור? (אופציונלי)",
     "notAvailableTitle": "את/ה לא זמין/ה כרגע",
     "notAvailableText": "מיקומך משותף רק כאשר הזמינות מופעלת, ובקשות קרובות יוצגו במפה בזמן אמת.",
     "enable": "הפעלת זמינות",
@@ -217,7 +242,6 @@
     "availableNow": "זמין/ה כעת",
     "nearbyCount": "{{count}} בקשות קרובות",
     "emptyBanner": "אין כרגע בקשות קרובות — הן יופיעו אוטומטית כשתיפתח בקשה.",
-    "matchBadge": "✓ תואם לכישוריך",
     "openExternal": "פתיחה חיצונית",
     "accept": "קבלת המשימה",
     "distanceKm": "{{distance}} ק\"מ",
@@ -240,6 +264,8 @@
     "roleRequester": "ביקשת עזרה",
     "roleVolunteer": "עזרת",
     "activeNow": "פעיל כעת",
+    "releasedLabel": "לא הושלם",
+    "releasedReason": "הבקשה הוחזרה",
     "status": {
       "open": "מחפשים מתנדב",
       "accepted": "מתנדב קיבל",
@@ -263,6 +289,8 @@
     "updatePassword": "עדכון סיסמה",
     "logout": "התנתקות",
     "language": "שפה",
+    "memberSince": "חבר/ה מאז {{date}}",
+    "viewActivity": "צפייה בפעילות שלי",
     "errors": {
       "requiredFields": "שם ומספר טלפון הם שדות חובה.",
       "phoneInvalid": "מספר טלפון לא תקין.",
@@ -306,6 +334,13 @@
   "points": {
     "title": "נקודות התנדבות",
     "completedCount": "{{count}} משימות הושלמו"
+  },
+  "activityLevel": {
+    "bronze": "מתנדב/ת ברונזה",
+    "silver": "מתנדב/ת כסף",
+    "gold": "מתנדב/ת זהב",
+    "green": "מתנדב/ת ירוק סנד",
+    "levelUpMessage": "🎉 הגעת לדרגת {{levelName}}"
   },
   "map": {
     "loading": "טוען מפה..."

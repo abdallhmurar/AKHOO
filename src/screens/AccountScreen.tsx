@@ -17,7 +17,7 @@ import { VolunteerPointsCard } from '../components/VolunteerPointsCard'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
-export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: Profile; email: string; onBack: () => void; onUpdated: (profile: Profile) => void }) {
+export function AccountScreen({ profile, email, onBack, onUpdated, onViewActivity }: { profile: Profile; email: string; onBack: () => void; onUpdated: (profile: Profile) => void; onViewActivity: () => void }) {
   const { t } = useTranslation()
   const isRTL = useIsRTL()
   const dir = dirStyles(isRTL)
@@ -130,7 +130,7 @@ export function AccountScreen({ profile, email, onBack, onUpdated }: { profile: 
       </Pressable>
       <Text style={styles.avatarHint}>{t('account.changePhoto')}</Text>
 
-      <VolunteerPointsCard userId={profile.id} />
+      <VolunteerPointsCard userId={profile.id} memberSince={profile.created_at} onViewActivity={onViewActivity} />
 
       <View style={styles.card}>
         <Text style={[styles.label, dir.textStart]}>{t('account.emailLabel')}</Text>

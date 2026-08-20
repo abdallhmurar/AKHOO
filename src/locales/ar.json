@@ -15,7 +15,10 @@
       "requestNotFound": "هذا الطلب ما عاد متوفر.",
       "notAuthorized": "ما عندك صلاحية تعمل هيك.",
       "locationDenied": "لازم إذن الموقع. فعّله من إعدادات جهازك.",
-      "alreadyHaveActiveRequest": "عندك طلب مساعدة نشط أصلاً."
+      "alreadyHaveActiveRequest": "عندك طلب مساعدة نشط أصلاً.",
+      "notYourMission": "هاي المهمة مش إلك.",
+      "cannotRelease": "ما فيك تسيب هاي المهمة بوضعها الحالي.",
+      "alreadyReleased": "سبت هاد الطلب قبل شوي، ما فيك تستلمه مرة ثانية."
     }
   },
   "auth": {
@@ -164,6 +167,10 @@
     "subtitleCompleted": "شكراً لاستخدام سَنَد ❤️",
     "subtitleAwaitingConfirmation": "المتطوع قال إنه خلّص المساعدة — أكّد إذا وصلتك فعلاً.",
     "subtitleTracking": "حالة الطلب تتحدث مباشرة بينك وبين المتطوع.",
+    "releasedNotice": {
+      "title": "المتطوع السابق ما عاد قادر يكمل المهمة",
+      "message": "جاري البحث عن متطوع آخر قريب منك."
+    },
     "confirmPrompt": "هل تمت المساعدة بنجاح؟",
     "confirmAccept": "تمت المساعدة بنجاح",
     "confirmReject": "المساعدة لم تكتمل",
@@ -204,12 +211,30 @@
     "onMyWay": "أنا في الطريق",
     "arrivedButton": "وصلت للموقع",
     "completeButton": "تمت المساعدة ✓",
-    "back": "رجوع"
+    "back": "رجوع",
+    "release": {
+      "button": "لا أستطيع إكمال المهمة",
+      "confirmTitle": "هل أنت متأكد؟",
+      "confirmMessage": "سيعود الطلب للمتطوعين القريبين حتى يتمكن شخص آخر من المساعدة.",
+      "back": "رجوع",
+      "confirm": "نعم، إعادة الطلب",
+      "reasons": {
+        "cannot_reach": "لا أستطيع الوصول",
+        "emergency": "مشكلة طارئة",
+        "accepted_by_mistake": "قبلت الطلب بالخطأ",
+        "other": "سبب آخر"
+      }
+    },
+    "completion": {
+      "title": "تمت المهمة بنجاح",
+      "message": "شكراً لأنك كنت سَنَد لحدا اليوم.",
+      "pointsEarned": "+{{points}} نقاط",
+      "backHome": "الرجوع للرئيسية"
+    }
   },
   "volunteer": {
     "title": "بدي أساعد",
     "subtitle": "فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك على الخريطة.",
-    "capabilitiesTitle": "شو بتقدر تساعد فيه؟ (اختياري)",
     "notAvailableTitle": "أنت غير متاح حالياً",
     "notAvailableText": "موقعك لا يُرسل إلا عند تفعيل التوفر، وتظهر لك الطلبات القريبة على خريطة مباشرة.",
     "enable": "تفعيل التوفر",
@@ -217,7 +242,6 @@
     "availableNow": "متاح الآن",
     "nearbyCount": "{{count}} طلب قريب",
     "emptyBanner": "ما في طلبات قريبة هلق — رح تظهر تلقائياً أول ما تنفتح.",
-    "matchBadge": "✓ ضمن مهاراتك",
     "openExternal": "فتح خارجي",
     "accept": "استلام المهمة",
     "distanceKm": "{{distance}} كم",
@@ -240,6 +264,8 @@
     "roleRequester": "طلبت مساعدة",
     "roleVolunteer": "ساعدت",
     "activeNow": "نشط الآن",
+    "releasedLabel": "لم تكتمل",
+    "releasedReason": "تم إعادة الطلب",
     "status": {
       "open": "نبحث عن متطوع",
       "accepted": "متطوع استلم الطلب",
@@ -263,6 +289,8 @@
     "updatePassword": "تحديث كلمة المرور",
     "logout": "تسجيل خروج",
     "language": "اللغة",
+    "memberSince": "عضو منذ {{date}}",
+    "viewActivity": "عرض نشاطي",
     "errors": {
       "requiredFields": "الاسم ورقم الهاتف إجباريين.",
       "phoneInvalid": "رقم هاتف غير صحيح.",
@@ -306,6 +334,13 @@
   "points": {
     "title": "نقاط التطوع",
     "completedCount": "{{count}} مساعدة مكتملة"
+  },
+  "activityLevel": {
+    "bronze": "المتطوع البرونزي",
+    "silver": "المتطوع الفضي",
+    "gold": "المتطوع الذهبي",
+    "green": "متطوع سَنَد الأخضر",
+    "levelUpMessage": "🎉 وصلت لدرجة {{levelName}}"
   },
   "map": {
     "loading": "جارٍ تحميل الخريطة..."
