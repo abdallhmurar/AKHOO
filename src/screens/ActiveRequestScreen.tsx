@@ -7,11 +7,13 @@ import { supabase } from '../lib/supabase'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useStaggeredReveal } from '../lib/useStaggeredReveal'
 import type { HelpRequest, Profile } from '../types'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Surface } from '../components/Surface'
 import { StatusTimeline } from '../components/StatusTimeline'
 import { SanadMap } from '../components/SanadMap'
+import { SuccessCheckmark } from '../components/SuccessCheckmark'
 import { Tactile } from '../components/Tactile'
 import { VolunteerActivityBadge } from '../components/VolunteerActivityBadge'
 
@@ -157,8 +159,14 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
 
       <View style={styles.sheet}>
         <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
-          <Text style={styles.title}>{t(`activeRequest.status.${request.status}`)}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          {request.status === 'completed' ? (
+            <CompletedHeader title={t(`activeRequest.status.${request.status}`)} subtitle={subtitle} />
+          ) : (
+            <>
+              <Text style={styles.title}>{t(`activeRequest.status.${request.status}`)}</Text>
+              <Text style={styles.subtitle}>{subtitle}</Text>
+            </>
+          )}
 
           {showTimeline ? (
             <View style={styles.timelineWrap}>
@@ -229,6 +237,20 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
         </ScrollView>
       </View>
     </SafeAreaView>
+  )
+}
+
+// Its own component (not inline JSX above) so the staggered reveal mounts
+// fresh exactly when the request finishes - see the identical note on
+// VolunteerJobScreen's CompletionCelebration for why that matters.
+function CompletedHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  const { stageStyle } = useStaggeredReveal(2)
+  return (
+    <>
+      <SuccessCheckmark tone="success" />
+      <Animated.Text style={[styles.title, stageStyle(0)]}>{title}</Animated.Text>
+      <Animated.Text style={[styles.subtitle, stageStyle(1)]}>{subtitle}</Animated.Text>
+    </>
   )
 }
 

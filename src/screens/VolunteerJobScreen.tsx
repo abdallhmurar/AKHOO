@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, AppState, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, AppState, Animated, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useStaggeredReveal } from '../lib/useStaggeredReveal'
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS } from '../lib/activityLevel'
 import type { ActivityLevel } from '../lib/activityLevel'
 import type { HelpRequest, Profile, RequestStatus } from '../types'
@@ -14,6 +15,7 @@ import { Screen } from '../components/Screen'
 import { Surface } from '../components/Surface'
 import { StatusTimeline } from '../components/StatusTimeline'
 import { SanadMap } from '../components/SanadMap'
+import { SuccessCheckmark } from '../components/SuccessCheckmark'
 import { Tactile } from '../components/Tactile'
 
 const RELEASE_REASONS = ['cannot_reach', 'emergency', 'accepted_by_mistake', 'other'] as const
@@ -117,43 +119,13 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
     : t('volunteerJob.title')
 
   if (request.status === 'completed') {
-    return (
-      <Screen contentStyle={styles.completionContent}>
-        <View style={styles.completionIcon}>
-          <Text style={styles.completionIconText}>✅</Text>
-        </View>
-        <Text style={styles.completionTitle}>{t('volunteerJob.completion.title')}</Text>
-        <Text style={styles.completionMessage}>{t('volunteerJob.completion.message')}</Text>
-
-        {completionStats ? (
-          <>
-            <View style={styles.statsCard}>
-              <Text style={styles.statsPoints}>{t('volunteerJob.completion.pointsEarned', { points: completionStats.points })}</Text>
-              <Text style={styles.statsCount}>{t('points.completedCount', { count: completionStats.completedCount })}</Text>
-            </View>
-            {completionStats.leveledUpTo ? (
-              <View style={[styles.levelUpBanner, dir.row]}>
-                <Star size={18} color={ACTIVITY_LEVEL_COLORS[completionStats.leveledUpTo]} weight="fill" />
-                <Text style={styles.levelUpText}>
-                  {t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[completionStats.leveledUpTo]) })}
-                </Text>
-              </View>
-            ) : null}
-            <PrimaryButton title={t('volunteerJob.completion.backHome')} onPress={onDone} />
-          </>
-        ) : (
-          <ActivityIndicator color={colors.forest} style={{ marginTop: space.lg }} />
-        )}
-      </Screen>
-    )
+    return <CompletionCelebration stats={completionStats} onDone={onDone} />
   }
 
   if (cancelled) {
     return (
       <Screen contentStyle={styles.completionContent}>
-        <View style={[styles.completionIcon, styles.completionIconCancelled]}>
-          <Text style={styles.completionIconText}>🚫</Text>
-        </View>
+        <SuccessCheckmark tone="danger" />
         <Text style={styles.completionTitle}>{title}</Text>
         <PrimaryButton title={t('volunteerJob.back')} onPress={onBack} />
       </Screen>
@@ -240,6 +212,49 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   )
 }
 
+// A dedicated component (not inline JSX in VolunteerJobScreen) so its
+// staggered reveal actually mounts fresh the moment the mission completes.
+// useStaggeredReveal's animation starts on mount - if it lived inline in
+// VolunteerJobScreen's own render tree, it would have started (and long
+// since finished) back when the screen first opened in 'accepted' state,
+// so by the time 'completed' is actually reached minutes later everything
+// would just appear instantly with no visible stagger at all.
+function CompletionCelebration({ stats, onDone }: { stats: CompletionStats | null; onDone: () => void }) {
+  const { t } = useTranslation()
+  const dir = dirStyles(useIsRTL())
+  const { stageStyle } = useStaggeredReveal(4)
+
+  return (
+    <Screen contentStyle={styles.completionContent}>
+      <SuccessCheckmark tone="success" />
+      <Animated.Text style={[styles.completionTitle, stageStyle(0)]}>{t('volunteerJob.completion.title')}</Animated.Text>
+      <Animated.Text style={[styles.completionMessage, stageStyle(1)]}>{t('volunteerJob.completion.message')}</Animated.Text>
+
+      {stats ? (
+        <>
+          <Animated.View style={[styles.statsCard, stageStyle(2)]}>
+            <Text style={styles.statsPoints}>{t('volunteerJob.completion.pointsEarned', { points: stats.points })}</Text>
+            <Text style={styles.statsCount}>{t('points.completedCount', { count: stats.completedCount })}</Text>
+          </Animated.View>
+          <Animated.View style={stageStyle(3)}>
+            {stats.leveledUpTo ? (
+              <View style={[styles.levelUpBanner, dir.row]}>
+                <Star size={18} color={ACTIVITY_LEVEL_COLORS[stats.leveledUpTo]} weight="fill" />
+                <Text style={styles.levelUpText}>
+                  {t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}
+                </Text>
+              </View>
+            ) : null}
+            <PrimaryButton title={t('volunteerJob.completion.backHome')} onPress={onDone} />
+          </Animated.View>
+        </>
+      ) : (
+        <ActivityIndicator color={colors.forest} style={{ marginTop: space.lg }} />
+      )}
+    </Screen>
+  )
+}
+
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.bg },
   mapArea: { height: 300 },
@@ -272,9 +287,6 @@ const styles = StyleSheet.create({
   releaseButton: { flex: 1 },
 
   completionContent: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xxl },
-  completionIcon: { width: 86, height: 86, borderRadius: 43, backgroundColor: colors.successSoft, alignItems: 'center', justifyContent: 'center' },
-  completionIconCancelled: { backgroundColor: colors.dangerSoft },
-  completionIconText: { fontSize: 38 },
   completionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 22, textAlign: 'center' },
   completionMessage: { color: colors.muted, fontFamily: font.regular, fontSize: 14.5, textAlign: 'center', lineHeight: 22 },
   statsCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, paddingVertical: space.xl, paddingHorizontal: space.xxl, alignItems: 'center', gap: 6, width: '100%' },
