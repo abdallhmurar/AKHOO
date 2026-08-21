@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { Camera, SignOut } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { colors } from '../lib/theme'
+import { colors, font, radius, space, type } from '../lib/theme'
 import { normalizePhone } from '../lib/phone'
 import { stopBackgroundLocationUpdates } from '../lib/location'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -11,6 +12,8 @@ import type { Profile } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
+import { Surface } from '../components/Surface'
+import { Tactile } from '../components/Tactile'
 import { PasswordStrength } from '../components/PasswordStrength'
 import { LanguagePicker } from '../components/LanguagePicker'
 import { VolunteerPointsCard } from '../components/VolunteerPointsCard'
@@ -121,23 +124,25 @@ export function AccountScreen({ profile, email, onBack, onUpdated, onViewActivit
     <Screen>
       <Header title={t('account.title')} subtitle={t('account.subtitle')} onBack={onBack} />
 
-      <Pressable onPress={pickAvatar} style={styles.avatarPicker}>
-        {avatarUri || profile.avatar_url ? (
-          <Image source={{ uri: avatarUri ?? profile.avatar_url! }} style={styles.avatarImage} />
-        ) : (
-          <Text style={styles.avatarPlaceholder}>📷</Text>
-        )}
-      </Pressable>
-      <Text style={styles.avatarHint}>{t('account.changePhoto')}</Text>
+      <View style={styles.identity}>
+        <Pressable onPress={pickAvatar} style={styles.avatarPicker}>
+          {avatarUri || profile.avatar_url ? (
+            <Image source={{ uri: avatarUri ?? profile.avatar_url! }} style={styles.avatarImage} />
+          ) : (
+            <Camera size={26} color={colors.muted} weight="light" />
+          )}
+          <View style={styles.avatarEditBadge}>
+            <Camera size={13} color="#fff" weight="fill" />
+          </View>
+        </Pressable>
+        <Text style={styles.identityName}>{name.trim() || t('account.title')}</Text>
+        <Text style={styles.identityEmail}>{email}</Text>
+      </View>
 
       <VolunteerPointsCard userId={profile.id} memberSince={profile.created_at} onViewActivity={onViewActivity} />
 
-      <View style={styles.card}>
-        <Text style={[styles.label, dir.textStart]}>{t('account.emailLabel')}</Text>
-        <Text style={[styles.readonly, dir.textStart]}>{email}</Text>
-
-        <View style={styles.line} />
-
+      <Text style={[styles.sectionLabel, dir.textStart]}>{t('account.sections.personalInfo')}</Text>
+      <Surface elevation="soft" padding="lg" style={styles.card}>
         <Text style={[styles.label, dir.textStart]}>{t('account.nameLabel')}</Text>
         <TextInput value={name} onChangeText={t => { setName(t); setProfileError(null) }} style={[styles.input, dir.textStart]} />
 
@@ -146,10 +151,10 @@ export function AccountScreen({ profile, email, onBack, onUpdated, onViewActivit
 
         {profileError ? <Text style={[styles.error, dir.textStart]}>{profileError}</Text> : null}
         <PrimaryButton title={t('account.saveChanges')} onPress={saveProfile} loading={savingProfile} />
-      </View>
+      </Surface>
 
-      <View style={styles.card}>
-        <Text style={[styles.cardTitle, dir.textStart]}>{t('account.changePassword')}</Text>
+      <Text style={[styles.sectionLabel, dir.textStart]}>{t('account.sections.security')}</Text>
+      <Surface elevation="soft" padding="lg" style={styles.card}>
         <TextInput
           value={newPassword}
           onChangeText={t => { setNewPassword(t); setPasswordError(null) }}
@@ -161,32 +166,34 @@ export function AccountScreen({ profile, email, onBack, onUpdated, onViewActivit
         <PasswordStrength password={newPassword} />
         {passwordError ? <Text style={[styles.error, dir.textStart]}>{passwordError}</Text> : null}
         <PrimaryButton title={t('account.updatePassword')} tone="light" onPress={savePassword} loading={savingPassword} />
-      </View>
+      </Surface>
 
-      <View style={styles.card}>
-        <Text style={[styles.cardTitle, dir.textStart]}>{t('account.language')}</Text>
+      <Text style={[styles.sectionLabel, dir.textStart]}>{t('account.sections.preferences')}</Text>
+      <Surface elevation="soft" padding="lg" style={styles.card}>
         <LanguagePicker />
-      </View>
+      </Surface>
 
-      <Pressable onPress={logout} style={styles.logoutRow}>
+      <Tactile onPress={logout} style={[styles.logoutRow, dir.row]}>
+        <SignOut size={18} color={colors.danger} />
         <Text style={styles.logoutText}>{t('account.logout')}</Text>
-      </Pressable>
+      </Tactile>
     </Screen>
   )
 }
 
 const styles = StyleSheet.create({
-  avatarPicker: { alignSelf: 'center', width: 96, height: 96, borderRadius: 48, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', marginTop: 6 },
+  identity: { alignItems: 'center', marginBottom: space.lg },
+  avatarPicker: { width: 88, height: 88, borderRadius: 44, backgroundColor: colors.surfaceMuted, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   avatarImage: { width: '100%', height: '100%' },
-  avatarPlaceholder: { fontSize: 30 },
-  avatarHint: { color: colors.muted, textAlign: 'center', fontSize: 12, marginTop: 8, marginBottom: 22 },
-  card: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 22, padding: 18, marginBottom: 16, gap: 10 },
-  cardTitle: { color: colors.text, fontWeight: '900', fontSize: 17, marginBottom: 2 },
+  avatarEditBadge: { position: 'absolute', bottom: 0, right: 0, width: 26, height: 26, borderRadius: 13, backgroundColor: colors.forest, borderWidth: 2, borderColor: colors.bg, alignItems: 'center', justifyContent: 'center' },
+  identityName: { ...type.h2, color: colors.text, marginTop: space.md },
+  identityEmail: { color: colors.muted, fontFamily: font.regular, fontSize: 13, marginTop: 2 },
+
+  sectionLabel: { ...type.caption, color: colors.muted, fontFamily: font.bold, textTransform: 'uppercase', marginBottom: space.sm, marginTop: space.xs },
+  card: { marginBottom: space.lg, gap: 10 },
   label: { color: colors.muted, fontSize: 13 },
-  readonly: { color: colors.text, fontWeight: '800', fontSize: 15 },
-  line: { height: 1, backgroundColor: colors.border, marginVertical: 4 },
-  input: { minHeight: 52, borderRadius: 15, backgroundColor: '#F9FCFF', borderWidth: 1, borderColor: colors.border, paddingHorizontal: 14, color: colors.text, fontSize: 15 },
-  error: { color: colors.red, fontSize: 13, fontWeight: '700' },
-  logoutRow: { alignItems: 'center', paddingVertical: 14, marginBottom: 10 },
-  logoutText: { color: colors.red, fontWeight: '800' }
+  input: { minHeight: 52, borderRadius: radius.sm, backgroundColor: colors.surfaceMuted, borderWidth: 1, borderColor: colors.border, paddingHorizontal: 14, color: colors.text, fontSize: 15 },
+  error: { color: colors.danger, fontSize: 13, fontWeight: '700' },
+  logoutRow: { alignSelf: 'center', alignItems: 'center', gap: 8, paddingVertical: 14, marginBottom: 10 },
+  logoutText: { color: colors.danger, fontFamily: font.bold, fontSize: 14 }
 })

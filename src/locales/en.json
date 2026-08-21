@@ -274,6 +274,9 @@
     "activeNow": "Active now",
     "releasedLabel": "Not completed",
     "releasedReason": "Request was returned",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "pointsEarned": "+{{points}} points",
     "status": {
       "open": "Looking for a volunteer",
       "accepted": "Volunteer accepted",
@@ -299,6 +302,11 @@
     "language": "Language",
     "memberSince": "Member since {{date}}",
     "viewActivity": "View my activity",
+    "sections": {
+      "personalInfo": "Personal info",
+      "security": "Security",
+      "preferences": "Preferences"
+    },
     "errors": {
       "requiredFields": "Name and phone number are required.",
       "phoneInvalid": "Invalid phone number.",

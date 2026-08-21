@@ -274,6 +274,9 @@
     "activeNow": "نشط الآن",
     "releasedLabel": "لم تكتمل",
     "releasedReason": "تم إعادة الطلب",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "pointsEarned": "+{{points}} نقاط",
     "status": {
       "open": "نبحث عن متطوع",
       "accepted": "متطوع استلم الطلب",
@@ -299,6 +302,11 @@
     "language": "اللغة",
     "memberSince": "عضو منذ {{date}}",
     "viewActivity": "عرض نشاطي",
+    "sections": {
+      "personalInfo": "المعلومات الشخصية",
+      "security": "الأمان",
+      "preferences": "التفضيلات"
+    },
     "errors": {
       "requiredFields": "الاسم ورقم الهاتف إجباريين.",
       "phoneInvalid": "رقم هاتف غير صحيح.",

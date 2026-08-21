@@ -274,6 +274,9 @@
     "activeNow": "פעיל כעת",
     "releasedLabel": "לא הושלם",
     "releasedReason": "הבקשה הוחזרה",
+    "today": "היום",
+    "yesterday": "אתמול",
+    "pointsEarned": "+{{points}} נקודות",
     "status": {
       "open": "מחפשים מתנדב",
       "accepted": "מתנדב קיבל",
@@ -299,6 +302,11 @@
     "language": "שפה",
     "memberSince": "חבר/ה מאז {{date}}",
     "viewActivity": "צפייה בפעילות שלי",
+    "sections": {
+      "personalInfo": "פרטים אישיים",
+      "security": "אבטחה",
+      "preferences": "העדפות"
+    },
     "errors": {
       "requiredFields": "שם ומספר טלפון הם שדות חובה.",
       "phoneInvalid": "מספר טלפון לא תקין.",
