@@ -6,7 +6,7 @@ import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackg
 import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
-import { colors, font, radius, space, shadow } from '../lib/theme'
+import { colors, font, radius, space, shadow, type } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, ServiceType } from '../types'
@@ -14,6 +14,8 @@ import { BottomSheet } from '../components/BottomSheet'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
+import { Surface } from '../components/Surface'
+import { StatusPill } from '../components/StatusPill'
 import { SanadMap } from '../components/SanadMap'
 import type { SanadMapRef } from '../components/SanadMap.types'
 import { Tactile } from '../components/Tactile'
@@ -208,11 +210,11 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       <Screen>
         <Header title={t('volunteer.title')} subtitle={t('volunteer.subtitle')} onBack={onBack} />
 
-        <View style={[styles.availability, dir.alignStart]}>
-          <Text style={[styles.availabilityTitle, dir.textStart]}>{t('volunteer.notAvailableTitle')}</Text>
+        <Surface elevation="soft" padding="xl" style={[styles.availability, dir.alignStart]}>
+          <StatusPill label={t('volunteer.notAvailableTitle')} tone="warning" />
           <Text style={[styles.small, dir.textStart]}>{t('volunteer.notAvailableText')}</Text>
           <PrimaryButton title={t('volunteer.enable')} onPress={toggleAvailability} loading={loading} />
-        </View>
+        </Surface>
       </Screen>
     )
   }
@@ -237,11 +239,12 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
         <Tactile onPress={onBack} style={styles.backButton} scaleTo={0.92}>
           <BackIcon size={18} color={colors.text} />
         </Tactile>
-        <View style={[styles.statusPill, dir.row]}>
-          <View style={styles.statusDot} />
-          <Text style={styles.statusText} numberOfLines={1}>
-            {requests.length ? `${t('volunteer.availableNow')} · ${t('volunteer.nearbyCount', { count: requests.length })}` : t('volunteer.availableNow')}
-          </Text>
+        <View style={styles.statusPillWrap}>
+          <StatusPill
+            tone="success"
+            pulse
+            label={requests.length ? `${t('volunteer.availableNow')} · ${t('volunteer.nearbyCount', { count: requests.length })}` : t('volunteer.availableNow')}
+          />
         </View>
         <Tactile onPress={toggleAvailability} style={styles.stopButton} scaleTo={0.94}>
           {loading ? <ActivityIndicator color={colors.text} size="small" /> : <Text style={styles.stopText}>{t('volunteer.disable')}</Text>}
@@ -259,9 +262,9 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       ) : null}
 
       {requests.length === 0 ? (
-        <View pointerEvents="none" style={styles.emptyBanner}>
+        <Surface elevation="floating" padding="md" style={styles.emptyBanner} tone="surface">
           <Text style={styles.emptyBannerText}>{t('volunteer.emptyBanner')}</Text>
-        </View>
+        </Surface>
       ) : null}
 
       <BottomSheet visible={!!selectedRequest} onClose={() => setSelectedId(null)}>
@@ -274,8 +277,11 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
               <View style={[styles.sheetTopText, dir.alignStart]}>
                 <Text style={[styles.sheetTitle, dir.textStart]}>{t(serviceByKey[selectedRequest.service_type].labelKey)}</Text>
                 <Text style={[styles.sheetMeta, dir.textStart]}>
-                  {t('volunteer.distanceKm', { distance: selectedRequest.distance.toFixed(1) })} · {t('volunteer.since', { time: formatElapsed(now - new Date(selectedRequest.created_at).getTime(), t) })}
+                  {t('volunteer.since', { time: formatElapsed(now - new Date(selectedRequest.created_at).getTime(), t) })}
                 </Text>
+              </View>
+              <View style={styles.distanceChip}>
+                <Text style={styles.distanceChipText}>{t('volunteer.distanceKm', { distance: selectedRequest.distance.toFixed(1) })}</Text>
               </View>
             </View>
             {selectedRequest.note ? <Text style={[styles.note, dir.textStart]}>{selectedRequest.note}</Text> : null}
@@ -304,28 +310,27 @@ const styles = StyleSheet.create({
   loadingContent: { alignItems: 'center', justifyContent: 'center' },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
 
-  availability: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, gap: space.md },
-  availabilityTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18 },
+  availability: { gap: space.md },
   small: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
 
   topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, alignItems: 'center', gap: space.sm },
-  backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.soft },
-  statusPill: { flex: 1, alignItems: 'center', gap: 7, backgroundColor: colors.surface, borderRadius: radius.pill, paddingVertical: 10, paddingHorizontal: space.md, ...shadow.soft },
-  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.success },
-  statusText: { color: colors.text, fontFamily: font.bold, fontSize: 13 },
-  stopButton: { minWidth: 60, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, ...shadow.soft },
+  backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
+  statusPillWrap: { flex: 1, alignItems: 'center' },
+  stopButton: { minWidth: 60, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, ...shadow.floating },
   stopText: { color: colors.danger, fontFamily: font.bold, fontSize: 13 },
 
-  locateButton: { position: 'absolute', bottom: space.xxl + 70, width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.soft },
+  locateButton: { position: 'absolute', bottom: space.xxl + 70, width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
 
-  emptyBanner: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xl, backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, ...shadow.soft },
+  emptyBanner: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xl },
   emptyBannerText: { color: colors.muted, fontFamily: font.medium, fontSize: 12.5, textAlign: 'center', lineHeight: 18 },
 
   sheetTop: { alignItems: 'center', gap: space.md },
   sheetIcon: { width: 52, height: 52, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
   sheetTopText: { flex: 1 },
-  sheetTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 18 },
+  sheetTitle: { ...type.h3, color: colors.text },
   sheetMeta: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, marginTop: 3 },
+  distanceChip: { backgroundColor: colors.sageSoft, borderRadius: radius.pill, paddingVertical: 6, paddingHorizontal: space.md },
+  distanceChipText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 },
   note: { color: colors.text, fontFamily: font.regular, fontSize: 14, lineHeight: 21, marginTop: space.md },
   photo: { width: '100%', height: 150, borderRadius: radius.md, marginTop: space.md },
   sheetActions: { gap: space.sm, marginTop: space.lg },
