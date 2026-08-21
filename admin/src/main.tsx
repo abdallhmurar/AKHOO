@@ -16,7 +16,13 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nextProvider i18n={i18next}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename="/admin">
+        {/* Vite exposes whatever `base` (vite.config.ts, overridable via
+            VITE_BASE_PATH) was set at build time as import.meta.env.BASE_URL
+            - deriving the router's basename from it instead of hardcoding
+            keeps the two permanently in sync across environments (e.g. this
+            repo's GitHub Pages deploy under /sanad/admin/ vs a future
+            standalone domain at /). */}
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <AuthProvider>
             <App />
           </AuthProvider>
