@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, Alert, Animated, Easing, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, BatteryWarning, Camera, GasPump, Lock, MapPin, Tire, Wrench, Warning } from 'phosphor-react-native'
+import { ArrowClockwise, BatteryWarning, Camera, Check, GasPump, Lock, MapPin, Tire, Wrench, Warning } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../lib/location'
 import type { PilotZone } from '../lib/location'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
-import { colors, font, radius, space } from '../lib/theme'
+import { colors, font, radius, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, ServiceType } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
+import { Surface } from '../components/Surface'
 import { Tactile } from '../components/Tactile'
 import { SanadMap } from '../components/SanadMap'
 
@@ -84,6 +85,14 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
     setStep(next)
   }
 
+  function selectService(key: ServiceType) {
+    setService(key)
+    // A brief, obvious confirmation that the choice registered - the whole
+    // flow may be operated by someone stressed, so the selected state can't
+    // be subtle (design brief section 15).
+    setTimeout(() => goToStep('details'), 220)
+  }
+
   function next() {
     if (step === 'type') {
       if (!service) {
@@ -145,10 +154,7 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
       {step === 'type' ? (
         <View style={[styles.grid, dir.row]}>
           {services.map(item => (
-            <Tactile key={item.key} onPress={() => setService(item.key)} style={[styles.service, service === item.key && styles.selected]} scaleTo={0.96}>
-              <item.Icon size={28} color={service === item.key ? colors.forest : colors.muted} weight={service === item.key ? 'duotone' : 'regular'} />
-              <Text style={[styles.serviceText, service === item.key && styles.serviceTextSelected]}>{t(item.labelKey)}</Text>
-            </Tactile>
+            <ServiceOption key={item.key} item={item} selected={service === item.key} onPress={() => selectService(item.key)} />
           ))}
         </View>
       ) : null}
@@ -178,7 +184,7 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
       ) : null}
 
       {step === 'location' ? (
-        <View style={styles.locationCard}>
+        <Surface tone="surface" elevation="none" padding="none" style={styles.locationCard}>
           {locating ? (
             <View style={styles.locationLoading}>
               <ActivityIndicator color={colors.forest} />
@@ -198,18 +204,20 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
             </View>
           ) : coords ? (
             <>
-              <View style={[styles.locationHeader, dir.row]}>
-                <MapPin size={18} color={colors.forest} weight="fill" />
-                <Text style={styles.locationTitle}>{t('request.currentLocation')}</Text>
+              <SanadMap latitude={coords.latitude} longitude={coords.longitude} height={260} style={styles.map} />
+              <View style={[styles.locationFooter, dir.row]}>
+                <View style={[styles.locationHeader, dir.row]}>
+                  <MapPin size={16} color={colors.forest} weight="fill" />
+                  <Text style={styles.locationTitle}>{t('request.currentLocation')}</Text>
+                </View>
+                <Pressable onPress={fetchLocation} style={[styles.refreshRow, dir.row]}>
+                  <ArrowClockwise size={14} color={colors.forest} />
+                  <Text style={styles.refreshText}>{t('request.refreshLocation')}</Text>
+                </Pressable>
               </View>
-              <SanadMap latitude={coords.latitude} longitude={coords.longitude} height={180} />
-              <Pressable onPress={fetchLocation} style={[styles.refreshRow, dir.row]}>
-                <ArrowClockwise size={15} color={colors.forest} />
-                <Text style={styles.refreshText}>{t('request.refreshLocation')}</Text>
-              </Pressable>
             </>
           ) : null}
-        </View>
+        </Surface>
       ) : null}
 
       {step === 'location' ? (
@@ -221,14 +229,40 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
   )
 }
 
+function ServiceOption({ item, selected, onPress }: { item: (typeof services)[number]; selected: boolean; onPress: () => void }) {
+  const { t } = useTranslation()
+  const scale = useRef(new Animated.Value(selected ? 1 : 0)).current
+
+  useEffect(() => {
+    Animated.timing(scale, { toValue: selected ? 1 : 0, duration: 180, easing: Easing.out(Easing.ease), useNativeDriver: true }).start()
+  }, [selected, scale])
+
+  return (
+    <Tactile onPress={onPress} style={[styles.service, selected && styles.serviceSelected]} scaleTo={0.96}>
+      {selected ? (
+        <Animated.View style={[styles.checkBadge, { transform: [{ scale }] }]}>
+          <Check size={11} color="#fff" weight="bold" />
+        </Animated.View>
+      ) : null}
+      <View style={[styles.serviceIconWrap, selected && styles.serviceIconWrapSelected]}>
+        <item.Icon size={26} color={selected ? '#fff' : colors.forest} weight={selected ? 'fill' : 'duotone'} />
+      </View>
+      <Text style={[styles.serviceText, selected && styles.serviceTextSelected]}>{t(item.labelKey)}</Text>
+    </Tactile>
+  )
+}
+
 const styles = StyleSheet.create({
   dots: { gap: 6, marginBottom: space.xl },
   dot: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border },
   dotActive: { backgroundColor: colors.forest },
   grid: { flexWrap: 'wrap', gap: space.md },
-  service: { width: '47%', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, minHeight: 108, alignItems: 'center', justifyContent: 'center', gap: 8 },
-  selected: { borderColor: colors.forest, backgroundColor: colors.sageSoft },
-  serviceText: { color: colors.text, fontFamily: font.bold, fontSize: 14.5 },
+  service: { width: '47%', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, minHeight: 116, alignItems: 'center', justifyContent: 'center', gap: space.sm, padding: space.md },
+  serviceSelected: { borderColor: colors.forest, backgroundColor: colors.sageSoft },
+  serviceIconWrap: { width: 52, height: 52, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  serviceIconWrapSelected: { backgroundColor: colors.forest },
+  checkBadge: { position: 'absolute', top: 10, right: 10, width: 20, height: 20, borderRadius: 10, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center' },
+  serviceText: { ...type.bodyMedium, color: colors.text },
   serviceTextSelected: { color: colors.forest },
   fieldLabel: { color: colors.muted, fontFamily: font.medium, fontSize: 13, marginBottom: 6 },
   note: { backgroundColor: colors.surface, minHeight: 100, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, color: colors.text, fontFamily: font.regular, fontSize: 15, textAlignVertical: 'top' },
@@ -236,13 +270,15 @@ const styles = StyleSheet.create({
   photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
   photoPickerText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },
   photoPreview: { width: '100%', height: 170 },
-  locationCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg },
+  locationCard: { overflow: 'hidden' },
+  map: { marginTop: 0, borderRadius: 0, borderWidth: 0 },
+  locationFooter: { justifyContent: 'space-between', alignItems: 'center', padding: space.lg },
   locationHeader: { alignItems: 'center', gap: 6 },
-  locationTitle: { color: colors.text, fontFamily: font.bold, fontSize: 15 },
-  locationLoading: { alignItems: 'center', gap: space.md, paddingVertical: space.xl },
+  locationTitle: { color: colors.text, fontFamily: font.bold, fontSize: 14 },
+  locationLoading: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl, paddingHorizontal: space.lg },
   locationLoadingText: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5 },
   locationErrorText: { color: colors.danger, fontFamily: font.medium, fontSize: 13.5, textAlign: 'center' },
   zoneTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 16, textAlign: 'center' },
-  refreshRow: { alignItems: 'center', gap: 5, alignSelf: 'center', marginTop: space.md, paddingVertical: 6, paddingHorizontal: 10 },
+  refreshRow: { alignItems: 'center', gap: 5, paddingVertical: 6, paddingHorizontal: 10 },
   refreshText: { color: colors.forest, fontFamily: font.medium, fontSize: 13 }
 })
