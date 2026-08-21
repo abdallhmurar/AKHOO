@@ -6,6 +6,13 @@
     "error": "שגיאה",
     "done": "בוצע",
     "retry": "נסה שוב",
+    "timeline": {
+      "accepted": "התקבל",
+      "on_the_way": "בדרך",
+      "arrived": "הגיע",
+      "awaiting_confirmation": "אישור",
+      "completed": "הושלם"
+    },
     "rpcErrors": {
       "notAuthenticated": "יש להתחבר מחדש.",
       "volunteerNotAvailable": "יש להפעיל את הזמינות לפני קבלת בקשה.",

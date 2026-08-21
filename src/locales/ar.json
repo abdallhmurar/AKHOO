@@ -6,6 +6,13 @@
     "error": "خطأ",
     "done": "تم",
     "retry": "حاول مرة ثانية",
+    "timeline": {
+      "accepted": "قُبل",
+      "on_the_way": "بالطريق",
+      "arrived": "وصل",
+      "awaiting_confirmation": "التأكيد",
+      "completed": "اكتمل"
+    },
     "rpcErrors": {
       "notAuthenticated": "الرجاء تسجيل الدخول من جديد.",
       "volunteerNotAvailable": "فعّل التوفر قبل قبول أي طلب.",

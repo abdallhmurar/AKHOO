@@ -6,6 +6,13 @@
     "error": "Error",
     "done": "Done",
     "retry": "Try Again",
+    "timeline": {
+      "accepted": "Accepted",
+      "on_the_way": "On the way",
+      "arrived": "Arrived",
+      "awaiting_confirmation": "Confirming",
+      "completed": "Done"
+    },
     "rpcErrors": {
       "notAuthenticated": "Please log in again.",
       "volunteerNotAvailable": "Turn on availability before accepting a request.",

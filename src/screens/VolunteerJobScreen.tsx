@@ -1,29 +1,33 @@
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, AppState, Image, Linking, StyleSheet, Text, View } from 'react-native'
-import { Star } from 'phosphor-react-native'
+import { ActivityIndicator, Alert, AppState, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
-import { colors, font, radius, space } from '../lib/theme'
+import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS } from '../lib/activityLevel'
 import type { ActivityLevel } from '../lib/activityLevel'
 import type { HelpRequest, Profile, RequestStatus } from '../types'
-import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
+import { Surface } from '../components/Surface'
+import { StatusTimeline } from '../components/StatusTimeline'
 import { SanadMap } from '../components/SanadMap'
 import { Tactile } from '../components/Tactile'
 
 const RELEASE_REASONS = ['cannot_reach', 'emergency', 'accepted_by_mistake', 'other'] as const
 type ReleaseReason = (typeof RELEASE_REASONS)[number]
 const LEVEL_UP_THRESHOLDS = [5, 15, 30, 60]
+const TIMELINE_STATUSES = ['accepted', 'on_the_way', 'arrived', 'awaiting_confirmation'] as const
 
 type CompletionStats = { points: number; completedCount: number; leveledUpTo: ActivityLevel | null }
 
 export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: { request: HelpRequest; onBack: () => void; onDone: () => void }) {
   const { t } = useTranslation()
-  const dir = dirStyles(useIsRTL())
+  const isRTL = useIsRTL()
+  const dir = dirStyles(isRTL)
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const [request, setRequest] = useState(initialRequest)
   const [requester, setRequester] = useState<Profile | null>(null)
   const [busy, setBusy] = useState(false)
@@ -106,6 +110,8 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
 
   const cancelled = request.status === 'cancelled'
   const awaitingConfirmation = request.status === 'awaiting_confirmation'
+  const timelineIndex = TIMELINE_STATUSES.indexOf(request.status as any)
+  const showTimeline = timelineIndex !== -1
   const title = (['accepted', 'on_the_way', 'arrived', 'awaiting_confirmation', 'completed', 'cancelled'] as const).includes(request.status as any)
     ? t(`volunteerJob.status.${request.status}`)
     : t('volunteerJob.title')
@@ -142,91 +148,119 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
     )
   }
 
-  return (
-    <Screen contentStyle={styles.content}>
-      <Header title={title} onBack={onBack} />
-      <View style={[styles.icon, cancelled && styles.iconFinished]}>
-        {awaitingConfirmation ? (
-          <ActivityIndicator color={colors.forest} />
-        ) : (
-          <Text style={styles.iconText}>{cancelled ? '🚫' : '🚗'}</Text>
-        )}
-      </View>
-      {awaitingConfirmation ? (
-        <Text style={styles.subtitle}>{t('volunteerJob.awaitingConfirmationText')}</Text>
-      ) : !cancelled ? (
-        <Text style={styles.subtitle}>{t('volunteerJob.subtitle')}</Text>
-      ) : null}
-
-      <View style={styles.card}>
-        <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requestId')}</Text>
-        <Text style={[styles.value, dir.textStart]}>{request.id.slice(0, 8).toUpperCase()}</Text>
-      </View>
-
-      {requester ? (
-        <View style={styles.card}>
-          <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requesterLabel')}</Text>
-          <Text style={[styles.value, dir.textStart]}>{requester.full_name || t('volunteerJob.defaultRequesterName')}</Text>
-          {!cancelled && requester.phone ? (
-            <PrimaryButton title={`📞 ${t('volunteerJob.callButton', { phone: requester.phone })}`} tone="green" onPress={() => Linking.openURL(`tel:${requester.phone}`)} />
-          ) : null}
+  if (cancelled) {
+    return (
+      <Screen contentStyle={styles.completionContent}>
+        <View style={[styles.completionIcon, styles.completionIconCancelled]}>
+          <Text style={styles.completionIconText}>🚫</Text>
         </View>
-      ) : null}
-
-      {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
-
-      <SanadMap latitude={request.latitude} longitude={request.longitude} />
-
-      {awaitingConfirmation ? null : !cancelled ? (
-        <>
-          <PrimaryButton title={t('volunteerJob.openInGoogleMaps')} tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
-          <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted' || busy} loading={busy && request.status === 'accepted'} />
-          <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way' || busy} loading={busy && request.status === 'on_the_way'} />
-          <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('awaiting_confirmation')} disabled={request.status !== 'arrived' || busy} loading={busy && request.status === 'arrived'} />
-
-          {confirmingRelease ? (
-            <View style={styles.releaseCard}>
-              <Text style={[styles.releaseConfirmTitle, dir.textStart]}>{t('volunteerJob.release.confirmTitle')}</Text>
-              <Text style={[styles.releaseConfirmMessage, dir.textStart]}>{t('volunteerJob.release.confirmMessage')}</Text>
-              <View style={[styles.reasonRow, dir.row]}>
-                {RELEASE_REASONS.map(reason => (
-                  <Tactile key={reason} onPress={() => setReleaseReason(current => (current === reason ? null : reason))} style={[styles.reasonChip, releaseReason === reason && styles.reasonChipActive]}>
-                    <Text style={[styles.reasonChipText, releaseReason === reason && styles.reasonChipTextActive]}>{t(`volunteerJob.release.reasons.${reason}`)}</Text>
-                  </Tactile>
-                ))}
-              </View>
-              <View style={[styles.releaseActions, dir.row]}>
-                <PrimaryButton title={t('volunteerJob.release.back')} tone="light" onPress={() => { setConfirmingRelease(false); setReleaseReason(null) }} style={styles.releaseButton} />
-                <PrimaryButton title={t('volunteerJob.release.confirm')} tone="red" onPress={release} loading={releasing} style={styles.releaseButton} />
-              </View>
-            </View>
-          ) : (
-            <Tactile onPress={() => setConfirmingRelease(true)} style={styles.releaseLink}>
-              <Text style={styles.releaseLinkText}>{t('volunteerJob.release.button')}</Text>
-            </Tactile>
-          )}
-        </>
-      ) : (
+        <Text style={styles.completionTitle}>{title}</Text>
         <PrimaryButton title={t('volunteerJob.back')} onPress={onBack} />
-      )}
-    </Screen>
+      </Screen>
+    )
+  }
+
+  return (
+    <SafeAreaView style={styles.fill}>
+      <View style={styles.mapArea}>
+        <SanadMap latitude={request.latitude} longitude={request.longitude} style={styles.map} />
+        <Tactile onPress={onBack} style={[styles.backButton, { [isRTL ? 'right' : 'left']: space.lg }]} scaleTo={0.92}>
+          <BackIcon size={18} color={colors.text} />
+        </Tactile>
+      </View>
+
+      <View style={styles.sheet}>
+        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
+          <Text style={styles.title}>{title}</Text>
+          {awaitingConfirmation ? (
+            <Text style={styles.subtitle}>{t('volunteerJob.awaitingConfirmationText')}</Text>
+          ) : (
+            <Text style={styles.subtitle}>{t('volunteerJob.subtitle')}</Text>
+          )}
+
+          {showTimeline ? (
+            <View style={styles.timelineWrap}>
+              <StatusTimeline
+                steps={TIMELINE_STATUSES.map(key => ({ key, label: t(`common.timeline.${key}`) }))}
+                currentIndex={timelineIndex}
+              />
+            </View>
+          ) : null}
+
+          {requester ? (
+            <Surface elevation="soft" padding="lg" style={styles.card}>
+              <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requesterLabel')}</Text>
+              <Text style={[styles.value, dir.textStart]}>{requester.full_name || t('volunteerJob.defaultRequesterName')}</Text>
+              {requester.phone ? (
+                <PrimaryButton title={`📞 ${t('volunteerJob.callButton', { phone: requester.phone })}`} tone="green" onPress={() => Linking.openURL(`tel:${requester.phone}`)} />
+              ) : null}
+            </Surface>
+          ) : null}
+
+          <Surface elevation="soft" padding="lg" style={styles.card}>
+            <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requestId')}</Text>
+            <Text style={[styles.value, dir.textStart]}>{request.id.slice(0, 8).toUpperCase()}</Text>
+          </Surface>
+
+          {request.photo_url ? <Image source={{ uri: request.photo_url }} style={styles.photo} /> : null}
+
+          {awaitingConfirmation ? null : (
+            <>
+              <PrimaryButton title={t('volunteerJob.openInGoogleMaps')} tone="light" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${request.latitude},${request.longitude}`)} />
+              <PrimaryButton title={t('volunteerJob.onMyWay')} onPress={() => setStatus('on_the_way')} disabled={request.status !== 'accepted' || busy} loading={busy && request.status === 'accepted'} />
+              <PrimaryButton title={t('volunteerJob.arrivedButton')} tone="green" onPress={() => setStatus('arrived')} disabled={request.status !== 'on_the_way' || busy} loading={busy && request.status === 'on_the_way'} />
+              <PrimaryButton title={t('volunteerJob.completeButton')} tone="green" onPress={() => setStatus('awaiting_confirmation')} disabled={request.status !== 'arrived' || busy} loading={busy && request.status === 'arrived'} />
+
+              {confirmingRelease ? (
+                <Surface tone="surface" elevation="none" padding="lg" style={styles.releaseCard}>
+                  <Text style={[styles.releaseConfirmTitle, dir.textStart]}>{t('volunteerJob.release.confirmTitle')}</Text>
+                  <Text style={[styles.releaseConfirmMessage, dir.textStart]}>{t('volunteerJob.release.confirmMessage')}</Text>
+                  <View style={[styles.reasonRow, dir.row]}>
+                    {RELEASE_REASONS.map(reason => (
+                      <Tactile key={reason} onPress={() => setReleaseReason(current => (current === reason ? null : reason))} style={[styles.reasonChip, releaseReason === reason && styles.reasonChipActive]}>
+                        <Text style={[styles.reasonChipText, releaseReason === reason && styles.reasonChipTextActive]}>{t(`volunteerJob.release.reasons.${reason}`)}</Text>
+                      </Tactile>
+                    ))}
+                  </View>
+                  <View style={[styles.releaseActions, dir.row]}>
+                    <PrimaryButton title={t('volunteerJob.release.back')} tone="light" onPress={() => { setConfirmingRelease(false); setReleaseReason(null) }} style={styles.releaseButton} />
+                    <PrimaryButton title={t('volunteerJob.release.confirm')} tone="red" onPress={release} loading={releasing} style={styles.releaseButton} />
+                  </View>
+                </Surface>
+              ) : (
+                <Tactile onPress={() => setConfirmingRelease(true)} style={styles.releaseLink}>
+                  <Text style={styles.releaseLinkText}>{t('volunteerJob.release.button')}</Text>
+                </Tactile>
+              )}
+            </>
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  content: { flexGrow: 1, gap: 10 },
-  icon: { width: 94, height: 94, borderRadius: 30, backgroundColor: colors.greenSoft, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' },
-  iconFinished: { backgroundColor: colors.blueSoft },
-  iconText: { fontSize: 42 },
-  subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, marginBottom: 14 },
-  card: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 20, padding: 16, marginBottom: 10, gap: 8 },
-  photo: { width: '100%', height: 150, borderRadius: 18, marginBottom: 10 },
+  fill: { flex: 1, backgroundColor: colors.bg },
+  mapArea: { height: 300 },
+  map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
+  backButton: { position: 'absolute', top: space.lg, width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
+
+  sheet: { flex: 1, backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.sheet, ...shadow.elevated },
+  sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: 10 },
+
+  title: { ...type.h1, color: colors.text, textAlign: 'center' },
+  subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, fontFamily: font.regular, fontSize: 14, marginBottom: 4 },
+  timelineWrap: { marginTop: space.sm, marginBottom: space.xs },
+
+  card: { gap: 8 },
+  photo: { width: '100%', height: 150, borderRadius: radius.md },
   label: { color: colors.muted },
   value: { color: colors.text, fontWeight: '900', fontSize: 17, marginTop: 5 },
 
   releaseLink: { alignItems: 'center', paddingVertical: space.md, marginTop: space.xs },
   releaseLinkText: { color: colors.muted, fontFamily: font.medium, fontSize: 13, textDecorationLine: 'underline' },
-  releaseCard: { backgroundColor: colors.dangerSoft, borderRadius: radius.lg, padding: space.lg, marginTop: space.sm, gap: space.md },
+  releaseCard: { backgroundColor: colors.dangerSoft, borderRadius: radius.lg, marginTop: space.sm, gap: space.md },
   releaseConfirmTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 16 },
   releaseConfirmMessage: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
   reasonRow: { flexWrap: 'wrap', gap: space.sm },
@@ -239,6 +273,7 @@ const styles = StyleSheet.create({
 
   completionContent: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xxl },
   completionIcon: { width: 86, height: 86, borderRadius: 43, backgroundColor: colors.successSoft, alignItems: 'center', justifyContent: 'center' },
+  completionIconCancelled: { backgroundColor: colors.dangerSoft },
   completionIconText: { fontSize: 38 },
   completionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 22, textAlign: 'center' },
   completionMessage: { color: colors.muted, fontFamily: font.regular, fontSize: 14.5, textAlign: 'center', lineHeight: 22 },
