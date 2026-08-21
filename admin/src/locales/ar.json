@@ -1,0 +1,230 @@
+{
+  "common": {
+    "loading": "...جارٍ التحميل",
+    "error": "حدث خطأ ما",
+    "retry": "إعادة المحاولة",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "search": "بحث",
+    "noResults": "لا توجد نتائج",
+    "signOut": "تسجيل الخروج",
+    "back": "رجوع",
+    "close": "إغلاق",
+    "viewDetails": "عرض التفاصيل",
+    "page": "صفحة",
+    "of": "من",
+    "previous": "السابق",
+    "next": "التالي",
+    "unknown": "غير معروف",
+    "yes": "نعم",
+    "no": "لا",
+    "filters": "الفلاتر",
+    "clearFilters": "مسح الفلاتر",
+    "dateFrom": "من تاريخ",
+    "dateTo": "إلى تاريخ",
+    "language": "اللغة"
+  },
+  "nav": {
+    "brand": "سَنَد",
+    "console": "لوحة الإدارة",
+    "dashboard": "الرئيسية",
+    "requests": "الطلبات",
+    "users": "المستخدمون",
+    "volunteers": "المتطوعون",
+    "points": "النقاط"
+  },
+  "auth": {
+    "loginTitle": "سَنَد",
+    "loginSubtitle": "لوحة الإدارة",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "signingIn": "...جارٍ تسجيل الدخول",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "genericError": "تعذّر تسجيل الدخول، حاول مرة أخرى.",
+    "accessDeniedTitle": "الوصول مرفوض",
+    "accessDeniedMessage": "حسابك لا يملك صلاحية إدارية على سَنَد.",
+    "networkErrorTitle": "مشكلة بالاتصال",
+    "networkErrorMessage": "تعذّر الوصول للسيرفر. تحقق من اتصالك وحاول مرة أخرى.",
+    "sessionExpired": "انتهت صلاحية الجلسة، الرجاء تسجيل الدخول من جديد."
+  },
+  "dashboard": {
+    "title": "الرئيسية",
+    "subtitle": "لمحة حية عن عمليات سَنَد.",
+    "stats": {
+      "totalUsers": "المستخدمون المسجّلون",
+      "openRequests": "الطلبات المفتوحة",
+      "activeRequests": "المهام النشطة",
+      "awaitingConfirmation": "بانتظار التأكيد",
+      "completedToday": "أُنجزت اليوم",
+      "completedThisWeek": "أُنجزت هذا الأسبوع",
+      "activeVolunteers": "المتطوعون النشطون",
+      "totalConfirmedAssists": "إجمالي المساعدات المؤكدة",
+      "totalPointsAwarded": "النقاط الممنوحة"
+    },
+    "charts": {
+      "trendTitle": "الطلبات المُنجزة - آخر 14 يوم",
+      "statusTitle": "الطلبات حسب الحالة",
+      "noData": "لا توجد بيانات كافية بعد"
+    },
+    "recentActivity": {
+      "title": "النشاط الأخير",
+      "empty": "لا يوجد نشاط إداري بعد",
+      "byAdmin": "بواسطة {{name}}"
+    }
+  },
+  "requests": {
+    "title": "الطلبات",
+    "subtitle": "كل طلبات المساعدة على سَنَد.",
+    "filters": {
+      "status": "الحالة",
+      "allStatuses": "كل الحالات",
+      "serviceType": "نوع الخدمة",
+      "allServices": "كل الخدمات",
+      "searchPlaceholder": "بحث بالاسم أو رقم الهاتف"
+    },
+    "table": {
+      "id": "المعرّف",
+      "requester": "صاحب الطلب",
+      "service": "الخدمة",
+      "status": "الحالة",
+      "volunteer": "المتطوع",
+      "createdAt": "تاريخ الإنشاء",
+      "unassigned": "بدون متطوع"
+    },
+    "detail": {
+      "title": "الطلب",
+      "tabs": { "overview": "نظرة عامة", "timeline": "المسار الزمني", "map": "الخريطة", "history": "السجل" },
+      "requester": "صاحب الطلب",
+      "volunteer": "المتطوع",
+      "note": "ملاحظة",
+      "noNote": "لا توجد ملاحظة",
+      "photo": "صورة",
+      "noPhoto": "لا توجد صورة",
+      "createdAt": "الإنشاء",
+      "acceptedAt": "الاستلام",
+      "awaitingConfirmationAt": "تم وضع علامة مساعَدة",
+      "completedAt": "الإنجاز",
+      "confirmationRejectedAt": "رفض التأكيد",
+      "releaseHistory": "سجل التخلي",
+      "noReleases": "لم يتم التخلي عن هذا الطلب من قبل.",
+      "releasedAt": "تاريخ التخلي",
+      "releaseReason": "السبب",
+      "pointsAwarded": "معاملة النقاط",
+      "noPoints": "لا توجد معاملة نقاط لهذا الطلب.",
+      "cancelRequest": "إلغاء الطلب",
+      "cancelConfirmTitle": "إلغاء هذا الطلب؟",
+      "cancelConfirmMessage": "سيتم إشعار صاحب الطلب والمتطوع. لا يمكن التراجع عن هذا الإجراء.",
+      "alreadyTerminal": "هذا الطلب منجز أو ملغى بالفعل."
+    },
+    "status": {
+      "open": "مفتوح",
+      "accepted": "مستلم",
+      "on_the_way": "بالطريق",
+      "arrived": "وصل",
+      "awaiting_confirmation": "بانتظار التأكيد",
+      "completed": "منجز",
+      "cancelled": "ملغى"
+    },
+    "service": {
+      "battery": "بطارية",
+      "tire": "بنشر",
+      "fuel": "وقود",
+      "locked_car": "سيارة مقفلة",
+      "other": "شيء آخر"
+    }
+  },
+  "users": {
+    "title": "المستخدمون",
+    "subtitle": "جميع المسجّلين على سَنَد.",
+    "table": {
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "joined": "تاريخ الانضمام",
+      "status": "الحالة",
+      "requests": "الطلبات",
+      "banned": "محظور",
+      "active": "نشط",
+      "noName": "(بدون اسم)",
+      "noPhone": "بدون رقم",
+      "searchPlaceholder": "بحث بالاسم أو رقم الهاتف"
+    },
+    "detail": {
+      "title": "المستخدم",
+      "tabs": { "profile": "الملف الشخصي", "requests": "الطلبات", "volunteer": "التطوع", "history": "السجل الإداري" },
+      "memberSince": "عضو منذ",
+      "noRequests": "لا توجد طلبات بعد.",
+      "notAVolunteer": "هذا المستخدم لم يتطوع من قبل.",
+      "ban": "حظر المستخدم",
+      "unban": "رفع الحظر",
+      "banConfirmTitle": "حظر هذا المستخدم؟",
+      "banConfirmMessage": "لن يستطيع بعدها إنشاء طلبات أو التطوع.",
+      "unbanConfirmTitle": "رفع الحظر عن هذا المستخدم؟",
+      "unbanConfirmMessage": "سيستعيد وصوله الكامل لسَنَد.",
+      "noHistory": "لا توجد إجراءات إدارية مسجّلة لهذا المستخدم."
+    }
+  },
+  "volunteers": {
+    "title": "المتطوعون",
+    "subtitle": "أفراد المجتمع اللي بساعدوا أصحاب الطلبات القريبين.",
+    "table": {
+      "name": "الاسم",
+      "activityLevel": "مستوى النشاط",
+      "completedAssists": "المساعدات المؤكدة",
+      "points": "النقاط",
+      "availability": "التوفر",
+      "available": "متاح",
+      "unavailable": "غير متاح",
+      "verified": "موثّق",
+      "unverified": "غير موثّق",
+      "searchPlaceholder": "بحث بالاسم"
+    },
+    "detail": {
+      "title": "المتطوع",
+      "tabs": { "profile": "الملف الشخصي", "missions": "المهام", "points": "النقاط", "history": "السجل الإداري" },
+      "services": "الخدمات",
+      "noServices": "لا توجد خدمات محددة",
+      "verify": "توثيق المتطوع",
+      "unverify": "إلغاء التوثيق",
+      "verifyConfirmTitle": "توثيق هذا المتطوع؟",
+      "verifyConfirmMessage": "هذه علامة داخلية ثانوية - لا تشترط للتطوع نفسه.",
+      "unverifyConfirmTitle": "إلغاء توثيق هذا المتطوع؟",
+      "unverifyConfirmMessage": "لن يظهر بعدها كموثّق داخلياً.",
+      "noPoints": "لم يكسب نقاط بعد."
+    },
+    "activityLevel": {
+      "none": "جديد",
+      "bronze": "برونزي",
+      "silver": "فضي",
+      "gold": "ذهبي",
+      "green": "سَنَد الأخضر"
+    }
+  },
+  "points": {
+    "title": "النقاط",
+    "subtitle": "سجل النقاط كاملاً، للعرض فقط.",
+    "table": {
+      "volunteer": "المتطوع",
+      "points": "النقاط",
+      "reason": "السبب",
+      "request": "الطلب",
+      "date": "التاريخ"
+    },
+    "reasons": {
+      "completed_verified_mission": "إنجاز مهمة مؤكدة"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث باسم المتطوع"
+    }
+  },
+  "audit": {
+    "actions": {
+      "userBanned": "حظر",
+      "userUnbanned": "رفع حظر عن",
+      "volunteerVerified": "وثّق",
+      "volunteerUnverified": "ألغى توثيق",
+      "requestCancelled": "ألغى"
+    }
+  }
+}

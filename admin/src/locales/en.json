@@ -1,0 +1,230 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "search": "Search",
+    "noResults": "No results",
+    "signOut": "Sign out",
+    "back": "Back",
+    "close": "Close",
+    "viewDetails": "View details",
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No",
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "language": "Language"
+  },
+  "nav": {
+    "brand": "SANAD",
+    "console": "Admin Console",
+    "dashboard": "Dashboard",
+    "requests": "Requests",
+    "users": "Users",
+    "volunteers": "Volunteers",
+    "points": "Points"
+  },
+  "auth": {
+    "loginTitle": "SANAD",
+    "loginSubtitle": "Admin Console",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Incorrect email or password.",
+    "genericError": "Couldn't sign in. Please try again.",
+    "accessDeniedTitle": "Access denied",
+    "accessDeniedMessage": "Your account doesn't have admin access to SANAD.",
+    "networkErrorTitle": "Connection problem",
+    "networkErrorMessage": "Couldn't reach the server. Check your connection and try again.",
+    "sessionExpired": "Your session expired. Please sign in again."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "A live snapshot of SANAD's operations.",
+    "stats": {
+      "totalUsers": "Registered users",
+      "openRequests": "Open requests",
+      "activeRequests": "Active missions",
+      "awaitingConfirmation": "Awaiting confirmation",
+      "completedToday": "Completed today",
+      "completedThisWeek": "Completed this week",
+      "activeVolunteers": "Active volunteers",
+      "totalConfirmedAssists": "Total confirmed assists",
+      "totalPointsAwarded": "Points awarded"
+    },
+    "charts": {
+      "trendTitle": "Completed requests, last 14 days",
+      "statusTitle": "Requests by status",
+      "noData": "Not enough data yet"
+    },
+    "recentActivity": {
+      "title": "Recent activity",
+      "empty": "No admin activity yet",
+      "byAdmin": "by {{name}}"
+    }
+  },
+  "requests": {
+    "title": "Requests",
+    "subtitle": "All help requests across SANAD.",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "serviceType": "Service type",
+      "allServices": "All services",
+      "searchPlaceholder": "Search by name or phone"
+    },
+    "table": {
+      "id": "ID",
+      "requester": "Requester",
+      "service": "Service",
+      "status": "Status",
+      "volunteer": "Volunteer",
+      "createdAt": "Created",
+      "unassigned": "Unassigned"
+    },
+    "detail": {
+      "title": "Request",
+      "tabs": { "overview": "Overview", "timeline": "Timeline", "map": "Map", "history": "History" },
+      "requester": "Requester",
+      "volunteer": "Volunteer",
+      "note": "Note",
+      "noNote": "No note",
+      "photo": "Photo",
+      "noPhoto": "No photo",
+      "createdAt": "Created",
+      "acceptedAt": "Accepted",
+      "awaitingConfirmationAt": "Marked helped",
+      "completedAt": "Completed",
+      "confirmationRejectedAt": "Confirmation rejected",
+      "releaseHistory": "Release history",
+      "noReleases": "This request was never released.",
+      "releasedAt": "Released",
+      "releaseReason": "Reason",
+      "pointsAwarded": "Points transaction",
+      "noPoints": "No points transaction for this request.",
+      "cancelRequest": "Cancel request",
+      "cancelConfirmTitle": "Cancel this request?",
+      "cancelConfirmMessage": "The requester and volunteer will be notified. This can't be undone.",
+      "alreadyTerminal": "This request is already completed or cancelled."
+    },
+    "status": {
+      "open": "Open",
+      "accepted": "Accepted",
+      "on_the_way": "On the way",
+      "arrived": "Arrived",
+      "awaiting_confirmation": "Awaiting confirmation",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "service": {
+      "battery": "Battery",
+      "tire": "Tire",
+      "fuel": "Fuel",
+      "locked_car": "Locked car",
+      "other": "Other"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Everyone registered on SANAD.",
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "joined": "Joined",
+      "status": "Status",
+      "requests": "Requests",
+      "banned": "Banned",
+      "active": "Active",
+      "noName": "(no name)",
+      "noPhone": "No phone",
+      "searchPlaceholder": "Search by name or phone"
+    },
+    "detail": {
+      "title": "User",
+      "tabs": { "profile": "Profile", "requests": "Requests", "volunteer": "Volunteer", "history": "Admin history" },
+      "memberSince": "Member since",
+      "noRequests": "No requests yet.",
+      "notAVolunteer": "This user has never volunteered.",
+      "ban": "Ban user",
+      "unban": "Unban user",
+      "banConfirmTitle": "Ban this user?",
+      "banConfirmMessage": "They'll no longer be able to create requests or volunteer.",
+      "unbanConfirmTitle": "Unban this user?",
+      "unbanConfirmMessage": "They'll regain full access to SANAD.",
+      "noHistory": "No admin actions recorded for this user."
+    }
+  },
+  "volunteers": {
+    "title": "Volunteers",
+    "subtitle": "Community members who help nearby requesters.",
+    "table": {
+      "name": "Name",
+      "activityLevel": "Activity",
+      "completedAssists": "Confirmed assists",
+      "points": "Points",
+      "availability": "Availability",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "searchPlaceholder": "Search by name"
+    },
+    "detail": {
+      "title": "Volunteer",
+      "tabs": { "profile": "Profile", "missions": "Missions", "points": "Points", "history": "Admin history" },
+      "services": "Services",
+      "noServices": "No services set",
+      "verify": "Verify volunteer",
+      "unverify": "Remove verification",
+      "verifyConfirmTitle": "Verify this volunteer?",
+      "verifyConfirmMessage": "This is a secondary internal flag - it doesn't gate volunteering itself.",
+      "unverifyConfirmTitle": "Remove verification?",
+      "unverifyConfirmMessage": "This volunteer will no longer show as internally verified.",
+      "noPoints": "No points earned yet."
+    },
+    "activityLevel": {
+      "none": "New",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "green": "SANAD Green"
+    }
+  },
+  "points": {
+    "title": "Points",
+    "subtitle": "The full points ledger, read-only.",
+    "table": {
+      "volunteer": "Volunteer",
+      "points": "Points",
+      "reason": "Reason",
+      "request": "Request",
+      "date": "Date"
+    },
+    "reasons": {
+      "completed_verified_mission": "Verified mission completed"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by volunteer name"
+    }
+  },
+  "audit": {
+    "actions": {
+      "userBanned": "banned",
+      "userUnbanned": "unbanned",
+      "volunteerVerified": "verified",
+      "volunteerUnverified": "un-verified",
+      "requestCancelled": "cancelled"
+    }
+  }
+}

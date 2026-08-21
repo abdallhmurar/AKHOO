@@ -12,7 +12,10 @@ module.exports = defineConfig([
       'supabase/.temp/**',
       // Vendored third-party maplibre-gl worker chunks (see SanadMap.web.tsx)
       // - minified, not our code, not meant to be linted.
-      'public/**'
+      'public/**',
+      // Separate web-only admin project with its own toolchain/eslint
+      // config - not part of the Expo app, not meant to be picked up here.
+      'admin/**'
     ]
   },
   expoConfig,

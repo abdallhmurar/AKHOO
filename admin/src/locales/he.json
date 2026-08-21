@@ -1,0 +1,230 @@
+{
+  "common": {
+    "loading": "...טוען",
+    "error": "משהו השתבש",
+    "retry": "נסה שוב",
+    "cancel": "ביטול",
+    "confirm": "אישור",
+    "save": "שמירה",
+    "search": "חיפוש",
+    "noResults": "אין תוצאות",
+    "signOut": "התנתקות",
+    "back": "חזרה",
+    "close": "סגירה",
+    "viewDetails": "הצג פרטים",
+    "page": "עמוד",
+    "of": "מתוך",
+    "previous": "הקודם",
+    "next": "הבא",
+    "unknown": "לא ידוע",
+    "yes": "כן",
+    "no": "לא",
+    "filters": "מסננים",
+    "clearFilters": "נקה מסננים",
+    "dateFrom": "מתאריך",
+    "dateTo": "עד תאריך",
+    "language": "שפה"
+  },
+  "nav": {
+    "brand": "סָנָד",
+    "console": "מסוף ניהול",
+    "dashboard": "לוח בקרה",
+    "requests": "בקשות",
+    "users": "משתמשים",
+    "volunteers": "מתנדבים",
+    "points": "נקודות"
+  },
+  "auth": {
+    "loginTitle": "סָנָד",
+    "loginSubtitle": "מסוף ניהול",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "signIn": "התחברות",
+    "signingIn": "...מתחבר",
+    "invalidCredentials": "אימייל או סיסמה שגויים.",
+    "genericError": "ההתחברות נכשלה, נסה שוב.",
+    "accessDeniedTitle": "הגישה נדחתה",
+    "accessDeniedMessage": "לחשבון שלך אין הרשאות ניהול בסָנָד.",
+    "networkErrorTitle": "בעיית חיבור",
+    "networkErrorMessage": "לא ניתן להתחבר לשרת. בדוק את החיבור שלך ונסה שוב.",
+    "sessionExpired": "פג תוקף החיבור, יש להתחבר מחדש."
+  },
+  "dashboard": {
+    "title": "לוח בקרה",
+    "subtitle": "תמונת מצב חיה של פעילות סָנָד.",
+    "stats": {
+      "totalUsers": "משתמשים רשומים",
+      "openRequests": "בקשות פתוחות",
+      "activeRequests": "משימות פעילות",
+      "awaitingConfirmation": "ממתין לאישור",
+      "completedToday": "הושלמו היום",
+      "completedThisWeek": "הושלמו השבוע",
+      "activeVolunteers": "מתנדבים פעילים",
+      "totalConfirmedAssists": "סה\"כ סיוע מאושר",
+      "totalPointsAwarded": "נקודות שהוענקו"
+    },
+    "charts": {
+      "trendTitle": "בקשות שהושלמו - 14 הימים האחרונים",
+      "statusTitle": "בקשות לפי סטטוס",
+      "noData": "עדיין אין מספיק נתונים"
+    },
+    "recentActivity": {
+      "title": "פעילות אחרונה",
+      "empty": "אין עדיין פעילות ניהולית",
+      "byAdmin": "על ידי {{name}}"
+    }
+  },
+  "requests": {
+    "title": "בקשות",
+    "subtitle": "כל בקשות הסיוע בסָנָד.",
+    "filters": {
+      "status": "סטטוס",
+      "allStatuses": "כל הסטטוסים",
+      "serviceType": "סוג שירות",
+      "allServices": "כל השירותים",
+      "searchPlaceholder": "חיפוש לפי שם או טלפון"
+    },
+    "table": {
+      "id": "מזהה",
+      "requester": "מבקש",
+      "service": "שירות",
+      "status": "סטטוס",
+      "volunteer": "מתנדב",
+      "createdAt": "נוצר",
+      "unassigned": "ללא הקצאה"
+    },
+    "detail": {
+      "title": "בקשה",
+      "tabs": { "overview": "סקירה", "timeline": "ציר זמן", "map": "מפה", "history": "היסטוריה" },
+      "requester": "מבקש",
+      "volunteer": "מתנדב",
+      "note": "הערה",
+      "noNote": "אין הערה",
+      "photo": "תמונה",
+      "noPhoto": "אין תמונה",
+      "createdAt": "נוצר",
+      "acceptedAt": "התקבל",
+      "awaitingConfirmationAt": "סומן כטופל",
+      "completedAt": "הושלם",
+      "confirmationRejectedAt": "אישור נדחה",
+      "releaseHistory": "היסטוריית שחרור",
+      "noReleases": "בקשה זו לא שוחררה מעולם.",
+      "releasedAt": "שוחרר",
+      "releaseReason": "סיבה",
+      "pointsAwarded": "עסקת נקודות",
+      "noPoints": "אין עסקת נקודות לבקשה זו.",
+      "cancelRequest": "ביטול בקשה",
+      "cancelConfirmTitle": "לבטל את הבקשה?",
+      "cancelConfirmMessage": "המבקש והמתנדב יקבלו התראה. לא ניתן לבטל פעולה זו.",
+      "alreadyTerminal": "בקשה זו כבר הושלמה או בוטלה."
+    },
+    "status": {
+      "open": "פתוח",
+      "accepted": "התקבל",
+      "on_the_way": "בדרך",
+      "arrived": "הגיע",
+      "awaiting_confirmation": "ממתין לאישור",
+      "completed": "הושלם",
+      "cancelled": "בוטל"
+    },
+    "service": {
+      "battery": "מצבר",
+      "tire": "צמיג",
+      "fuel": "דלק",
+      "locked_car": "רכב נעול",
+      "other": "אחר"
+    }
+  },
+  "users": {
+    "title": "משתמשים",
+    "subtitle": "כל הרשומים בסָנָד.",
+    "table": {
+      "name": "שם",
+      "phone": "טלפון",
+      "joined": "הצטרף",
+      "status": "סטטוס",
+      "requests": "בקשות",
+      "banned": "חסום",
+      "active": "פעיל",
+      "noName": "(ללא שם)",
+      "noPhone": "אין טלפון",
+      "searchPlaceholder": "חיפוש לפי שם או טלפון"
+    },
+    "detail": {
+      "title": "משתמש",
+      "tabs": { "profile": "פרופיל", "requests": "בקשות", "volunteer": "התנדבות", "history": "היסטוריית ניהול" },
+      "memberSince": "חבר מאז",
+      "noRequests": "אין עדיין בקשות.",
+      "notAVolunteer": "משתמש זה מעולם לא התנדב.",
+      "ban": "חסום משתמש",
+      "unban": "בטל חסימה",
+      "banConfirmTitle": "לחסום את המשתמש?",
+      "banConfirmMessage": "הוא לא יוכל עוד ליצור בקשות או להתנדב.",
+      "unbanConfirmTitle": "לבטל את חסימת המשתמש?",
+      "unbanConfirmMessage": "הגישה המלאה שלו לסָנָד תוחזר.",
+      "noHistory": "לא נרשמו פעולות ניהול עבור משתמש זה."
+    }
+  },
+  "volunteers": {
+    "title": "מתנדבים",
+    "subtitle": "חברי קהילה שמסייעים למבקשים קרובים.",
+    "table": {
+      "name": "שם",
+      "activityLevel": "רמת פעילות",
+      "completedAssists": "סיוע מאושר",
+      "points": "נקודות",
+      "availability": "זמינות",
+      "available": "זמין",
+      "unavailable": "לא זמין",
+      "verified": "מאומת",
+      "unverified": "לא מאומת",
+      "searchPlaceholder": "חיפוש לפי שם"
+    },
+    "detail": {
+      "title": "מתנדב",
+      "tabs": { "profile": "פרופיל", "missions": "משימות", "points": "נקודות", "history": "היסטוריית ניהול" },
+      "services": "שירותים",
+      "noServices": "לא הוגדרו שירותים",
+      "verify": "אימות מתנדב",
+      "unverify": "הסרת אימות",
+      "verifyConfirmTitle": "לאמת את המתנדב?",
+      "verifyConfirmMessage": "זהו סימון פנימי משני - הוא אינו תנאי להתנדבות עצמה.",
+      "unverifyConfirmTitle": "להסיר את האימות?",
+      "unverifyConfirmMessage": "המתנדב לא יוצג עוד כמאומת פנימית.",
+      "noPoints": "עדיין לא צבר נקודות."
+    },
+    "activityLevel": {
+      "none": "חדש",
+      "bronze": "ברונזה",
+      "silver": "כסף",
+      "gold": "זהב",
+      "green": "סָנָד ירוק"
+    }
+  },
+  "points": {
+    "title": "נקודות",
+    "subtitle": "יומן הנקודות המלא, לצפייה בלבד.",
+    "table": {
+      "volunteer": "מתנדב",
+      "points": "נקודות",
+      "reason": "סיבה",
+      "request": "בקשה",
+      "date": "תאריך"
+    },
+    "reasons": {
+      "completed_verified_mission": "משימה מאושרת הושלמה"
+    },
+    "filters": {
+      "searchPlaceholder": "חיפוש לפי שם מתנדב"
+    }
+  },
+  "audit": {
+    "actions": {
+      "userBanned": "חסם",
+      "userUnbanned": "ביטל חסימה של",
+      "volunteerVerified": "אימת",
+      "volunteerUnverified": "ביטל אימות של",
+      "requestCancelled": "ביטל"
+    }
+  }
+}

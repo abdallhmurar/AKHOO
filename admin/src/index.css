@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* HSL triplets converted from ../../src/lib/theme.ts's exact hex palette -
+   see the conversion note in tailwind.config.ts. No dark mode - this app
+   has a single light theme. */
+:root {
+  --background: 42 45% 94%;
+  --foreground: 150 24% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 150 24% 16%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 150 24% 16%;
+  --primary: 151 31% 28%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 120 17% 93%;
+  --secondary-foreground: 150 24% 16%;
+  --muted: 43 47% 97%;
+  --muted-foreground: 146 6% 46%;
+  --accent: 41 61% 90%;
+  --accent-foreground: 150 24% 16%;
+  --destructive: 0 62% 61%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 105 7% 89%;
+  --input: 105 7% 89%;
+  --ring: 151 31% 28%;
+  --radius: 0.75rem;
+}
+
+body {
+  @apply bg-background text-foreground font-sans antialiased;
+}

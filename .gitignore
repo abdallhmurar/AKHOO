@@ -8,3 +8,10 @@ supabase/.temp/
 playwright-report/
 test-results/
 coverage/
+admin/node_modules/
+admin/dist/
+admin/.env
+admin/.env.e2e
+admin/playwright-report/
+admin/test-results/
+admin/*.tsbuildinfo
