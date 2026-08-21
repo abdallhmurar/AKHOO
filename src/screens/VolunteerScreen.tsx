@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, AppState, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
@@ -14,6 +15,7 @@ import { BottomSheet } from '../components/BottomSheet'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
+import { Skeleton } from '../components/Skeleton'
 import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
 import { SanadMap } from '../components/SanadMap'
@@ -142,6 +144,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   }, [requests, selectedId, t])
 
   async function toggleAvailability() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {})
     setLoading(true)
     try {
       if (!available) {
@@ -176,6 +179,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   }
 
   async function accept(request: Nearby) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {})
     setLoading(true)
     try {
       const { data, error } = await supabase.rpc('accept_help_request', { p_request_id: request.id })
@@ -196,11 +200,21 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   }
 
   const selectedRequest = requests.find(item => item.id === selectedId) ?? null
+  // Recomputed only when requests actually change, not on every render (e.g.
+  // the 30s `now` tick) - SanadMap's marker-diffing effect keys off this
+  // array's reference, so a fresh array each render would re-run it for no
+  // reason.
+  const requestMarkers = useMemo(() => requests.map(item => ({ id: item.id, latitude: item.latitude, longitude: item.longitude })), [requests])
 
   if (!hydrated) {
     return (
-      <Screen scroll={false} contentStyle={styles.loadingContent}>
-        <ActivityIndicator color={colors.forest} />
+      <Screen>
+        <Header title={t('volunteer.title')} subtitle={t('volunteer.subtitle')} onBack={onBack} />
+        <Surface elevation="soft" padding="xl" style={[styles.availability, dir.alignStart]}>
+          <Skeleton width={110} height={22} radius={radius.pill} />
+          <Skeleton width="90%" height={14} style={styles.skeletonGap} />
+          <Skeleton width="100%" height={48} radius={radius.md} style={styles.skeletonGapLg} />
+        </Surface>
       </Screen>
     )
   }
@@ -228,7 +242,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
           longitude={coords.longitude}
           zoom={13}
           interactive
-          markers={requests.map(item => ({ id: item.id, latitude: item.latitude, longitude: item.longitude }))}
+          markers={requestMarkers}
           selectedId={selectedId}
           onMarkerPress={setSelectedId}
           style={styles.map}
@@ -307,10 +321,11 @@ function ServiceIcon({ type }: { type: ServiceType }) {
 
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.bg },
-  loadingContent: { alignItems: 'center', justifyContent: 'center' },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
 
   availability: { gap: space.md },
+  skeletonGap: { marginTop: space.xs },
+  skeletonGapLg: { marginTop: space.md },
   small: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
 
   topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, alignItems: 'center', gap: space.sm },

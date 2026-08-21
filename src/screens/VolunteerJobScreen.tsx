@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, AppState, Animated, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { translateActionError } from '../lib/rpcErrors'
@@ -87,6 +88,7 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   }, [request.status, request.id, request.volunteer_id, completionStats])
 
   async function setStatus(status: RequestStatus) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {})
     setBusy(true)
     try {
       const { error } = await supabase.rpc('update_help_request_status', { p_request_id: request.id, p_status: status })
@@ -97,6 +99,7 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   }
 
   async function release() {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {})
     setReleasing(true)
     try {
       const { error } = await supabase.rpc('release_help_request', { p_request_id: request.id, p_reason: releaseReason })

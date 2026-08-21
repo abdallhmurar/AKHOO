@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import * as Linking from 'expo-linking'
 import { useFonts, Tajawal_400Regular, Tajawal_500Medium, Tajawal_700Bold, Tajawal_800ExtraBold } from '@expo-google-fonts/tajawal'
 import { I18nextProvider, useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
-import { colors, font } from './src/lib/theme'
+import { colors, font, radius, space } from './src/lib/theme'
 import { i18next, initI18n } from './src/lib/i18n'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
@@ -23,6 +25,8 @@ import { TabBar } from './src/components/TabBar'
 import type { MainTab } from './src/components/TabBar'
 import { AuthShell } from './src/components/AuthShell'
 import { PrimaryButton } from './src/components/PrimaryButton'
+import { Skeleton } from './src/components/Skeleton'
+import { Surface } from './src/components/Surface'
 
 type ScreenName = 'main' | 'request' | 'active-request' | 'volunteer' | 'volunteer-job' | 'admin'
 
@@ -158,11 +162,13 @@ export default function App() {
 
   if (!fontsLoaded || !i18nReady || loading || recovering || !urlHandled) {
     return (
-      <View style={styles.loading}>
-        <View style={styles.splashMark}><Text style={styles.splashMarkText}>س</Text></View>
-        {fontsLoaded ? <Text style={styles.splashWord}>سَنَد</Text> : null}
-        <ActivityIndicator size="small" color={colors.forest} style={styles.splashSpinner} />
-      </View>
+      <GestureHandlerRootView style={styles.flexFill}>
+        <View style={styles.loading}>
+          <View style={styles.splashMark}><Text style={styles.splashMarkText}>س</Text></View>
+          {fontsLoaded ? <Text style={styles.splashWord}>سَنَد</Text> : null}
+          <ActivityIndicator size="small" color={colors.forest} style={styles.splashSpinner} />
+        </View>
+      </GestureHandlerRootView>
     )
   }
 
@@ -239,7 +245,7 @@ export default function App() {
           ) : profileError ? (
             <ProfileLoadError onRetry={() => { setProfileError(false); setProfileRetryTick(tick => tick + 1) }} />
           ) : (
-            <View style={styles.tabLoading}><ActivityIndicator color={colors.forest} /></View>
+            <AccountSkeleton />
           )}
         </View>
         <TabBar active={mainTab} onChange={setMainTab} />
@@ -247,7 +253,13 @@ export default function App() {
     )
   }
 
-  return <I18nextProvider i18n={i18next}>{renderScreen()}</I18nextProvider>
+  return (
+    <GestureHandlerRootView style={styles.flexFill}>
+      <BottomSheetModalProvider>
+        <I18nextProvider i18n={i18next}>{renderScreen()}</I18nextProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
+  )
 }
 
 function RecoveryLinkExpired({ onBack }: { onBack: () => void }) {
@@ -256,6 +268,20 @@ function RecoveryLinkExpired({ onBack }: { onBack: () => void }) {
     <AuthShell scene="forgotPassword" title={t('auth.reset.linkExpired.title')} subtitle={t('auth.reset.linkExpired.message')}>
       <PrimaryButton title={t('auth.reset.linkExpired.backToLogin')} onPress={onBack} />
     </AuthShell>
+  )
+}
+
+function AccountSkeleton() {
+  return (
+    <View style={styles.tabLoading}>
+      <Skeleton width={88} height={88} radius={44} />
+      <Skeleton width={140} height={18} style={styles.skeletonGap} />
+      <Skeleton width={180} height={13} />
+      <Surface elevation="soft" padding="lg" style={styles.skeletonCard}>
+        <Skeleton width="100%" height={44} radius={radius.md} />
+        <Skeleton width="100%" height={44} radius={radius.md} style={styles.skeletonGap} />
+      </Surface>
+    </View>
   )
 }
 
@@ -270,9 +296,12 @@ function ProfileLoadError({ onRetry }: { onRetry: () => void }) {
 }
 
 const styles = StyleSheet.create({
+  flexFill: { flex: 1 },
   mainWrap: { flex: 1, backgroundColor: colors.bg },
   tabContent: { flex: 1 },
   tabLoading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingHorizontal: 32 },
+  skeletonGap: { marginTop: space.sm },
+  skeletonCard: { width: '100%', gap: space.sm, marginTop: space.lg },
   profileErrorText: { color: colors.text, fontSize: 14, fontFamily: font.medium, textAlign: 'center' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
   splashMark: { width: 72, height: 72, borderRadius: 24, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },

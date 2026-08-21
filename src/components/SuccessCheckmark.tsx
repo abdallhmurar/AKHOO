@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Animated, Easing, StyleSheet, View } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { CheckCircle, XCircle } from 'phosphor-react-native'
 import { colors } from '../lib/theme'
 
@@ -20,6 +21,8 @@ export function SuccessCheckmark({ tone = 'success' }: { tone?: 'success' | 'dan
   useEffect(() => {
     Animated.timing(glow, { toValue: 1, duration: 450, easing: Easing.out(Easing.ease), useNativeDriver: true }).start()
     Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 14, bounciness: 10, delay: 90 }).start()
+    Haptics.notificationAsync(tone === 'success' ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Error).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [glow, scale])
 
   const glowScale = glow.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1.5] })

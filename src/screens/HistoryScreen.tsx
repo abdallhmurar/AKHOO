@@ -10,6 +10,7 @@ import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest } from '../types'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
+import { Skeleton } from '../components/Skeleton'
 import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
 
@@ -82,7 +83,22 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
     <Screen>
       <Header title={t('activity.title')} subtitle={t('activity.subtitle')} onBack={onBack} />
 
-      {loading ? <Text style={styles.loading}>{t('common.loading')}</Text> : null}
+      {loading ? (
+        <View style={styles.group}>
+          <Skeleton width={90} height={13} style={styles.groupLabelSkeleton} />
+          {[0, 1, 2].map(i => (
+            <Surface key={i} elevation="soft" padding="lg" style={styles.card}>
+              <View style={[styles.cardTop, dir.row]}>
+                <Skeleton width={44} height={44} radius={radius.md} />
+                <View style={[styles.cardTextWrap, dir.alignStart]}>
+                  <Skeleton width="60%" height={14} style={styles.skeletonLine} />
+                  <Skeleton width="40%" height={12} />
+                </View>
+              </View>
+            </Surface>
+          ))}
+        </View>
+      ) : null}
 
       {!loading && items.length === 0 ? (
         <Surface elevation="soft" padding="xl" style={styles.emptyCard}>
@@ -152,6 +168,8 @@ const styles = StyleSheet.create({
 
   group: { marginBottom: space.md },
   groupLabel: { ...type.caption, color: colors.muted, fontFamily: font.bold, marginBottom: space.sm, textTransform: 'uppercase' },
+  groupLabelSkeleton: { marginBottom: space.sm },
+  skeletonLine: { marginBottom: space.xs },
 
   card: { marginBottom: space.sm, gap: space.sm },
   cardTop: { alignItems: 'center', gap: space.md },

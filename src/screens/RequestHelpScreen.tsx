@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Animated, Easing, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
 import { ArrowClockwise, BatteryWarning, Camera, Check, GasPump, Lock, MapPin, Tire, Wrench, Warning } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
@@ -86,6 +87,7 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
   }
 
   function selectService(key: ServiceType) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {})
     setService(key)
     // A brief, obvious confirmation that the choice registered - the whole
     // flow may be operated by someone stressed, so the selected state can't

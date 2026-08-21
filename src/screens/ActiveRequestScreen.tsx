@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Alert, Animated, AppState, Easing, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { ArrowLeft, ArrowRight } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { translateActionError } from '../lib/rpcErrors'
@@ -111,6 +112,7 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
       setConfirmingCancel(true)
       return
     }
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {})
     setBusy(true)
     const { error } = await supabase.rpc('cancel_help_request', { p_request_id: request.id })
     setBusy(false)
@@ -119,6 +121,7 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
   }
 
   async function respondToCompletion(confirmed: boolean) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {})
     setRespondingToCompletion(true)
     const { error } = await supabase.rpc('confirm_help_request_completion', { p_request_id: request.id, p_confirmed: confirmed })
     setRespondingToCompletion(false)
