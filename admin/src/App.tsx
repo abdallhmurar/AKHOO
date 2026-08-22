@@ -6,8 +6,6 @@ import { RequestsPage } from '@/pages/requests/RequestsPage'
 import { RequestDetailPage } from '@/pages/requests/RequestDetailPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { UserDetailPage } from '@/pages/users/UserDetailPage'
-import { VolunteersPage } from '@/pages/volunteers/VolunteersPage'
-import { VolunteerDetailPage } from '@/pages/volunteers/VolunteerDetailPage'
 import { PointsPage } from '@/pages/points/PointsPage'
 import { BusinessesPage } from '@/pages/businesses/BusinessesPage'
 import { NewBusinessPage } from '@/pages/businesses/NewBusinessPage'
@@ -30,8 +28,6 @@ export default function App() {
           <Route path="requests/:id" element={<RequestDetailPage />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="users/:id" element={<UserDetailPage />} />
-          <Route path="volunteers" element={<VolunteersPage />} />
-          <Route path="volunteers/:id" element={<VolunteerDetailPage />} />
           <Route path="points" element={<PointsPage />} />
           <Route path="businesses" element={<BusinessesPage />} />
           <Route path="businesses/new" element={<NewBusinessPage />} />

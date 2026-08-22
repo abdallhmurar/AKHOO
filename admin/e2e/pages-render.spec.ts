@@ -13,7 +13,6 @@ test.describe('list pages render', () => {
   const pages = [
     { path: 'requests', heading: /requests|الطلبات|בקשות/i },
     { path: 'users', heading: /users|المستخدمون|משתמשים/i },
-    { path: 'volunteers', heading: /volunteers|المتطوعون|מתנדבים/i },
     { path: 'points', heading: /points|النقاط|נקודות/i }
   ]
 

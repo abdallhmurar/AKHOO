@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test'
 // entirely (confirmed: Vite's dev server 302s bare `/` to `/admin/` but
 // hard-404s e.g. `/requests`). A bare relative segment resolves correctly
 // against the baseURL's own directory instead.
-const protectedPaths = ['requests', 'users', 'volunteers', 'points']
+const protectedPaths = ['requests', 'users', 'points']
 
 test.describe('protected routes', () => {
   for (const path of protectedPaths) {

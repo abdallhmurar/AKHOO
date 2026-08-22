@@ -31,7 +31,6 @@
     "dashboard": "לוח בקרה",
     "requests": "בקשות",
     "users": "משתמשים",
-    "volunteers": "מתנדבים",
     "points": "נקודות",
     "businesses": "עסקים",
     "offers": "מבצעים",
@@ -156,53 +155,40 @@
     },
     "detail": {
       "title": "משתמש",
-      "tabs": { "profile": "פרופיל", "requests": "בקשות", "volunteer": "התנדבות", "history": "היסטוריית ניהול" },
+      "tabs": { "profile": "פרופיל", "requests": "בקשות", "assists": "סיוע", "points": "נקודות", "history": "היסטוריית ניהול" },
       "memberSince": "חבר מאז",
       "noRequests": "אין עדיין בקשות.",
-      "notAVolunteer": "משתמש זה מעולם לא התנדב.",
+      "notAVolunteer": "משתמש זה מעולם לא סייע לאף אחד.",
       "ban": "חסום משתמש",
       "unban": "בטל חסימה",
       "banConfirmTitle": "לחסום את המשתמש?",
-      "banConfirmMessage": "הוא לא יוכל עוד ליצור בקשות או להתנדב.",
+      "banConfirmMessage": "הוא לא יוכל עוד ליצור בקשות או לסייע לאחרים.",
       "unbanConfirmTitle": "לבטל את חסימת המשתמש?",
       "unbanConfirmMessage": "הגישה המלאה שלו לסָנָד תוחזר.",
-      "noHistory": "לא נרשמו פעולות ניהול עבור משתמש זה."
-    }
-  },
-  "volunteers": {
-    "title": "מתנדבים",
-    "subtitle": "חברי קהילה שמסייעים למבקשים קרובים.",
-    "table": {
-      "name": "שם",
-      "activityLevel": "רמת פעילות",
-      "completedAssists": "סיוע מאושר",
-      "points": "נקודות",
-      "availability": "זמינות",
-      "available": "זמין",
-      "unavailable": "לא זמין",
-      "verified": "מאומת",
-      "unverified": "לא מאומת",
-      "searchPlaceholder": "חיפוש לפי שם"
-    },
-    "detail": {
-      "title": "מתנדב",
-      "tabs": { "profile": "פרופיל", "missions": "משימות", "points": "נקודות", "history": "היסטוריית ניהול" },
-      "services": "שירותים",
-      "noServices": "לא הוגדרו שירותים",
-      "verify": "אימות מתנדב",
-      "unverify": "הסרת אימות",
-      "verifyConfirmTitle": "לאמת את המתנדב?",
-      "verifyConfirmMessage": "זהו סימון פנימי משני - הוא אינו תנאי להתנדבות עצמה.",
-      "unverifyConfirmTitle": "להסיר את האימות?",
-      "unverifyConfirmMessage": "המתנדב לא יוצג עוד כמאומת פנימית.",
-      "noPoints": "עדיין לא צבר נקודות."
-    },
-    "activityLevel": {
-      "none": "חדש",
-      "bronze": "ברונזה",
-      "silver": "כסף",
-      "gold": "זהב",
-      "green": "סָנָד ירוק"
+      "noHistory": "לא נרשמו פעולות ניהול עבור משתמש זה.",
+      "assists": {
+        "completedAssists": "סיוע מאושר",
+        "available": "זמין",
+        "unavailable": "לא זמין",
+        "verified": "מאומת",
+        "unverified": "לא מאומת",
+        "services": "שירותים",
+        "noServices": "לא הוגדרו שירותים",
+        "verify": "אימות",
+        "unverify": "הסרת אימות",
+        "verifyConfirmTitle": "לאמת את פעילות הסיוע של המשתמש?",
+        "verifyConfirmMessage": "זהו סימון פנימי משני - הוא אינו תנאי לסיוע לאחרים עצמו.",
+        "unverifyConfirmTitle": "להסיר את האימות?",
+        "unverifyConfirmMessage": "המשתמש לא יוצג עוד כמאומת פנימית.",
+        "noPoints": "עדיין לא צבר נקודות.",
+        "activityLevel": {
+          "none": "חדש",
+          "bronze": "ברונזה",
+          "silver": "כסף",
+          "gold": "זהב",
+          "green": "סָנָד ירוק"
+        }
+      }
     }
   },
   "points": {

@@ -31,7 +31,6 @@
     "dashboard": "الرئيسية",
     "requests": "الطلبات",
     "users": "المستخدمون",
-    "volunteers": "المتطوعون",
     "points": "النقاط",
     "businesses": "الأعمال التجارية",
     "offers": "العروض",
@@ -156,53 +155,40 @@
     },
     "detail": {
       "title": "المستخدم",
-      "tabs": { "profile": "الملف الشخصي", "requests": "الطلبات", "volunteer": "التطوع", "history": "السجل الإداري" },
+      "tabs": { "profile": "الملف الشخصي", "requests": "الطلبات", "assists": "المساعدات", "points": "النقاط", "history": "السجل الإداري" },
       "memberSince": "عضو منذ",
       "noRequests": "لا توجد طلبات بعد.",
-      "notAVolunteer": "هذا المستخدم لم يتطوع من قبل.",
+      "notAVolunteer": "هذا المستخدم لم يساعد أحداً بعد.",
       "ban": "حظر المستخدم",
       "unban": "رفع الحظر",
       "banConfirmTitle": "حظر هذا المستخدم؟",
-      "banConfirmMessage": "لن يستطيع بعدها إنشاء طلبات أو التطوع.",
+      "banConfirmMessage": "لن يستطيع بعدها إنشاء طلبات أو مساعدة الآخرين.",
       "unbanConfirmTitle": "رفع الحظر عن هذا المستخدم؟",
       "unbanConfirmMessage": "سيستعيد وصوله الكامل لسَنَد.",
-      "noHistory": "لا توجد إجراءات إدارية مسجّلة لهذا المستخدم."
-    }
-  },
-  "volunteers": {
-    "title": "المتطوعون",
-    "subtitle": "أفراد المجتمع اللي بساعدوا أصحاب الطلبات القريبين.",
-    "table": {
-      "name": "الاسم",
-      "activityLevel": "مستوى النشاط",
-      "completedAssists": "المساعدات المؤكدة",
-      "points": "النقاط",
-      "availability": "التوفر",
-      "available": "متاح",
-      "unavailable": "غير متاح",
-      "verified": "موثّق",
-      "unverified": "غير موثّق",
-      "searchPlaceholder": "بحث بالاسم"
-    },
-    "detail": {
-      "title": "المتطوع",
-      "tabs": { "profile": "الملف الشخصي", "missions": "المهام", "points": "النقاط", "history": "السجل الإداري" },
-      "services": "الخدمات",
-      "noServices": "لا توجد خدمات محددة",
-      "verify": "توثيق المتطوع",
-      "unverify": "إلغاء التوثيق",
-      "verifyConfirmTitle": "توثيق هذا المتطوع؟",
-      "verifyConfirmMessage": "هذه علامة داخلية ثانوية - لا تشترط للتطوع نفسه.",
-      "unverifyConfirmTitle": "إلغاء توثيق هذا المتطوع؟",
-      "unverifyConfirmMessage": "لن يظهر بعدها كموثّق داخلياً.",
-      "noPoints": "لم يكسب نقاط بعد."
-    },
-    "activityLevel": {
-      "none": "جديد",
-      "bronze": "برونزي",
-      "silver": "فضي",
-      "gold": "ذهبي",
-      "green": "سَنَد الأخضر"
+      "noHistory": "لا توجد إجراءات إدارية مسجّلة لهذا المستخدم.",
+      "assists": {
+        "completedAssists": "مساعدة مؤكدة",
+        "available": "متاح",
+        "unavailable": "غير متاح",
+        "verified": "موثّق",
+        "unverified": "غير موثّق",
+        "services": "الخدمات",
+        "noServices": "لا توجد خدمات محددة",
+        "verify": "توثيق المساعدة",
+        "unverify": "إلغاء التوثيق",
+        "verifyConfirmTitle": "توثيق مساعدة هذا المستخدم؟",
+        "verifyConfirmMessage": "هذه علامة داخلية ثانوية - لا تشترط لمساعدة الآخرين نفسها.",
+        "unverifyConfirmTitle": "إلغاء توثيق مساعدة هذا المستخدم؟",
+        "unverifyConfirmMessage": "لن يظهر بعدها كموثّق داخلياً.",
+        "noPoints": "لم يكسب نقاط بعد.",
+        "activityLevel": {
+          "none": "جديد",
+          "bronze": "برونزي",
+          "silver": "فضي",
+          "gold": "ذهبي",
+          "green": "سَنَد الأخضر"
+        }
+      }
     }
   },
   "points": {

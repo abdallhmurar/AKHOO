@@ -7,13 +7,13 @@ export function ActivityStar({ completedCount }: { completedCount: number }) {
   const level = getVolunteerActivityLevel(completedCount)
 
   if (level === 'none') {
-    return <span className="text-xs text-muted-foreground">{t('volunteers.activityLevel.none')}</span>
+    return <span className="text-xs text-muted-foreground">{t('users.detail.assists.activityLevel.none')}</span>
   }
 
   return (
     <span className="inline-flex items-center gap-1 text-sm font-medium" style={{ color: ACTIVITY_LEVEL_COLORS[level] }}>
       <Star className="size-4 fill-current" />
-      {t(`volunteers.activityLevel.${level}`)}
+      {t(`users.detail.assists.activityLevel.${level}`)}
     </span>
   )
 }

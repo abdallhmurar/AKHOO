@@ -11,8 +11,8 @@ export function useSetVolunteerVerified() {
       if (error) throw error
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['volunteers'] })
-      queryClient.invalidateQueries({ queryKey: ['volunteer'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['user'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] })
       queryClient.invalidateQueries({ queryKey: ['audit-log'] })
     },
