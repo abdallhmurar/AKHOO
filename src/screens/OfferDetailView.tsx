@@ -10,6 +10,7 @@ import { resolveOfferUseAction, useMembership } from '../lib/membership'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../lib/market'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import type { BusinessRating, Partner, PartnerOffer } from '../types'
 import { BottomSheet } from '../components/BottomSheet'
 import { EmptyState } from '../components/EmptyState'
@@ -41,6 +42,10 @@ export function OfferDetailView({
   const [membershipSheetOpen, setMembershipSheetOpen] = useState(false)
   const [contactSheetOpen, setContactSheetOpen] = useState(false)
   const { isPlusMember } = useMembership(userId)
+
+  // System back returns to the previous Perks frame, same as the visible
+  // back arrow (PerksScreen's own drill-down stack, see pop()).
+  useAndroidBackHandler(onBack)
 
   useEffect(() => {
     let cancelled = false

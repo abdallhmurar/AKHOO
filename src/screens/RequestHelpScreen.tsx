@@ -6,8 +6,10 @@ import { ArrowClockwise, BatteryWarning, Camera, Check, GasPump, Lock, MapPin, T
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../lib/location'
 import type { PilotZone } from '../lib/location'
+import { resolveRequestHelpBack } from '../lib/backNavigation'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import { colors, font, radius, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, ServiceType } from '../types'
@@ -108,9 +110,12 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
   }
 
   function back() {
-    if (step === 'type') onBack()
-    else setStep(steps[stepIndex - 1]!)
+    const target = resolveRequestHelpBack(step)
+    if (target.kind === 'home') onBack()
+    else setStep(target.step)
   }
+
+  useAndroidBackHandler(back)
 
   async function submit() {
     if (!service || !coords || outsideZone) return

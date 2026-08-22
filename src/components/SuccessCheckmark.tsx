@@ -39,7 +39,14 @@ export function SuccessCheckmark({ tone = 'success' }: { tone?: 'success' | 'dan
 }
 
 const styles = StyleSheet.create({
-  wrap: { width: 86, height: 86, alignItems: 'center', justifyContent: 'center' },
+  // alignSelf: 'center' is required, not redundant - this component is a
+  // fixed-width (86px) box inside column-flex containers that default to
+  // alignItems: 'stretch'. A fixed-width child can't actually stretch, and
+  // on a real Android device in RTL that fallback was observed rendering
+  // the icon flush to the right instead of centered (confirmed on-device,
+  // Arabic). Centering itself here fixes every call site at once instead
+  // of requiring every parent container to remember alignItems: 'center'.
+  wrap: { width: 86, height: 86, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
   glow: { position: 'absolute', width: 86, height: 86, borderRadius: 43 },
   iconWrap: { width: 86, height: 86, borderRadius: 43, alignItems: 'center', justifyContent: 'center' }
 })

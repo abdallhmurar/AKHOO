@@ -3,13 +3,16 @@ import { ActivityIndicator, Alert, AppState, Image, Linking, Pressable, SafeArea
 import * as Haptics from 'expo-haptics'
 import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { getCurrentCoords, distanceKm, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
+import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
+import { filterNearbyRequests } from '../lib/nearbyRequests'
+import type { NearbyRequest } from '../lib/nearbyRequests'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, space, shadow, type } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import type { HelpRequest, ServiceType } from '../types'
 import { BottomSheet } from '../components/BottomSheet'
 import { PrimaryButton } from '../components/PrimaryButton'
@@ -32,8 +35,7 @@ const services: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarnin
 const serviceByKey = Object.fromEntries(services.map(item => [item.key, item])) as Record<ServiceType, (typeof services)[number]>
 
 const HEARTBEAT_MS = 5 * 60 * 1000
-
-type Nearby = HelpRequest & { distance: number }
+const NEARBY_POLL_MS = 15 * 1000
 
 export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string; onBack: () => void; onAccepted: (request: HelpRequest) => void }) {
   const { t } = useTranslation()
@@ -43,11 +45,16 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
   const [hydrated, setHydrated] = useState(false)
   const [available, setAvailable] = useState(false)
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null)
-  const [requests, setRequests] = useState<Nearby[]>([])
+  const [requests, setRequests] = useState<NearbyRequest[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [now, setNow] = useState(Date.now())
   const mapRef = useRef<SanadMapRef>(null)
+
+  // System back goes Home like the visible back arrow does - availability
+  // is server-side state (volunteer_profiles.is_available) untouched by
+  // navigating away; only the explicit disable button turns it off.
+  useAndroidBackHandler(onBack)
 
   const loadRequests = useCallback(async (position?: { latitude: number; longitude: number } | null) => {
     const at = position ?? coords
@@ -57,12 +64,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       Alert.alert(t('common.error'), translateActionError(t, error))
       return
     }
-    const nearby = (data as HelpRequest[])
-      .filter(item => item.requester_id !== userId)
-      .map(item => ({ ...item, distance: distanceKm(at.latitude, at.longitude, item.latitude, item.longitude) }))
-      .filter(item => item.distance <= 20)
-      .sort((a, b) => a.distance - b.distance)
-    setRequests(nearby)
+    setRequests(filterNearbyRequests(data as HelpRequest[], userId, at))
   }, [coords, userId, t])
 
   // Restore state from the DB on mount instead of assuming a fresh session -
@@ -93,6 +95,24 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       .on('postgres_changes', { event: '*', schema: 'public', table: 'help_requests' }, () => loadRequests(coords))
       .subscribe()
     return () => { supabase.removeChannel(channel) }
+  }, [available, coords, loadRequests])
+
+  // Confirmed on a real device: a brand-new nearby request never arrived
+  // through the realtime channel above - only a manual availability
+  // off/on retoggle (a fresh loadRequests() call) picked it up. Realtime's
+  // RLS-gated broadcast has to re-evaluate "request read relevant"
+  // (0007_volunteer_staleness.sql) per event, which is a Haversine-distance
+  // join against this volunteer's own volunteer_profiles row - unlike the
+  // simple id-equality policies the request-detail screens' channels rely
+  // on, that's exactly the kind of non-trivial policy Realtime's broadcast
+  // evaluation doesn't reliably re-check. Rather than trust realtime as the
+  // source of truth (or weaken the policy to "fix" this), poll the same
+  // authoritative loadRequests() on a short interval as a floor under
+  // whatever realtime does or doesn't deliver.
+  useEffect(() => {
+    if (!available || !coords) return
+    const interval = setInterval(() => loadRequests(coords), NEARBY_POLL_MS)
+    return () => clearInterval(interval)
   }, [available, coords, loadRequests])
 
   // Realtime alone isn't a reliable source of truth here: an UPDATE that
@@ -178,7 +198,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
     }
   }
 
-  async function accept(request: Nearby) {
+  async function accept(request: NearbyRequest) {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {})
     setLoading(true)
     try {

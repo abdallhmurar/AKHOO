@@ -36,7 +36,7 @@ Deno.serve(async req => {
     .eq('id', request_id)
     .single()
 
-  if (!request) return new Response('ok')
+  if (!request) return new Response('ok: request not found')
 
   // Mirrors the 20-minute staleness bound the RLS "request read relevant"
   // policy already applies (0007_volunteer_staleness.sql) - without it a
@@ -50,11 +50,18 @@ Deno.serve(async req => {
     .not('push_token', 'is', null)
     .gt('updated_at', new Date(Date.now() - 20 * 60 * 1000).toISOString())
 
+  // This function always returns 200/"ok" once it runs at all (webhook auth
+  // succeeded, the trigger fired) regardless of whether any candidate was
+  // actually found or any push actually sent - that response alone can't
+  // distinguish "nothing to notify" from "something failed silently". Log
+  // the counts so a real invocation's actual outcome is visible.
+  const candidateCount = (volunteers ?? []).length
   const nearby = (volunteers ?? []).filter(v => {
     if (v.latitude == null || v.longitude == null) return false
     if (v.user_id === request.requester_id) return false
     return distanceKm(request.latitude, request.longitude, v.latitude, v.longitude) <= 20
   })
+  console.log(`[notify-new-request] request ${request_id}: ${candidateCount} available+tokened+fresh volunteer(s), ${nearby.length} within 20km after excluding the requester`)
 
   const messages = nearby.map(v => ({
     to: v.push_token,
@@ -63,6 +70,7 @@ Deno.serve(async req => {
     sound: 'default'
   }))
 
+  let pushResult = 'no candidates'
   if (messages.length > 0) {
     try {
       const response = await fetch('https://exp.host/--/api/v2/push/send', {
@@ -70,13 +78,25 @@ Deno.serve(async req => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(messages)
       })
+      const responseBody = await response.text()
       if (!response.ok) {
-        console.error('[notify-new-request] Expo push API returned', response.status, await response.text())
+        console.error('[notify-new-request] Expo push API returned', response.status, responseBody)
+        pushResult = `expo api error ${response.status}: ${responseBody.slice(0, 300)}`
+      } else {
+        console.log(`[notify-new-request] Expo push API accepted ${messages.length} message(s):`, responseBody)
+        // Truncated, not the full Expo response - just enough to see
+        // "ok"/"error" per-ticket without the response body growing
+        // unbounded for a large recipient batch.
+        pushResult = `sent to ${messages.length}: ${responseBody.slice(0, 300)}`
       }
     } catch (err) {
       console.error('[notify-new-request] push send failed:', err)
+      pushResult = `push send threw: ${err instanceof Error ? err.message : String(err)}`
     }
   }
 
-  return new Response('ok')
+  // The response body itself carries the outcome (not just Edge Function
+  // logs) so it's queryable straight from net._http_response via SQL -
+  // no dashboard/CLI log access needed to see what a real invocation did.
+  return new Response(JSON.stringify({ candidateCount, nearbyCount: nearby.length, pushResult }))
 })

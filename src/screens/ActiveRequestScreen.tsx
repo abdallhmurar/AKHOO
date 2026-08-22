@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import { useStaggeredReveal } from '../lib/useStaggeredReveal'
 import type { HelpRequest, Profile } from '../types'
 import { PrimaryButton } from '../components/PrimaryButton'
@@ -34,6 +35,10 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
   const [respondingToCompletion, setRespondingToCompletion] = useState(false)
   const [now, setNow] = useState(Date.now())
   const pulseAnim = useRef(new Animated.Value(0)).current
+
+  // System back goes Home like the visible back arrow does - never
+  // cancels the request (that's a separate, explicit confirm-gated action).
+  useAndroidBackHandler(onBack)
 
   useEffect(() => {
     const channel = supabase.channel(`request-${request.id}`)

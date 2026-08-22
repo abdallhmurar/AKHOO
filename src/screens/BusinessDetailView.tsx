@@ -8,6 +8,7 @@ import { telHref, whatsappHref, directionsHref } from '../lib/contactLinks'
 import { CURRENT_MARKET_CODE } from '../lib/market'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import type { BusinessPhoto, BusinessRating, Partner, PartnerOffer, Review } from '../types'
 import { EmptyState } from '../components/EmptyState'
 import { OfferCard } from '../components/OfferCard'
@@ -33,6 +34,10 @@ export function BusinessDetailView({ businessId, onBack, onOpenOffer }: { busine
   const dir = dirStyles(isRTL)
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const [data, setData] = useState<BusinessDetailData | null | 'not-found'>(null)
+
+  // System back returns to the previous Perks frame, same as the visible
+  // back arrow (PerksScreen's own drill-down stack, see pop()).
+  useAndroidBackHandler(onBack)
 
   useEffect(() => {
     let cancelled = false

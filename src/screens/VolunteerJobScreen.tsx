@@ -7,6 +7,7 @@ import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import { useStaggeredReveal } from '../lib/useStaggeredReveal'
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS } from '../lib/activityLevel'
 import type { ActivityLevel } from '../lib/activityLevel'
@@ -38,6 +39,11 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
   const [releaseReason, setReleaseReason] = useState<ReleaseReason | null>(null)
   const [releasing, setReleasing] = useState(false)
   const [completionStats, setCompletionStats] = useState<CompletionStats | null>(null)
+
+  // System back goes Home like the visible back arrow does - never
+  // releases/cancels the mission (that's a separate, explicit confirm-gated
+  // action); the user can resume it later from Home/Activity.
+  useAndroidBackHandler(onBack)
 
   useEffect(() => {
     const channel = supabase.channel(`volunteer-job-${request.id}`)

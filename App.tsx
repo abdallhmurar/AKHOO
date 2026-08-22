@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, AppState, StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import * as Linking from 'expo-linking'
@@ -9,6 +9,7 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
 import { colors, font, radius, space } from './src/lib/theme'
 import { i18next, initI18n } from './src/lib/i18n'
+import { isRealAuthTransition, resolveActiveMissionScreen } from './src/lib/sessionRecovery'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { RoleScreen } from './src/screens/RoleScreen'
@@ -90,14 +91,29 @@ export default function App() {
     return () => subscription.remove()
   }, [])
 
+  // Tracks the last known signed-in user id outside React state, purely to
+  // tell a REAL sign-in/out transition apart from Supabase re-emitting
+  // 'SIGNED_IN' for the SAME already-logged-in user - confirmed on a real
+  // Android device this happens on session restoration after the app is
+  // backgrounded long enough for the JS engine to be torn down and
+  // recreated (or a token refresh presenting as 'SIGNED_IN'). Resetting
+  // screen/activeRequest on every 'SIGNED_IN' by name was wiping out an
+  // already-recovered ActiveRequestScreen/VolunteerJobScreen and dropping
+  // the user back on Home despite a real active mission still existing.
+  const lastUserIdRef = useRef<string | null>(null)
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
+      lastUserIdRef.current = data.session?.user.id ?? null
       setSession(data.session)
       setLoading(false)
     })
     const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      const nextUserId = nextSession?.user.id ?? null
+      const realTransition = isRealAuthTransition(event, nextUserId, lastUserIdRef.current)
+      lastUserIdRef.current = nextUserId
       setSession(nextSession)
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+      if (realTransition) {
         setScreen('main')
         setMainTab('home')
         setActiveRequest(null)
@@ -119,8 +135,42 @@ export default function App() {
     })
   }, [session?.user.id, profileRetryTick])
 
+  // Shared by both recovery effects below - returns true if a real
+  // non-terminal mission was found and screen/activeRequest were set.
+  const recoverActiveMission = useCallback(async (uid: string) => {
+    const { data: asRequester } = await supabase
+      .from('help_requests')
+      .select('*')
+      .eq('requester_id', uid)
+      .in('status', ACTIVE_STATUSES)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (resolveActiveMissionScreen(asRequester, null)?.screen === 'active-request') {
+      setActiveRequest(asRequester as HelpRequest)
+      setScreen('active-request')
+      return true
+    }
+
+    const { data: asVolunteer } = await supabase
+      .from('help_requests')
+      .select('*')
+      .eq('volunteer_id', uid)
+      .in('status', ACTIVE_STATUSES)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (resolveActiveMissionScreen(null, asVolunteer)?.screen === 'volunteer-job') {
+      setActiveRequest(asVolunteer as HelpRequest)
+      setScreen('volunteer-job')
+      return true
+    }
+    return false
+  }, [])
+
   // Recover an in-progress request/job after a reload or fresh app open, so
   // it doesn't just vanish - screen/activeRequest only ever lived in memory.
+  // Gates the splash via `recovering` - this is the cold-start path only.
   useEffect(() => {
     const uid = session?.user.id
     if (!uid) {
@@ -128,37 +178,26 @@ export default function App() {
       return
     }
     setRecovering(true)
-    ;(async () => {
-      const { data: asRequester } = await supabase
-        .from('help_requests')
-        .select('*')
-        .eq('requester_id', uid)
-        .in('status', ACTIVE_STATUSES)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-      if (asRequester) {
-        setActiveRequest(asRequester as HelpRequest)
-        setScreen('active-request')
-        setRecovering(false)
-        return
-      }
+    recoverActiveMission(uid).finally(() => setRecovering(false))
+  }, [session?.user.id, recoverActiveMission])
 
-      const { data: asVolunteer } = await supabase
-        .from('help_requests')
-        .select('*')
-        .eq('volunteer_id', uid)
-        .in('status', ACTIVE_STATUSES)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-      if (asVolunteer) {
-        setActiveRequest(asVolunteer as HelpRequest)
-        setScreen('volunteer-job')
+  // Safety net for returning from background, without the blocking splash:
+  // confirmed on a real device that a user with a genuinely active mission
+  // could land on 'main' after backgrounding/foregrounding (see the
+  // onAuthStateChange fix above for the primary cause). Only acts when
+  // we're actually sitting on 'main' with no activeRequest already tracked,
+  // so this can never interrupt an in-progress request/volunteer flow or
+  // fight manual navigation elsewhere in the app.
+  useEffect(() => {
+    const uid = session?.user.id
+    if (!uid) return
+    const subscription = AppState.addEventListener('change', state => {
+      if (state === 'active' && screen === 'main' && !activeRequest) {
+        recoverActiveMission(uid)
       }
-      setRecovering(false)
-    })()
-  }, [session?.user.id])
+    })
+    return () => subscription.remove()
+  }, [session?.user.id, screen, activeRequest, recoverActiveMission])
 
   if (!fontsLoaded || !i18nReady || loading || recovering || !urlHandled) {
     return (

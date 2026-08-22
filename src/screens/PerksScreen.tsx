@@ -129,81 +129,94 @@ export function PerksScreen({ userId }: { userId: string }) {
   }
 
   return (
-    <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.forest} />}>
-      <Header title={t('perks.title')} subtitle={t('perks.subtitle')} />
+    <View style={styles.fill}>
+      <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.forest} />}>
+        <Header title={t('perks.title')} subtitle={t('perks.subtitle')} />
 
-      <View style={[styles.searchWrap, dir.row]}>
-        <MagnifyingGlass size={18} color={colors.muted} />
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder={t('perks.searchPlaceholder')}
-          placeholderTextColor={colors.muted}
-          style={[styles.searchInput, dir.textStart]}
-        />
-      </View>
-
-      <PlusHeroCard onPress={() => setHeroSheetOpen(true)} />
-
-      <Text style={[styles.sectionTitle, dir.textStart, styles.categoriesTitle]}>{t('perks.categoriesTitle')}</Text>
-      <CategoryChipsRow selected={category} onSelect={setCategory} />
-
-      {loadError ? (
-        <View style={styles.errorWrap}>
-          <Text style={styles.errorText}>{t('perks.errors.loadFailed')}</Text>
-          <PrimaryButton title={t('common.retry')} onPress={load} />
+        <View style={[styles.searchWrap, dir.row]}>
+          <MagnifyingGlass size={18} color={colors.muted} />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder={t('perks.searchPlaceholder')}
+            placeholderTextColor={colors.muted}
+            style={[styles.searchInput, dir.textStart]}
+          />
         </View>
-      ) : data === null ? (
-        <DiscoverSkeleton />
-      ) : isFiltering ? (
-        <FilteredResults
-          offers={filteredOffers}
-          businesses={filteredBusinesses}
-          businessById={businessById}
-          ratings={data.ratings}
-          onOpenOffer={id => push({ kind: 'offer', id })}
-          onOpenBusiness={id => push({ kind: 'business', id })}
-        />
-      ) : (
-        <>
-          <SectionHeader title={t('perks.offersTitle')} />
-          {data.offers.length === 0 ? (
-            <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
-          ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.rail, dir.row]}>
-              {data.offers.map(offer => (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  business={businessById[offer.partner_id]}
-                  rating={data.ratings[offer.partner_id]}
-                  onPress={() => push({ kind: 'offer', id: offer.id })}
-                />
-              ))}
-            </ScrollView>
-          )}
 
-          <SectionHeader title={t('perks.businessesTitle')} />
-          {data.businesses.length === 0 ? (
-            <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
-          ) : (
-            <View style={styles.businessList}>
-              {data.businesses.map(business => (
-                <BusinessCard
-                  key={business.id}
-                  business={business}
-                  rating={data.ratings[business.id]}
-                  hasOffer={businessHasOffer.has(business.id)}
-                  onPress={() => push({ kind: 'business', id: business.id })}
-                />
-              ))}
-            </View>
-          )}
-        </>
-      )}
+        <PlusHeroCard onPress={() => setHeroSheetOpen(true)} />
 
+        <Text style={[styles.sectionTitle, dir.textStart, styles.categoriesTitle]}>{t('perks.categoriesTitle')}</Text>
+        <CategoryChipsRow selected={category} onSelect={setCategory} />
+
+        {loadError ? (
+          <View style={styles.errorWrap}>
+            <Text style={styles.errorText}>{t('perks.errors.loadFailed')}</Text>
+            <PrimaryButton title={t('common.retry')} onPress={load} />
+          </View>
+        ) : data === null ? (
+          <DiscoverSkeleton />
+        ) : isFiltering ? (
+          <FilteredResults
+            offers={filteredOffers}
+            businesses={filteredBusinesses}
+            businessById={businessById}
+            ratings={data.ratings}
+            onOpenOffer={id => push({ kind: 'offer', id })}
+            onOpenBusiness={id => push({ kind: 'business', id })}
+          />
+        ) : (
+          <>
+            <SectionHeader title={t('perks.offersTitle')} />
+            {data.offers.length === 0 ? (
+              <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
+            ) : (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.rail, dir.row]}>
+                {data.offers.map(offer => (
+                  <OfferCard
+                    key={offer.id}
+                    offer={offer}
+                    business={businessById[offer.partner_id]}
+                    rating={data.ratings[offer.partner_id]}
+                    onPress={() => push({ kind: 'offer', id: offer.id })}
+                  />
+                ))}
+              </ScrollView>
+            )}
+
+            <SectionHeader title={t('perks.businessesTitle')} />
+            {data.businesses.length === 0 ? (
+              <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
+            ) : (
+              <View style={styles.businessList}>
+                {data.businesses.map(business => (
+                  <BusinessCard
+                    key={business.id}
+                    business={business}
+                    rating={data.ratings[business.id]}
+                    hasOffer={businessHasOffer.has(business.id)}
+                    onPress={() => push({ kind: 'business', id: business.id })}
+                  />
+                ))}
+              </View>
+            )}
+          </>
+        )}
+      </Screen>
+
+      {/* Sibling of Screen, not a child - Gorhom's BottomSheet renders an
+          always-mounted (even while closed) absolutely-positioned overlay
+          that expects to sit at the root of the view tree. Nesting it
+          inside Screen's own ScrollView content (as it was before) put
+          that overlay inside a scrollable container, which on a real
+          Android device intercepted touches for every interactive child
+          rendered before it in the same ScrollView - search input,
+          category chips, offer/business cards - even though the sheet was
+          closed and invisible, and even though ScrollView panning still
+          worked. Matches the already-correct sibling placement used in
+          OfferDetailView. */}
       <MembershipSheet visible={heroSheetOpen} onClose={() => setHeroSheetOpen(false)} />
-    </Screen>
+    </View>
   )
 }
 
@@ -275,6 +288,7 @@ function DiscoverSkeleton() {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   searchWrap: { alignItems: 'center', gap: space.sm, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, paddingHorizontal: space.md, marginBottom: space.lg },
   searchInput: { flex: 1, color: colors.text, fontFamily: font.regular, fontSize: 14.5, paddingVertical: 12 },
 
