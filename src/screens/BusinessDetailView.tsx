@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { businessCategoryIcons } from '../lib/businessCategories'
 import { telHref, whatsappHref, directionsHref } from '../lib/contactLinks'
+import { CURRENT_MARKET_CODE } from '../lib/market'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { BusinessPhoto, BusinessRating, Partner, PartnerOffer, Review } from '../types'
@@ -37,7 +38,7 @@ export function BusinessDetailView({ businessId, onBack, onOpenOffer }: { busine
     let cancelled = false
     setData(null)
     ;(async () => {
-      const { data: business } = await supabase.from('partners').select('*').eq('id', businessId).eq('status', 'verified').eq('is_active', true).maybeSingle()
+      const { data: business } = await supabase.from('partners').select('*').eq('id', businessId).eq('status', 'verified').eq('is_active', true).eq('market', CURRENT_MARKET_CODE).maybeSingle()
       if (cancelled) return
       if (!business) {
         setData('not-found')

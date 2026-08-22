@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ImageOff, Tag } from 'lucide-react'
+import { ImageOff, Sparkles, Tag } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import type { OfferDiscountType } from '@/types'
 
@@ -17,7 +17,8 @@ export function OfferPreviewCard({
   discountValue,
   originalPrice,
   offerPrice,
-  validUntil
+  validUntil,
+  memberOnly
 }: {
   title: string
   description: string
@@ -28,6 +29,7 @@ export function OfferPreviewCard({
   originalPrice: number | null
   offerPrice: number | null
   validUntil: string | null
+  memberOnly?: boolean
 }) {
   const { t } = useTranslation()
 
@@ -37,6 +39,12 @@ export function OfferPreviewCard({
         {imageUrl ? <img src={imageUrl} alt="" className="size-full object-cover" /> : <ImageOff className="size-8 text-muted-foreground" />}
       </div>
       <CardContent className="flex flex-col gap-2 p-4">
+        {memberOnly ? (
+          <span className="inline-flex w-fit items-center gap-1 rounded-full bg-sanad-forest px-2 py-0.5 text-xs font-bold text-sanad-sand">
+            <Sparkles className="size-3" />
+            {t('offers.preview.memberOnlyBadge')}
+          </span>
+        ) : null}
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="text-xs font-medium text-muted-foreground">{businessName || t('offers.preview.businessPlaceholder')}</p>

@@ -15,6 +15,7 @@ export type OfferFormPayload = {
   image_url: string | null
   valid_from: string | null
   valid_until: string | null
+  member_only: boolean
 }
 
 export function useUpsertOffer() {

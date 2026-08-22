@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ArrowRight, Pencil, CheckCircle2, XCircle, PauseCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Pencil, CheckCircle2, XCircle, PauseCircle, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { OfferStatusBadge } from '@/components/StatusBadge'
@@ -54,6 +54,12 @@ export function OfferDetailPage() {
             </button>
           ) : null}
         </div>
+        {offer.member_only ? (
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-sanad-forest px-2.5 py-1 text-xs font-bold text-sanad-sand">
+            <Sparkles className="size-3.5" />
+            {t('offers.detail.memberOnlyBadge')}
+          </span>
+        ) : null}
         <OfferStatusBadge status={status} />
         <Button variant="outline" size="sm" onClick={() => navigate(`/offers/${id}/edit`)}>
           <Pencil className="size-4" />

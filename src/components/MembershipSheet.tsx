@@ -4,19 +4,24 @@ import { Check, Sparkle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { colors, font, radius, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
+import { CURRENT_MARKET_FEATURES } from '../lib/market'
 import { BottomSheet } from './BottomSheet'
 import { PrimaryButton } from './PrimaryButton'
 import { Tactile } from './Tactile'
 
 // No real subscription route exists yet (memberships has no client insert
-// path - a payment webhook/RPC is a future phase). "Learn about SANAD+"
-// therefore never fakes a checkout - it just reveals an honest
-// current-state note in place, and the sheet itself already carries the
-// real benefits copy, so there is nowhere fake to route to.
+// path - a payment webhook/RPC is a future phase) regardless of the
+// market's sanadPlus flag, so "Learn about SANAD+" never fakes a checkout -
+// it just reveals an honest current-state note in place. When the flag
+// itself is off for this market, purchasing isn't offered at all (a
+// distinct, more definitive message) - but the member_only restriction
+// this sheet exists to explain still applies either way; the flag only
+// changes what CTA/copy is shown here, never whether the sheet appears.
 export function MembershipSheet({ visible, onClose, offerLocked = false }: { visible: boolean; onClose: () => void; offerLocked?: boolean }) {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
   const [acknowledged, setAcknowledged] = useState(false)
+  const purchasingAvailable = CURRENT_MARKET_FEATURES.sanadPlus
 
   function handleClose() {
     setAcknowledged(false)
@@ -50,10 +55,14 @@ export function MembershipSheet({ visible, onClose, offerLocked = false }: { vis
         ))}
       </View>
 
-      {acknowledged ? <Text style={[styles.comingSoon, dir.textStart]}>{t('perks.membershipSheet.comingSoon')}</Text> : null}
+      {!purchasingAvailable ? (
+        <Text style={[styles.comingSoon, dir.textStart]}>{t('perks.membershipSheet.notAvailableInMarket')}</Text>
+      ) : acknowledged ? (
+        <Text style={[styles.comingSoon, dir.textStart]}>{t('perks.membershipSheet.comingSoon')}</Text>
+      ) : null}
 
       <View style={styles.actions}>
-        <PrimaryButton title={t('perks.membershipSheet.learnMore')} onPress={() => setAcknowledged(true)} />
+        {purchasingAvailable ? <PrimaryButton title={t('perks.membershipSheet.learnMore')} onPress={() => setAcknowledged(true)} /> : null}
         <Tactile onPress={handleClose} style={styles.notNow}>
           <Text style={styles.notNowText}>{t('perks.membershipSheet.notNow')}</Text>
         </Tactile>

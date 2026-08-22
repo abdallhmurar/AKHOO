@@ -3,6 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'r
 import { MagnifyingGlass, Storefront, Tag } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { CURRENT_MARKET_CODE } from '../lib/market'
 import { colors, font, radius, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { BusinessRating, Partner, PartnerCategory, PartnerOffer } from '../types'
@@ -50,25 +51,35 @@ export function PerksScreen({ userId }: { userId: string }) {
 
   async function load() {
     setLoadError(false)
-    // No `market` filter here on purpose: admin_upsert_business never sets
-    // `partners.market` (it's not a field in that RPC's payload), so every
-    // real business defaults to the table's 'JO' default regardless of
-    // where it actually operates - filtering by CURRENT_MARKET_CODE ('IL'
-    // for the Jerusalem pilot) would hide every real admin-created business.
-    // The RLS policy itself never gated on market either; this was always
-    // just a client-side filter, not a security boundary.
-    const [{ data: businesses, error: businessesError }, { data: offers, error: offersError }] = await Promise.all([
-      supabase.from('partners').select('*').eq('status', 'verified').eq('is_active', true).order('name'),
-      supabase.from('public_offers').select('*').order('created_at', { ascending: false })
-    ])
-    if (businessesError || offersError) {
+    // Market-scoped: admin_upsert_business now writes market explicitly
+    // (defaults to 'IL', the pilot market - see 0016_perks_plus_corrections.sql),
+    // so a consumer in IL correctly gets only IL businesses. public_offers
+    // has no market column of its own (offers inherit it from their
+    // business), so offers are fetched only for this market's business ids
+    // below rather than filtered after the fact.
+    const { data: businesses, error: businessesError } = await supabase
+      .from('partners')
+      .select('*')
+      .eq('status', 'verified')
+      .eq('is_active', true)
+      .eq('market', CURRENT_MARKET_CODE)
+      .order('name')
+    if (businessesError) {
       setLoadError(true)
       return
     }
     const businessRows = (businesses ?? []) as Partner[]
-    const offerRows = (offers ?? []) as PartnerOffer[]
     const ids = businessRows.map(b => b.id)
-    const { data: ratingRows } = ids.length ? await supabase.from('business_ratings').select('*').in('business_id', ids) : { data: [] as BusinessRating[] }
+
+    const [{ data: offers, error: offersError }, { data: ratingRows }] = await Promise.all([
+      ids.length ? supabase.from('public_offers').select('*').in('partner_id', ids).order('created_at', { ascending: false }) : Promise.resolve({ data: [] as PartnerOffer[], error: null }),
+      ids.length ? supabase.from('business_ratings').select('*').in('business_id', ids) : Promise.resolve({ data: [] as BusinessRating[] })
+    ])
+    if (offersError) {
+      setLoadError(true)
+      return
+    }
+    const offerRows = (offers ?? []) as PartnerOffer[]
     setData({ businesses: businessRows, offers: offerRows, ratings: Object.fromEntries((ratingRows ?? []).map(r => [r.business_id, r as BusinessRating])) })
   }
 

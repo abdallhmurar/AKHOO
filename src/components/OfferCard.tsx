@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { colors, font, radius, shadow, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '../lib/offerPricing'
-import { CURRENT_MARKET, CURRENT_MARKET_FEATURES } from '../lib/market'
+import { CURRENT_MARKET } from '../lib/market'
 import type { BusinessRating, Partner, PartnerOffer } from '../types'
 import { RatingStars } from './RatingStars'
 import { PlusBadge } from './PlusBadge'
@@ -30,7 +30,7 @@ export function OfferCard({
     <Tactile onPress={onPress} style={[styles.card, variant === 'rail' ? styles.railCard : styles.listCard]} scaleTo={0.97}>
       <View style={styles.imageWrap}>
         {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" /> : <View style={[styles.image, styles.imageFallback]} />}
-        {CURRENT_MARKET_FEATURES.sanadPlus && offer.member_only ? <View style={styles.badgeWrap}><PlusBadge /></View> : null}
+        {offer.member_only ? <View style={styles.badgeWrap}><PlusBadge /></View> : null}
       </View>
       <View style={styles.body}>
         <Text style={[styles.title, dir.textStart]} numberOfLines={2}>{offer.title}</Text>

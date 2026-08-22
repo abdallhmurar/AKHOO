@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { computeOfferPriceDisplay, formatPrice } from '../lib/offerPricing'
 import { telHref, whatsappHref, directionsHref } from '../lib/contactLinks'
-import { useMembership } from '../lib/membership'
-import { CURRENT_MARKET, CURRENT_MARKET_FEATURES } from '../lib/market'
+import { resolveOfferUseAction, useMembership } from '../lib/membership'
+import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../lib/market'
 import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import type { BusinessRating, Partner, PartnerOffer } from '../types'
@@ -56,8 +56,12 @@ export function OfferDetailView({
         setData('not-found')
         return
       }
+      // Also scoped to this market - an offer from another market's business
+      // (shouldn't happen once businesses are correctly market-tagged, but
+      // this is the same defense-in-depth as the businesses list query) must
+      // resolve to not-found here too, not leak through a direct id fetch.
       const [{ data: business }, { data: rating }] = await Promise.all([
-        supabase.from('partners').select('*').eq('id', offer.partner_id).maybeSingle(),
+        supabase.from('partners').select('*').eq('id', offer.partner_id).eq('market', CURRENT_MARKET_CODE).maybeSingle(),
         supabase.from('business_ratings').select('*').eq('business_id', offer.partner_id).maybeSingle()
       ])
       if (cancelled) return
@@ -73,8 +77,7 @@ export function OfferDetailView({
   function handleUse() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {})
     if (data === null || data === 'not-found') return
-    const requiresPlus = CURRENT_MARKET_FEATURES.sanadPlus && data.offer.member_only
-    if (requiresPlus && !isPlusMember) {
+    if (resolveOfferUseAction(data.offer, isPlusMember) === 'membership-required') {
       setMembershipSheetOpen(true)
       return
     }
@@ -100,7 +103,7 @@ export function OfferDetailView({
   const { offer, business, rating } = data
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_url ?? business.logo_url ?? null
-  const showPlusBadge = CURRENT_MARKET_FEATURES.sanadPlus && offer.member_only
+  const showPlusBadge = offer.member_only
 
   return (
     <View style={styles.fill}>

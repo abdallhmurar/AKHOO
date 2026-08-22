@@ -408,7 +408,8 @@
       "benefitSupport": "Dedicated support for SANAD+ members",
       "learnMore": "Learn about SANAD+",
       "notNow": "Not now",
-      "comingSoon": "In-app subscription is coming soon."
+      "comingSoon": "In-app subscription is coming soon.",
+      "notAvailableInMarket": "SANAD+ membership activation isn't available in your region yet."
     },
     "offer": {
       "use": "Use offer",

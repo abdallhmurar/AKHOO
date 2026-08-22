@@ -299,7 +299,7 @@
       "searchPlaceholder": "بحث بعنوان العرض"
     },
     "form": {
-      "sections": { "general": "معلومات عامة", "pricing": "التسعير", "validity": "مدة الصلاحية" },
+      "sections": { "general": "معلومات عامة", "pricing": "التسعير", "validity": "مدة الصلاحية", "membership": "SANAD+" },
       "business": "العمل التجاري",
       "selectBusiness": "اختر عملاً تجارياً",
       "title": "عنوان العرض",
@@ -312,6 +312,8 @@
       "offerPrice": "سعر العرض",
       "uploadImage": "رفع صورة",
       "previewLabel": "معاينة حية",
+      "memberOnly": "حصري لأعضاء SANAD+",
+      "memberOnlyHint": "يبقى العرض ظاهراً للجميع، بس استخدامه (زر \"استخدام العرض\") بيتطلب عضوية SANAD+ فعالة.",
       "savedCreate": "تم إنشاء العرض.",
       "savedEdit": "تم تحديث العرض."
     },
@@ -319,7 +321,8 @@
       "businessPlaceholder": "اسم العمل التجاري",
       "titlePlaceholder": "عنوان العرض",
       "freeBenefit": "مجاناً",
-      "validUntil": "صالح حتى {{date}}"
+      "validUntil": "صالح حتى {{date}}",
+      "memberOnlyBadge": "حصري لـ SANAD+"
     },
     "detail": {
       "approve": "اعتماد",
@@ -332,7 +335,8 @@
       "pauseConfirmTitle": "إيقاف هذا العرض مؤقتاً؟",
       "pauseConfirmMessage": "سيتوقف ظهوره للعامة حتى إعادة تفعيله.",
       "calculatedDiscount": "نسبة الخصم المحسوبة",
-      "noneForBusiness": "لا توجد عروض لهذا العمل التجاري بعد."
+      "noneForBusiness": "لا توجد عروض لهذا العمل التجاري بعد.",
+      "memberOnlyBadge": "حصري لـ SANAD+"
     }
   },
   "reviews": {

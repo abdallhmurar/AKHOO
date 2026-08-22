@@ -299,7 +299,7 @@
       "searchPlaceholder": "חיפוש לפי כותרת המבצע"
     },
     "form": {
-      "sections": { "general": "כללי", "pricing": "תמחור", "validity": "תוקף" },
+      "sections": { "general": "כללי", "pricing": "תמחור", "validity": "תוקף", "membership": "SANAD+" },
       "business": "עסק",
       "selectBusiness": "בחר עסק",
       "title": "כותרת המבצע",
@@ -312,6 +312,8 @@
       "offerPrice": "מחיר המבצע",
       "uploadImage": "העלאת תמונה",
       "previewLabel": "תצוגה מקדימה חיה",
+      "memberOnly": "בלעדי לחברי SANAD+",
+      "memberOnlyHint": "המבצע נשאר גלוי לכולם - רק השימוש בו (כפתור \"השתמש במבצע\") דורש חברות SANAD+ פעילה.",
       "savedCreate": "המבצע נוצר.",
       "savedEdit": "המבצע עודכן."
     },
@@ -319,7 +321,8 @@
       "businessPlaceholder": "שם העסק",
       "titlePlaceholder": "כותרת המבצע",
       "freeBenefit": "חינם",
-      "validUntil": "בתוקף עד {{date}}"
+      "validUntil": "בתוקף עד {{date}}",
+      "memberOnlyBadge": "בלעדי ל-SANAD+"
     },
     "detail": {
       "approve": "אישור",
@@ -332,7 +335,8 @@
       "pauseConfirmTitle": "להשהות את המבצע?",
       "pauseConfirmMessage": "הוא יפסיק להיות מוצג לציבור עד להפעלה מחדש.",
       "calculatedDiscount": "הנחה מחושבת",
-      "noneForBusiness": "אין עדיין מבצעים לעסק זה."
+      "noneForBusiness": "אין עדיין מבצעים לעסק זה.",
+      "memberOnlyBadge": "בלעדי ל-SANAD+"
     }
   },
   "reviews": {

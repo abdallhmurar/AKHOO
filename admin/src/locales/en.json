@@ -299,7 +299,7 @@
       "searchPlaceholder": "Search by offer title"
     },
     "form": {
-      "sections": { "general": "General", "pricing": "Pricing", "validity": "Validity" },
+      "sections": { "general": "General", "pricing": "Pricing", "validity": "Validity", "membership": "SANAD+" },
       "business": "Business",
       "selectBusiness": "Select a business",
       "title": "Offer title",
@@ -312,6 +312,8 @@
       "offerPrice": "Offer price",
       "uploadImage": "Upload image",
       "previewLabel": "Live preview",
+      "memberOnly": "Exclusive to SANAD+ members",
+      "memberOnlyHint": "The offer stays visible to everyone - only using it (the \"Use offer\" button) requires an active SANAD+ membership.",
       "savedCreate": "Offer created.",
       "savedEdit": "Offer updated."
     },
@@ -319,7 +321,8 @@
       "businessPlaceholder": "Business name",
       "titlePlaceholder": "Offer title",
       "freeBenefit": "Free",
-      "validUntil": "Valid until {{date}}"
+      "validUntil": "Valid until {{date}}",
+      "memberOnlyBadge": "SANAD+ exclusive"
     },
     "detail": {
       "approve": "Approve",
@@ -332,7 +335,8 @@
       "pauseConfirmTitle": "Pause this offer?",
       "pauseConfirmMessage": "It will stop being publicly visible until reactivated.",
       "calculatedDiscount": "Calculated discount",
-      "noneForBusiness": "No offers for this business yet."
+      "noneForBusiness": "No offers for this business yet.",
+      "memberOnlyBadge": "SANAD+ exclusive"
     }
   },
   "reviews": {
