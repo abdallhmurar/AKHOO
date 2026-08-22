@@ -32,7 +32,11 @@
     "requests": "בקשות",
     "users": "משתמשים",
     "volunteers": "מתנדבים",
-    "points": "נקודות"
+    "points": "נקודות",
+    "businesses": "עסקים",
+    "offers": "מבצעים",
+    "reviews": "ביקורות",
+    "map": "מפה"
   },
   "auth": {
     "loginTitle": "סָנָד",
@@ -218,13 +222,180 @@
       "searchPlaceholder": "חיפוש לפי שם מתנדב"
     }
   },
+  "businesses": {
+    "title": "עסקים",
+    "subtitle": "עסקים עצמאיים הקשורים לדרך, המוצגים למשתמשי סָנָד.",
+    "create": "הוספת עסק",
+    "edit": "עריכת עסק",
+    "categories": {
+      "towing": "גרירה",
+      "workshop": "מוסך",
+      "mobileMechanic": "מכונאי נייד",
+      "tire": "חנות צמיגים",
+      "battery": "חנות מצברים",
+      "autoElectrician": "חשמלאי רכב",
+      "inspection": "בדיקת רכב",
+      "carWash": "שטיפת רכב",
+      "maintenance": "שמנים ותחזוקה",
+      "locksmith": "פורץ מנעולים",
+      "other": "אחר"
+    },
+    "table": {
+      "name": "שם",
+      "category": "קטגוריה",
+      "phone": "טלפון",
+      "status": "סטטוס",
+      "active": "פעיל",
+      "inactive": "מוסתר"
+    },
+    "filters": {
+      "searchPlaceholder": "חיפוש לפי שם",
+      "category": "קטגוריה",
+      "allCategories": "כל הקטגוריות",
+      "allStatuses": "הכול"
+    },
+    "form": {
+      "sections": { "general": "כללי", "contact": "יצירת קשר", "location": "מיקום", "hours": "שעות פעילות" },
+      "name": "שם העסק",
+      "category": "קטגוריה",
+      "description": "תיאור",
+      "phone": "טלפון",
+      "whatsapp": "וואטסאפ",
+      "address": "כתובת",
+      "serviceArea": "אזור שירות",
+      "website": "אתר אינטרנט",
+      "social": "קישור לרשת חברתית",
+      "uploadLogo": "העלאת לוגו",
+      "addPhoto": "הוספת תמונה",
+      "mapHint": "לחץ על המפה כדי לקבוע את מיקום העסק, או גרור את הסיכה.",
+      "hoursPlaceholder": "לדוגמה: 9:00-18:00 או סגור",
+      "days": { "sun": "א'", "mon": "ב'", "tue": "ג'", "wed": "ד'", "thu": "ה'", "fri": "ו'", "sat": "ש'" },
+      "imageErrors": { "invalidType": "מותרות רק תמונות JPEG, PNG או WebP.", "tooLarge": "התמונה חייבת להיות מתחת ל-5MB." },
+      "savedCreate": "העסק נוצר.",
+      "savedEdit": "העסק עודכן."
+    },
+    "detail": {
+      "tabs": { "overview": "סקירה", "photos": "תמונות", "offers": "מבצעים", "reviews": "ביקורות", "history": "היסטוריית ניהול" },
+      "activate": "הפעלה",
+      "hide": "הסתרה",
+      "activateConfirmTitle": "להפעיל את העסק?",
+      "activateConfirmMessage": "הוא יוצג שוב למשתמשי סָנָד.",
+      "hideConfirmTitle": "להסתיר את העסק?",
+      "hideConfirmMessage": "הוא לא יוצג עוד למשתמשי סָנָד, אך הנתונים שלו (מבצעים, ביקורות, היסטוריה) יישמרו.",
+      "noReviews": "אין עדיין ביקורות."
+    }
+  },
+  "offers": {
+    "title": "מבצעים",
+    "subtitle": "מבצעים אמיתיים משותפי העסקים של סָנָד.",
+    "create": "הוספת מבצע",
+    "edit": "עריכת מבצע",
+    "status": {
+      "draft": "טיוטה",
+      "pending_review": "ממתין לבדיקה",
+      "approved": "מאושר",
+      "rejected": "נדחה",
+      "paused": "מושהה",
+      "expired": "פג תוקף"
+    },
+    "discountTypes": {
+      "percentage": "הנחת אחוזים",
+      "fixed": "הנחת סכום קבוע",
+      "special_price": "מחיר מיוחד",
+      "free_benefit": "שירות/בדיקה חינמית"
+    },
+    "table": {
+      "title": "מבצע",
+      "business": "עסק",
+      "status": "סטטוס"
+    },
+    "filters": {
+      "searchPlaceholder": "חיפוש לפי כותרת המבצע"
+    },
+    "form": {
+      "sections": { "general": "כללי", "pricing": "תמחור", "validity": "תוקף" },
+      "business": "עסק",
+      "selectBusiness": "בחר עסק",
+      "title": "כותרת המבצע",
+      "description": "תיאור",
+      "terms": "תנאים",
+      "discountType": "סוג המבצע",
+      "discountPercentage": "אחוז הנחה",
+      "discountValue": "ערך ההנחה",
+      "originalPrice": "מחיר מקורי",
+      "offerPrice": "מחיר המבצע",
+      "uploadImage": "העלאת תמונה",
+      "previewLabel": "תצוגה מקדימה חיה",
+      "savedCreate": "המבצע נוצר.",
+      "savedEdit": "המבצע עודכן."
+    },
+    "preview": {
+      "businessPlaceholder": "שם העסק",
+      "titlePlaceholder": "כותרת המבצע",
+      "freeBenefit": "חינם",
+      "validUntil": "בתוקף עד {{date}}"
+    },
+    "detail": {
+      "approve": "אישור",
+      "reject": "דחייה",
+      "pause": "השהיה",
+      "approveConfirmTitle": "לאשר את המבצע?",
+      "approveConfirmMessage": "הוא יוצג לציבור כל עוד הוא בתוקף (בין תאריך ההתחלה לסיום).",
+      "rejectConfirmTitle": "לדחות את המבצע?",
+      "rejectConfirmMessage": "הוא לעולם לא יוצג לציבור במצב זה.",
+      "pauseConfirmTitle": "להשהות את המבצע?",
+      "pauseConfirmMessage": "הוא יפסיק להיות מוצג לציבור עד להפעלה מחדש.",
+      "calculatedDiscount": "הנחה מחושבת",
+      "noneForBusiness": "אין עדיין מבצעים לעסק זה."
+    }
+  },
+  "reviews": {
+    "title": "ביקורות",
+    "subtitle": "ביקורות משתמשים על שותפי העסקים של סָנָד.",
+    "hide": "הסתרה",
+    "restore": "שחזור",
+    "hideConfirmTitle": "להסתיר את הביקורת?",
+    "hideConfirmMessage": "היא תוחרג מהדירוג הציבורי ומרשימת הביקורות המוצגת של העסק.",
+    "restoreConfirmTitle": "לשחזר את הביקורת?",
+    "restoreConfirmMessage": "היא תוצג לציבור שוב.",
+    "table": {
+      "user": "משתמש",
+      "rating": "דירוג",
+      "comment": "תגובה",
+      "visibility": "נראות",
+      "visible": "גלוי",
+      "hidden": "מוסתר"
+    },
+    "filters": {
+      "searchPlaceholder": "חיפוש לפי שם העסק"
+    }
+  },
+  "map": {
+    "title": "מפת פעילות",
+    "subtitle": "בקשות פעילות ועסקים, במקום אחד.",
+    "layers": {
+      "requests": "בקשות",
+      "businesses": "עסקים"
+    }
+  },
   "audit": {
     "actions": {
       "userBanned": "חסם",
       "userUnbanned": "ביטל חסימה של",
       "volunteerVerified": "אימת",
       "volunteerUnverified": "ביטל אימות של",
-      "requestCancelled": "ביטל"
+      "requestCancelled": "ביטל",
+      "businessCreated": "יצר עסק",
+      "businessEdited": "ערך עסק",
+      "businessActivated": "הפעיל עסק",
+      "businessHidden": "הסתיר עסק",
+      "offerCreated": "יצר מבצע",
+      "offerEdited": "ערך מבצע",
+      "offerApproved": "אישר מבצע",
+      "offerRejected": "דחה מבצע",
+      "offerPaused": "השהה מבצע",
+      "reviewHidden": "הסתיר ביקורת",
+      "reviewRestored": "שחזר ביקורת"
     }
   }
 }

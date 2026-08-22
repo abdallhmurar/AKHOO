@@ -1,4 +1,4 @@
-import { LayoutDashboard, ClipboardList, Users, HeartHandshake, Award } from 'lucide-react'
+import { LayoutDashboard, ClipboardList, Users, HeartHandshake, Award, Store, Tag, Star, Map } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NavItem } from './NavItem'
 
@@ -11,6 +11,10 @@ export function SidebarNav() {
       <NavItem to="/users" icon={Users} label={t('nav.users')} />
       <NavItem to="/volunteers" icon={HeartHandshake} label={t('nav.volunteers')} />
       <NavItem to="/points" icon={Award} label={t('nav.points')} />
+      <NavItem to="/businesses" icon={Store} label={t('nav.businesses')} />
+      <NavItem to="/offers" icon={Tag} label={t('nav.offers')} />
+      <NavItem to="/reviews" icon={Star} label={t('nav.reviews')} />
+      <NavItem to="/map" icon={Map} label={t('nav.map')} />
     </nav>
   )
 }

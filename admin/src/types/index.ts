@@ -71,6 +71,98 @@ export type AdminAuditLog = {
   created_at: string
 }
 
+// ── Round 2: Businesses / Offers / Reviews ──────────────────────────────
+// The underlying tables are still named partners/partner_offers (see
+// supabase/migrations/0015_businesses_offers_reviews.sql's header for why
+// they weren't renamed) - "Business"/"Offer" is this app's own presentation
+// terminology, applied consistently from here down.
+
+export type BusinessCategory =
+  | 'battery'
+  | 'tire'
+  | 'maintenance'
+  | 'towing'
+  | 'locksmith'
+  | 'mobile_mechanic'
+  | 'workshop'
+  | 'auto_electrician'
+  | 'car_wash'
+  | 'inspection'
+  | 'other'
+
+export type BusinessStatus = 'pending' | 'verified' | 'suspended' | 'rejected'
+
+export type OpeningHours = Partial<Record<'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat', string>>
+
+export type Business = {
+  id: string
+  name: string
+  slug: string
+  category: BusinessCategory
+  description: string | null
+  logo_url: string | null
+  phone: string | null
+  whatsapp: string | null
+  latitude: number | null
+  longitude: number | null
+  address: string | null
+  service_area: string | null
+  opening_hours: OpeningHours | null
+  website_url: string | null
+  social_url: string | null
+  market: string
+  status: BusinessStatus
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type BusinessPhoto = {
+  id: string
+  business_id: string
+  url: string
+  sort_order: number
+  created_at: string
+}
+
+export type OfferDiscountType = 'percentage' | 'fixed' | 'special_price' | 'free_benefit'
+export type OfferStatus = 'draft' | 'pending_review' | 'approved' | 'rejected' | 'paused' | 'expired'
+
+export type Offer = {
+  id: string
+  partner_id: string
+  title: string
+  description: string | null
+  terms: string | null
+  discount_type: OfferDiscountType
+  discount_value: number | null
+  original_price: number | null
+  offer_price: number | null
+  image_url: string | null
+  member_only: boolean
+  valid_from: string | null
+  valid_until: string | null
+  status: OfferStatus
+  created_at: string
+  updated_at: string
+}
+
+export type Review = {
+  id: string
+  business_id: string
+  user_id: string
+  rating: number
+  comment: string | null
+  is_hidden: boolean
+  created_at: string
+}
+
+export type BusinessRating = {
+  business_id: string
+  average_rating: number
+  review_count: number
+}
+
 export type DashboardMetrics = {
   total_users: number
   banned_users: number

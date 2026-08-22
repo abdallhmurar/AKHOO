@@ -32,7 +32,11 @@
     "requests": "الطلبات",
     "users": "المستخدمون",
     "volunteers": "المتطوعون",
-    "points": "النقاط"
+    "points": "النقاط",
+    "businesses": "الأعمال التجارية",
+    "offers": "العروض",
+    "reviews": "التقييمات",
+    "map": "الخريطة"
   },
   "auth": {
     "loginTitle": "سَنَد",
@@ -218,13 +222,180 @@
       "searchPlaceholder": "بحث باسم المتطوع"
     }
   },
+  "businesses": {
+    "title": "الأعمال التجارية",
+    "subtitle": "أعمال تجارية مستقلة ذات علاقة بالطريق، تُعرض لمستخدمي سَنَد.",
+    "create": "إضافة عمل تجاري",
+    "edit": "تعديل العمل التجاري",
+    "categories": {
+      "towing": "ونش وسحب",
+      "workshop": "كراج / ورشة",
+      "mobileMechanic": "ميكانيكي متنقل",
+      "tire": "محل إطارات",
+      "battery": "محل بطاريات",
+      "autoElectrician": "كهربائي سيارات",
+      "inspection": "فحص مركبات",
+      "carWash": "غسيل سيارات",
+      "maintenance": "زيوت وصيانة",
+      "locksmith": "فتح أقفال",
+      "other": "أخرى"
+    },
+    "table": {
+      "name": "الاسم",
+      "category": "الفئة",
+      "phone": "الهاتف",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "مخفي"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث بالاسم",
+      "category": "الفئة",
+      "allCategories": "كل الفئات",
+      "allStatuses": "الكل"
+    },
+    "form": {
+      "sections": { "general": "معلومات عامة", "contact": "التواصل", "location": "الموقع", "hours": "ساعات العمل" },
+      "name": "اسم العمل التجاري",
+      "category": "الفئة",
+      "description": "الوصف",
+      "phone": "الهاتف",
+      "whatsapp": "واتساب",
+      "address": "العنوان",
+      "serviceArea": "منطقة الخدمة",
+      "website": "الموقع الإلكتروني",
+      "social": "رابط تواصل اجتماعي",
+      "uploadLogo": "رفع شعار",
+      "addPhoto": "إضافة صورة",
+      "mapHint": "اضغط على الخريطة لتحديد موقع العمل التجاري، أو اسحب العلامة.",
+      "hoursPlaceholder": "مثال: 9:00-18:00 أو مغلق",
+      "days": { "sun": "أحد", "mon": "إثنين", "tue": "ثلاثاء", "wed": "أربعاء", "thu": "خميس", "fri": "جمعة", "sat": "سبت" },
+      "imageErrors": { "invalidType": "يُسمح فقط بصور JPEG أو PNG أو WebP.", "tooLarge": "يجب أن تكون الصورة أقل من 5 ميغابايت." },
+      "savedCreate": "تم إنشاء العمل التجاري.",
+      "savedEdit": "تم تحديث العمل التجاري."
+    },
+    "detail": {
+      "tabs": { "overview": "نظرة عامة", "photos": "الصور", "offers": "العروض", "reviews": "التقييمات", "history": "السجل الإداري" },
+      "activate": "تفعيل",
+      "hide": "إخفاء",
+      "activateConfirmTitle": "تفعيل هذا العمل التجاري؟",
+      "activateConfirmMessage": "سيصبح ظاهراً لمستخدمي سَنَد من جديد.",
+      "hideConfirmTitle": "إخفاء هذا العمل التجاري؟",
+      "hideConfirmMessage": "لن يظهر بعدها لمستخدمي سَنَد، لكن بياناته (العروض، التقييمات، السجل) تبقى محفوظة.",
+      "noReviews": "لا توجد تقييمات بعد."
+    }
+  },
+  "offers": {
+    "title": "العروض",
+    "subtitle": "عروض حقيقية من شركاء سَنَد التجاريين.",
+    "create": "إضافة عرض",
+    "edit": "تعديل العرض",
+    "status": {
+      "draft": "مسودة",
+      "pending_review": "بانتظار المراجعة",
+      "approved": "معتمد",
+      "rejected": "مرفوض",
+      "paused": "متوقف مؤقتاً",
+      "expired": "منتهي"
+    },
+    "discountTypes": {
+      "percentage": "خصم نسبة مئوية",
+      "fixed": "خصم مبلغ ثابت",
+      "special_price": "سعر خاص",
+      "free_benefit": "خدمة/فحص مجاني"
+    },
+    "table": {
+      "title": "العرض",
+      "business": "العمل التجاري",
+      "status": "الحالة"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث بعنوان العرض"
+    },
+    "form": {
+      "sections": { "general": "معلومات عامة", "pricing": "التسعير", "validity": "مدة الصلاحية" },
+      "business": "العمل التجاري",
+      "selectBusiness": "اختر عملاً تجارياً",
+      "title": "عنوان العرض",
+      "description": "الوصف",
+      "terms": "الشروط",
+      "discountType": "نوع العرض",
+      "discountPercentage": "نسبة الخصم",
+      "discountValue": "قيمة الخصم",
+      "originalPrice": "السعر الأصلي",
+      "offerPrice": "سعر العرض",
+      "uploadImage": "رفع صورة",
+      "previewLabel": "معاينة حية",
+      "savedCreate": "تم إنشاء العرض.",
+      "savedEdit": "تم تحديث العرض."
+    },
+    "preview": {
+      "businessPlaceholder": "اسم العمل التجاري",
+      "titlePlaceholder": "عنوان العرض",
+      "freeBenefit": "مجاناً",
+      "validUntil": "صالح حتى {{date}}"
+    },
+    "detail": {
+      "approve": "اعتماد",
+      "reject": "رفض",
+      "pause": "إيقاف مؤقت",
+      "approveConfirmTitle": "اعتماد هذا العرض؟",
+      "approveConfirmMessage": "سيصبح ظاهراً للجميع طالما كان ساري المفعول (بين تاريخ البداية والنهاية).",
+      "rejectConfirmTitle": "رفض هذا العرض؟",
+      "rejectConfirmMessage": "لن يظهر للعامة بهذه الحالة أبداً.",
+      "pauseConfirmTitle": "إيقاف هذا العرض مؤقتاً؟",
+      "pauseConfirmMessage": "سيتوقف ظهوره للعامة حتى إعادة تفعيله.",
+      "calculatedDiscount": "نسبة الخصم المحسوبة",
+      "noneForBusiness": "لا توجد عروض لهذا العمل التجاري بعد."
+    }
+  },
+  "reviews": {
+    "title": "التقييمات",
+    "subtitle": "تقييمات المستخدمين لشركاء سَنَد التجاريين.",
+    "hide": "إخفاء",
+    "restore": "استعادة",
+    "hideConfirmTitle": "إخفاء هذا التقييم؟",
+    "hideConfirmMessage": "سيُستثنى من التقييم العام ومن قائمة التقييمات الظاهرة للعمل التجاري.",
+    "restoreConfirmTitle": "استعادة هذا التقييم؟",
+    "restoreConfirmMessage": "سيصبح ظاهراً للعامة من جديد.",
+    "table": {
+      "user": "المستخدم",
+      "rating": "التقييم",
+      "comment": "التعليق",
+      "visibility": "الظهور",
+      "visible": "ظاهر",
+      "hidden": "مخفي"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث باسم العمل التجاري"
+    }
+  },
+  "map": {
+    "title": "خريطة العمليات",
+    "subtitle": "الطلبات النشطة والأعمال التجارية، بمكان واحد.",
+    "layers": {
+      "requests": "الطلبات",
+      "businesses": "الأعمال التجارية"
+    }
+  },
   "audit": {
     "actions": {
       "userBanned": "حظر",
       "userUnbanned": "رفع حظر عن",
       "volunteerVerified": "وثّق",
       "volunteerUnverified": "ألغى توثيق",
-      "requestCancelled": "ألغى"
+      "requestCancelled": "ألغى",
+      "businessCreated": "أنشأ عملاً تجارياً",
+      "businessEdited": "عدّل عملاً تجارياً",
+      "businessActivated": "فعّل عملاً تجارياً",
+      "businessHidden": "أخفى عملاً تجارياً",
+      "offerCreated": "أنشأ عرضاً",
+      "offerEdited": "عدّل عرضاً",
+      "offerApproved": "اعتمد عرضاً",
+      "offerRejected": "رفض عرضاً",
+      "offerPaused": "أوقف عرضاً مؤقتاً",
+      "reviewHidden": "أخفى تقييماً",
+      "reviewRestored": "استعاد تقييماً"
     }
   }
 }

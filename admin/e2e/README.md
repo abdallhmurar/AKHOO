@@ -12,10 +12,11 @@ Boots `vite --port 5174` and runs the suite against it (see `playwright.config.t
 - `protected-routes.spec.ts` - unauthenticated direct navigation to every protected path shows the login form, never the admin shell.
 - `non-admin-denial.spec.ts` - signs up a real disposable `sanad-e2e-admindeny-*@example.com` account, confirms it's denied access. Safe: this project has one Supabase project (the real one), same posture as the root project's `e2e/README.md` - only ever creates a throwaway, never-admin account.
 - `rtl-ltr.spec.ts` (unauthenticated part) / `responsive.spec.ts` (unauthenticated part) - AR/HE/EN + RTL/LTR and no-horizontal-overflow checks against the Login page.
+- `businesses-offers-security.spec.ts` - a disposable `sanad-e2e-r2security-*@example.com` account, confirms every Round 2 admin RPC (`admin_upsert_business`, `admin_set_business_active`, `admin_upsert_offer`, `admin_set_offer_status`, `admin_set_review_hidden`) rejects it with "Not authorized", and that it can't read `admin_audit_log`.
 
 ## What requires a one-time manual setup
 
-`dashboard.spec.ts`, `pages-render.spec.ts`, and the authenticated halves of `rtl-ltr.spec.ts`/`responsive.spec.ts` need a **real, permanent admin account** to log in as - `admin_bootstrap_first_admin()` only works while zero admins exist (not true on this linked project), and there is no promote-to-admin RPC by design.
+`dashboard.spec.ts`, `pages-render.spec.ts`, `businesses-offers-reviews.spec.ts`, and the authenticated halves of `rtl-ltr.spec.ts`/`responsive.spec.ts` need a **real, permanent admin account** to log in as - `admin_bootstrap_first_admin()` only works while zero admins exist (not true on this linked project), and there is no promote-to-admin RPC by design.
 
 **One-time setup:**
 

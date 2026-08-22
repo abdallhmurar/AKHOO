@@ -9,6 +9,16 @@ import { UserDetailPage } from '@/pages/users/UserDetailPage'
 import { VolunteersPage } from '@/pages/volunteers/VolunteersPage'
 import { VolunteerDetailPage } from '@/pages/volunteers/VolunteerDetailPage'
 import { PointsPage } from '@/pages/points/PointsPage'
+import { BusinessesPage } from '@/pages/businesses/BusinessesPage'
+import { NewBusinessPage } from '@/pages/businesses/NewBusinessPage'
+import { EditBusinessPage } from '@/pages/businesses/EditBusinessPage'
+import { BusinessDetailPage } from '@/pages/businesses/BusinessDetailPage'
+import { OffersPage } from '@/pages/offers/OffersPage'
+import { NewOfferPage } from '@/pages/offers/NewOfferPage'
+import { EditOfferPage } from '@/pages/offers/EditOfferPage'
+import { OfferDetailPage } from '@/pages/offers/OfferDetailPage'
+import { ReviewsPage } from '@/pages/reviews/ReviewsPage'
+import { OperationsMapPage } from '@/pages/map/OperationsMapPage'
 
 export default function App() {
   return (
@@ -23,6 +33,16 @@ export default function App() {
           <Route path="volunteers" element={<VolunteersPage />} />
           <Route path="volunteers/:id" element={<VolunteerDetailPage />} />
           <Route path="points" element={<PointsPage />} />
+          <Route path="businesses" element={<BusinessesPage />} />
+          <Route path="businesses/new" element={<NewBusinessPage />} />
+          <Route path="businesses/:id/edit" element={<EditBusinessPage />} />
+          <Route path="businesses/:id" element={<BusinessDetailPage />} />
+          <Route path="offers" element={<OffersPage />} />
+          <Route path="offers/new" element={<NewOfferPage />} />
+          <Route path="offers/:id/edit" element={<EditOfferPage />} />
+          <Route path="offers/:id" element={<OfferDetailPage />} />
+          <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="map" element={<OperationsMapPage />} />
         </Route>
       </Route>
     </Routes>

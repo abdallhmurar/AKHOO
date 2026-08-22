@@ -32,7 +32,11 @@
     "requests": "Requests",
     "users": "Users",
     "volunteers": "Volunteers",
-    "points": "Points"
+    "points": "Points",
+    "businesses": "Businesses",
+    "offers": "Offers",
+    "reviews": "Reviews",
+    "map": "Map"
   },
   "auth": {
     "loginTitle": "SANAD",
@@ -218,13 +222,180 @@
       "searchPlaceholder": "Search by volunteer name"
     }
   },
+  "businesses": {
+    "title": "Businesses",
+    "subtitle": "Independent roadside-related businesses shown to SANAD users.",
+    "create": "Add business",
+    "edit": "Edit business",
+    "categories": {
+      "towing": "Towing",
+      "workshop": "Garage / workshop",
+      "mobileMechanic": "Mobile mechanic",
+      "tire": "Tire shop",
+      "battery": "Battery shop",
+      "autoElectrician": "Auto electrician",
+      "inspection": "Vehicle inspection",
+      "carWash": "Car wash",
+      "maintenance": "Oils / maintenance",
+      "locksmith": "Locksmith",
+      "other": "Other"
+    },
+    "table": {
+      "name": "Name",
+      "category": "Category",
+      "phone": "Phone",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Hidden"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by name",
+      "category": "Category",
+      "allCategories": "All categories",
+      "allStatuses": "All"
+    },
+    "form": {
+      "sections": { "general": "General", "contact": "Contact", "location": "Location", "hours": "Opening hours" },
+      "name": "Business name",
+      "category": "Category",
+      "description": "Description",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "address": "Address",
+      "serviceArea": "Service area",
+      "website": "Website",
+      "social": "Social link",
+      "uploadLogo": "Upload logo",
+      "addPhoto": "Add photo",
+      "mapHint": "Click the map to set the business location, or drag the pin.",
+      "hoursPlaceholder": "e.g. 9:00-18:00 or Closed",
+      "days": { "sun": "Sun", "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat" },
+      "imageErrors": { "invalidType": "Only JPEG, PNG, or WebP images are allowed.", "tooLarge": "Image must be under 5MB." },
+      "savedCreate": "Business created.",
+      "savedEdit": "Business updated."
+    },
+    "detail": {
+      "tabs": { "overview": "Overview", "photos": "Photos", "offers": "Offers", "reviews": "Reviews", "history": "Admin history" },
+      "activate": "Activate",
+      "hide": "Hide",
+      "activateConfirmTitle": "Activate this business?",
+      "activateConfirmMessage": "It will become visible to SANAD users again.",
+      "hideConfirmTitle": "Hide this business?",
+      "hideConfirmMessage": "It will no longer be visible to SANAD users, but its data (offers, reviews, history) is preserved.",
+      "noReviews": "No reviews yet."
+    }
+  },
+  "offers": {
+    "title": "Offers",
+    "subtitle": "Real offers from SANAD's business partners.",
+    "create": "Add offer",
+    "edit": "Edit offer",
+    "status": {
+      "draft": "Draft",
+      "pending_review": "Pending review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "paused": "Paused",
+      "expired": "Expired"
+    },
+    "discountTypes": {
+      "percentage": "Percentage discount",
+      "fixed": "Fixed amount off",
+      "special_price": "Special price",
+      "free_benefit": "Free service / check"
+    },
+    "table": {
+      "title": "Offer",
+      "business": "Business",
+      "status": "Status"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by offer title"
+    },
+    "form": {
+      "sections": { "general": "General", "pricing": "Pricing", "validity": "Validity" },
+      "business": "Business",
+      "selectBusiness": "Select a business",
+      "title": "Offer title",
+      "description": "Description",
+      "terms": "Terms",
+      "discountType": "Offer type",
+      "discountPercentage": "Discount percentage",
+      "discountValue": "Discount value",
+      "originalPrice": "Original price",
+      "offerPrice": "Offer price",
+      "uploadImage": "Upload image",
+      "previewLabel": "Live preview",
+      "savedCreate": "Offer created.",
+      "savedEdit": "Offer updated."
+    },
+    "preview": {
+      "businessPlaceholder": "Business name",
+      "titlePlaceholder": "Offer title",
+      "freeBenefit": "Free",
+      "validUntil": "Valid until {{date}}"
+    },
+    "detail": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "pause": "Pause",
+      "approveConfirmTitle": "Approve this offer?",
+      "approveConfirmMessage": "It becomes publicly visible while currently valid (between its start and end dates).",
+      "rejectConfirmTitle": "Reject this offer?",
+      "rejectConfirmMessage": "It will never be shown publicly in this state.",
+      "pauseConfirmTitle": "Pause this offer?",
+      "pauseConfirmMessage": "It will stop being publicly visible until reactivated.",
+      "calculatedDiscount": "Calculated discount",
+      "noneForBusiness": "No offers for this business yet."
+    }
+  },
+  "reviews": {
+    "title": "Reviews",
+    "subtitle": "User reviews of SANAD's business partners.",
+    "hide": "Hide",
+    "restore": "Restore",
+    "hideConfirmTitle": "Hide this review?",
+    "hideConfirmMessage": "It will be excluded from the business's public rating and review list.",
+    "restoreConfirmTitle": "Restore this review?",
+    "restoreConfirmMessage": "It will become publicly visible again.",
+    "table": {
+      "user": "User",
+      "rating": "Rating",
+      "comment": "Comment",
+      "visibility": "Visibility",
+      "visible": "Visible",
+      "hidden": "Hidden"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by business name"
+    }
+  },
+  "map": {
+    "title": "Operations map",
+    "subtitle": "Active requests and businesses, in one view.",
+    "layers": {
+      "requests": "Requests",
+      "businesses": "Businesses"
+    }
+  },
   "audit": {
     "actions": {
       "userBanned": "banned",
       "userUnbanned": "unbanned",
       "volunteerVerified": "verified",
       "volunteerUnverified": "un-verified",
-      "requestCancelled": "cancelled"
+      "requestCancelled": "cancelled",
+      "businessCreated": "created business",
+      "businessEdited": "edited business",
+      "businessActivated": "activated business",
+      "businessHidden": "hid business",
+      "offerCreated": "created offer",
+      "offerEdited": "edited offer",
+      "offerApproved": "approved offer",
+      "offerRejected": "rejected offer",
+      "offerPaused": "paused offer",
+      "reviewHidden": "hid review",
+      "reviewRestored": "restored review"
     }
   }
 }
