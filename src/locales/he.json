@@ -363,8 +363,10 @@
   },
   "perks": {
     "title": "הטבות סנד",
-    "subtitle": "חברות SANAD+ והנחות אצל השותפים שלנו.",
-    "categoriesTitle": "קטגוריות שותפים",
+    "subtitle": "מבצעים ושירותים לידך",
+    "searchPlaceholder": "חיפוש עסק או מבצע",
+    "categoriesTitle": "קטגוריות",
+    "categoriesAll": "הכול",
     "categories": {
       "battery": "מצברים",
       "tire": "צמיגים",
@@ -372,19 +374,69 @@
       "towing": "גרירה",
       "locksmith": "פתיחת רכבים",
       "mobile_mechanic": "מכונאי נייד",
+      "workshop": "מוסך וסדנה",
+      "auto_electrician": "חשמלאי רכב",
       "car_wash": "שטיפת רכבים",
       "inspection": "בדיקת רכב",
       "other": "שירותים נוספים"
     },
-    "partnerCountSuffix": "{{count}} שותפים",
-    "comingSoon": "בקרוב",
-    "membership": {
-      "brand": "SANAD+",
-      "activeStatus": "החברות שלך פעילה",
-      "inactiveStatus": "עדיין לא חבר/ה",
-      "expiresLabel": "בתוקף עד",
-      "expiresUnknown": "—",
-      "teaser": "עזרת המתנדבים תמיד תישאר חינמית. SANAD+ מוסיפה הנחות אצל השותפים שלנו ואפשרויות גיבוי מקצועי — {{price}} {{currency}} לשנה, בקרוב."
+    "offersTitle": "מבצעים נוכחיים",
+    "businessesTitle": "עסקים בקרבתך",
+    "seeAll": "הצג הכול",
+    "rating": { "new": "חדש" },
+    "plusBadge": "PLUS",
+    "hero": {
+      "title": "SANAD+",
+      "subtitle": "פותח שימוש במבצעים לחברים אצל השותפים של סָנָד.",
+      "cta": "מידע על SANAD+"
+    },
+    "empty": {
+      "offersTitle": "אין מבצעים כרגע",
+      "offersMessage": "אנחנו מצרפים שותפים חדשים - בדקו שוב בקרוב.",
+      "businessesTitle": "עדיין אין עסקים",
+      "businessesMessage": "שותפים אמינים לידך יופיעו כאן בקרוב.",
+      "searchTitle": "לא נמצאו תוצאות",
+      "searchMessage": "נסו מונח חיפוש אחר או קטגוריה אחרת."
+    },
+    "membershipSheet": {
+      "offerLockedTitle": "מבצע זה מיועד לחברי SANAD+",
+      "offerLockedMessage": "הצטרפו כדי להשתמש במבצע הזה ובמבצעי SANAD+ נוספים.",
+      "genericTitle": "SANAD+",
+      "genericMessage": "עזרת המתנדבים תמיד תישאר חינמית. SANAD+ פותחת שימוש במבצעים אמיתיים אצל השותפים שלנו.",
+      "benefitDiscounts": "הנחות אמיתיות אצל שותפים אמינים של סָנָד",
+      "benefitPriority": "עדיפות כאשר שירותי גיבוי מקצועי ייכנסו לפעולה",
+      "benefitSupport": "תמיכה ייעודית לחברי SANAD+",
+      "learnMore": "מידע על SANAD+",
+      "notNow": "לא עכשיו",
+      "comingSoon": "הרשמה בתוך האפליקציה תהיה זמינה בקרוב."
+    },
+    "offer": {
+      "use": "השתמש במבצע",
+      "free": "חינם",
+      "termsTitle": "תנאים",
+      "validUntil": "בתוקף עד {{date}}",
+      "validNoLimit": "ללא תאריך תפוגה",
+      "viewBusiness": "הצג עסק",
+      "contactTitle": "צרו קשר עם העסק כדי להשתמש במבצע",
+      "contactMessage": "סָנָד לא מזמינה עבורכם את המבצע - פנו ישירות לעסק כדי להשתמש בו.",
+      "notFound": "מבצע זה כבר לא זמין."
+    },
+    "business": {
+      "call": "התקשרות",
+      "whatsapp": "וואטסאפ",
+      "directions": "הוראות הגעה",
+      "hoursTitle": "שעות פעילות",
+      "days": { "sun": "א׳", "mon": "ב׳", "tue": "ג׳", "wed": "ד׳", "thu": "ה׳", "fri": "ו׳", "sat": "ש׳" },
+      "serviceAreaTitle": "אזור שירות",
+      "offersTitle": "מבצעים נוכחיים",
+      "noOffers": "אין כרגע מבצעים לעסק זה.",
+      "reviewsTitle": "ביקורות",
+      "noReviews": "אין עדיין ביקורות.",
+      "notFound": "עסק זה כבר לא זמין."
+    },
+    "errors": {
+      "loadFailed": "לא ניתן היה לטעון, נסו שוב.",
+      "offline": "אין חיבור לאינטרנט."
     }
   },
   "navigation": {

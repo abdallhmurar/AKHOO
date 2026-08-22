@@ -65,9 +65,11 @@ export type Membership = {
   updated_at: string
 }
 
-export type PartnerCategory = 'battery' | 'tire' | 'maintenance' | 'towing' | 'locksmith' | 'mobile_mechanic' | 'car_wash' | 'inspection' | 'other'
+export type PartnerCategory = 'battery' | 'tire' | 'maintenance' | 'towing' | 'locksmith' | 'mobile_mechanic' | 'workshop' | 'auto_electrician' | 'car_wash' | 'inspection' | 'other'
 
 export type PartnerStatus = 'pending' | 'verified' | 'suspended' | 'rejected'
+
+export type OpeningHours = Partial<Record<'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat', string>>
 
 export type Partner = {
   id: string
@@ -77,19 +79,33 @@ export type Partner = {
   description: string | null
   logo_url: string | null
   phone: string | null
+  whatsapp: string | null
   latitude: number | null
   longitude: number | null
   address: string | null
+  service_area: string | null
+  opening_hours: OpeningHours | null
+  website_url: string | null
+  social_url: string | null
   market: string
   status: PartnerStatus
+  is_active: boolean
   commission_type: 'none' | 'fixed' | 'percentage'
   commission_value: number
   created_at: string
   updated_at: string
 }
 
+export type BusinessPhoto = {
+  id: string
+  business_id: string
+  url: string
+  sort_order: number
+  created_at: string
+}
+
 export type OfferDiscountType = 'percentage' | 'fixed' | 'special_price' | 'free_benefit'
-export type OfferStatus = 'draft' | 'submitted' | 'approved' | 'active' | 'paused' | 'expired' | 'rejected'
+export type OfferStatus = 'draft' | 'pending_review' | 'approved' | 'rejected' | 'paused' | 'expired'
 
 export type PartnerOffer = {
   id: string
@@ -98,13 +114,32 @@ export type PartnerOffer = {
   description: string | null
   discount_type: OfferDiscountType
   discount_value: number | null
+  original_price: number | null
+  offer_price: number | null
+  image_url: string | null
   member_only: boolean
-  starts_at: string | null
-  ends_at: string | null
+  valid_from: string | null
+  valid_until: string | null
   terms: string | null
   status: OfferStatus
   created_at: string
   updated_at: string
+}
+
+export type Review = {
+  id: string
+  business_id: string
+  user_id: string
+  rating: number
+  comment: string | null
+  is_hidden: boolean
+  created_at: string
+}
+
+export type BusinessRating = {
+  business_id: string
+  average_rating: number
+  review_count: number
 }
 
 export type RedemptionStatus = 'active' | 'redeemed' | 'expired' | 'cancelled'

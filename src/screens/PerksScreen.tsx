@@ -1,57 +1,284 @@
-import { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { useEffect, useMemo, useState } from 'react'
+import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { MagnifyingGlass, Storefront, Tag } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { CURRENT_MARKET_CODE } from '../lib/market'
-import { partnerCategories } from '../lib/partnerCategories'
-import { colors, font, space } from '../lib/theme'
+import { colors, font, radius, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
-import type { PartnerCategory } from '../types'
+import type { BusinessRating, Partner, PartnerCategory, PartnerOffer } from '../types'
+import { BusinessCard } from '../components/BusinessCard'
+import { CategoryChipsRow } from '../components/CategoryChipsRow'
+import { EmptyState } from '../components/EmptyState'
 import { Header } from '../components/Header'
-import { MembershipCard } from '../components/MembershipCard'
-import { PartnerCategoryChip } from '../components/PartnerCategoryChip'
+import { MembershipSheet } from '../components/MembershipSheet'
+import { OfferCard } from '../components/OfferCard'
+import { PlusHeroCard } from '../components/PlusHeroCard'
+import { PrimaryButton } from '../components/PrimaryButton'
 import { Screen } from '../components/Screen'
+import { Skeleton } from '../components/Skeleton'
+import { BusinessDetailView } from './BusinessDetailView'
+import { OfferDetailView } from './OfferDetailView'
+
+// Internal drill-down stack rather than a top-level App.tsx screen: offer ↔
+// business navigation can go either direction an arbitrary number of times
+// (open a business, open one of its offers, open THAT offer's business...),
+// which a flat screen-name switch can't express without duplicating state.
+// Keeping it local also means the bottom tab bar stays mounted while
+// browsing, matching how the rest of this tab already behaves.
+type Frame = { kind: 'discover' } | { kind: 'offer'; id: string } | { kind: 'business'; id: string }
+
+type DiscoverData = {
+  businesses: Partner[]
+  offers: PartnerOffer[]
+  ratings: Record<string, BusinessRating>
+}
 
 export function PerksScreen({ userId }: { userId: string }) {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
-  const [counts, setCounts] = useState<Partial<Record<PartnerCategory, number>>>({})
+  const [stack, setStack] = useState<Frame[]>([{ kind: 'discover' }])
+  const [data, setData] = useState<DiscoverData | null>(null)
+  const [loadError, setLoadError] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [category, setCategory] = useState<PartnerCategory | 'all'>('all')
+  const [search, setSearch] = useState('')
+  const [heroSheetOpen, setHeroSheetOpen] = useState(false)
 
-  useEffect(() => {
-    let cancelled = false
-    supabase
-      .from('partners')
-      .select('category')
-      .eq('market', CURRENT_MARKET_CODE)
-      .eq('status', 'verified')
-      .then(({ data }) => {
-        if (cancelled || !data) return
-        const next: Partial<Record<PartnerCategory, number>> = {}
-        for (const row of data as { category: PartnerCategory }[]) {
-          next[row.category] = (next[row.category] ?? 0) + 1
-        }
-        setCounts(next)
-      })
-    return () => { cancelled = true }
-  }, [])
+  const frame = stack[stack.length - 1]!
+  function push(next: Frame) { setStack(s => [...s, next]) }
+  function pop() { setStack(s => (s.length > 1 ? s.slice(0, -1) : s)) }
+
+  async function load() {
+    setLoadError(false)
+    // No `market` filter here on purpose: admin_upsert_business never sets
+    // `partners.market` (it's not a field in that RPC's payload), so every
+    // real business defaults to the table's 'JO' default regardless of
+    // where it actually operates - filtering by CURRENT_MARKET_CODE ('IL'
+    // for the Jerusalem pilot) would hide every real admin-created business.
+    // The RLS policy itself never gated on market either; this was always
+    // just a client-side filter, not a security boundary.
+    const [{ data: businesses, error: businessesError }, { data: offers, error: offersError }] = await Promise.all([
+      supabase.from('partners').select('*').eq('status', 'verified').eq('is_active', true).order('name'),
+      supabase.from('public_offers').select('*').order('created_at', { ascending: false })
+    ])
+    if (businessesError || offersError) {
+      setLoadError(true)
+      return
+    }
+    const businessRows = (businesses ?? []) as Partner[]
+    const offerRows = (offers ?? []) as PartnerOffer[]
+    const ids = businessRows.map(b => b.id)
+    const { data: ratingRows } = ids.length ? await supabase.from('business_ratings').select('*').in('business_id', ids) : { data: [] as BusinessRating[] }
+    setData({ businesses: businessRows, offers: offerRows, ratings: Object.fromEntries((ratingRows ?? []).map(r => [r.business_id, r as BusinessRating])) })
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function onRefresh() {
+    setRefreshing(true)
+    await load()
+    setRefreshing(false)
+  }
+
+  const businessById = useMemo(() => Object.fromEntries((data?.businesses ?? []).map(b => [b.id, b])), [data])
+
+  const businessHasOffer = useMemo(() => {
+    const set = new Set((data?.offers ?? []).map(o => o.partner_id))
+    return set
+  }, [data])
+
+  const isFiltering = category !== 'all' || search.trim().length > 0
+
+  const filteredBusinesses = useMemo(() => {
+    if (!data) return []
+    const query = search.trim().toLowerCase()
+    return data.businesses.filter(business => {
+      if (category !== 'all' && business.category !== category) return false
+      if (query && !business.name.toLowerCase().includes(query)) return false
+      return true
+    })
+  }, [data, category, search])
+
+  const filteredOffers = useMemo(() => {
+    if (!data) return []
+    const query = search.trim().toLowerCase()
+    return data.offers.filter(offer => {
+      const business = businessById[offer.partner_id]
+      if (category !== 'all' && business?.category !== category) return false
+      if (query && !offer.title.toLowerCase().includes(query) && !business?.name.toLowerCase().includes(query)) return false
+      return true
+    })
+  }, [data, category, search, businessById])
+
+  if (frame.kind === 'offer') {
+    return <OfferDetailView offerId={frame.id} userId={userId} onBack={pop} onOpenBusiness={id => push({ kind: 'business', id })} />
+  }
+  if (frame.kind === 'business') {
+    return <BusinessDetailView businessId={frame.id} onBack={pop} onOpenOffer={id => push({ kind: 'offer', id })} />
+  }
 
   return (
-    <Screen>
+    <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.forest} />}>
       <Header title={t('perks.title')} subtitle={t('perks.subtitle')} />
 
-      <MembershipCard userId={userId} />
-
-      <Text style={[styles.sectionTitle, dir.textStart]}>{t('perks.categoriesTitle')}</Text>
-      <View style={[styles.grid, dir.row]}>
-        {partnerCategories.map(category => (
-          <PartnerCategoryChip key={category.key} category={category} count={counts[category.key] ?? 0} />
-        ))}
+      <View style={[styles.searchWrap, dir.row]}>
+        <MagnifyingGlass size={18} color={colors.muted} />
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder={t('perks.searchPlaceholder')}
+          placeholderTextColor={colors.muted}
+          style={[styles.searchInput, dir.textStart]}
+        />
       </View>
+
+      <PlusHeroCard onPress={() => setHeroSheetOpen(true)} />
+
+      <Text style={[styles.sectionTitle, dir.textStart, styles.categoriesTitle]}>{t('perks.categoriesTitle')}</Text>
+      <CategoryChipsRow selected={category} onSelect={setCategory} />
+
+      {loadError ? (
+        <View style={styles.errorWrap}>
+          <Text style={styles.errorText}>{t('perks.errors.loadFailed')}</Text>
+          <PrimaryButton title={t('common.retry')} onPress={load} />
+        </View>
+      ) : data === null ? (
+        <DiscoverSkeleton />
+      ) : isFiltering ? (
+        <FilteredResults
+          offers={filteredOffers}
+          businesses={filteredBusinesses}
+          businessById={businessById}
+          ratings={data.ratings}
+          onOpenOffer={id => push({ kind: 'offer', id })}
+          onOpenBusiness={id => push({ kind: 'business', id })}
+        />
+      ) : (
+        <>
+          <SectionHeader title={t('perks.offersTitle')} />
+          {data.offers.length === 0 ? (
+            <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.rail, dir.row]}>
+              {data.offers.map(offer => (
+                <OfferCard
+                  key={offer.id}
+                  offer={offer}
+                  business={businessById[offer.partner_id]}
+                  rating={data.ratings[offer.partner_id]}
+                  onPress={() => push({ kind: 'offer', id: offer.id })}
+                />
+              ))}
+            </ScrollView>
+          )}
+
+          <SectionHeader title={t('perks.businessesTitle')} />
+          {data.businesses.length === 0 ? (
+            <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
+          ) : (
+            <View style={styles.businessList}>
+              {data.businesses.map(business => (
+                <BusinessCard
+                  key={business.id}
+                  business={business}
+                  rating={data.ratings[business.id]}
+                  hasOffer={businessHasOffer.has(business.id)}
+                  onPress={() => push({ kind: 'business', id: business.id })}
+                />
+              ))}
+            </View>
+          )}
+        </>
+      )}
+
+      <MembershipSheet visible={heroSheetOpen} onClose={() => setHeroSheetOpen(false)} />
     </Screen>
   )
 }
 
+function SectionHeader({ title }: { title: string }) {
+  const dir = dirStyles(useIsRTL())
+  return <Text style={[styles.sectionTitle, dir.textStart]}>{title}</Text>
+}
+
+function FilteredResults({
+  offers,
+  businesses,
+  businessById,
+  ratings,
+  onOpenOffer,
+  onOpenBusiness
+}: {
+  offers: PartnerOffer[]
+  businesses: Partner[]
+  businessById: Record<string, Partner>
+  ratings: Record<string, BusinessRating>
+  onOpenOffer: (id: string) => void
+  onOpenBusiness: (id: string) => void
+}) {
+  const { t } = useTranslation()
+
+  if (offers.length === 0 && businesses.length === 0) {
+    return <EmptyState Icon={MagnifyingGlass} title={t('perks.empty.searchTitle')} message={t('perks.empty.searchMessage')} />
+  }
+
+  return (
+    <View style={styles.filteredWrap}>
+      {offers.length > 0 ? (
+        <View style={styles.filteredSection}>
+          <SectionHeader title={t('perks.offersTitle')} />
+          <View style={styles.businessList}>
+            {offers.map(offer => (
+              <OfferCard key={offer.id} offer={offer} business={businessById[offer.partner_id]} rating={ratings[offer.partner_id]} variant="list" onPress={() => onOpenOffer(offer.id)} />
+            ))}
+          </View>
+        </View>
+      ) : null}
+
+      {businesses.length > 0 ? (
+        <View style={styles.filteredSection}>
+          <SectionHeader title={t('perks.businessesTitle')} />
+          <View style={styles.businessList}>
+            {businesses.map(business => (
+              <BusinessCard key={business.id} business={business} rating={ratings[business.id]} onPress={() => onOpenBusiness(business.id)} />
+            ))}
+          </View>
+        </View>
+      ) : null}
+    </View>
+  )
+}
+
+function DiscoverSkeleton() {
+  return (
+    <View style={styles.skeletonWrap}>
+      <Skeleton width="100%" height={130} radius={radius.lg} />
+      <View style={styles.skeletonRail}>
+        <Skeleton width={220} height={200} radius={radius.lg} />
+        <Skeleton width={220} height={200} radius={radius.lg} />
+      </View>
+      <Skeleton width="100%" height={80} radius={radius.lg} />
+      <Skeleton width="100%" height={80} radius={radius.lg} />
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
-  sectionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 17, marginBottom: space.md },
-  grid: { flexWrap: 'wrap', gap: space.sm }
+  searchWrap: { alignItems: 'center', gap: space.sm, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, paddingHorizontal: space.md, marginBottom: space.lg },
+  searchInput: { flex: 1, color: colors.text, fontFamily: font.regular, fontSize: 14.5, paddingVertical: 12 },
+
+  categoriesTitle: { marginTop: space.lg },
+  sectionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 17, marginTop: space.xl, marginBottom: space.md },
+
+  rail: { gap: space.md, paddingEnd: space.lg },
+  businessList: { gap: space.md },
+
+  filteredWrap: { gap: space.lg },
+  filteredSection: { gap: 0 },
+
+  skeletonWrap: { gap: space.md, marginTop: space.lg },
+  skeletonRail: { flexDirection: 'row', gap: space.md },
+
+  errorWrap: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
+  errorText: { color: colors.muted, fontFamily: font.medium, fontSize: 13.5, textAlign: 'center' }
 })

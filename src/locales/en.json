@@ -363,8 +363,10 @@
   },
   "perks": {
     "title": "SANAD Perks",
-    "subtitle": "SANAD+ membership and discounts with our partners.",
-    "categoriesTitle": "Partner Categories",
+    "subtitle": "Offers and services near you",
+    "searchPlaceholder": "Search a business or offer",
+    "categoriesTitle": "Categories",
+    "categoriesAll": "All",
     "categories": {
       "battery": "Batteries",
       "tire": "Tires",
@@ -372,19 +374,69 @@
       "towing": "Towing",
       "locksmith": "Locksmith",
       "mobile_mechanic": "Mobile Mechanic",
+      "workshop": "Garage & Workshop",
+      "auto_electrician": "Auto Electrician",
       "car_wash": "Car Wash",
       "inspection": "Vehicle Inspection",
       "other": "Other Services"
     },
-    "partnerCountSuffix": "{{count}} partners",
-    "comingSoon": "Coming soon",
-    "membership": {
-      "brand": "SANAD+",
-      "activeStatus": "Your membership is active",
-      "inactiveStatus": "Not a member yet",
-      "expiresLabel": "Expires on",
-      "expiresUnknown": "—",
-      "teaser": "Volunteer help always stays free. SANAD+ adds partner discounts and professional backup options — {{price}} {{currency}} / year, coming soon."
+    "offersTitle": "Current offers",
+    "businessesTitle": "Nearby businesses",
+    "seeAll": "See all",
+    "rating": { "new": "New" },
+    "plusBadge": "PLUS",
+    "hero": {
+      "title": "SANAD+",
+      "subtitle": "Unlocks using member offers with SANAD's partners.",
+      "cta": "Learn about SANAD+"
+    },
+    "empty": {
+      "offersTitle": "No offers right now",
+      "offersMessage": "We're onboarding new partners — check back soon.",
+      "businessesTitle": "No businesses yet",
+      "businessesMessage": "Trusted partners near you will show up here soon.",
+      "searchTitle": "No results",
+      "searchMessage": "Try a different search term or category."
+    },
+    "membershipSheet": {
+      "offerLockedTitle": "This offer is for SANAD+ members",
+      "offerLockedMessage": "Subscribe to use this offer and other SANAD+ offers.",
+      "genericTitle": "SANAD+",
+      "genericMessage": "Volunteer help always stays free. SANAD+ unlocks using real offers with our partners.",
+      "benefitDiscounts": "Real discounts with SANAD's trusted partners",
+      "benefitPriority": "Priority when professional backup services launch",
+      "benefitSupport": "Dedicated support for SANAD+ members",
+      "learnMore": "Learn about SANAD+",
+      "notNow": "Not now",
+      "comingSoon": "In-app subscription is coming soon."
+    },
+    "offer": {
+      "use": "Use offer",
+      "free": "Free",
+      "termsTitle": "Terms",
+      "validUntil": "Valid until {{date}}",
+      "validNoLimit": "No expiry date",
+      "viewBusiness": "View business",
+      "contactTitle": "Contact the business to use this offer",
+      "contactMessage": "SANAD doesn't book the offer for you - reach out to the business directly to use it.",
+      "notFound": "This offer is no longer available."
+    },
+    "business": {
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "directions": "Directions",
+      "hoursTitle": "Opening hours",
+      "days": { "sun": "Sun", "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat" },
+      "serviceAreaTitle": "Service area",
+      "offersTitle": "Current offers",
+      "noOffers": "No offers for this business right now.",
+      "reviewsTitle": "Reviews",
+      "noReviews": "No reviews yet.",
+      "notFound": "This business is no longer available."
+    },
+    "errors": {
+      "loadFailed": "Couldn't load this, try again.",
+      "offline": "No internet connection."
     }
   },
   "navigation": {
