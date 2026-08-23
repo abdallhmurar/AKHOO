@@ -125,6 +125,7 @@
     "liveNow": "Live now",
     "title": "What do you want to do?",
     "subtitle": "Choose your role for now.",
+    "discoverPerks": { "title": "Businesses & offers nearby", "text": "Trusted local shops and real deals near you" },
     "needHelp": { "title": "I need help", "text": "I have a problem and need help nearby." },
     "wantToHelp": { "title": "I want to help", "text": "I'm available to help someone nearby." },
     "adminLink": "Admin Panel",
@@ -430,6 +431,7 @@
       "notFound": "This offer is no longer available."
     },
     "business": {
+      "hasOffer": "Offer",
       "call": "Call",
       "whatsapp": "WhatsApp",
       "directions": "Directions",

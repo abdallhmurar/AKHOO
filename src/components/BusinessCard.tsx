@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { Tag } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { businessCategoryIcons } from '../lib/businessCategories'
 import { colors, font, radius, shadow, space } from '../lib/theme'
@@ -28,14 +29,17 @@ export function BusinessCard({
         {business.logo_url ? <Image source={{ uri: business.logo_url }} style={styles.logo} resizeMode="cover" /> : <Icon size={24} color={colors.forest} weight="duotone" />}
       </View>
       <View style={[styles.body, dir.alignStart]}>
-        <View style={[styles.titleRow, dir.row]}>
-          <Text style={[styles.name, dir.textStart]} numberOfLines={1}>{business.name}</Text>
-          {hasOffer ? <View style={styles.offerDot} /> : null}
-        </View>
+        <Text style={[styles.name, dir.textStart]} numberOfLines={1}>{business.name}</Text>
         <Text style={[styles.category, dir.textStart]}>{t(`perks.categories.${business.category}`)}</Text>
         <View style={[styles.metaRow, dir.row]}>
           <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} size={12} />
           {business.service_area ? <Text style={[styles.area, dir.textStart]} numberOfLines={1}>· {business.service_area}</Text> : null}
+          {hasOffer ? (
+            <View style={[styles.offerPill, dir.row]}>
+              <Tag size={10} color={colors.forest} weight="fill" />
+              <Text style={styles.offerPillText}>{t('perks.business.hasOffer')}</Text>
+            </View>
+          ) : null}
         </View>
       </View>
     </Tactile>
@@ -47,10 +51,10 @@ const styles = StyleSheet.create({
   logoWrap: { width: 54, height: 54, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   logo: { width: '100%', height: '100%' },
   body: { flex: 1, gap: 2 },
-  titleRow: { alignItems: 'center', gap: 6 },
-  name: { flex: 1, color: colors.text, fontFamily: font.bold, fontSize: 15 },
-  offerDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.sand },
+  name: { color: colors.text, fontFamily: font.bold, fontSize: 15 },
   category: { color: colors.muted, fontFamily: font.medium, fontSize: 12 },
-  metaRow: { alignItems: 'center', gap: 6, marginTop: 2 },
-  area: { color: colors.muted, fontFamily: font.regular, fontSize: 12 }
+  metaRow: { alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' },
+  area: { color: colors.muted, fontFamily: font.regular, fontSize: 12 },
+  offerPill: { alignItems: 'center', gap: 3, backgroundColor: colors.sandSoft, borderRadius: radius.pill, paddingVertical: 2, paddingHorizontal: 7 },
+  offerPillText: { color: colors.forest, fontFamily: font.bold, fontSize: 10.5 }
 })

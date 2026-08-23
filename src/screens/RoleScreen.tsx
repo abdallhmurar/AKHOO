@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native'
-import { ArrowLeft, ArrowRight, CarProfile, GearSix, HandHeart, UserCircle } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, CarProfile, GearSix, HandHeart, Storefront, UserCircle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { colors, font, radius, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -18,7 +18,8 @@ export function RoleScreen({
   onRequester,
   onVolunteer,
   onAdmin,
-  onResumeActive
+  onResumeActive,
+  onDiscoverPerks
 }: {
   name: string
   avatarUrl: string | null
@@ -28,6 +29,7 @@ export function RoleScreen({
   onVolunteer: () => void
   onAdmin: () => void
   onResumeActive: () => void
+  onDiscoverPerks: () => void
 }) {
   const { t } = useTranslation()
   const isRTL = useIsRTL()
@@ -103,6 +105,23 @@ export function RoleScreen({
         onPress={onVolunteer}
       />
 
+      {/* Deliberately a slim row, not a third ActionCard - Request Help and
+          Help Mode are the two decisions this screen exists to present;
+          Businesses/Offers is real and worth surfacing (design brief for
+          this round: Home should hint at "what else SANAD provides" within
+          a couple of seconds) but must read as a lighter-weight discovery
+          link underneath them, not a third equally-weighted card. */}
+      <Tactile onPress={onDiscoverPerks} style={[styles.perksRow, dir.row]} scaleTo={0.98}>
+        <View style={styles.perksIconWrap}>
+          <Storefront size={18} color={colors.forest} weight="duotone" />
+        </View>
+        <View style={[styles.perksTextWrap, dir.alignStart]}>
+          <Text style={[styles.perksTitle, dir.textStart]}>{t('home.discoverPerks.title')}</Text>
+          <Text style={[styles.perksText, dir.textStart]}>{t('home.discoverPerks.text')}</Text>
+        </View>
+        <ForwardIcon size={16} color={colors.muted} />
+      </Tactile>
+
       {isAdmin ? (
         <Tactile onPress={onAdmin} style={[styles.adminRow, dir.row]}>
           <GearSix size={16} color={colors.muted} />
@@ -133,6 +152,12 @@ const styles = StyleSheet.create({
 
   title: { color: colors.text, fontSize: 28, fontFamily: font.extraBold },
   subtitle: { color: colors.muted, fontSize: 14.5, fontFamily: font.regular, marginTop: 6, marginBottom: space.xxl },
+
+  perksRow: { alignItems: 'center', gap: space.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: space.md, marginBottom: space.md },
+  perksIconWrap: { width: 38, height: 38, borderRadius: radius.sm, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  perksTextWrap: { flex: 1, gap: 1 },
+  perksTitle: { color: colors.text, fontFamily: font.bold, fontSize: 14 },
+  perksText: { color: colors.muted, fontFamily: font.regular, fontSize: 12 },
 
   adminRow: { alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: space.md, marginBottom: space.sm },
   adminText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },

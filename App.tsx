@@ -275,6 +275,7 @@ export default function App() {
               onVolunteer={() => setScreen('volunteer')}
               onAdmin={() => setScreen('admin')}
               onResumeActive={() => setScreen(activeKind === 'request' ? 'active-request' : 'volunteer-job')}
+              onDiscoverPerks={() => setMainTab('perks')}
             />
           ) : mainTab === 'perks' ? (
             <PerksScreen userId={session.user.id} />
