@@ -16,9 +16,16 @@ export function VolunteerPointsCard({ userId, memberSince, onViewActivity }: { u
   useEffect(() => {
     let cancelled = false
     async function load() {
-      const { data: volunteerProfile } = await supabase.from('volunteer_profiles').select('user_id').eq('user_id', userId).maybeSingle()
-      if (!volunteerProfile || cancelled) return
-
+      // Every consumer account can both request and give help (there is no
+      // separate "volunteer" population - see the product model), so this
+      // card's real (possibly zero) points/activity numbers must show for
+      // every profile, not only accounts that have already toggled
+      // availability at least once. Previously this bailed out entirely
+      // when volunteer_profiles had no row yet, hiding the whole card -
+      // including the always-real completed count and points, not just the
+      // star badge (which already correctly hides itself at 0-4 - see
+      // VolunteerActivityBadge) - for anyone who had only ever requested
+      // help.
       const [{ data: pointsRows }, { data: completedCount }] = await Promise.all([
         supabase.from('volunteer_point_transactions').select('points').eq('volunteer_id', userId),
         supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: userId })

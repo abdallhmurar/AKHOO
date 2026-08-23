@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, AppState, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
-import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, HandHeart, Lock, MapPin, Star, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../lib/location'
 import { filterNearbyRequests } from '../lib/nearbyRequests'
@@ -243,6 +243,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
           <Text style={[styles.small, dir.textStart]}>{t('volunteer.notAvailableText')}</Text>
           <PrimaryButton title={t('volunteer.enable')} onPress={toggleAvailability} loading={loading} />
         </Surface>
+
+        <Text style={[styles.howItWorksTitle, dir.textStart]}>{t('volunteer.howItWorks.title')}</Text>
+        <View style={styles.howItWorksList}>
+          <HowItWorksRow Icon={MapPin} text={t('volunteer.howItWorks.mapItem')} />
+          <HowItWorksRow Icon={HandHeart} text={t('volunteer.howItWorks.chooseItem')} />
+          <HowItWorksRow Icon={Star} text={t('volunteer.howItWorks.starItem')} />
+        </View>
       </Screen>
     )
   }
@@ -333,6 +340,23 @@ function ServiceIcon({ type }: { type: ServiceType }) {
   return <Icon size={26} color={colors.forest} weight="duotone" />
 }
 
+// Fills the (otherwise near-empty) not-available state with real,
+// static information about what helping actually involves, reinforcing
+// the community framing this mode is meant to have - never gig-worker
+// assignment language. Not a substitute for content; there is simply
+// nothing else to show before availability is turned on.
+function HowItWorksRow({ Icon, text }: { Icon: typeof MapPin; text: string }) {
+  const dir = dirStyles(useIsRTL())
+  return (
+    <View style={[styles.howItWorksRow, dir.row]}>
+      <View style={styles.howItWorksIconWrap}>
+        <Icon size={18} color={colors.forest} weight="duotone" />
+      </View>
+      <Text style={[styles.howItWorksText, dir.textStart]}>{text}</Text>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.bg },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
@@ -341,6 +365,12 @@ const styles = StyleSheet.create({
   skeletonGap: { marginTop: space.xs },
   skeletonGapLg: { marginTop: space.md },
   small: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
+
+  howItWorksTitle: { ...type.caption, color: colors.muted, fontFamily: font.bold, textTransform: 'uppercase', marginTop: space.xxl, marginBottom: space.md },
+  howItWorksList: { gap: space.md },
+  howItWorksRow: { alignItems: 'center', gap: space.md },
+  howItWorksIconWrap: { width: 40, height: 40, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  howItWorksText: { flex: 1, color: colors.text, fontFamily: font.medium, fontSize: 13.5, lineHeight: 19 },
 
   topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, alignItems: 'center', gap: space.sm },
   backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },

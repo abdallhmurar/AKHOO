@@ -79,6 +79,25 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
     else groups.push({ label, entries: [item] })
   }
 
+  // A brand-new account's history is genuinely empty - rather than a small
+  // card floating near the top of an otherwise blank screen, this state
+  // gets the full remaining height so it reads as an intentional, finished
+  // screen rather than a page that failed to load its content.
+  if (!loading && items.length === 0) {
+    return (
+      <Screen scroll={false} contentStyle={styles.emptyScreenContent}>
+        <Header title={t('activity.title')} subtitle={t('activity.subtitle')} onBack={onBack} />
+        <View style={styles.emptyFill}>
+          <View style={styles.emptyIconWrap}>
+            <ClockCounterClockwise size={30} color={colors.sage} weight="duotone" />
+          </View>
+          <Text style={styles.emptyTitle}>{t('activity.empty')}</Text>
+          <Text style={styles.emptyMessage}>{t('activity.emptyMessage')}</Text>
+        </View>
+      </Screen>
+    )
+  }
+
   return (
     <Screen>
       <Header title={t('activity.title')} subtitle={t('activity.subtitle')} onBack={onBack} />
@@ -98,13 +117,6 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
             </Surface>
           ))}
         </View>
-      ) : null}
-
-      {!loading && items.length === 0 ? (
-        <Surface elevation="soft" padding="xl" style={styles.emptyCard}>
-          <ClockCounterClockwise size={32} color={colors.muted} weight="light" />
-          <Text style={styles.emptyTitle}>{t('activity.empty')}</Text>
-        </Surface>
       ) : null}
 
       {groups.map(group => (
@@ -163,8 +175,12 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
 
 const styles = StyleSheet.create({
   loading: { color: colors.muted, textAlign: 'center', marginTop: 20 },
-  emptyCard: { alignItems: 'center', gap: space.sm },
-  emptyTitle: { color: colors.text, fontFamily: font.bold, fontSize: 15 },
+
+  emptyScreenContent: { padding: 20 },
+  emptyFill: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingBottom: space.xxxl },
+  emptyIconWrap: { width: 64, height: 64, borderRadius: radius.pill, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  emptyTitle: { color: colors.text, fontFamily: font.bold, fontSize: 16, textAlign: 'center' },
+  emptyMessage: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, textAlign: 'center', lineHeight: 20, maxWidth: 260 },
 
   group: { marginBottom: space.md },
   groupLabel: { ...type.caption, color: colors.muted, fontFamily: font.bold, marginBottom: space.sm, textTransform: 'uppercase' },

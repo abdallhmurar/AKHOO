@@ -121,14 +121,14 @@
     "greeting": "Hi {{name}}",
     "guestName": "there",
     "resumeRequest": "You have an active help request — continue it",
-    "resumeJob": "You have an active volunteer mission — continue it",
+    "resumeJob": "You have an active mission — continue it",
     "liveNow": "Live now",
     "title": "What do you want to do?",
     "subtitle": "Choose your role for now.",
-    "needHelp": { "title": "I need help", "text": "I have a problem and need a nearby volunteer." },
+    "needHelp": { "title": "I need help", "text": "I have a problem and need help nearby." },
     "wantToHelp": { "title": "I want to help", "text": "I'm available to help someone nearby." },
     "adminLink": "Admin Panel",
-    "notice": "First release: requests are matched directly between users and volunteers, no call center."
+    "notice": "First release: requests are matched directly with someone nearby, no call center."
   },
   "request": {
     "battery": "Battery",
@@ -138,10 +138,10 @@
     "other": "Something Else",
     "step": {
       "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing." },
-      "details": { "title": "Details", "subtitle": "A note or photo helps the volunteer understand more (optional)." },
-      "location": { "title": "Location", "subtitle": "We'll share your current location with the volunteer who takes your request." }
+      "details": { "title": "Details", "subtitle": "A note or photo helps whoever's helping understand more (optional)." },
+      "location": { "title": "Location", "subtitle": "We'll share your current location with whoever takes your request." }
     },
-    "noteLabel": "Note for the volunteer (optional)",
+    "noteLabel": "Note for whoever helps (optional)",
     "notePlaceholder": "e.g. Car battery is completely dead, I'm in a public parking lot.",
     "addPhoto": "Add a photo (optional)",
     "locating": "Locating you...",
@@ -162,31 +162,31 @@
   },
   "activeRequest": {
     "status": {
-      "open": "Looking for a volunteer",
-      "accepted": "A volunteer accepted your request",
-      "on_the_way": "Volunteer is on the way",
-      "arrived": "Volunteer has arrived",
+      "open": "Looking for someone nearby",
+      "accepted": "Someone accepted your request",
+      "on_the_way": "Help is on the way",
+      "arrived": "Help has arrived",
       "awaiting_confirmation": "Waiting for your confirmation",
       "completed": "Help completed",
       "cancelled": "Request cancelled"
     },
     "title": "Help Request",
-    "subtitleSearching": "Any nearby available volunteer can see and accept your request.",
+    "subtitleSearching": "Anyone nearby and available can see and accept your request.",
     "subtitleCompleted": "Thank you for using SANAD ❤️",
-    "subtitleAwaitingConfirmation": "The volunteer says they've finished helping — confirm it actually reached you.",
-    "subtitleTracking": "The request status updates live between you and the volunteer.",
+    "subtitleAwaitingConfirmation": "They say they've finished helping — confirm it actually reached you.",
+    "subtitleTracking": "The request status updates live between you and whoever's helping.",
     "releasedNotice": {
-      "title": "The previous volunteer could no longer complete this",
-      "message": "We're looking for another nearby volunteer."
+      "title": "The previous helper could no longer complete this",
+      "message": "We're looking for someone else nearby."
     },
     "confirmPrompt": "Did the help actually happen?",
     "confirmAccept": "Yes, help was completed",
     "confirmReject": "Help wasn't completed",
     "requestId": "Request ID",
     "waitingSince": "Waiting since",
-    "volunteerSince": "Volunteer with you since",
-    "volunteerLabel": "Volunteer",
-    "defaultVolunteerName": "Volunteer",
+    "volunteerSince": "Helping you since",
+    "volunteerLabel": "Helper",
+    "defaultVolunteerName": "Helper",
     "callButton": "Call {{phone}}",
     "backToHome": "Back to role selection",
     "cancel": "Cancel Request",
@@ -245,6 +245,12 @@
     "subtitle": "Turn on your availability to see nearby requests on the map.",
     "notAvailableTitle": "You're currently unavailable",
     "notAvailableText": "Your location is only shared once you turn on availability, and nearby requests appear live on a map.",
+    "howItWorks": {
+      "title": "How helping works",
+      "mapItem": "See real requests nearby on the map",
+      "chooseItem": "Choose who to help — nothing is assigned to you",
+      "starItem": "Confirmed help builds your Activity Star"
+    },
     "enable": "Turn on availability",
     "disable": "Turn off",
     "availableNow": "Available now",
@@ -269,6 +275,7 @@
     "title": "Activity",
     "subtitle": "All your requests and the missions you've helped with.",
     "empty": "No activity yet",
+    "emptyMessage": "Requests you send and missions you help with will show up here.",
     "roleRequester": "Requested help",
     "roleVolunteer": "Helped",
     "activeNow": "Active now",
@@ -348,14 +355,14 @@
     }
   },
   "points": {
-    "title": "Volunteer Points",
+    "title": "My Points",
     "completedCount": "{{count}} missions completed"
   },
   "activityLevel": {
-    "bronze": "Bronze Volunteer",
-    "silver": "Silver Volunteer",
-    "gold": "Gold Volunteer",
-    "green": "SANAD Green Volunteer",
+    "bronze": "Bronze Helper",
+    "silver": "Silver Helper",
+    "gold": "Gold Helper",
+    "green": "SANAD Green",
     "levelUpMessage": "🎉 You've reached {{levelName}}"
   },
   "map": {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, Animated, Easing, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Alert, Animated, Easing, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
 import { ArrowClockwise, BatteryWarning, Camera, Check, GasPump, Lock, MapPin, Tire, Wrench, Warning } from 'phosphor-react-native'
@@ -15,7 +15,6 @@ import { dirStyles, useIsRTL } from '../lib/direction'
 import type { HelpRequest, ServiceType } from '../types'
 import { Header } from '../components/Header'
 import { PrimaryButton } from '../components/PrimaryButton'
-import { Screen } from '../components/Screen'
 import { Surface } from '../components/Surface'
 import { Tactile } from '../components/Tactile'
 import { SanadMap } from '../components/SanadMap'
@@ -149,7 +148,8 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
   }
 
   return (
-    <Screen>
+    <SafeAreaView style={styles.fill}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
       <Header title={stepTitles[step]} subtitle={stepSubtitles[step]} onBack={back} />
 
       <View style={[styles.dots, dir.row]}>
@@ -226,13 +226,16 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
           ) : null}
         </Surface>
       ) : null}
+      </ScrollView>
 
-      {step === 'location' ? (
-        <PrimaryButton title={t('request.submit')} onPress={submit} loading={loading} disabled={!coords || outsideZone} />
-      ) : (
-        <PrimaryButton title={t('common.next')} onPress={next} />
-      )}
-    </Screen>
+      <View style={styles.footer}>
+        {step === 'location' ? (
+          <PrimaryButton title={t('request.submit')} onPress={submit} loading={loading} disabled={!coords || outsideZone} />
+        ) : (
+          <PrimaryButton title={t('common.next')} onPress={next} />
+        )}
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -260,6 +263,10 @@ function ServiceOption({ item, selected, onPress }: { item: (typeof services)[nu
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1, backgroundColor: colors.bg },
+  scrollContent: { padding: 20, paddingBottom: 120, width: '100%', maxWidth: 480, alignSelf: 'center' },
+  footer: { position: 'absolute', bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border, padding: space.lg, paddingBottom: space.xxl },
+
   dots: { gap: 6, marginBottom: space.xl },
   dot: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border },
   dotActive: { backgroundColor: colors.forest },
