@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRealAuthTransition, resolveActiveMissionScreen } from './sessionRecovery'
+import { isRealAuthTransition, recoverActiveMission, resolveActiveMissionScreen } from './sessionRecovery'
 
 describe('isRealAuthTransition', () => {
   it('is always a real transition on SIGNED_OUT', () => {
@@ -44,5 +44,75 @@ describe('resolveActiveMissionScreen', () => {
   // ACTIVE_STATUSES-filtered query in the first place - null covers it.
   it('resolves to null (no resume) when neither query found anything', () => {
     expect(resolveActiveMissionScreen(null, null)).toBeNull()
+  })
+})
+
+describe('recoverActiveMission', () => {
+  // The actual bug this round: the requester-mission query can still be in
+  // flight when the session changes or the caller's effect is cleaned up.
+  // Without re-checking isStale() after the await, a late result would
+  // overwrite newer session state with a stale mission.
+  it('does not apply a requester-mission result that resolves after the caller goes stale', async () => {
+    let stale = false
+    const found: unknown[] = []
+    let resolveRequester!: (value: unknown) => void
+    const requesterPromise = new Promise(resolve => { resolveRequester = resolve })
+
+    const run = recoverActiveMission({
+      fetchAsRequester: () => requesterPromise,
+      fetchAsVolunteer: () => Promise.resolve(null),
+      isStale: () => stale,
+      onFound: (target, mission) => found.push({ target, mission })
+    })
+
+    stale = true
+    resolveRequester({ id: 'req-1' })
+    await run
+
+    expect(found).toEqual([])
+  })
+
+  // Same race, but on the second (volunteer) query - proves isStale() is
+  // re-checked at both await points, not just the first.
+  it('does not apply a volunteer-mission result that resolves after the caller goes stale', async () => {
+    let stale = false
+    const found: unknown[] = []
+    let resolveVolunteer!: (value: unknown) => void
+    const volunteerPromise = new Promise(resolve => { resolveVolunteer = resolve })
+
+    const run = recoverActiveMission({
+      fetchAsRequester: () => Promise.resolve(null),
+      fetchAsVolunteer: () => volunteerPromise,
+      isStale: () => stale,
+      onFound: (target, mission) => found.push({ target, mission })
+    })
+
+    stale = true
+    resolveVolunteer({ id: 'req-2' })
+    await run
+
+    expect(found).toEqual([])
+  })
+
+  it('applies the requester-mission result when the caller never goes stale', async () => {
+    const found: unknown[] = []
+    await recoverActiveMission({
+      fetchAsRequester: () => Promise.resolve({ id: 'req-1' }),
+      fetchAsVolunteer: () => Promise.resolve(null),
+      isStale: () => false,
+      onFound: (target, mission) => found.push({ target, mission })
+    })
+    expect(found).toEqual([{ target: 'active-request', mission: { id: 'req-1' } }])
+  })
+
+  it('falls through to the volunteer-mission result when not stale and no requester mission exists', async () => {
+    const found: unknown[] = []
+    await recoverActiveMission({
+      fetchAsRequester: () => Promise.resolve(null),
+      fetchAsVolunteer: () => Promise.resolve({ id: 'req-2' }),
+      isStale: () => false,
+      onFound: (target, mission) => found.push({ target, mission })
+    })
+    expect(found).toEqual([{ target: 'volunteer-job', mission: { id: 'req-2' } }])
   })
 })

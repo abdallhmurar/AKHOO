@@ -25,3 +25,28 @@ export function resolveActiveMissionScreen(asRequesterMission: unknown, asVolunt
   if (asVolunteerMission) return { screen: 'volunteer-job' }
   return null
 }
+
+export type MissionRecoveryDeps<T> = {
+  fetchAsRequester: () => Promise<T>
+  fetchAsVolunteer: () => Promise<T>
+  // Re-checked after each await, so a result that only resolves after the
+  // session changed or the caller's effect was cleaned up never gets
+  // applied - confirmed on a real device as a real (if narrow-window) race.
+  isStale: () => boolean
+  onFound: (target: 'active-request' | 'volunteer-job', mission: T) => void
+}
+
+export async function recoverActiveMission<T>({ fetchAsRequester, fetchAsVolunteer, isStale, onFound }: MissionRecoveryDeps<T>): Promise<void> {
+  const asRequester = await fetchAsRequester()
+  if (isStale()) return
+  if (resolveActiveMissionScreen(asRequester, null)?.screen === 'active-request') {
+    onFound('active-request', asRequester)
+    return
+  }
+
+  const asVolunteer = await fetchAsVolunteer()
+  if (isStale()) return
+  if (resolveActiveMissionScreen(null, asVolunteer)?.screen === 'volunteer-job') {
+    onFound('volunteer-job', asVolunteer)
+  }
+}

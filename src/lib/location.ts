@@ -11,13 +11,21 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
   const { locations } = data as { locations: Location.LocationObject[] }
   const last = locations[locations.length - 1]
   if (!last) return
-  await supabase.from('volunteer_profiles').upsert({
-    user_id: backgroundUserId,
-    is_available: true,
-    latitude: last.coords.latitude,
-    longitude: last.coords.longitude,
-    updated_at: new Date().toISOString()
-  })
+  // A transient network/DB failure here must not take down the background
+  // task - it's on a 30s/100m loop, so a dropped update is recoverable on
+  // the next tick as long as the task itself keeps running.
+  try {
+    const { error: upsertError } = await supabase.from('volunteer_profiles').upsert({
+      user_id: backgroundUserId,
+      is_available: true,
+      latitude: last.coords.latitude,
+      longitude: last.coords.longitude,
+      updated_at: new Date().toISOString()
+    })
+    if (upsertError && __DEV__) console.warn('[background-location] upsert failed, will retry on next update')
+  } catch {
+    if (__DEV__) console.warn('[background-location] upsert threw, will retry on next update')
+  }
 })
 
 export async function startBackgroundLocationUpdates(userId: string, notification: { title: string; body: string }) {

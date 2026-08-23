@@ -9,6 +9,7 @@ import type { NearbyRequest } from '../lib/nearbyRequests'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
+import { buildAvailableUpsertPayload } from '../lib/volunteerAvailability'
 import { colors, font, radius, space, shadow, type } from '../lib/theme'
 import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -170,14 +171,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
       if (!available) {
         const position = await getCurrentCoords()
         const pushToken = await registerForPushNotificationsAsync().catch(() => null)
-        const { error } = await supabase.from('volunteer_profiles').upsert({
-          user_id: userId,
-          is_available: true,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          push_token: pushToken,
-          updated_at: new Date().toISOString()
-        })
+        const { error } = await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, pushToken))
         if (error) throw error
         setCoords(position)
         setAvailable(true)

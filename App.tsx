@@ -9,7 +9,7 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from './src/lib/supabase'
 import { colors, font, radius, space } from './src/lib/theme'
 import { i18next, initI18n } from './src/lib/i18n'
-import { isRealAuthTransition, resolveActiveMissionScreen } from './src/lib/sessionRecovery'
+import { isRealAuthTransition, recoverActiveMission as recoverActiveMissionCore } from './src/lib/sessionRecovery'
 import type { HelpRequest, Profile } from './src/types'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { RoleScreen } from './src/screens/RoleScreen'
@@ -135,37 +135,43 @@ export default function App() {
     })
   }, [session?.user.id, profileRetryTick])
 
-  // Shared by both recovery effects below - returns true if a real
-  // non-terminal mission was found and screen/activeRequest were set.
-  const recoverActiveMission = useCallback(async (uid: string) => {
-    const { data: asRequester } = await supabase
-      .from('help_requests')
-      .select('*')
-      .eq('requester_id', uid)
-      .in('status', ACTIVE_STATUSES)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-    if (resolveActiveMissionScreen(asRequester, null)?.screen === 'active-request') {
-      setActiveRequest(asRequester as HelpRequest)
-      setScreen('active-request')
-      return true
-    }
-
-    const { data: asVolunteer } = await supabase
-      .from('help_requests')
-      .select('*')
-      .eq('volunteer_id', uid)
-      .in('status', ACTIVE_STATUSES)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-    if (resolveActiveMissionScreen(null, asVolunteer)?.screen === 'volunteer-job') {
-      setActiveRequest(asVolunteer as HelpRequest)
-      setScreen('volunteer-job')
-      return true
-    }
-    return false
+  // Shared by both recovery effects below - sets screen/activeRequest if a
+  // real non-terminal mission is found. isStale lets each caller (cold-start
+  // effect, AppState listener below) supply its own cancellation check, so a
+  // slow query resolving after the session changed or the effect was
+  // cleaned up never applies its result. The stale-guard orchestration
+  // itself lives in sessionRecovery.ts so it's unit-testable independent of
+  // Supabase/React state.
+  const recoverActiveMission = useCallback(async (uid: string, isStale: () => boolean) => {
+    await recoverActiveMissionCore({
+      fetchAsRequester: async () => {
+        const { data } = await supabase
+          .from('help_requests')
+          .select('*')
+          .eq('requester_id', uid)
+          .in('status', ACTIVE_STATUSES)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        return data
+      },
+      fetchAsVolunteer: async () => {
+        const { data } = await supabase
+          .from('help_requests')
+          .select('*')
+          .eq('volunteer_id', uid)
+          .in('status', ACTIVE_STATUSES)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        return data
+      },
+      isStale,
+      onFound: (target, mission) => {
+        setActiveRequest(mission as HelpRequest)
+        setScreen(target)
+      }
+    })
   }, [])
 
   // Recover an in-progress request/job after a reload or fresh app open, so
@@ -177,8 +183,12 @@ export default function App() {
       setRecovering(false)
       return
     }
+    let cancelled = false
     setRecovering(true)
-    recoverActiveMission(uid).finally(() => setRecovering(false))
+    recoverActiveMission(uid, () => cancelled).finally(() => {
+      if (!cancelled) setRecovering(false)
+    })
+    return () => { cancelled = true }
   }, [session?.user.id, recoverActiveMission])
 
   // Safety net for returning from background, without the blocking splash:
@@ -191,12 +201,16 @@ export default function App() {
   useEffect(() => {
     const uid = session?.user.id
     if (!uid) return
+    let cancelled = false
     const subscription = AppState.addEventListener('change', state => {
       if (state === 'active' && screen === 'main' && !activeRequest) {
-        recoverActiveMission(uid)
+        recoverActiveMission(uid, () => cancelled)
       }
     })
-    return () => subscription.remove()
+    return () => {
+      cancelled = true
+      subscription.remove()
+    }
   }, [session?.user.id, screen, activeRequest, recoverActiveMission])
 
   if (!fontsLoaded || !i18nReady || loading || recovering || !urlHandled) {
