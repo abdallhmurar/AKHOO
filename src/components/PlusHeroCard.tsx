@@ -9,6 +9,11 @@ import { Tactile } from './Tactile'
 // Only rendered where the market's own sanadPlus feature flag is on - no
 // point marketing a membership that can't actually be purchased yet in this
 // market (memberships.market currently only allows 'JO').
+//
+// Reference board takeaway (Offers/SANAD+, 21st Elite Plan Card): the paid
+// tier gets its own dark "ink" surface distinct from forest-green, which
+// every other hero element in the app already uses - so SANAD+ finally
+// reads as a separate, premium tier instead of "forest card, but here too."
 export function PlusHeroCard({ onPress }: { onPress: () => void }) {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
@@ -34,12 +39,12 @@ export function PlusHeroCard({ onPress }: { onPress: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.forest, borderRadius: radius.lg, padding: space.lg, ...shadow.elevated },
+  card: { backgroundColor: colors.ink, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.inkBorder, padding: space.lg, ...shadow.elevated },
   row: { alignItems: 'center', gap: space.md },
-  iconWrap: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: '#FFFFFF1F', alignItems: 'center', justifyContent: 'center' },
+  iconWrap: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.inkElevated, alignItems: 'center', justifyContent: 'center' },
   textWrap: { flex: 1 },
-  title: { color: '#fff', fontFamily: font.extraBold, fontSize: 17 },
-  subtitle: { color: '#FFFFFFCC', fontFamily: font.regular, fontSize: 12.5, lineHeight: 18, marginTop: 2 },
-  ctaWrap: { alignSelf: 'flex-start', backgroundColor: '#FFFFFF1F', borderRadius: radius.pill, paddingVertical: 7, paddingHorizontal: space.md, marginTop: space.md },
+  title: { color: colors.inkText, fontFamily: font.extraBold, fontSize: 17 },
+  subtitle: { color: colors.inkMuted, fontFamily: font.regular, fontSize: 12.5, lineHeight: 18, marginTop: 2 },
+  ctaWrap: { alignSelf: 'flex-start', backgroundColor: colors.inkElevated, borderRadius: radius.pill, paddingVertical: 7, paddingHorizontal: space.md, marginTop: space.md },
   cta: { color: colors.sand, fontFamily: font.bold, fontSize: 12.5 }
 })

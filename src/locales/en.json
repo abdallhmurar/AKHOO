@@ -138,7 +138,7 @@
     "lockedCar": "Locked Car",
     "other": "Something Else",
     "step": {
-      "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing." },
+      "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing.", "short": "Problem" },
       "details": { "title": "Details", "subtitle": "A note or photo helps whoever's helping understand more (optional)." },
       "location": { "title": "Location", "subtitle": "We'll share your current location with whoever takes your request." }
     },
@@ -357,7 +357,9 @@
   },
   "points": {
     "title": "My Points",
-    "completedCount": "{{count}} missions completed"
+    "completedCount": "{{count}} missions completed",
+    "nextTier": "{{remaining}} more to reach the next Activity Star",
+    "topTier": "Top Activity Star tier reached"
   },
   "activityLevel": {
     "bronze": "Bronze Helper",

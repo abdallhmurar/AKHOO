@@ -1,30 +1,42 @@
 import { Fragment } from 'react'
+import type { ComponentType } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Check } from 'phosphor-react-native'
-import { colors, font, radius } from '../lib/theme'
+import type { IconProps } from 'phosphor-react-native'
+import { colors, font, radius, shadow } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 
-// A mission's progress read as a journey, not an administrative checklist
-// (design brief section 22). Steps behind the current one show a
-// checkmark, the current step is the only emphasized outline, steps ahead
-// stay quiet. Dots/connecting-lines and labels are two separate rows -
-// nesting a line inside each step's own column made the segments
-// misalign with the next step's dot, since each dot centers within its
-// own flex column rather than sitting at a shared fixed offset.
-export function StatusTimeline({ steps, currentIndex }: { steps: { key: string; label: string }[]; currentIndex: number }) {
+// Horizontal segmented tracker with icon nodes (reference board: 21st.dev
+// Order Status Tracker / Order Tracking Parallax Card - "compact horizontal
+// progression + state emphasis") - replaces the previous thin-line dot
+// timeline. Done steps show a checkmark, the current step shows its own
+// icon on a filled node with a visible ring so "you are here" reads at a
+// glance, upcoming steps preview their own icon outlined and muted instead
+// of a plain empty dot.
+export function StatusTimeline({
+  steps,
+  currentIndex,
+  icons
+}: {
+  steps: { key: string; label: string }[]
+  currentIndex: number
+  icons?: Record<string, ComponentType<IconProps>>
+}) {
   const dir = dirStyles(useIsRTL())
   return (
     <View>
-      <View style={[styles.dotsRow, dir.row]}>
+      <View style={[styles.nodesRow, dir.row]}>
         {steps.map((step, index) => {
           const done = index < currentIndex
           const current = index === currentIndex
+          const StepIcon = icons?.[step.key] ?? Check
+          const Icon = done ? Check : StepIcon
           return (
             <Fragment key={step.key}>
-              <View style={[styles.dot, done && styles.dotDone, current && styles.dotCurrent]}>
-                {done ? <Check size={11} color="#fff" weight="bold" /> : null}
+              <View style={[styles.node, done && styles.nodeDone, current && styles.nodeCurrent]}>
+                <Icon size={13} color={done || current ? '#fff' : colors.muted} weight={done || current ? 'fill' : 'regular'} />
               </View>
-              {index < steps.length - 1 ? <View style={[styles.line, done && styles.lineDone]} /> : null}
+              {index < steps.length - 1 ? <View style={[styles.track, done && styles.trackDone]} /> : null}
             </Fragment>
           )
         })}
@@ -39,13 +51,13 @@ export function StatusTimeline({ steps, currentIndex }: { steps: { key: string; 
 }
 
 const styles = StyleSheet.create({
-  dotsRow: { alignItems: 'center' },
-  dot: { width: 22, height: 22, borderRadius: radius.pill, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
-  dotDone: { backgroundColor: colors.forest, borderColor: colors.forest },
-  dotCurrent: { borderColor: colors.forest, borderWidth: 3 },
-  line: { flex: 1, height: 2, backgroundColor: colors.border, marginHorizontal: 2 },
-  lineDone: { backgroundColor: colors.forest },
-  labelsRow: { marginTop: 6 },
-  label: { flex: 1, color: colors.muted, fontFamily: font.medium, fontSize: 11, textAlign: 'center' },
-  labelCurrent: { color: colors.forest, fontFamily: font.bold }
+  nodesRow: { alignItems: 'center' },
+  node: { width: 28, height: 28, borderRadius: radius.pill, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  nodeDone: { backgroundColor: colors.forest, borderColor: colors.forest },
+  nodeCurrent: { backgroundColor: colors.forest, borderColor: colors.surface, borderWidth: 3, ...shadow.floating },
+  track: { flex: 1, height: 3, borderRadius: 2, backgroundColor: colors.border, marginHorizontal: 3 },
+  trackDone: { backgroundColor: colors.forest },
+  labelsRow: { marginTop: 8 },
+  label: { flex: 1, color: colors.muted, fontFamily: font.medium, fontSize: 10.5, textAlign: 'center' },
+  labelCurrent: { color: colors.text, fontFamily: font.bold }
 })

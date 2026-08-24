@@ -274,8 +274,8 @@ const styles = StyleSheet.create({
   priceRow: { alignItems: 'center', gap: space.sm },
   strike: { color: colors.muted, fontFamily: font.regular, fontSize: 14, textDecorationLine: 'line-through' },
   offerPrice: { color: colors.forest, fontFamily: font.extraBold, fontSize: 22 },
-  percentPill: { backgroundColor: colors.sageSoft, borderRadius: radius.pill, paddingVertical: 5, paddingHorizontal: space.md },
-  percentPillText: { color: colors.forest, fontFamily: font.extraBold, fontSize: 15 },
+  percentPill: { backgroundColor: colors.sandSoft, borderRadius: radius.pill, paddingVertical: 5, paddingHorizontal: space.md },
+  percentPillText: { color: colors.forestPressed, fontFamily: font.extraBold, fontSize: 15 },
   freeText: { color: colors.forest, fontFamily: font.extraBold, fontSize: 20 },
 
   description: { color: colors.text, fontFamily: font.regular, fontSize: 14, lineHeight: 21 },

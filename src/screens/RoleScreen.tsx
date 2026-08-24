@@ -2,12 +2,11 @@ import { useEffect, useRef } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native'
 import { ArrowLeft, ArrowRight, CarProfile, GearSix, HandHeart, Storefront, UserCircle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { colors, font, radius, space } from '../lib/theme'
+import { colors, font, radius, shadow, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { Screen } from '../components/Screen'
 import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
-import { ActionCard } from '../components/ActionCard'
 import { Tactile } from '../components/Tactile'
 
 export function RoleScreen({
@@ -86,41 +85,51 @@ export function RoleScreen({
         </Tactile>
       ) : null}
 
-      <Text style={[styles.title, dir.textStart]}>{t('home.title')}</Text>
-      <Text style={[styles.subtitle, dir.textStart]}>{t('home.subtitle')}</Text>
+      <Text style={[type.eyebrow, styles.eyebrow, dir.textStart]}>{t('home.title')}</Text>
 
-      <ActionCard
-        variant="primary"
-        Icon={CarProfile}
-        title={t('home.needHelp.title')}
-        text={t('home.needHelp.text')}
+      {/* Hero action - the one thing this screen exists to answer within a
+          couple of seconds (reference board: Home takeaway #1, "one
+          dominant hero action, not two equal cards"). Deliberately much
+          larger than the old ActionCard treatment: bigger icon, hero-scale
+          type, a full-width forward affordance instead of a small pill. */}
+      <Tactile
         onPress={activeKind === 'request' ? onResumeActive : onRequester}
-      />
-
-      <ActionCard
-        variant="secondary"
-        Icon={HandHeart}
-        title={t('home.wantToHelp.title')}
-        text={t('home.wantToHelp.text')}
-        onPress={onVolunteer}
-      />
-
-      {/* Deliberately a slim row, not a third ActionCard - Request Help and
-          Help Mode are the two decisions this screen exists to present;
-          Businesses/Offers is real and worth surfacing (design brief for
-          this round: Home should hint at "what else SANAD provides" within
-          a couple of seconds) but must read as a lighter-weight discovery
-          link underneath them, not a third equally-weighted card. */}
-      <Tactile onPress={onDiscoverPerks} style={[styles.perksRow, dir.row]} scaleTo={0.98}>
-        <View style={styles.perksIconWrap}>
-          <Storefront size={18} color={colors.forest} weight="duotone" />
+        style={styles.hero}
+        scaleTo={0.985}
+      >
+        <View style={[styles.heroTop, dir.row]}>
+          <View style={styles.heroIconWrap}>
+            <CarProfile size={34} color={colors.sand} weight="duotone" />
+          </View>
+          <View style={styles.heroForward}>
+            <ForwardIcon size={18} color="#fff" />
+          </View>
         </View>
-        <View style={[styles.perksTextWrap, dir.alignStart]}>
-          <Text style={[styles.perksTitle, dir.textStart]}>{t('home.discoverPerks.title')}</Text>
-          <Text style={[styles.perksText, dir.textStart]}>{t('home.discoverPerks.text')}</Text>
-        </View>
-        <ForwardIcon size={16} color={colors.muted} />
+        <Text style={[type.hero, styles.heroTitle, dir.textStart]}>{t('home.needHelp.title')}</Text>
+        <Text style={[styles.heroText, dir.textStart]}>{t('home.needHelp.text')}</Text>
       </Tactile>
+
+      {/* Help Mode and the perks/business discovery link now share one
+          demoted, compact-row treatment underneath the hero (reference
+          board: "Help Mode drops to a compact secondary strip" /
+          "Discovery becomes a horizontal strip") - previously Help Mode was
+          a second full ActionCard reading as equal weight to the hero. */}
+      <View style={styles.secondaryCluster}>
+        <CompactRow
+          Icon={HandHeart}
+          title={t('home.wantToHelp.title')}
+          text={t('home.wantToHelp.text')}
+          onPress={onVolunteer}
+          ForwardIcon={ForwardIcon}
+        />
+        <CompactRow
+          Icon={Storefront}
+          title={t('home.discoverPerks.title')}
+          text={t('home.discoverPerks.text')}
+          onPress={onDiscoverPerks}
+          ForwardIcon={ForwardIcon}
+        />
+      </View>
 
       {isAdmin ? (
         <Tactile onPress={onAdmin} style={[styles.adminRow, dir.row]}>
@@ -136,28 +145,63 @@ export function RoleScreen({
   )
 }
 
+function CompactRow({
+  Icon,
+  title,
+  text,
+  onPress,
+  ForwardIcon
+}: {
+  Icon: typeof HandHeart
+  title: string
+  text: string
+  onPress: () => void
+  ForwardIcon: typeof ArrowRight
+}) {
+  const dir = dirStyles(useIsRTL())
+  return (
+    <Tactile onPress={onPress} style={[styles.row, dir.row]} scaleTo={0.98}>
+      <View style={styles.rowIconWrap}>
+        <Icon size={19} color={colors.forest} weight="duotone" />
+      </View>
+      <View style={[styles.rowTextWrap, dir.alignStart]}>
+        <Text style={[styles.rowTitle, dir.textStart]}>{title}</Text>
+        <Text style={[styles.rowText, dir.textStart]} numberOfLines={1}>{text}</Text>
+      </View>
+      <ForwardIcon size={15} color={colors.muted} />
+    </Tactile>
+  )
+}
+
 const styles = StyleSheet.create({
-  top: { justifyContent: 'space-between', alignItems: 'center', marginBottom: space.xxl },
+  top: { justifyContent: 'space-between', alignItems: 'center', marginBottom: space.xl },
   identity: { alignItems: 'center', gap: space.md },
   avatarWrap: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   pulseRing: { position: 'absolute', width: 44, height: 44, borderRadius: 22, backgroundColor: colors.forest },
   avatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.border },
   avatarFallback: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' },
-  brand: { fontSize: 20, fontFamily: font.extraBold, color: colors.text },
+  brand: { fontSize: 19, fontFamily: font.extraBold, color: colors.text },
   greeting: { color: colors.muted, fontFamily: font.regular, fontSize: 13, marginTop: 2 },
 
   resumeCard: { backgroundColor: colors.forest, borderRadius: radius.md, padding: space.lg, marginBottom: space.xl, gap: space.sm },
   resumeTop: { justifyContent: 'space-between', alignItems: 'center' },
   resumeText: { color: '#fff', fontFamily: font.bold, fontSize: 15 },
 
-  title: { color: colors.text, fontSize: 28, fontFamily: font.extraBold },
-  subtitle: { color: colors.muted, fontSize: 14.5, fontFamily: font.regular, marginTop: 6, marginBottom: space.xxl },
+  eyebrow: { color: colors.sage, marginBottom: space.md, textTransform: 'uppercase' },
 
-  perksRow: { alignItems: 'center', gap: space.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: space.md, marginBottom: space.md },
-  perksIconWrap: { width: 38, height: 38, borderRadius: radius.sm, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  perksTextWrap: { flex: 1, gap: 1 },
-  perksTitle: { color: colors.text, fontFamily: font.bold, fontSize: 14 },
-  perksText: { color: colors.muted, fontFamily: font.regular, fontSize: 12 },
+  hero: { backgroundColor: colors.forest, borderRadius: radius.xl, padding: space.xxl, marginBottom: space.lg, ...shadow.elevated },
+  heroTop: { justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },
+  heroIconWrap: { width: 64, height: 64, borderRadius: radius.lg, backgroundColor: '#FFFFFF1A', alignItems: 'center', justifyContent: 'center' },
+  heroForward: { width: 36, height: 36, borderRadius: radius.pill, backgroundColor: '#FFFFFF26', alignItems: 'center', justifyContent: 'center' },
+  heroTitle: { color: '#fff' },
+  heroText: { color: '#FFFFFFD0', fontFamily: font.regular, fontSize: 14.5, lineHeight: 21, marginTop: 6, maxWidth: '92%' },
+
+  secondaryCluster: { gap: space.sm, marginBottom: space.lg },
+  row: { alignItems: 'center', gap: space.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: space.md },
+  rowIconWrap: { width: 38, height: 38, borderRadius: radius.sm, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  rowTextWrap: { flex: 1, gap: 1 },
+  rowTitle: { color: colors.text, fontFamily: font.bold, fontSize: 14 },
+  rowText: { color: colors.muted, fontFamily: font.regular, fontSize: 12 },
 
   adminRow: { alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: space.md, marginBottom: space.sm },
   adminText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },

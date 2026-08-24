@@ -105,68 +105,70 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
       {loading ? (
         <View style={styles.group}>
           <Skeleton width={90} height={13} style={styles.groupLabelSkeleton} />
-          {[0, 1, 2].map(i => (
-            <Surface key={i} elevation="soft" padding="lg" style={styles.card}>
-              <View style={[styles.cardTop, dir.row]}>
-                <Skeleton width={44} height={44} radius={radius.md} />
-                <View style={[styles.cardTextWrap, dir.alignStart]}>
+          <Surface elevation="soft" padding="none" style={styles.groupCard}>
+            {[0, 1, 2].map((i, index) => (
+              <View key={i} style={[styles.row, dir.row, index < 2 && styles.rowDivider]}>
+                <Skeleton width={40} height={40} radius={radius.md} />
+                <View style={[styles.rowTextWrap, dir.alignStart]}>
                   <Skeleton width="60%" height={14} style={styles.skeletonLine} />
                   <Skeleton width="40%" height={12} />
                 </View>
               </View>
-            </Surface>
-          ))}
+            ))}
+          </Surface>
         </View>
       ) : null}
 
+      {/* Grouped compact rows in one bordered list per day, instead of one
+          shadow-card per event (reference board: Activity/Account -
+          "reduces the every-row-is-its-own-white-card repetition"). */}
       {groups.map(group => (
         <View key={group.label} style={styles.group}>
           <Text style={[styles.groupLabel, dir.textStart]}>{group.label}</Text>
-          {group.entries.map(item => {
-            if (item.kind === 'release') {
-              return (
-                <Surface key={`release-${item.id}`} elevation="soft" padding="lg" style={styles.card}>
-                  <View style={[styles.cardTop, dir.row]}>
+          <Surface elevation="soft" padding="none" style={styles.groupCard}>
+            {group.entries.map((item, index) => {
+              const isLast = index === group.entries.length - 1
+              if (item.kind === 'release') {
+                return (
+                  <View key={`release-${item.id}`} style={[styles.row, dir.row, !isLast && styles.rowDivider]}>
                     <View style={styles.iconWrap}>
-                      <ClockCounterClockwise size={22} color={colors.muted} weight="duotone" />
+                      <ClockCounterClockwise size={20} color={colors.muted} weight="duotone" />
                     </View>
-                    <View style={[styles.cardTextWrap, dir.alignStart]}>
+                    <View style={[styles.rowTextWrap, dir.alignStart]}>
                       <Text style={[styles.service, dir.textStart]}>{t('activity.releasedLabel')}</Text>
                       <Text style={[styles.status, dir.textStart]}>{t('activity.releasedReason')}</Text>
                     </View>
                     <Text style={styles.time}>{formatTime(item.released_at)}</Text>
                   </View>
-                </Surface>
-              )
-            }
-            const role = item.requester_id === userId ? 'requester' : 'volunteer'
-            const active = ACTIVE_STATUSES.includes(item.status)
-            const meta = serviceMeta[item.service_type] ?? serviceMeta.other!
-            return (
-              <Pressable key={item.id} onPress={() => onOpen(item)}>
-                <Surface elevation="soft" padding="lg" style={styles.card}>
-                  <View style={[styles.cardTop, dir.row]}>
-                    <View style={styles.iconWrap}>
-                      <meta.Icon size={22} color={colors.forest} weight="duotone" />
-                    </View>
-                    <View style={[styles.cardTextWrap, dir.alignStart]}>
+                )
+              }
+              const role = item.requester_id === userId ? 'requester' : 'volunteer'
+              const active = ACTIVE_STATUSES.includes(item.status)
+              const meta = serviceMeta[item.service_type] ?? serviceMeta.other!
+              return (
+                <Pressable key={item.id} onPress={() => onOpen(item)} style={[styles.row, dir.row, !isLast && styles.rowDivider]}>
+                  <View style={styles.iconWrap}>
+                    <meta.Icon size={20} color={colors.forest} weight="duotone" />
+                  </View>
+                  <View style={[styles.rowTextWrap, dir.alignStart]}>
+                    <View style={[styles.rowTitleLine, dir.row]}>
                       <Text style={[styles.service, dir.textStart]}>{t(meta.labelKey)}</Text>
-                      <Text style={[styles.status, dir.textStart]}>{t(`activity.status.${item.status}`)}</Text>
+                      <StatusPill
+                        label={role === 'requester' ? t('activity.roleRequester') : t('activity.roleVolunteer')}
+                        tone={active ? 'success' : 'brand'}
+                        pulse={active}
+                      />
                     </View>
-                    <Text style={styles.time}>{formatTime(item.created_at)}</Text>
+                    <Text style={[styles.status, dir.textStart]}>
+                      {t(`activity.status.${item.status}`)}
+                      {item.pointsEarned ? `  ·  ${t('activity.pointsEarned', { points: item.pointsEarned })}` : ''}
+                    </Text>
                   </View>
-                  <View style={[styles.cardBottom, dir.row]}>
-                    <StatusPill
-                      label={role === 'requester' ? t('activity.roleRequester') : t('activity.roleVolunteer')}
-                      tone={active ? 'success' : 'brand'}
-                      pulse={active}
-                    />
-                    {item.pointsEarned ? <Text style={styles.points}>{t('activity.pointsEarned', { points: item.pointsEarned })}</Text> : null}
-                  </View>
-                </Surface>
-              </Pressable>
-            )
-          })}
+                  <Text style={styles.time}>{formatTime(item.created_at)}</Text>
+                </Pressable>
+              )
+            })}
+          </Surface>
         </View>
       ))}
     </Screen>
@@ -187,13 +189,13 @@ const styles = StyleSheet.create({
   groupLabelSkeleton: { marginBottom: space.sm },
   skeletonLine: { marginBottom: space.xs },
 
-  card: { marginBottom: space.sm, gap: space.sm },
-  cardTop: { alignItems: 'center', gap: space.md },
-  iconWrap: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  cardTextWrap: { flex: 1 },
-  service: { color: colors.text, fontFamily: font.extraBold, fontSize: 15.5 },
-  status: { color: colors.muted, fontFamily: font.regular, fontSize: 13, marginTop: 2 },
-  time: { color: colors.muted, fontFamily: font.regular, fontSize: 12 },
-  cardBottom: { justifyContent: 'space-between', alignItems: 'center' },
-  points: { color: colors.forest, fontFamily: font.bold, fontSize: 13 }
+  groupCard: { overflow: 'hidden' },
+  row: { alignItems: 'center', gap: space.md, padding: space.md },
+  rowDivider: { borderBottomWidth: 1, borderBottomColor: colors.border },
+  iconWrap: { width: 40, height: 40, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
+  rowTextWrap: { flex: 1, gap: 2 },
+  rowTitleLine: { alignItems: 'center', gap: space.sm, flexWrap: 'wrap' },
+  service: { color: colors.text, fontFamily: font.extraBold, fontSize: 14.5 },
+  status: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, marginTop: 1 },
+  time: { color: colors.muted, fontFamily: font.regular, fontSize: 11.5 }
 })

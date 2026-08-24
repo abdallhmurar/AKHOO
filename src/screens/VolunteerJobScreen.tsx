@@ -150,8 +150,11 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
         </Tactile>
       </View>
 
-      <View style={styles.sheet}>
-        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
+      {/* Same map/status/timeline composition as ActiveRequestScreen - one
+          shared visual system for both sides of a mission (reference board
+          area 05, "Helper Mission"). */}
+      <View style={styles.capsuleWrap}>
+        <View style={styles.capsule}>
           <Text style={styles.title}>{title}</Text>
           {awaitingConfirmation ? (
             <Text style={styles.subtitle}>{t('volunteerJob.awaitingConfirmationText')}</Text>
@@ -167,7 +170,11 @@ export function VolunteerJobScreen({ request: initialRequest, onBack, onDone }: 
               />
             </View>
           ) : null}
+        </View>
+      </View>
 
+      <View style={styles.sheet}>
+        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
           {requester ? (
             <Surface elevation="soft" padding="lg" style={styles.card}>
               <Text style={[styles.label, dir.textStart]}>{t('volunteerJob.requesterLabel')}</Text>
@@ -266,16 +273,19 @@ function CompletionCelebration({ stats, onDone }: { stats: CompletionStats | nul
 
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.bg },
-  mapArea: { height: 300 },
+  mapArea: { height: 250 },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
   backButton: { position: 'absolute', top: space.lg, width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
 
-  sheet: { flex: 1, backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.sheet, ...shadow.elevated },
+  capsuleWrap: { marginTop: -56, paddingHorizontal: space.lg, zIndex: 5 },
+  capsule: { backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.xl, ...shadow.elevated },
+
+  sheet: { flex: 1, backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.md, zIndex: 1 },
   sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: 10 },
 
   title: { ...type.h1, color: colors.text, textAlign: 'center' },
   subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, fontFamily: font.regular, fontSize: 14, marginBottom: 4 },
-  timelineWrap: { marginTop: space.sm, marginBottom: space.xs },
+  timelineWrap: { marginTop: space.lg },
 
   card: { gap: 8 },
   photo: { width: '100%', height: 150, borderRadius: radius.md },

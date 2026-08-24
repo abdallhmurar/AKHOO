@@ -44,11 +44,15 @@ export function MembershipSheet({ visible, onClose, offerLocked = false }: { vis
         {offerLocked ? t('perks.membershipSheet.offerLockedMessage') : t('perks.membershipSheet.genericMessage')}
       </Text>
 
+      {/* Ink surface for the benefits block - same premium treatment as
+          PlusHeroCard, with the sand accent doing the checkmarking so the
+          list reads as "this tier is worth something" rather than muted
+          body text among other muted body text. */}
       <View style={styles.benefits}>
         {benefits.map(benefit => (
           <View key={benefit} style={[styles.benefitRow, dir.row]}>
             <View style={styles.checkWrap}>
-              <Check size={12} color={colors.forest} weight="bold" />
+              <Check size={12} color={colors.sand} weight="bold" />
             </View>
             <Text style={[styles.benefitText, dir.textStart]}>{benefit}</Text>
           </View>
@@ -73,14 +77,14 @@ export function MembershipSheet({ visible, onClose, offerLocked = false }: { vis
 
 const styles = StyleSheet.create({
   top: { alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  iconWrap: { width: 36, height: 36, borderRadius: radius.md, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center' },
+  iconWrap: { width: 36, height: 36, borderRadius: radius.md, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' },
   brand: { color: colors.text, fontFamily: font.extraBold, fontSize: 17 },
   headline: { ...type.h3, color: colors.text, marginBottom: 6 },
   message: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
-  benefits: { gap: space.sm, marginTop: space.lg, marginBottom: space.lg },
+  benefits: { gap: space.md, marginTop: space.lg, marginBottom: space.lg, backgroundColor: colors.ink, borderRadius: radius.md, padding: space.lg },
   benefitRow: { alignItems: 'center', gap: space.sm },
-  checkWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  benefitText: { flex: 1, color: colors.text, fontFamily: font.medium, fontSize: 13.5 },
+  checkWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: colors.inkElevated, alignItems: 'center', justifyContent: 'center' },
+  benefitText: { flex: 1, color: colors.inkText, fontFamily: font.medium, fontSize: 13.5 },
   comingSoon: { color: colors.muted, fontFamily: font.medium, fontSize: 12, textAlign: 'center', marginBottom: space.md },
   actions: { gap: space.sm },
   notNow: { alignItems: 'center', justifyContent: 'center', paddingVertical: space.sm },

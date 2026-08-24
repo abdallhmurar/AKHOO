@@ -133,21 +133,25 @@ export function PerksScreen({ userId }: { userId: string }) {
       <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.forest} />}>
         <Header title={t('perks.title')} subtitle={t('perks.subtitle')} />
 
-        <View style={[styles.searchWrap, dir.row]}>
-          <MagnifyingGlass size={18} color={colors.muted} />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder={t('perks.searchPlaceholder')}
-            placeholderTextColor={colors.muted}
-            style={[styles.searchInput, dir.textStart]}
-          />
+        {/* Search + category filter merged into one block (reference board:
+            21st Search With Category) - previously two separate stacked
+            elements with a "Categories" heading between them. */}
+        <View style={styles.searchFilterBlock}>
+          <View style={[styles.searchWrap, dir.row]}>
+            <MagnifyingGlass size={18} color={colors.muted} />
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder={t('perks.searchPlaceholder')}
+              placeholderTextColor={colors.muted}
+              style={[styles.searchInput, dir.textStart]}
+            />
+          </View>
+          <View style={styles.searchFilterDivider} />
+          <CategoryChipsRow selected={category} onSelect={setCategory} />
         </View>
 
         <PlusHeroCard onPress={() => setHeroSheetOpen(true)} />
-
-        <Text style={[styles.sectionTitle, dir.textStart, styles.categoriesTitle]}>{t('perks.categoriesTitle')}</Text>
-        <CategoryChipsRow selected={category} onSelect={setCategory} />
 
         {loadError ? (
           <View style={styles.errorWrap}>
@@ -289,10 +293,11 @@ function DiscoverSkeleton() {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  searchWrap: { alignItems: 'center', gap: space.sm, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, paddingHorizontal: space.md, marginBottom: space.lg },
-  searchInput: { flex: 1, color: colors.text, fontFamily: font.regular, fontSize: 14.5, paddingVertical: 12 },
+  searchFilterBlock: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: space.md, marginBottom: space.lg },
+  searchWrap: { alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },
+  searchInput: { flex: 1, color: colors.text, fontFamily: font.regular, fontSize: 14.5, paddingVertical: 8 },
+  searchFilterDivider: { height: 1, backgroundColor: colors.border, marginVertical: space.sm },
 
-  categoriesTitle: { marginTop: space.lg },
   sectionTitle: { color: colors.text, fontFamily: font.extraBold, fontSize: 17, marginTop: space.xl, marginBottom: space.md },
 
   rail: { gap: space.md, paddingEnd: space.lg },

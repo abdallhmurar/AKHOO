@@ -106,6 +106,6 @@ const styles = StyleSheet.create({
   priceRow: { alignItems: 'center', gap: 6 },
   strike: { color: colors.muted, fontFamily: font.regular, fontSize: 12, textDecorationLine: 'line-through' },
   offerPrice: { color: colors.forest, fontFamily: font.extraBold, fontSize: 15 },
-  percentBadge: { color: colors.forest, fontFamily: font.extraBold, fontSize: 14 },
+  percentBadge: { color: colors.forestPressed, fontFamily: font.extraBold, fontSize: 12.5, backgroundColor: colors.sandSoft, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 8, overflow: 'hidden' },
   freeText: { color: colors.forest, fontFamily: font.extraBold, fontSize: 14 }
 })

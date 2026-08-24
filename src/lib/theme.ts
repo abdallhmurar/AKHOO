@@ -1,45 +1,67 @@
+// SANAD Visual Reset (Step 3, round 3) - design tokens rebuilt from the MCP
+// reference board (Design Inspiration + 21st MCP; see published reference
+// board artifact). Same key names as before so every consumer keeps
+// compiling untouched - the reset happens in the VALUES, which is also why
+// changing this one file measurably changes almost every screen at once.
 export const colors = {
-  bg: '#F7F3EA',
+  bg: '#F4EFE2',
   surface: '#FFFFFF',
-  surfaceMuted: '#FBF9F4',
+  surfaceMuted: '#EFEADA',
   surfaceElevated: '#FFFFFF',
 
-  forest: '#315E48',
-  forestPressed: '#274C3A',
-  sage: '#6F927D',
-  sageSoft: '#EAF0EA',
-  sand: '#D4B06A',
-  sandSoft: '#F5EBD6',
+  // Deeper, cooler forest than the original brief - reads as a considered
+  // brand color instead of "generic app green," and gives more contrast
+  // against the warmer paper background below.
+  forest: '#254A39',
+  forestPressed: '#193226',
+  sage: '#66806F',
+  sageSoft: '#E4EAE1',
 
-  text: '#20342A',
-  muted: '#6E7C74',
-  border: '#E2E5E1',
+  // Sand moves from a soft decorative tint to a genuine second brand color -
+  // it now carries all reward/premium/points meaning (SANAD+, Activity
+  // Star, offer badges) so those moments read as a distinct tier rather
+  // than "forest green, but the card is slightly different."
+  sand: '#B4863A',
+  sandSoft: '#EFE1C3',
 
-  success: '#2F9D70',
-  successSoft: '#E4F5EC',
-  warning: '#D99B37',
-  warningSoft: '#FBF0DD',
-  danger: '#D95C5C',
-  dangerSoft: '#FBEAEA',
-  info: '#4C7A9C',
-  infoSoft: '#E9F1F6',
+  // Primary text - a warm near-black instead of the previous mid-contrast
+  // green-grey, for a more editorial, premium type color.
+  text: '#161F19',
+  muted: '#69766C',
+  border: '#DFD9C8',
 
-  shadow: '#20342A1A',
+  // Reserved dark "ink" surface - used ONLY for SANAD+/premium and the
+  // Active-Request status capsule, never as a general card background. This
+  // is the deliberate contrast surface the reference board's loyalty/
+  // membership research called for (Elite Plan Card, Loyalify).
+  ink: '#141C16',
+  inkElevated: '#1D2A20',
+  inkBorder: '#2B3A2E',
+  inkText: '#F3EEDF',
+  inkMuted: '#AEBBAF',
+
+  success: '#2E9468',
+  successSoft: '#E1F1E8',
+  warning: '#BD8433',
+  warningSoft: '#F4E9D4',
+  danger: '#BD5A50',
+  dangerSoft: '#F5E6E3',
+  info: '#4A7591',
+  infoSoft: '#E5EFF3',
+
+  shadow: '#161F1926',
 
   // legacy aliases so screens not yet migrated to the new system keep compiling
   card: '#FFFFFF',
-  blue: '#315E48',
-  blueDark: '#274C3A',
-  blueSoft: '#EAF0EA',
-  green: '#2F9D70',
-  greenSoft: '#E4F5EC',
-  red: '#D95C5C',
-  redSoft: '#FBEAEA'
+  blue: '#254A39',
+  blueDark: '#193226',
+  blueSoft: '#E4EAE1',
+  green: '#2E9468',
+  greenSoft: '#E1F1E8',
+  red: '#BD5A50',
+  redSoft: '#F5E6E3'
 }
 
-// Semantic aliases (section 5 of the design brief) - point at the same
-// physical colors above rather than duplicating values, so the palette
-// still has one source of truth.
 export const semantic = {
   background: colors.bg,
   surface: colors.surface,
@@ -56,8 +78,6 @@ export const semantic = {
   warning: colors.warning,
   danger: colors.danger,
   info: colors.info,
-  // Map pin identity - the one place these colors are defined; SanadMap.
-  // native/web read from here instead of hardcoding hex per-marker.
   mapUser: colors.forest,
   mapRequest: colors.sand,
   mapRequestSelected: colors.forest
@@ -65,33 +85,37 @@ export const semantic = {
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 }
 
-export const radius = { sm: 10, md: 16, lg: 24, sheet: 32, pill: 999 }
+// Radius drops from one dominant "24 everywhere" value to a genuine scale -
+// most cards now read closer to 14-18, `xl`/`sheet` are reserved for the
+// few surfaces that should visibly dominate (hero cards, sheets), and `xs`
+// exists for small chips/badges that previously reused `sm` too loosely.
+export const radius = { xs: 6, sm: 10, md: 14, lg: 18, xl: 24, sheet: 28, pill: 999 }
 
-// Three elevation tiers instead of one flat "shadow.soft" everywhere -
-// restraint through variation (design brief section 47): most surfaces use
-// soft or nothing, elevated is for cards that should read as "above" the
-// page (e.g. the request bottom sheet), floating is reserved for the rare
-// floating control (map recenter button) so it doesn't get diluted by
-// overuse.
+// Elevation is now genuinely restrained: `soft` (the default almost every
+// card uses via <Surface elevation="soft">) is nearly flat - a hairline
+// lift, relying on the border for definition instead of a visible shadow -
+// so cards stop reading as "everything floats." `elevated`/`floating` stay
+// strong, reserved for sheets and the handful of real floating controls
+// (map buttons, the new floating tab bar).
 export const shadow = {
   soft: {
     shadowColor: colors.shadow,
     shadowOpacity: 1,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1
   },
   elevated: {
     shadowColor: colors.shadow,
     shadowOpacity: 1,
-    shadowRadius: 24,
+    shadowRadius: 22,
     shadowOffset: { width: 0, height: 10 },
     elevation: 6
   },
   floating: {
     shadowColor: colors.shadow,
     shadowOpacity: 1,
-    shadowRadius: 20,
+    shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
     elevation: 8
   }
@@ -104,36 +128,33 @@ export const font = {
   extraBold: 'Tajawal_800ExtraBold'
 }
 
-// Typography scale (design brief section 6). Existing names (display,
-// title, section, body, bodyMedium, caption) are kept unchanged so nothing
-// that already reads them breaks - new names fill the gaps the brief asks
-// for (hero, h1-h3, bodyLarge, small, button, numeric).
+// Typography scale, redrawn wider at the top (display/hero) and tighter in
+// the body than the previous scale - bigger contrast between "this is the
+// headline" and "this is supporting text" reads as more editorial/premium
+// per the reference board. `eyebrow` and `statLg` are new: eyebrow replaces
+// the ad-hoc textTransform:'uppercase' section labels scattered across
+// screens with one real token; statLg is for the one or two numbers per
+// screen (points, Active Request ETA-style values) that should anchor the
+// whole composition the way the Activity/Account references do.
 export const type = {
-  display: { fontFamily: font.extraBold, fontSize: 34, lineHeight: 42 },
-  hero: { fontFamily: font.extraBold, fontSize: 30, lineHeight: 38 },
-  title: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 33 },
-  h1: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 33 },
-  h2: { fontFamily: font.extraBold, fontSize: 21, lineHeight: 28 },
-  h3: { fontFamily: font.bold, fontSize: 17, lineHeight: 24 },
-  section: { fontFamily: font.bold, fontSize: 19, lineHeight: 26 },
-  bodyLarge: { fontFamily: font.regular, fontSize: 17, lineHeight: 26 },
-  body: { fontFamily: font.regular, fontSize: 15, lineHeight: 23 },
-  bodyMedium: { fontFamily: font.medium, fontSize: 15, lineHeight: 23 },
-  small: { fontFamily: font.regular, fontSize: 13, lineHeight: 19 },
-  caption: { fontFamily: font.regular, fontSize: 12.5, lineHeight: 18 },
-  button: { fontFamily: font.bold, fontSize: 15.5, lineHeight: 20 },
-  numeric: { fontFamily: font.extraBold, fontSize: 30, lineHeight: 36 }
+  display: { fontFamily: font.extraBold, fontSize: 38, lineHeight: 44, letterSpacing: -0.5 },
+  hero: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 38, letterSpacing: -0.4 },
+  title: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 32 },
+  h1: { fontFamily: font.extraBold, fontSize: 24, lineHeight: 30 },
+  h2: { fontFamily: font.extraBold, fontSize: 19, lineHeight: 25 },
+  h3: { fontFamily: font.bold, fontSize: 16, lineHeight: 22 },
+  section: { fontFamily: font.bold, fontSize: 17, lineHeight: 23 },
+  eyebrow: { fontFamily: font.bold, fontSize: 11.5, lineHeight: 15, letterSpacing: 1 },
+  bodyLarge: { fontFamily: font.regular, fontSize: 16, lineHeight: 24 },
+  body: { fontFamily: font.regular, fontSize: 14.5, lineHeight: 21 },
+  bodyMedium: { fontFamily: font.medium, fontSize: 14.5, lineHeight: 21 },
+  small: { fontFamily: font.regular, fontSize: 12.5, lineHeight: 18 },
+  caption: { fontFamily: font.regular, fontSize: 11.5, lineHeight: 16 },
+  button: { fontFamily: font.bold, fontSize: 15, lineHeight: 19 },
+  numeric: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 36, letterSpacing: -0.5 },
+  statLg: { fontFamily: font.extraBold, fontSize: 52, lineHeight: 54, letterSpacing: -1.5 }
 }
 
-// Motion presets (design brief section 10). Kept on top of React Native's
-// built-in Animated API rather than adding react-native-reanimated - the
-// installed dev-client build doesn't include it yet, and every effect these
-// presets are used for (press feedback, fades, translateY, spring scale)
-// runs on the native thread already via useNativeDriver, which is the
-// actual performance requirement (section 41), not the library itself.
-// Revisit when a round needs gesture-driven interpolation (drag-to-dismiss
-// sheets) that Animated genuinely can't do well - that's worth its own
-// EAS rebuild, not one bundled in silently here.
 export const motion = {
   fast: 150,
   normal: 220,

@@ -101,25 +101,31 @@ export function BusinessDetailView({ businessId, onBack, onOpenOffer }: { busine
         )}
 
         <View style={styles.body}>
-          <Text style={[styles.name, dir.textStart]}>{business.name}</Text>
-          <View style={[styles.metaRow, dir.row]}>
-            <Text style={[styles.category, dir.textStart]}>{t(`perks.categories.${business.category}`)}</Text>
-            <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} size={13} />
-          </View>
+          {/* Name, rating, description and contact actions read as one hero
+              identity block (reference board: Businesses - "gallery +
+              identity block reads as one hero unit") instead of floating
+              directly on the page background. */}
+          <Surface elevation="none" padding="lg" style={styles.identityCard}>
+            <Text style={[styles.name, dir.textStart]}>{business.name}</Text>
+            <View style={[styles.metaRow, dir.row]}>
+              <Text style={[styles.category, dir.textStart]}>{t(`perks.categories.${business.category}`)}</Text>
+              <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} size={13} />
+            </View>
 
-          {business.description ? <Text style={[styles.description, dir.textStart]}>{business.description}</Text> : null}
+            {business.description ? <Text style={[styles.description, dir.textStart]}>{business.description}</Text> : null}
 
-          <View style={[styles.actionsRow, dir.row]}>
-            {business.phone ? (
-              <ContactAction Icon={Phone} label={t('perks.business.call')} onPress={() => Linking.openURL(telHref(business.phone!))} />
-            ) : null}
-            {business.whatsapp ? (
-              <ContactAction Icon={WhatsappLogo} label={t('perks.business.whatsapp')} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} />
-            ) : null}
-            {business.latitude != null && business.longitude != null ? (
-              <ContactAction Icon={MapPin} label={t('perks.business.directions')} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!))} />
-            ) : null}
-          </View>
+            <View style={[styles.actionsRow, dir.row]}>
+              {business.phone ? (
+                <ContactAction Icon={Phone} label={t('perks.business.call')} onPress={() => Linking.openURL(telHref(business.phone!))} />
+              ) : null}
+              {business.whatsapp ? (
+                <ContactAction Icon={WhatsappLogo} label={t('perks.business.whatsapp')} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} />
+              ) : null}
+              {business.latitude != null && business.longitude != null ? (
+                <ContactAction Icon={MapPin} label={t('perks.business.directions')} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!))} />
+              ) : null}
+            </View>
+          </Surface>
 
           {business.latitude != null && business.longitude != null ? (
             <SanadMap latitude={business.latitude} longitude={business.longitude} height={160} />
@@ -228,6 +234,7 @@ const styles = StyleSheet.create({
   galleryFallback: { backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
 
   body: { padding: space.lg, gap: space.md },
+  identityCard: { gap: space.sm },
   name: { ...type.h1, color: colors.text },
   metaRow: { alignItems: 'center', gap: space.md },
   category: { color: colors.muted, fontFamily: font.bold, fontSize: 13 },

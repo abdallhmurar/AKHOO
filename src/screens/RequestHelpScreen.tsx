@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Animated, Easing, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
@@ -47,6 +47,7 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
   const stepIndex = steps.indexOf(step)
   const stepTitles: Record<Step, string> = { type: t('request.step.type.title'), details: t('request.step.details.title'), location: t('request.step.location.title') }
   const stepSubtitles: Record<Step, string> = { type: t('request.step.type.subtitle'), details: t('request.step.details.subtitle'), location: t('request.step.location.subtitle') }
+  const railLabels: Record<Step, string> = { type: t('request.step.type.short'), details: t('request.step.details.title'), location: t('request.step.location.title') }
   const outsideZone = !!coords && pilotZones.length > 0 && !isWithinAnyZone(coords.latitude, coords.longitude, pilotZones)
 
   useEffect(() => {
@@ -152,10 +153,25 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
       <Header title={stepTitles[step]} subtitle={stepSubtitles[step]} onBack={back} />
 
-      <View style={[styles.dots, dir.row]}>
-        {steps.map((s, i) => (
-          <View key={s} style={[styles.dot, i <= stepIndex && styles.dotActive]} />
-        ))}
+      {/* Labeled step rail (reference board: 32 Stepper UI Examples / Wizard
+          Steps) - replaces the three flat progress dashes with numbered
+          nodes that name every step up front, not just the current one. */}
+      <View style={[styles.rail, dir.row]}>
+        {steps.map((s, i) => {
+          const done = i < stepIndex
+          const current = i === stepIndex
+          return (
+            <Fragment key={s}>
+              <View style={styles.railNodeWrap}>
+                <View style={[styles.railNode, done && styles.railNodeDone, current && styles.railNodeCurrent]}>
+                  {done ? <Check size={12} color="#fff" weight="bold" /> : <Text style={[styles.railNodeText, current && styles.railNodeTextCurrent]}>{i + 1}</Text>}
+                </View>
+                <Text style={[styles.railLabel, current && styles.railLabelCurrent]} numberOfLines={1}>{railLabels[s]}</Text>
+              </View>
+              {i < steps.length - 1 ? <View style={[styles.railLine, done && styles.railLineDone]} /> : null}
+            </Fragment>
+          )
+        })}
       </View>
 
       {step === 'type' ? (
@@ -168,25 +184,32 @@ export function RequestHelpScreen({ userId, onBack, onCreated }: { userId: strin
 
       {step === 'details' ? (
         <>
-          <Text style={[styles.fieldLabel, dir.textStart]}>{t('request.noteLabel')}</Text>
-          <TextInput
-            value={note}
-            onChangeText={setNote}
-            placeholder={t('request.notePlaceholder')}
-            placeholderTextColor={colors.muted}
-            style={[styles.note, dir.textStart]}
-            multiline
-          />
-          <Pressable onPress={pickPhoto} style={styles.photoPicker}>
-            {photoUri ? (
-              <Image source={{ uri: photoUri }} style={styles.photoPreview} />
-            ) : (
-              <View style={styles.photoPlaceholder}>
-                <Camera size={22} color={colors.muted} weight="light" />
-                <Text style={styles.photoPickerText}>{t('request.addPhoto')}</Text>
-              </View>
-            )}
-          </Pressable>
+          <View style={styles.fieldGroup}>
+            <Text style={[styles.fieldLabel, dir.textStart]}>{t('request.noteLabel')}</Text>
+            <TextInput
+              value={note}
+              onChangeText={setNote}
+              placeholder={t('request.notePlaceholder')}
+              placeholderTextColor={colors.muted}
+              style={[styles.note, dir.textStart]}
+              multiline
+            />
+          </View>
+
+          <View style={styles.groupDivider} />
+
+          <View style={styles.fieldGroup}>
+            <Pressable onPress={pickPhoto} style={styles.photoPicker}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.photoPreview} />
+              ) : (
+                <View style={styles.photoPlaceholder}>
+                  <Camera size={22} color={colors.muted} weight="light" />
+                  <Text style={styles.photoPickerText}>{t('request.addPhoto')}</Text>
+                </View>
+              )}
+            </Pressable>
+          </View>
         </>
       ) : null}
 
@@ -267,9 +290,17 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 20, paddingBottom: 120, width: '100%', maxWidth: 480, alignSelf: 'center' },
   footer: { position: 'absolute', bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border, padding: space.lg, paddingBottom: space.xxl },
 
-  dots: { gap: 6, marginBottom: space.xl },
-  dot: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border },
-  dotActive: { backgroundColor: colors.forest },
+  rail: { alignItems: 'flex-start', marginBottom: space.xl },
+  railNodeWrap: { alignItems: 'center', width: 64, gap: 6 },
+  railNode: { width: 26, height: 26, borderRadius: radius.pill, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  railNodeDone: { backgroundColor: colors.forest, borderColor: colors.forest },
+  railNodeCurrent: { borderColor: colors.forest, borderWidth: 2, backgroundColor: colors.sageSoft },
+  railNodeText: { color: colors.muted, fontFamily: font.bold, fontSize: 12 },
+  railNodeTextCurrent: { color: colors.forest },
+  railLabel: { color: colors.muted, fontFamily: font.medium, fontSize: 11, textAlign: 'center' },
+  railLabelCurrent: { color: colors.text, fontFamily: font.bold },
+  railLine: { flex: 1, height: 2, backgroundColor: colors.border, marginTop: 13, marginHorizontal: 2 },
+  railLineDone: { backgroundColor: colors.forest },
   grid: { flexWrap: 'wrap', gap: space.md },
   service: { width: '47%', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, minHeight: 116, alignItems: 'center', justifyContent: 'center', gap: space.sm, padding: space.md },
   serviceSelected: { borderColor: colors.forest, backgroundColor: colors.sageSoft },
@@ -278,9 +309,11 @@ const styles = StyleSheet.create({
   checkBadge: { position: 'absolute', top: 10, right: 10, width: 20, height: 20, borderRadius: 10, backgroundColor: colors.forest, alignItems: 'center', justifyContent: 'center' },
   serviceText: { ...type.bodyMedium, color: colors.text },
   serviceTextSelected: { color: colors.forest },
-  fieldLabel: { color: colors.muted, fontFamily: font.medium, fontSize: 13, marginBottom: 6 },
+  fieldGroup: {},
+  groupDivider: { height: 1, backgroundColor: colors.border, marginVertical: space.xl },
+  fieldLabel: { ...type.eyebrow, color: colors.sage, textTransform: 'uppercase', marginBottom: space.sm },
   note: { backgroundColor: colors.surface, minHeight: 100, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, color: colors.text, fontFamily: font.regular, fontSize: 15, textAlignVertical: 'top' },
-  photoPicker: { marginTop: space.lg, minHeight: 100, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
   photoPickerText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },
   photoPreview: { width: '100%', height: 170 },

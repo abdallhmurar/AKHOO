@@ -246,9 +246,9 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
 
         <Text style={[styles.howItWorksTitle, dir.textStart]}>{t('volunteer.howItWorks.title')}</Text>
         <View style={styles.howItWorksList}>
-          <HowItWorksRow Icon={MapPin} text={t('volunteer.howItWorks.mapItem')} />
-          <HowItWorksRow Icon={HandHeart} text={t('volunteer.howItWorks.chooseItem')} />
-          <HowItWorksRow Icon={Star} text={t('volunteer.howItWorks.starItem')} />
+          <HowItWorksRow index={1} Icon={MapPin} text={t('volunteer.howItWorks.mapItem')} last={false} />
+          <HowItWorksRow index={2} Icon={HandHeart} text={t('volunteer.howItWorks.chooseItem')} last={false} />
+          <HowItWorksRow index={3} Icon={Star} text={t('volunteer.howItWorks.starItem')} last />
         </View>
       </Screen>
     )
@@ -343,14 +343,18 @@ function ServiceIcon({ type }: { type: ServiceType }) {
 // Fills the (otherwise near-empty) not-available state with real,
 // static information about what helping actually involves, reinforcing
 // the community framing this mode is meant to have - never gig-worker
-// assignment language. Not a substitute for content; there is simply
-// nothing else to show before availability is turned on.
-function HowItWorksRow({ Icon, text }: { Icon: typeof MapPin; text: string }) {
+// assignment language. Rendered as a connected numbered rail (same visual
+// language as the Request Help step rail and StatusTimeline) instead of
+// three unrelated icon rows, so "how this works" reads as one sequence.
+function HowItWorksRow({ index, Icon, text, last }: { index: number; Icon: typeof MapPin; text: string; last: boolean }) {
   const dir = dirStyles(useIsRTL())
   return (
     <View style={[styles.howItWorksRow, dir.row]}>
-      <View style={styles.howItWorksIconWrap}>
-        <Icon size={18} color={colors.forest} weight="duotone" />
+      <View style={styles.howItWorksRailCol}>
+        <View style={styles.howItWorksNode}>
+          <Icon size={16} color={colors.forest} weight="duotone" />
+        </View>
+        {!last ? <View style={styles.howItWorksLine} /> : null}
       </View>
       <Text style={[styles.howItWorksText, dir.textStart]}>{text}</Text>
     </View>
@@ -366,11 +370,13 @@ const styles = StyleSheet.create({
   skeletonGapLg: { marginTop: space.md },
   small: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
 
-  howItWorksTitle: { ...type.caption, color: colors.muted, fontFamily: font.bold, textTransform: 'uppercase', marginTop: space.xxl, marginBottom: space.md },
-  howItWorksList: { gap: space.md },
-  howItWorksRow: { alignItems: 'center', gap: space.md },
-  howItWorksIconWrap: { width: 40, height: 40, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  howItWorksText: { flex: 1, color: colors.text, fontFamily: font.medium, fontSize: 13.5, lineHeight: 19 },
+  howItWorksTitle: { ...type.eyebrow, color: colors.sage, textTransform: 'uppercase', marginTop: space.xxl, marginBottom: space.lg },
+  howItWorksList: { gap: 0 },
+  howItWorksRow: { gap: space.md },
+  howItWorksRailCol: { alignItems: 'center', width: 36 },
+  howItWorksNode: { width: 36, height: 36, borderRadius: radius.pill, backgroundColor: colors.sageSoft, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+  howItWorksLine: { width: 2, flex: 1, minHeight: 20, backgroundColor: colors.border, marginVertical: 4 },
+  howItWorksText: { flex: 1, color: colors.text, fontFamily: font.medium, fontSize: 13.5, lineHeight: 19, paddingBottom: space.lg, paddingTop: 6 },
 
   topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, alignItems: 'center', gap: space.sm },
   backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },

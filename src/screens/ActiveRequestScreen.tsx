@@ -165,8 +165,14 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
         </Tactile>
       </View>
 
-      <View style={styles.sheet}>
-        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
+      {/* Status capsule floats on the map/sheet seam instead of the map
+          ending abruptly into a flat sheet (reference board: Package
+          Delivery & Live Tracking App / Rooda Ride Sharing UI) - map,
+          status and timeline now read as one composition. Sits outside the
+          sheet's own ScrollView so it stays put while helper details below
+          it scroll. */}
+      <View style={styles.capsuleWrap}>
+        <View style={styles.capsule}>
           {request.status === 'completed' ? (
             <CompletedHeader title={t(`activeRequest.status.${request.status}`)} subtitle={subtitle} />
           ) : (
@@ -184,7 +190,11 @@ export function ActiveRequestScreen({ initialRequest, onBack, onDone }: { initia
               />
             </View>
           ) : null}
+        </View>
+      </View>
 
+      <View style={styles.sheet}>
+        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
           {justReleased && request.status === 'open' ? (
             <Surface tone="muted" elevation="none" padding="lg" style={styles.releasedNotice}>
               <Text style={styles.releasedNoticeTitle}>{t('activeRequest.releasedNotice.title')}</Text>
@@ -264,18 +274,21 @@ function CompletedHeader({ title, subtitle }: { title: string; subtitle: string 
 
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.bg },
-  mapArea: { height: 300 },
+  mapArea: { height: 250 },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
   backButton: { position: 'absolute', top: space.lg, width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
   radarWrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
   radarRing: { width: 90, height: 90, borderRadius: 45, backgroundColor: colors.forest },
 
-  sheet: { flex: 1, backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.sheet, ...shadow.elevated },
+  capsuleWrap: { marginTop: -56, paddingHorizontal: space.lg, zIndex: 5 },
+  capsule: { backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.xl, ...shadow.elevated },
+
+  sheet: { flex: 1, backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.md, zIndex: 1 },
   sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: space.md },
 
   title: { ...type.h1, color: colors.text, textAlign: 'center' },
   subtitle: { color: colors.muted, textAlign: 'center', lineHeight: 22, fontFamily: font.regular, fontSize: 14 },
-  timelineWrap: { marginTop: space.sm, marginBottom: space.xs },
+  timelineWrap: { marginTop: space.lg },
 
   confirmCard: { gap: space.md },
   confirmTitle: { color: colors.forest, fontFamily: font.extraBold, fontSize: 16, textAlign: 'center' },
