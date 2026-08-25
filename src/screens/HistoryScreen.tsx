@@ -11,7 +11,6 @@ import type { HelpRequest } from '../types'
 import { Header } from '../components/Header'
 import { Screen } from '../components/Screen'
 import { Skeleton } from '../components/Skeleton'
-import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
 
 const ACTIVE_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived', 'awaiting_confirmation']
@@ -105,70 +104,82 @@ export function HistoryScreen({ userId, onBack, onOpen }: { userId: string; onBa
       {loading ? (
         <View style={styles.group}>
           <Skeleton width={90} height={13} style={styles.groupLabelSkeleton} />
-          <Surface elevation="soft" padding="none" style={styles.groupCard}>
-            {[0, 1, 2].map((i, index) => (
-              <View key={i} style={[styles.row, dir.row, index < 2 && styles.rowDivider]}>
-                <Skeleton width={40} height={40} radius={radius.md} />
-                <View style={[styles.rowTextWrap, dir.alignStart]}>
-                  <Skeleton width="60%" height={14} style={styles.skeletonLine} />
-                  <Skeleton width="40%" height={12} />
-                </View>
+          {[0, 1, 2].map((i, index) => (
+            <View key={i} style={[styles.row, dir.row]}>
+              <View style={styles.railCol}>
+                <Skeleton width={40} height={40} radius={radius.pill} />
+                {index < 2 ? <View style={styles.line} /> : null}
               </View>
-            ))}
-          </Surface>
+              <View style={[styles.rowTextWrap, dir.alignStart]}>
+                <Skeleton width="60%" height={14} style={styles.skeletonLine} />
+                <Skeleton width="40%" height={12} />
+              </View>
+            </View>
+          ))}
         </View>
       ) : null}
 
-      {/* Grouped compact rows in one bordered list per day, instead of one
-          shadow-card per event (reference board: Activity/Account -
-          "reduces the every-row-is-its-own-white-card repetition"). */}
+      {/* A real connected timeline per day - same rail/node/line visual
+          grammar as the Request Help step rail, the "how helping works"
+          rail, and StatusTimeline, reused here instead of inventing a
+          fourth pattern (unified-system requirement) - and it replaces the
+          previous round's bordered "one card per day" treatment, which
+          still read as a stack of small cards. */}
       {groups.map(group => (
         <View key={group.label} style={styles.group}>
           <Text style={[styles.groupLabel, dir.textStart]}>{group.label}</Text>
-          <Surface elevation="soft" padding="none" style={styles.groupCard}>
-            {group.entries.map((item, index) => {
-              const isLast = index === group.entries.length - 1
-              if (item.kind === 'release') {
-                return (
-                  <View key={`release-${item.id}`} style={[styles.row, dir.row, !isLast && styles.rowDivider]}>
-                    <View style={styles.iconWrap}>
-                      <ClockCounterClockwise size={20} color={colors.muted} weight="duotone" />
-                    </View>
-                    <View style={[styles.rowTextWrap, dir.alignStart]}>
-                      <Text style={[styles.service, dir.textStart]}>{t('activity.releasedLabel')}</Text>
-                      <Text style={[styles.status, dir.textStart]}>{t('activity.releasedReason')}</Text>
-                    </View>
-                    <Text style={styles.time}>{formatTime(item.released_at)}</Text>
-                  </View>
-                )
-              }
-              const role = item.requester_id === userId ? 'requester' : 'volunteer'
-              const active = ACTIVE_STATUSES.includes(item.status)
-              const meta = serviceMeta[item.service_type] ?? serviceMeta.other!
+          {group.entries.map((item, index) => {
+            const isLast = index === group.entries.length - 1
+            if (item.kind === 'release') {
               return (
-                <Pressable key={item.id} onPress={() => onOpen(item)} style={[styles.row, dir.row, !isLast && styles.rowDivider]}>
-                  <View style={styles.iconWrap}>
-                    <meta.Icon size={20} color={colors.forest} weight="duotone" />
+                <View key={`release-${item.id}`} style={[styles.row, dir.row]}>
+                  <View style={styles.railCol}>
+                    <View style={styles.node}>
+                      <ClockCounterClockwise size={18} color={colors.muted} weight="duotone" />
+                    </View>
+                    {!isLast ? <View style={styles.line} /> : null}
                   </View>
                   <View style={[styles.rowTextWrap, dir.alignStart]}>
                     <View style={[styles.rowTitleLine, dir.row]}>
-                      <Text style={[styles.service, dir.textStart]}>{t(meta.labelKey)}</Text>
-                      <StatusPill
-                        label={role === 'requester' ? t('activity.roleRequester') : t('activity.roleVolunteer')}
-                        tone={active ? 'success' : 'brand'}
-                        pulse={active}
-                      />
+                      <Text style={[styles.service, dir.textStart]}>{t('activity.releasedLabel')}</Text>
+                      <Text style={styles.time}>{formatTime(item.released_at)}</Text>
                     </View>
+                    <Text style={[styles.status, dir.textStart]}>{t('activity.releasedReason')}</Text>
+                  </View>
+                </View>
+              )
+            }
+            const role = item.requester_id === userId ? 'requester' : 'volunteer'
+            const active = ACTIVE_STATUSES.includes(item.status)
+            const meta = serviceMeta[item.service_type] ?? serviceMeta.other!
+            return (
+              <Pressable key={item.id} onPress={() => onOpen(item)} style={[styles.row, dir.row]}>
+                <View style={styles.railCol}>
+                  <View style={[styles.node, styles.nodeActive]}>
+                    <meta.Icon size={18} color={colors.forest} weight="duotone" />
+                  </View>
+                  {!isLast ? <View style={styles.line} /> : null}
+                </View>
+                <View style={[styles.rowTextWrap, dir.alignStart]}>
+                  <View style={[styles.rowTitleLine, dir.row]}>
+                    <Text style={[styles.service, dir.textStart]}>{t(meta.labelKey)}</Text>
+                    <Text style={styles.time}>{formatTime(item.created_at)}</Text>
+                  </View>
+                  <View style={[styles.rowTitleLine, dir.row]}>
+                    <StatusPill
+                      label={role === 'requester' ? t('activity.roleRequester') : t('activity.roleVolunteer')}
+                      tone={active ? 'success' : 'brand'}
+                      pulse={active}
+                    />
                     <Text style={[styles.status, dir.textStart]}>
                       {t(`activity.status.${item.status}`)}
                       {item.pointsEarned ? `  ·  ${t('activity.pointsEarned', { points: item.pointsEarned })}` : ''}
                     </Text>
                   </View>
-                  <Text style={styles.time}>{formatTime(item.created_at)}</Text>
-                </Pressable>
-              )
-            })}
-          </Surface>
+                </View>
+              </Pressable>
+            )
+          })}
         </View>
       ))}
     </Screen>
@@ -189,13 +200,14 @@ const styles = StyleSheet.create({
   groupLabelSkeleton: { marginBottom: space.sm },
   skeletonLine: { marginBottom: space.xs },
 
-  groupCard: { overflow: 'hidden' },
-  row: { alignItems: 'center', gap: space.md, padding: space.md },
-  rowDivider: { borderBottomWidth: 1, borderBottomColor: colors.border },
-  iconWrap: { width: 40, height: 40, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  rowTextWrap: { flex: 1, gap: 2 },
-  rowTitleLine: { alignItems: 'center', gap: space.sm, flexWrap: 'wrap' },
+  row: { gap: space.md },
+  railCol: { alignItems: 'center', width: 40 },
+  node: { width: 40, height: 40, borderRadius: radius.pill, backgroundColor: colors.surfaceMuted, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+  nodeActive: { backgroundColor: colors.sageSoft },
+  line: { width: 2, flex: 1, minHeight: 22, backgroundColor: colors.border, marginVertical: 4 },
+  rowTextWrap: { flex: 1, gap: 3, paddingBottom: space.lg, paddingTop: 6 },
+  rowTitleLine: { alignItems: 'center', justifyContent: 'space-between', gap: space.sm, flexWrap: 'wrap' },
   service: { color: colors.text, fontFamily: font.extraBold, fontSize: 14.5 },
-  status: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, marginTop: 1 },
+  status: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5 },
   time: { color: colors.muted, fontFamily: font.regular, fontSize: 11.5 }
 })

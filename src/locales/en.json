@@ -261,6 +261,7 @@
     "accept": "Accept Mission",
     "distanceKm": "{{distance}} km",
     "since": "{{time}} ago",
+    "sheet": { "newNearby": "New nearby request" },
     "errors": {
       "claimedTitle": "Another volunteer got there first",
       "claimedMessage": "This request was just claimed.",

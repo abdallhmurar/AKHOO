@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native'
 import { ArrowLeft, ArrowRight, CarProfile, GearSix, HandHeart, Storefront, UserCircle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { colors, font, radius, shadow, space, type } from '../lib/theme'
+import { colors, font, radius, space, type } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { Screen } from '../components/Screen'
 import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
 import { Tactile } from '../components/Tactile'
+import { SanadDualAction } from '../components/SanadDualAction'
 
 export function RoleScreen({
   name,
@@ -87,41 +88,31 @@ export function RoleScreen({
 
       <Text style={[type.eyebrow, styles.eyebrow, dir.textStart]}>{t('home.title')}</Text>
 
-      {/* Hero action - the one thing this screen exists to answer within a
-          couple of seconds (reference board: Home takeaway #1, "one
-          dominant hero action, not two equal cards"). Deliberately much
-          larger than the old ActionCard treatment: bigger icon, hero-scale
-          type, a full-width forward affordance instead of a small pill. */}
-      <Tactile
-        onPress={activeKind === 'request' ? onResumeActive : onRequester}
-        style={styles.hero}
-        scaleTo={0.985}
-      >
-        <View style={[styles.heroTop, dir.row]}>
-          <View style={styles.heroIconWrap}>
-            <CarProfile size={34} color={colors.sand} weight="duotone" />
-          </View>
-          <View style={styles.heroForward}>
-            <ForwardIcon size={18} color="#fff" />
-          </View>
-        </View>
-        <Text style={[type.hero, styles.heroTitle, dir.textStart]}>{t('home.needHelp.title')}</Text>
-        <Text style={[styles.heroText, dir.textStart]}>{t('home.needHelp.text')}</Text>
-      </Tactile>
+      {/* Product rule (explicit correction this round): requesting help and
+          giving help are TWO EQUAL core actions - equal size, weight,
+          importance, prominence. An earlier round made "need help" a
+          dominant hero and demoted "want to help" to a small row; that was
+          a real product-rule violation, not a style preference, so it's
+          gone. SanadDualAction renders both as identical tiles - see that
+          component for the MCP source this was ported from. */}
+      <SanadDualAction
+        primary={{
+          Icon: CarProfile,
+          title: t('home.needHelp.title'),
+          text: t('home.needHelp.text'),
+          onPress: activeKind === 'request' ? onResumeActive : onRequester
+        }}
+        secondary={{
+          Icon: HandHeart,
+          title: t('home.wantToHelp.title'),
+          text: t('home.wantToHelp.text'),
+          onPress: onVolunteer
+        }}
+      />
 
-      {/* Help Mode and the perks/business discovery link now share one
-          demoted, compact-row treatment underneath the hero (reference
-          board: "Help Mode drops to a compact secondary strip" /
-          "Discovery becomes a horizontal strip") - previously Help Mode was
-          a second full ActionCard reading as equal weight to the hero. */}
+      {/* Businesses/offers discovery stays a lighter-weight row beneath the
+          two equal primary actions - discovery, not a third core action. */}
       <View style={styles.secondaryCluster}>
-        <CompactRow
-          Icon={HandHeart}
-          title={t('home.wantToHelp.title')}
-          text={t('home.wantToHelp.text')}
-          onPress={onVolunteer}
-          ForwardIcon={ForwardIcon}
-        />
         <CompactRow
           Icon={Storefront}
           title={t('home.discoverPerks.title')}
@@ -188,13 +179,6 @@ const styles = StyleSheet.create({
   resumeText: { color: '#fff', fontFamily: font.bold, fontSize: 15 },
 
   eyebrow: { color: colors.sage, marginBottom: space.md, textTransform: 'uppercase' },
-
-  hero: { backgroundColor: colors.forest, borderRadius: radius.xl, padding: space.xxl, marginBottom: space.lg, ...shadow.elevated },
-  heroTop: { justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },
-  heroIconWrap: { width: 64, height: 64, borderRadius: radius.lg, backgroundColor: '#FFFFFF1A', alignItems: 'center', justifyContent: 'center' },
-  heroForward: { width: 36, height: 36, borderRadius: radius.pill, backgroundColor: '#FFFFFF26', alignItems: 'center', justifyContent: 'center' },
-  heroTitle: { color: '#fff' },
-  heroText: { color: '#FFFFFFD0', fontFamily: font.regular, fontSize: 14.5, lineHeight: 21, marginTop: 6, maxWidth: '92%' },
 
   secondaryCluster: { gap: space.sm, marginBottom: space.lg },
   row: { alignItems: 'center', gap: space.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: space.md },

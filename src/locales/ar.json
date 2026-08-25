@@ -261,6 +261,7 @@
     "accept": "استلام المهمة",
     "distanceKm": "{{distance}} كم",
     "since": "منذ {{time}}",
+    "sheet": { "newNearby": "طلب جديد قريب منك" },
     "errors": {
       "claimedTitle": "سبقك متطوع",
       "claimedMessage": "هذا الطلب انأخذ قبل لحظات.",

@@ -192,7 +192,11 @@ export function PerksScreen({ userId }: { userId: string }) {
             {data.businesses.length === 0 ? (
               <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
             ) : (
-              <View style={styles.businessList}>
+              /* Grid, not a vertical list of rows (reference board +
+                 aggressive-rebuild scope: Businesses) - matches the offers
+                 rail's own card language so the two discovery sections read
+                 as one system instead of two different anatomies. */
+              <View style={[styles.businessGrid, dir.row]}>
                 {data.businesses.map(business => (
                   <BusinessCard
                     key={business.id}
@@ -268,7 +272,7 @@ function FilteredResults({
           <SectionHeader title={t('perks.businessesTitle')} />
           <View style={styles.businessList}>
             {businesses.map(business => (
-              <BusinessCard key={business.id} business={business} rating={ratings[business.id]} onPress={() => onOpenBusiness(business.id)} />
+              <BusinessCard key={business.id} business={business} rating={ratings[business.id]} variant="row" onPress={() => onOpenBusiness(business.id)} />
             ))}
           </View>
         </View>
@@ -302,6 +306,7 @@ const styles = StyleSheet.create({
 
   rail: { gap: space.md, paddingEnd: space.lg },
   businessList: { gap: space.md },
+  businessGrid: { flexWrap: 'wrap', gap: space.md, rowGap: space.md },
 
   filteredWrap: { gap: space.lg },
   filteredSection: { gap: 0 },

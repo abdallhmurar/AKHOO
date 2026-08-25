@@ -31,6 +31,15 @@ export function OfferCard({
       <View style={styles.imageWrap}>
         {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" /> : <View style={[styles.image, styles.imageFallback]} />}
         {offer.member_only ? <View style={styles.badgeWrap}><PlusBadge /></View> : null}
+        {/* Business logo overlaps the image's bottom corner (delivery-app
+            card anatomy from the reference board's discount/deals research)
+            instead of the business name only appearing as plain text below -
+            gives the card a clearer "who this is from" identity at a glance. */}
+        {business?.logo_url ? (
+          <View style={styles.avatarWrap}>
+            <Image source={{ uri: business.logo_url }} style={styles.avatar} />
+          </View>
+        ) : null}
       </View>
       <View style={styles.body}>
         <Text style={[styles.title, dir.textStart]} numberOfLines={2}>{offer.title}</Text>
@@ -99,7 +108,9 @@ const styles = StyleSheet.create({
   image: { width: '100%', height: 130 },
   imageFallback: { backgroundColor: colors.sageSoft },
   badgeWrap: { position: 'absolute', top: 10, insetInlineStart: 10 },
-  body: { padding: space.md, gap: 3 },
+  avatarWrap: { position: 'absolute', bottom: -16, insetInlineStart: 12, width: 36, height: 36, borderRadius: 18, backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.surface, ...shadow.soft },
+  avatar: { width: '100%', height: '100%', borderRadius: 16 },
+  body: { padding: space.md, paddingTop: space.lg + 6, gap: 3 },
   title: { color: colors.text, fontFamily: font.bold, fontSize: 14.5, lineHeight: 19, minHeight: 38 },
   business: { color: colors.muted, fontFamily: font.medium, fontSize: 12 },
   footer: { alignItems: 'center', justifyContent: 'space-between', marginTop: 6 },

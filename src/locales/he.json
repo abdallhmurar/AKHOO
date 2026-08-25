@@ -261,6 +261,7 @@
     "accept": "קבלת המשימה",
     "distanceKm": "{{distance}} ק\"מ",
     "since": "לפני {{time}}",
+    "sheet": { "newNearby": "בקשה חדשה בקרבתך" },
     "errors": {
       "claimedTitle": "מתנדב אחר הקדים אותך",
       "claimedMessage": "הבקשה הזו נתפסה לפני רגע.",

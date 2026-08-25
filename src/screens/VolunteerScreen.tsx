@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, AppState, Image, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, AppState, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import { ArrowLeft, ArrowRight, BatteryWarning, GasPump, GpsFix, HandHeart, Lock, MapPin, Star, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +11,6 @@ import { translateActionError } from '../lib/rpcErrors'
 import { supabase } from '../lib/supabase'
 import { buildAvailableUpsertPayload } from '../lib/volunteerAvailability'
 import { colors, font, radius, space, shadow, type } from '../lib/theme'
-import { formatElapsed } from '../lib/time'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { useAndroidBackHandler } from '../lib/useAndroidBackHandler'
 import type { HelpRequest, ServiceType } from '../types'
@@ -24,6 +23,7 @@ import { Surface } from '../components/Surface'
 import { StatusPill } from '../components/StatusPill'
 import { SanadMap } from '../components/SanadMap'
 import type { SanadMapRef } from '../components/SanadMap.types'
+import { SanadRequestSheet } from '../components/SanadRequestSheet'
 import { Tactile } from '../components/Tactile'
 
 const services: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarning }[] = [
@@ -270,8 +270,13 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
         />
       ) : null}
 
+      {/* One unified floating pill bar (back / live status / stop) instead
+          of three separate floating circles - reuses the exact pill
+          container language ported into TabBar.tsx from 21st.dev's Bottom
+          Nav Bar (actual source fetched), so the map screens and the
+          bottom navigation now share one floating-control identity. */}
       <View style={[styles.topBar, dir.row]}>
-        <Tactile onPress={onBack} style={styles.backButton} scaleTo={0.92}>
+        <Tactile onPress={onBack} style={styles.topBarIconButton} scaleTo={0.92}>
           <BackIcon size={18} color={colors.text} />
         </Tactile>
         <View style={styles.statusPillWrap}>
@@ -281,7 +286,7 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
             label={requests.length ? `${t('volunteer.availableNow')} · ${t('volunteer.nearbyCount', { count: requests.length })}` : t('volunteer.availableNow')}
           />
         </View>
-        <Tactile onPress={toggleAvailability} style={styles.stopButton} scaleTo={0.94}>
+        <Tactile onPress={toggleAvailability} style={styles.topBarTextButton} scaleTo={0.94}>
           {loading ? <ActivityIndicator color={colors.text} size="small" /> : <Text style={styles.stopText}>{t('volunteer.disable')}</Text>}
         </Tactile>
       </View>
@@ -304,40 +309,23 @@ export function VolunteerScreen({ userId, onBack, onAccepted }: { userId: string
 
       <BottomSheet visible={!!selectedRequest} onClose={() => setSelectedId(null)}>
         {selectedRequest ? (
-          <>
-            <View style={[styles.sheetTop, dir.row]}>
-              <View style={styles.sheetIcon}>
-                <ServiceIcon type={selectedRequest.service_type} />
-              </View>
-              <View style={[styles.sheetTopText, dir.alignStart]}>
-                <Text style={[styles.sheetTitle, dir.textStart]}>{t(serviceByKey[selectedRequest.service_type].labelKey)}</Text>
-                <Text style={[styles.sheetMeta, dir.textStart]}>
-                  {t('volunteer.since', { time: formatElapsed(now - new Date(selectedRequest.created_at).getTime(), t) })}
-                </Text>
-              </View>
-              <View style={styles.distanceChip}>
-                <Text style={styles.distanceChipText}>{t('volunteer.distanceKm', { distance: selectedRequest.distance.toFixed(1) })}</Text>
-              </View>
-            </View>
-            {selectedRequest.note ? <Text style={[styles.note, dir.textStart]}>{selectedRequest.note}</Text> : null}
-            {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.photo} /> : null}
-            <View style={[styles.sheetActions, dir.row]}>
-              <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${selectedRequest.latitude},${selectedRequest.longitude}`)} style={[styles.mapButton, dir.row]}>
-                <MapPin size={16} color={colors.forest} />
-                <Text style={styles.mapText}>{t('volunteer.openExternal')}</Text>
-              </Pressable>
-              <PrimaryButton title={t('volunteer.accept')} onPress={() => accept(selectedRequest)} loading={loading} style={styles.acceptButton} />
-            </View>
-          </>
+          <SanadRequestSheet
+            Icon={serviceByKey[selectedRequest.service_type].Icon}
+            serviceLabel={t(serviceByKey[selectedRequest.service_type].labelKey)}
+            createdAt={selectedRequest.created_at}
+            now={now}
+            distanceKm={selectedRequest.distance}
+            note={selectedRequest.note}
+            photoUrl={selectedRequest.photo_url}
+            latitude={selectedRequest.latitude}
+            longitude={selectedRequest.longitude}
+            onAccept={() => accept(selectedRequest)}
+            loading={loading}
+          />
         ) : null}
       </BottomSheet>
     </SafeAreaView>
   )
-}
-
-function ServiceIcon({ type }: { type: ServiceType }) {
-  const Icon = serviceByKey[type].Icon
-  return <Icon size={26} color={colors.forest} weight="duotone" />
 }
 
 // Fills the (otherwise near-empty) not-available state with real,
@@ -378,28 +366,19 @@ const styles = StyleSheet.create({
   howItWorksLine: { width: 2, flex: 1, minHeight: 20, backgroundColor: colors.border, marginVertical: 4 },
   howItWorksText: { flex: 1, color: colors.text, fontFamily: font.medium, fontSize: 13.5, lineHeight: 19, paddingBottom: space.lg, paddingTop: 6 },
 
-  topBar: { position: 'absolute', top: space.lg, left: space.lg, right: space.lg, alignItems: 'center', gap: space.sm },
-  backButton: { width: 42, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
+  topBar: {
+    position: 'absolute', top: space.lg, left: space.lg, right: space.lg,
+    alignItems: 'center', gap: space.sm,
+    backgroundColor: colors.surface, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.border,
+    padding: 6, ...shadow.floating
+  },
+  topBarIconButton: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  topBarTextButton: { minWidth: 56, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md },
   statusPillWrap: { flex: 1, alignItems: 'center' },
-  stopButton: { minWidth: 60, height: 42, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, ...shadow.floating },
-  stopText: { color: colors.danger, fontFamily: font.bold, fontSize: 13 },
+  stopText: { color: colors.danger, fontFamily: font.bold, fontSize: 12.5 },
 
   locateButton: { position: 'absolute', bottom: space.xxl + 70, width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', ...shadow.floating },
 
   emptyBanner: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xl },
-  emptyBannerText: { color: colors.muted, fontFamily: font.medium, fontSize: 12.5, textAlign: 'center', lineHeight: 18 },
-
-  sheetTop: { alignItems: 'center', gap: space.md },
-  sheetIcon: { width: 52, height: 52, borderRadius: radius.md, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
-  sheetTopText: { flex: 1 },
-  sheetTitle: { ...type.h3, color: colors.text },
-  sheetMeta: { color: colors.muted, fontFamily: font.regular, fontSize: 12.5, marginTop: 3 },
-  distanceChip: { backgroundColor: colors.sageSoft, borderRadius: radius.pill, paddingVertical: 6, paddingHorizontal: space.md },
-  distanceChipText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 },
-  note: { color: colors.text, fontFamily: font.regular, fontSize: 14, lineHeight: 21, marginTop: space.md },
-  photo: { width: '100%', height: 150, borderRadius: radius.md, marginTop: space.md },
-  sheetActions: { gap: space.sm, marginTop: space.lg },
-  acceptButton: { flex: 1.6 },
-  mapButton: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: colors.sageSoft, borderRadius: radius.sm, minHeight: 54 },
-  mapText: { color: colors.forest, fontFamily: font.bold, fontSize: 13 }
+  emptyBannerText: { color: colors.muted, fontFamily: font.medium, fontSize: 12.5, textAlign: 'center', lineHeight: 18 }
 })

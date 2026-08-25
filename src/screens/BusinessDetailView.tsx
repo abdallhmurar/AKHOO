@@ -100,12 +100,13 @@ export function BusinessDetailView({ businessId, onBack, onOpenOffer }: { busine
           </View>
         )}
 
-        <View style={styles.body}>
-          {/* Name, rating, description and contact actions read as one hero
-              identity block (reference board: Businesses - "gallery +
-              identity block reads as one hero unit") instead of floating
-              directly on the page background. */}
-          <Surface elevation="none" padding="lg" style={styles.identityCard}>
+        {/* Identity card floats on the gallery/body seam, same overlap
+            language as the Active Request status capsule and the Offer
+            card's avatar badge (unified-system requirement - one recurring
+            "floating capsule bridges two zones" motif reused across the
+            app instead of a different trick per screen). */}
+        <View style={styles.identityWrap}>
+          <Surface elevation="elevated" padding="lg" style={styles.identityCard}>
             <Text style={[styles.name, dir.textStart]}>{business.name}</Text>
             <View style={[styles.metaRow, dir.row]}>
               <Text style={[styles.category, dir.textStart]}>{t(`perks.categories.${business.category}`)}</Text>
@@ -126,7 +127,9 @@ export function BusinessDetailView({ businessId, onBack, onOpenOffer }: { busine
               ) : null}
             </View>
           </Surface>
+        </View>
 
+        <View style={styles.body}>
           {business.latitude != null && business.longitude != null ? (
             <SanadMap latitude={business.latitude} longitude={business.longitude} height={160} />
           ) : null}
@@ -233,8 +236,9 @@ const styles = StyleSheet.create({
   galleryImage: { width: 400, height: 220 },
   galleryFallback: { backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center' },
 
-  body: { padding: space.lg, gap: space.md },
+  identityWrap: { marginTop: -32, paddingHorizontal: space.lg, zIndex: 2 },
   identityCard: { gap: space.sm },
+  body: { padding: space.lg, paddingTop: space.md, gap: space.md },
   name: { ...type.h1, color: colors.text },
   metaRow: { alignItems: 'center', gap: space.md },
   category: { color: colors.muted, fontFamily: font.bold, fontSize: 13 },
