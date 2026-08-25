@@ -24,7 +24,8 @@ import { ResetPasswordScreen } from './src/screens/ResetPasswordScreen'
 import { AccountScreen } from './src/screens/AccountScreen'
 import { TabBar } from './src/components/TabBar'
 import type { MainTab } from './src/components/TabBar'
-import { AuthShell } from './src/components/AuthShell'
+import { AuthScreenLayout } from './src/components/AuthScreenLayout'
+import { AuthPrimaryButton } from './src/components/AuthPrimaryButton'
 import { PrimaryButton } from './src/components/PrimaryButton'
 import { Skeleton } from './src/components/Skeleton'
 import { Surface } from './src/components/Surface'
@@ -319,9 +320,9 @@ export default function App() {
 function RecoveryLinkExpired({ onBack }: { onBack: () => void }) {
   const { t } = useTranslation()
   return (
-    <AuthShell scene="forgotPassword" title={t('auth.reset.linkExpired.title')} subtitle={t('auth.reset.linkExpired.message')}>
-      <PrimaryButton title={t('auth.reset.linkExpired.backToLogin')} onPress={onBack} />
-    </AuthShell>
+    <AuthScreenLayout title={t('auth.reset.linkExpired.title')} subtitle={t('auth.reset.linkExpired.message')}>
+      <AuthPrimaryButton title={t('auth.reset.linkExpired.backToLogin')} onPress={onBack} />
+    </AuthScreenLayout>
   )
 }
 

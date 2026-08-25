@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { Camera, Eye, EyeSlash } from 'phosphor-react-native'
+import { Camera, Envelope, Eye, EyeSlash, Lock, Phone, User } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors, font } from '../lib/theme'
 import { normalizePhone } from '../lib/phone'
-import { AuthShell } from '../components/AuthShell'
-import { TextField } from '../components/TextField'
-import { PrimaryButton } from '../components/PrimaryButton'
+import { AuthScreenLayout, AuthFooterText } from '../components/AuthScreenLayout'
+import { AuthInput } from '../components/AuthInput'
+import { AuthPrimaryButton } from '../components/AuthPrimaryButton'
 import { PasswordStrength } from '../components/PasswordStrength'
 
 type Errors = { name?: string; phone?: string; email?: string; password?: string; form?: string }
@@ -90,7 +90,7 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
   }
 
   return (
-    <AuthShell scene="signup" title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')}>
+    <AuthScreenLayout title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')}>
       <Pressable onPress={pickAvatar} style={styles.avatarPicker}>
         {avatarUri ? (
           <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
@@ -102,19 +102,20 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
       </Pressable>
       <Text style={styles.avatarHint}>{t('auth.signup.avatarHint')}</Text>
 
-      <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={t => { setName(t); clearError('name') }} error={errors.name} />
-      <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={t => { setPhone(t); clearError('phone') }} error={errors.phone} keyboardType="phone-pad" />
-      <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={t => { setEmail(t); clearError('email') }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
+      <AuthInput Icon={User} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={t => { setName(t); clearError('name') }} error={errors.name} />
+      <AuthInput Icon={Phone} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={t => { setPhone(t); clearError('phone') }} error={errors.phone} keyboardType="phone-pad" />
+      <AuthInput Icon={Envelope} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={t => { setEmail(t); clearError('email') }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <View>
-        <TextField
-          label={t('auth.signup.passwordLabel')}
+        <AuthInput
+          Icon={Lock}
+          placeholder={t('auth.signup.passwordLabel')}
           value={password}
           onChangeText={t => { setPassword(t); clearError('password') }}
           error={errors.password}
           secureTextEntry={!showPassword}
           trailing={
             <Pressable onPress={() => setShowPassword(s => !s)} hitSlop={8}>
-              {showPassword ? <EyeSlash size={20} color={colors.muted} /> : <Eye size={20} color={colors.muted} />}
+              {showPassword ? <EyeSlash size={19} color={colors.muted} /> : <Eye size={19} color={colors.muted} />}
             </Pressable>
           }
         />
@@ -123,12 +124,12 @@ export function SignUpScreen({ onLogin, onCreated }: { onLogin: () => void; onCr
 
       {errors.form ? <Text style={styles.formError}>{errors.form}</Text> : null}
 
-      <PrimaryButton title={t('auth.signup.submit')} onPress={submit} loading={loading} />
+      <AuthPrimaryButton title={t('auth.signup.submit')} onPress={submit} loading={loading} />
 
-      <Text style={styles.switch}>
+      <AuthFooterText>
         {t('auth.signup.haveAccount')} <Text onPress={onLogin} style={styles.switchLink}>{t('auth.signup.loginLink')}</Text>
-      </Text>
-    </AuthShell>
+      </AuthFooterText>
+    </AuthScreenLayout>
   )
 }
 
@@ -139,6 +140,5 @@ const styles = StyleSheet.create({
   avatarHint: { color: colors.muted, fontFamily: font.regular, fontSize: 12, textAlign: 'center', marginTop: -8 },
   strengthWrap: { marginTop: 8 },
   formError: { color: colors.danger, textAlign: 'center', fontSize: 13, fontFamily: font.bold, backgroundColor: colors.dangerSoft, borderRadius: 12, paddingVertical: 10 },
-  switch: { color: colors.muted, fontFamily: font.regular, fontSize: 13.5, textAlign: 'center' },
   switchLink: { color: colors.forest, fontFamily: font.bold }
 })
