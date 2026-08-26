@@ -109,6 +109,10 @@
         "backToLogin": "الرجوع لتسجيل الدخول"
       }
     },
+    "restricted": {
+      "title": "الحساب مقيّد",
+      "message": "لا يمكن استخدام هذا الحساب الآن. تواصل مع الدعم إذا كنت تعتقد أن هذا خطأ."
+    },
     "passwordStrength": {
       "weak": "ضعيفة",
       "fair": "مقبولة",
@@ -286,6 +290,13 @@
     "today": "اليوم",
     "yesterday": "أمس",
     "pointsEarned": "+{{points}} نقاط",
+    "all": "الكل",
+    "pointsTitle": "نقاط الأثر",
+    "filters": {
+      "received": "تلقيت",
+      "given": "قدمت",
+      "points": "نقاط"
+    },
     "status": {
       "open": "نبحث عن متطوع",
       "accepted": "متطوع استلم الطلب",

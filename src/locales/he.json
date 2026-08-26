@@ -109,6 +109,10 @@
         "backToLogin": "חזרה להתחברות"
       }
     },
+    "restricted": {
+      "title": "החשבון מוגבל",
+      "message": "לא ניתן להשתמש בחשבון זה כרגע. פנו לתמיכה אם לדעתכם זו טעות."
+    },
     "passwordStrength": {
       "weak": "חלשה",
       "fair": "סבירה",
@@ -286,6 +290,13 @@
     "today": "היום",
     "yesterday": "אתמול",
     "pointsEarned": "+{{points}} נקודות",
+    "all": "הכול",
+    "pointsTitle": "נקודות השפעה",
+    "filters": {
+      "received": "קיבלתי",
+      "given": "עזרתי",
+      "points": "נקודות"
+    },
     "status": {
       "open": "מחפשים מתנדב",
       "accepted": "מתנדב קיבל",

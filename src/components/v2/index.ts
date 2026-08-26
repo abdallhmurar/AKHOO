@@ -1,6 +1,5 @@
 export * from './ActionCard'
 export * from './AppScreen'
-export * from './CivicBrand'
 export * from './ListRow'
 export * from './MapPanel'
 export * from './MissionTimeline'

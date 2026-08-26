@@ -109,6 +109,10 @@
         "backToLogin": "Back to Log In"
       }
     },
+    "restricted": {
+      "title": "Account restricted",
+      "message": "This account can't be used right now. Contact support if you think this is a mistake."
+    },
     "passwordStrength": {
       "weak": "Weak",
       "fair": "Fair",
@@ -286,6 +290,13 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "pointsEarned": "+{{points}} points",
+    "all": "All",
+    "pointsTitle": "Impact points",
+    "filters": {
+      "received": "Received",
+      "given": "Given",
+      "points": "Points"
+    },
     "status": {
       "open": "Looking for a volunteer",
       "accepted": "Volunteer accepted",

@@ -11,7 +11,6 @@ function RootNavigator() {
   return (
     <Stack screenOptions={{ headerShown: false, animation: isRTL ? 'slide_from_left' : 'slide_from_right' }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="language" options={{ animation: 'fade' }} />
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="restricted" options={{ gestureEnabled: false }} />
       <Stack.Protected guard={allowed}>
@@ -20,8 +19,6 @@ function RootNavigator() {
         <Stack.Screen name="(helper)" />
         <Stack.Screen name="mission" />
         <Stack.Screen name="community" />
-        <Stack.Screen name="activity" />
-        <Stack.Screen name="account" />
       </Stack.Protected>
     </Stack>
   )

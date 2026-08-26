@@ -1,245 +1,476 @@
-import { useEffect, useState } from 'react'
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowRight, ChatCenteredText, Check, CheckCircle, HandHeart, NavigationArrow, PaperPlaneTilt, Phone, Prohibit, ShieldCheck, ShieldWarning, Star, WarningCircle } from 'phosphor-react-native'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
+import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
 import { useIsRTL } from '../../lib/direction'
-import { palette, radius, space, useSanadTheme } from '../../lib/theme'
+import { formatElapsed } from '../../lib/time'
+import { translateActionError } from '../../lib/rpcErrors'
+import { supabase } from '../../lib/supabase'
+import { useAndroidBackHandler } from '../../lib/useAndroidBackHandler'
+import { useStaggeredReveal } from '../../lib/useStaggeredReveal'
+import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS } from '../../lib/activityLevel'
+import type { ActivityLevel } from '../../lib/activityLevel'
+import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
-import { useAuth, useLanguageDirection } from '../../providers'
+import { useAuth } from '../../providers'
 import { missionRepository } from '../../repositories/missionRepository'
 import { profileRepository } from '../../repositories/profileRepository'
-import { safetyRepository } from '../../repositories/safetyRepository'
-import type { MissionStatus } from '../../repositories/domainTypes'
-import { localizeAppError } from '../../services/errors'
+import type { Mission, MissionStatus } from '../../repositories/domainTypes'
 import { queryKeys } from '../../services/queryKeys'
-import { AppScreen, MapPanel, MissionTimeline, RatingStars, ScreenHeader, SectionHeading } from '../../components/v2'
-import { Avatar, BottomSheet, Button, Card, EmptyState, Skeleton, StatusBadge, Surface, TextArea, TextField, useToast } from '../../components/ui'
-import { useV2Text } from '../v2Copy'
+import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
+import { MissionTimeline } from '../../components/v2'
+import { SanadMap } from '../../components/SanadMap'
+import { SuccessCheckmark } from '../../components/SuccessCheckmark'
+import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
 
-function useTrilingual() {
-  const { language } = useLanguageDirection()
-  return (ar: string, he: string, en: string) => language === 'en' ? en : language === 'he' ? he : ar
-}
-
-const statusIndex: Record<MissionStatus, number> = {
-  matching: 0, assigned: 1, on_the_way: 2, arrived: 3, in_progress: 4,
-  awaiting_confirmation: 5, completed: 6, cancelled: 6, disputed: 5
-}
-
-function statusTone(status: MissionStatus) {
-  if (status === 'completed') return 'success' as const
-  if (status === 'cancelled' || status === 'disputed') return 'danger' as const
-  if (status === 'awaiting_confirmation') return 'warning' as const
-  return 'info' as const
+const RELEASE_REASONS = ['cannot_reach', 'emergency', 'accepted_by_mistake', 'other'] as const
+type ReleaseReason = (typeof RELEASE_REASONS)[number]
+const LEVEL_UP_THRESHOLDS = [5, 15, 30, 60]
+const TIMELINE: { status: MissionStatus; labelKey: string }[] = [
+  { status: 'assigned', labelKey: 'common.timeline.accepted' },
+  { status: 'on_the_way', labelKey: 'common.timeline.on_the_way' },
+  { status: 'arrived', labelKey: 'common.timeline.arrived' },
+  { status: 'awaiting_confirmation', labelKey: 'common.timeline.awaiting_confirmation' },
+  { status: 'completed', labelKey: 'common.timeline.completed' }
+]
+// Legacy rows never carry 'in_progress' or 'disputed' - map them onto the
+// nearest real i18n status key rather than adding new copy for states this
+// (unmigrated) database can't actually produce.
+const STATUS_LABEL: Record<MissionStatus, string> = {
+  matching: 'open', assigned: 'accepted', on_the_way: 'on_the_way', arrived: 'arrived',
+  in_progress: 'arrived', awaiting_confirmation: 'awaiting_confirmation', completed: 'completed',
+  cancelled: 'cancelled', disputed: 'awaiting_confirmation'
 }
 
 function useMissionDetail(missionId: string) {
   const queryClient = useQueryClient()
-  const query = useQuery({ queryKey: queryKeys.mission(missionId), queryFn: () => missionRepository.get(missionId), enabled: !!missionId, refetchInterval: 15_000 })
-  useEffect(() => missionId ? missionRepository.subscribe(missionId, () => { void queryClient.invalidateQueries({ queryKey: queryKeys.mission(missionId) }); void queryClient.invalidateQueries({ queryKey: queryKeys.missionEvents(missionId) }); void queryClient.invalidateQueries({ queryKey: queryKeys.missionMessages(missionId) }) }) : undefined, [missionId, queryClient])
+  const query = useQuery({ queryKey: queryKeys.mission(missionId), queryFn: () => missionRepository.get(missionId), enabled: !!missionId, refetchInterval: 10_000 })
+  useEffect(() => (missionId ? missionRepository.subscribe(missionId, () => { void queryClient.invalidateQueries({ queryKey: queryKeys.mission(missionId) }) }) : undefined), [missionId, queryClient])
   return query
 }
 
+// Real SANAD live-mission screen - the same map+capsule+sheet composition as
+// the intact src/screens/ActiveRequestScreen.tsx (requester side) and
+// VolunteerJobScreen.tsx (helper side), merged into one route keyed by role
+// since missionRepository already normalizes both sides into a single
+// Mission shape. Not ccodex's invented chat/dispute/report/block/rating
+// flows - none of that exists in the real product; a mission's only
+// cross-party contact is a direct phone call.
 export function LiveMissionScreen() {
   const theme = useSanadTheme()
-  const typography = useAppTypography()
-  const isRTL = useIsRTL()
-  const tr = useTrilingual()
-  const t = useV2Text()
   const router = useRouter()
-  const toast = useToast()
-  const queryClient = useQueryClient()
   const { missionId } = useLocalSearchParams<{ missionId: string }>()
   const { session } = useAuth()
   const mission = useMissionDetail(String(missionId))
   const row = mission.data
-  const isRequester = row?.requester_id === session?.user.id
-  const otherId = isRequester ? row?.helper_id : row?.requester_id
-  const otherProfile = useQuery({ queryKey: otherId ? queryKeys.profile(otherId) : ['participant'], queryFn: () => profileRepository.get(otherId!), enabled: !!otherId })
-  const helperPosition = useQuery({ queryKey: queryKeys.missionHelperLocation(String(missionId)), queryFn: () => missionRepository.helperLocation(String(missionId)), enabled: !!row?.helper_id, refetchInterval: 15_000 })
-  const events = useQuery({ queryKey: queryKeys.missionEvents(String(missionId)), queryFn: () => missionRepository.events(String(missionId)), enabled: !!missionId })
-  const [safetyOpen, setSafetyOpen] = useState(false)
-  const advance = useMutation({ mutationFn: (status: MissionStatus) => missionRepository.advance(String(missionId), status), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: queryKeys.mission(String(missionId)) }); if (session) await queryClient.invalidateQueries({ queryKey: queryKeys.activeMission(session.user.id) }) }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  const confirm = useMutation({ mutationFn: () => missionRepository.confirmCompletion(String(missionId), true), onSuccess: async () => { if (session) await queryClient.invalidateQueries({ queryKey: queryKeys.activeMission(session.user.id) }); router.replace({ pathname: '/mission/[missionId]/completed', params: { missionId: String(missionId) } }) }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  if (mission.isLoading) return <AppScreen header={<ScreenHeader title={t('mission.live')} back />}><Skeleton height={310} /><Skeleton height={170} /><Skeleton height={210} /></AppScreen>
-  if (!row) return <AppScreen header={<ScreenHeader title={t('mission.live')} back />}><EmptyState title={tr('المهمة غير متاحة', 'המשימה אינה זמינה', 'Mission unavailable')} message={tr('قد تكون انتهت أو لم يعد لديك وصول إليها.', 'ייתכן שהסתיימה או שאין לכם עוד גישה.', 'It may have ended or you no longer have access.')} actionLabel={tr('العودة للرئيسية', 'חזרה לבית', 'Back home')} onAction={() => router.replace('/(tabs)')} /></AppScreen>
-  const request = row.request
-  const helperCoords = helperPosition.data?.latitude != null && helperPosition.data.longitude != null ? { latitude: helperPosition.data.latitude, longitude: helperPosition.data.longitude } : null
-  const requestCoords = request ? { latitude: request.latitude, longitude: request.longitude } : { latitude: 31.7784, longitude: 35.2066 }
-  const markers = [
-    { id: 'request', ...requestCoords },
-    ...(helperCoords ? [{ id: 'helper', ...helperCoords }] : [])
-  ]
-  const timeline = [
-    { key: 'matching', label: tr('تم إرسال الطلب', 'הבקשה נשלחה', 'Request sent') },
-    { key: 'assigned', label: tr('تمت المطابقة', 'נמצאה התאמה', 'Helper matched') },
-    { key: 'on_the_way', label: tr('المساند في الطريق', 'המסייע בדרך', 'Helper en route') },
-    { key: 'arrived', label: tr('وصل إلى الموقع', 'הגיע למיקום', 'Arrived at location') },
-    { key: 'in_progress', label: tr('المساندة جارية', 'הסיוע מתבצע', 'Support in progress') },
-    { key: 'awaiting_confirmation', label: tr('بانتظار التأكيد', 'ממתין לאישור', 'Awaiting confirmation') },
-    { key: 'completed', label: tr('اكتملت المهمة', 'המשימה הושלמה', 'Mission completed') }
-  ]
-  const action = (() => {
-    if (isRequester && row.status === 'awaiting_confirmation') return <Button label={tr('تأكيد اكتمال المساندة', 'אישור השלמת הסיוע', 'Confirm support completed')} variant="community" size="lg" loading={confirm.isPending} onPress={() => confirm.mutate()} />
-    if (isRequester) return null
-    if (row.status === 'assigned') return <Button label={tr('بدء الطريق', 'יציאה לדרך', 'Start navigation')} size="lg" loading={advance.isPending} onPress={() => advance.mutate('on_the_way')} />
-    if (row.status === 'on_the_way') return <Button label={t('mission.arrived')} size="lg" loading={advance.isPending} onPress={() => advance.mutate('arrived')} />
-    if (row.status === 'arrived') return <Button label={t('mission.start')} variant="community" size="lg" loading={advance.isPending} onPress={() => advance.mutate('in_progress')} />
-    if (row.status === 'in_progress') return <Button label={t('mission.complete')} variant="community" size="lg" loading={advance.isPending} onPress={() => advance.mutate('awaiting_confirmation')} />
-    return null
-  })()
-  return <AppScreen header={<ScreenHeader title={t('mission.live')} subtitle={tr('تحديثات مباشرة وآمنة', 'עדכונים חיים ומאובטחים', 'Live, private updates')} back trailing={<StatusBadge label={trStatus(row.status, tr)} tone={statusTone(row.status)} dot />} />} footer={action} contentStyle={styles.content}>
-    <MapPanel latitude={requestCoords.latitude} longitude={requestCoords.longitude} markers={markers} selectedId="request" height={320} overlay={<View style={[styles.mapOverlay, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}><NavigationArrow size={21} color={theme.colors.primary} weight="fill" /><View style={{ flex: 1 }}><Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{row.status === 'on_the_way' ? tr('المساند يتحرك نحو الموقع', 'המסייע נע לכיוון המיקום', 'Helper is moving toward the location') : trStatus(row.status, tr)}</Text><Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{request?.location_label || tr('القدس', 'ירושלים', 'Jerusalem')}</Text></View></View>} />
-    <Card title={otherProfile.data?.full_name || tr('عضو موثوق في المجتمع', 'חבר/ת קהילה מהימנ/ה', 'Trusted community member')} subtitle={isRequester ? tr('المساند المطابق', 'המסייע המותאם', 'Matched helper') : tr('طالب المساندة', 'מבקש/ת הסיוע', 'Requester')} leading={<Avatar name={otherProfile.data?.full_name || 'SANAD'} uri={otherProfile.data?.avatar_url} size={52} tone="community" />} trailing={<ShieldCheck size={24} color={theme.colors.community} weight="duotone" />}>
-      <View style={[styles.quickActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-        <Button fullWidth={false} label={t('mission.message')} variant="outline" leading={<ChatCenteredText size={18} color={theme.colors.primary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/conversation', params: { missionId: row.id } })} />
-        {otherProfile.data?.phone ? <Button fullWidth={false} label={t('mission.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(otherProfile.data!.phone!))} /> : null}
-      </View>
-    </Card>
-    {!isRequester && request ? <Button label={t('mission.navigate')} variant="outline" leading={<NavigationArrow size={19} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(request.latitude, request.longitude))} /> : null}
-    <Card title={request?.note || tr('مساندة مجتمعية', 'סיוע קהילתי', 'Community support')} subtitle={request?.location_label || tr('القدس', 'ירושלים', 'Jerusalem')} leading={<View style={[styles.iconBox, { backgroundColor: theme.colors.primarySoft }]}><HandHeart size={24} color={theme.colors.primary} weight="duotone" /></View>} />
-    <SectionHeading title={tr('مسار المهمة', 'ציר המשימה', 'Mission progress')} subtitle={tr('كل تحديث محفوظ في سجل المهمة', 'כל עדכון נשמר ביומן המשימה', 'Every update is recorded')} />
-    <Card elevation="none"><MissionTimeline steps={timeline} activeIndex={statusIndex[row.status]} /></Card>
-    {events.data?.length ? <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>{tr(`${events.data.length} تحديثات موثقة`, `${events.data.length} עדכונים מתועדים`, `${events.data.length} recorded updates`)}</Text> : null}
-    <Pressable accessibilityRole="button" onPress={() => setSafetyOpen(true)} style={[styles.safetyRow, { flexDirection: isRTL ? 'row-reverse' : 'row', borderColor: theme.colors.border }]}><ShieldWarning size={23} color={theme.colors.emergency} weight="duotone" /><View style={{ flex: 1 }}><Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('mission.safety')}</Text><Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{tr('الإبلاغ، الاعتراض أو الحظر', 'דיווח, ערעור או חסימה', 'Report, dispute, or block')}</Text></View><ArrowRight size={18} color={theme.colors.textMuted} /></Pressable>
-    <BottomSheet visible={safetyOpen} onClose={() => setSafetyOpen(false)} title={t('mission.safety')} subtitle={tr('إذا كان هناك خطر مباشر، اتصل بالطوارئ أولاً.', 'במקרה של סכנה מיידית, התקשרו קודם לשירותי החירום.', 'If there is immediate danger, call emergency services first.')}>
-      <Button label={tr('اتصال بالشرطة — 100', 'חיוג למשטרה — 100', 'Call Police — 100')} variant="danger" onPress={() => Linking.openURL('tel:100')} />
-      <Button label={t('mission.report')} variant="outline" onPress={() => { setSafetyOpen(false); router.push({ pathname: '/mission/[missionId]/report', params: { missionId: row.id, userId: otherId ?? '' } }) }} />
-      {row.status === 'awaiting_confirmation' ? <Button label={t('mission.dispute')} variant="outline" onPress={() => { setSafetyOpen(false); router.push({ pathname: '/mission/[missionId]/dispute', params: { missionId: row.id } }) }} /> : null}
-      {otherId ? <Button label={t('mission.block')} variant="ghost" onPress={() => { setSafetyOpen(false); router.push({ pathname: '/mission/[missionId]/block', params: { missionId: row.id, userId: otherId } }) }} /> : null}
-    </BottomSheet>
-  </AppScreen>
-}
 
-function trStatus(status: MissionStatus, tr: ReturnType<typeof useTrilingual>) {
-  const labels: Record<MissionStatus, [string, string, string]> = {
-    matching: ['جارٍ البحث', 'מחפש התאמה', 'Matching'], assigned: ['تمت المطابقة', 'נמצאה התאמה', 'Matched'], on_the_way: ['في الطريق', 'בדרך', 'En route'], arrived: ['وصل', 'הגיע', 'Arrived'], in_progress: ['المساندة جارية', 'הסיוע מתבצע', 'In progress'], awaiting_confirmation: ['بانتظار التأكيد', 'ממתין לאישור', 'Awaiting confirmation'], completed: ['مكتملة', 'הושלם', 'Completed'], cancelled: ['ملغاة', 'בוטל', 'Cancelled'], disputed: ['قيد المراجعة', 'בבדיקה', 'Under review']
+  // A mission that's gone (completed elsewhere, cancelled, or never
+  // existed) has nowhere useful to stay on this route - bounce Home
+  // instead of rendering a dead-end screen.
+  useEffect(() => {
+    if (!mission.isLoading && !row) router.replace('/(tabs)')
+  }, [mission.isLoading, row, router])
+
+  if (mission.isLoading || !row) {
+    return <View style={[styles.fill, styles.center, { backgroundColor: theme.colors.background }]}><ActivityIndicator color={theme.colors.primary} /></View>
   }
-  return tr(...labels[status])
+  const isRequester = row.requester_id === session?.user.id
+  return isRequester ? <RequesterMissionView mission={row} /> : <HelperMissionView mission={row} />
 }
 
-export function ConversationScreen() {
+function useOtherParty(mission: Mission, isRequester: boolean) {
+  const otherId = isRequester ? mission.helper_id : mission.requester_id
+  return useQuery({ queryKey: otherId ? queryKeys.profile(otherId) : ['participant'], queryFn: () => profileRepository.get(otherId!), enabled: !!otherId })
+}
+
+function MissionHero({ latitude, longitude, searching, header, onBack }: { latitude: number; longitude: number; searching: boolean; header: ReactNode; onBack: () => void }) {
+  const theme = useSanadTheme()
+  const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
+  const pulse = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    if (!searching) { pulse.setValue(0); return }
+    const loop = Animated.loop(Animated.sequence([
+      Animated.timing(pulse, { toValue: 1, duration: 1600, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+      Animated.timing(pulse, { toValue: 0, duration: 0, useNativeDriver: true })
+    ]))
+    loop.start()
+    return () => loop.stop()
+  }, [searching, pulse])
+
+  const ringScale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 2.6] })
+  const ringOpacity = pulse.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.5, 0.15, 0] })
+
+  return (
+    <>
+      <View style={styles.mapArea}>
+        <SanadMap latitude={latitude} longitude={longitude} style={styles.map} />
+        {searching ? (
+          <View pointerEvents="none" style={styles.radarWrap}>
+            <Animated.View style={[styles.radarRing, { backgroundColor: theme.colors.primary, opacity: ringOpacity, transform: [{ scale: ringScale }] }]} />
+          </View>
+        ) : null}
+        <IconButton label={t('common.back')} size={42} style={{ ...styles.backButton, [isRTL ? 'right' : 'left']: space.lg }} icon={<BackIcon size={18} color={theme.colors.textPrimary} />} onPress={onBack} />
+      </View>
+      <View style={styles.capsuleWrap}>
+        <View style={[styles.capsule, shadow.elevated, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>{header}</View>
+      </View>
+    </>
+  )
+}
+
+function RequesterMissionView({ mission }: { mission: Mission }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const tr = useTrilingual()
+  const { t } = useTranslation()
+  const router = useRouter()
   const toast = useToast()
   const queryClient = useQueryClient()
-  const { missionId } = useLocalSearchParams<{ missionId: string }>()
-  const { session } = useAuth()
-  const messages = useQuery({ queryKey: queryKeys.missionMessages(String(missionId)), queryFn: () => missionRepository.messages(String(missionId)), refetchInterval: 6_000 })
-  const [body, setBody] = useState('')
-  const send = useMutation({ mutationFn: () => missionRepository.sendMessage(String(missionId), body), onSuccess: async () => { setBody(''); await queryClient.invalidateQueries({ queryKey: queryKeys.missionMessages(String(missionId)) }) }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  return <AppScreen header={<ScreenHeader title={tr('محادثة المهمة', 'שיחת המשימה', 'Mission conversation')} subtitle={tr('مرئية لطرفي المهمة فقط', 'גלויה רק לצדדי המשימה', 'Visible only to mission participants')} back />} footer={<View style={[styles.composer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}><TextField value={body} onChangeText={setBody} placeholder={tr('اكتب رسالة…', 'כתבו הודעה…', 'Write a message…')} style={styles.composerInput} /><Pressable accessibilityRole="button" accessibilityLabel={tr('إرسال', 'שליחה', 'Send')} disabled={!body.trim() || send.isPending} onPress={() => send.mutate()} style={[styles.send, { backgroundColor: body.trim() ? theme.colors.primary : theme.colors.disabledBackground }]}><PaperPlaneTilt size={20} color={body.trim() ? theme.colors.onPrimary : theme.colors.disabledContent} weight="fill" /></Pressable></View>} contentStyle={styles.conversation}>
-    <Surface tone="community" bordered={false}><View style={[styles.noticeRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}><ShieldCheck size={21} color={theme.colors.community} /><Text style={[typography.caption, { color: theme.colors.textPrimary, flex: 1 }]}>{tr('لا تشارك رموزاً بنكية أو كلمات مرور.', 'אין לשתף קודים בנקאיים או סיסמאות.', 'Never share banking codes or passwords.')}</Text></View></Surface>
-    {!messages.data?.length ? <EmptyState title={tr('ابدأ بالتعريف عن نفسك', 'התחילו בהיכרות קצרה', 'Start with a quick hello')} message={tr('استخدم المحادثة لتنسيق الوصول والتفاصيل المتعلقة بالمهمة فقط.', 'השתמשו בשיחה לתיאום הגעה ופרטי המשימה בלבד.', 'Use chat only to coordinate arrival and mission details.')} /> : null}
-    <View style={styles.messages}>{(messages.data ?? []).map(message => { const mine = message.sender_id === session?.user.id; return <View key={message.id} style={[styles.bubble, { alignSelf: mine ? (isRTL ? 'flex-start' : 'flex-end') : (isRTL ? 'flex-end' : 'flex-start'), backgroundColor: mine ? theme.colors.primary : theme.colors.surface, borderColor: theme.colors.border }]}><Text style={[typography.body, { color: mine ? theme.colors.onPrimary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{message.body}</Text><Text style={[typography.caption, { color: mine ? palette.civicAccentText : theme.colors.textMuted }]}>{new Date(message.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</Text></View> })}</View>
-  </AppScreen>
+  const other = useOtherParty(mission, true)
+  const [now, setNow] = useState(Date.now())
+  const [busy, setBusy] = useState(false)
+  const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [respondingToCompletion, setRespondingToCompletion] = useState(false)
+  const [justReleased, setJustReleased] = useState(false)
+  const prevRef = useRef<{ status: MissionStatus; helperId: string | null } | null>(null)
+  const volunteerCount = useQuery({
+    queryKey: mission.helper_id ? ['volunteer-completed-count', mission.helper_id] : ['volunteer-completed-count'],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: mission.helper_id })
+      return (data as number | null) ?? 0
+    },
+    enabled: !!mission.helper_id
+  })
+
+  useAndroidBackHandler(() => router.replace('/(tabs)'))
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const prev = prevRef.current
+    if (prev?.helperId && !mission.helper_id && mission.status === 'matching' && prev.status !== 'matching') setJustReleased(true)
+    prevRef.current = { status: mission.status, helperId: mission.helper_id }
+  }, [mission.status, mission.helper_id])
+
+  async function cancel() {
+    if (mission.status !== 'matching') return
+    if (!confirmingCancel) { setConfirmingCancel(true); return }
+    setBusy(true)
+    try { await missionRepository.cancel(mission.id) } catch (cause: any) { toast.show(translateActionError(t, cause), 'error') } finally { setBusy(false); setConfirmingCancel(false) }
+  }
+
+  async function respond(confirmed: boolean) {
+    setRespondingToCompletion(true)
+    try {
+      await missionRepository.confirmCompletion(mission.id, confirmed)
+      await queryClient.invalidateQueries({ queryKey: queryKeys.mission(mission.id) })
+    } catch (cause: any) { toast.show(translateActionError(t, cause), 'error') } finally { setRespondingToCompletion(false) }
+  }
+
+  const finished = mission.status === 'completed' || mission.status === 'cancelled'
+  const searching = mission.status === 'matching'
+  const awaitingConfirmation = mission.status === 'awaiting_confirmation'
+  const timelineIndex = mission.status === 'completed' ? TIMELINE.length : TIMELINE.findIndex(step => step.status === mission.status)
+  const showTimeline = timelineIndex !== -1
+  const elapsedSince = searching ? mission.created_at : mission.accepted_at ?? mission.created_at
+  const subtitle = searching ? t('activeRequest.subtitleSearching') : mission.status === 'completed' ? t('activeRequest.subtitleCompleted') : awaitingConfirmation ? t('activeRequest.subtitleAwaitingConfirmation') : t('activeRequest.subtitleTracking')
+
+  return (
+    <SafeAreaView style={styles.fill}>
+      <MissionHero
+        latitude={mission.request?.latitude ?? 31.7784}
+        longitude={mission.request?.longitude ?? 35.2066}
+        searching={searching}
+        onBack={() => router.replace('/(tabs)')}
+        header={mission.status === 'completed' ? (
+          <CompletedHeader title={t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)} subtitle={subtitle} />
+        ) : (
+          <>
+            <Text style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)}</Text>
+            <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{subtitle}</Text>
+            {showTimeline ? <View style={styles.timelineWrap}><MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /></View> : null}
+          </>
+        )}
+      />
+
+      <View style={[styles.sheet, { backgroundColor: theme.colors.surface }]}>
+        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
+          {justReleased && searching ? (
+            <Card tone="default" elevation="none" title={t('activeRequest.releasedNotice.title')} subtitle={t('activeRequest.releasedNotice.message')} />
+          ) : null}
+
+          {awaitingConfirmation ? (
+            <Card tone="primary" elevation="none">
+              <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.confirmPrompt')}</Text>
+              <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Button label={t('activeRequest.confirmReject')} variant="outline" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(false)} />
+                <Button label={t('activeRequest.confirmAccept')} variant="community" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(true)} />
+              </View>
+            </Card>
+          ) : null}
+
+          {other.data ? (
+            <Card
+              title={other.data.full_name || t('activeRequest.defaultVolunteerName')}
+              subtitle={t('points.completedCount', { count: volunteerCount.data ?? 0 })}
+              leading={<Avatar name={other.data.full_name || 'SANAD'} uri={other.data.avatar_url} size={52} tone="community" />}
+              trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
+            >
+              {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+            </Card>
+          ) : null}
+
+          <Card title={t('activeRequest.requestId')} subtitle={mission.id.slice(0, 8).toUpperCase()}>
+            {!finished ? (
+              <View style={styles.elapsedRow}>
+                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{searching ? t('activeRequest.waitingSince') : t('activeRequest.volunteerSince')}</Text>
+                <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{formatElapsed(now - new Date(elapsedSince).getTime(), t)}</Text>
+              </View>
+            ) : null}
+          </Card>
+
+          {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+
+          {finished ? <Button label={t('activeRequest.backToHome')} onPress={() => router.replace('/(tabs)')} /> : null}
+
+          {searching ? (
+            confirmingCancel ? (
+              <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Button label={t('activeRequest.cancelBack')} variant="outline" style={styles.confirmButton} onPress={() => setConfirmingCancel(false)} />
+                <Button label={t('activeRequest.cancelConfirm')} variant="danger" style={styles.confirmButton} loading={busy} onPress={cancel} />
+              </View>
+            ) : (
+              <Button label={t('activeRequest.cancel')} variant="outline" onPress={cancel} />
+            )
+          ) : null}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
+  )
 }
 
-export function MissionCompletedScreen() {
+function HelperMissionView({ mission }: { mission: Mission }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const tr = useTrilingual()
-  const t = useV2Text()
-  const router = useRouter()
-  const { missionId } = useLocalSearchParams<{ missionId: string }>()
-  return <AppScreen background={theme.colors.community} contentStyle={styles.completed}>
-    <View style={styles.completedIcon}><Check size={44} color={theme.colors.community} weight="bold" /></View>
-    <View style={{ gap: space.md }}><Text style={[typography.eyebrow, { color: palette.onCommunitySubtle, textAlign: isRTL ? 'right' : 'left' }]}>{tr('أثر مجتمعي مكتمل', 'השפעה קהילתית הושלמה', 'COMMUNITY IMPACT COMPLETE')}</Text><Text style={[typography.hero, { color: palette.onCivic, textAlign: isRTL ? 'right' : 'left' }]}>{t('mission.completedTitle')}</Text><Text style={[typography.body, { color: palette.onCommunityMuted, textAlign: isRTL ? 'right' : 'left' }]}>{tr('شكراً لكما. سُجلت المهمة بأمان ويمكنكما مشاركة تقييم خاص.', 'תודה לשניכם. המשימה תועדה ואפשר לשתף משוב פרטי.', 'Thank you both. The mission is safely recorded and private feedback is now available.')}</Text></View>
-    <Card tone="navy" bordered={false} title={tr('+25 نقطة أثر', '+25 נקודות השפעה', '+25 impact points')} subtitle={tr('تُضاف للمساند بعد تأكيد المهمة', 'נוספות למסייע לאחר אישור המשימה', 'Added to the helper after confirmation')} leading={<Star size={28} color={theme.colors.reward} weight="fill" />} />
-    <Button label={tr('تقييم التجربة', 'דירוג החוויה', 'Rate the experience')} size="lg" onPress={() => router.push({ pathname: '/mission/[missionId]/rating', params: { missionId: String(missionId) } })} />
-    <Button label={tr('العودة للرئيسية', 'חזרה לבית', 'Back home')} variant="ghost" onPress={() => router.replace('/(tabs)')} />
-  </AppScreen>
-}
-
-export function RatingScreen() {
-  const theme = useSanadTheme()
-  const typography = useAppTypography()
-  const tr = useTrilingual()
-  const t = useV2Text()
+  const { t } = useTranslation()
   const router = useRouter()
   const toast = useToast()
-  const { missionId } = useLocalSearchParams<{ missionId: string }>()
+  const queryClient = useQueryClient()
   const { session } = useAuth()
-  const mission = useMissionDetail(String(missionId))
-  const otherId = mission.data?.requester_id === session?.user.id ? mission.data?.helper_id : mission.data?.requester_id
-  const [score, setScore] = useState(0)
-  const [comment, setComment] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const options = [tr('محترم', 'מכבד/ת', 'Respectful'), tr('واضح', 'ברור/ה', 'Clear'), tr('في الموعد', 'בזמן', 'On time'), tr('شعرت بالأمان', 'הרגשתי בטוח/ה', 'Felt safe')]
-  const submit = useMutation({ mutationFn: () => safetyRepository.rate({ missionId: String(missionId), subjectId: otherId!, score, comment, tags }), onSuccess: () => { toast.show(tr('شكراً لملاحظاتك', 'תודה על המשוב', 'Thanks for your feedback'), 'success'); router.replace('/(tabs)/activity') }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  return <AppScreen header={<ScreenHeader title={t('mission.ratingTitle')} subtitle={t('mission.ratingBody')} back />} footer={<Button label={tr('إرسال التقييم', 'שליחת הדירוג', 'Submit rating')} disabled={score === 0 || !otherId} loading={submit.isPending} onPress={() => submit.mutate()} />} contentStyle={styles.content}>
-    <View style={styles.ratingHero}><Avatar name={tr('عضو المجتمع', 'חבר/ת הקהילה', 'Community member')} size={74} tone="community" /><RatingStars value={score} onChange={setScore} size={40} /><Text style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{score ? tr('شكراً — أخبرنا بالمزيد', 'תודה — ספרו לנו עוד', 'Thank you—tell us more') : tr('اختر من نجمة إلى خمس', 'בחרו בין כוכב אחד לחמישה', 'Choose one to five stars')}</Text></View>
-    <View style={styles.tags}>{options.map(tag => { const selected = tags.includes(tag); return <Pressable key={tag} onPress={() => setTags(current => selected ? current.filter(item => item !== tag) : [...current, tag])} style={[styles.tag, { backgroundColor: selected ? theme.colors.communitySoft : theme.colors.surface, borderColor: selected ? theme.colors.community : theme.colors.border }]}><Text style={[typography.smallMedium, { color: selected ? theme.colors.community : theme.colors.textSecondary }]}>{tag}</Text></Pressable> })}</View>
-    <TextArea label={tr('ملاحظة خاصة (اختياري)', 'הערה פרטית (אופציונלי)', 'Private note (optional)')} value={comment} onChangeText={setComment} maxLength={500} />
-  </AppScreen>
+  const other = useOtherParty(mission, false)
+  const [busy, setBusy] = useState(false)
+  const [confirmingRelease, setConfirmingRelease] = useState(false)
+  const [releaseReason, setReleaseReason] = useState<ReleaseReason | null>(null)
+  const [releasing, setReleasing] = useState(false)
+  const [completionStats, setCompletionStats] = useState<{ points: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null>(null)
+
+  useAndroidBackHandler(() => router.replace('/(tabs)'))
+
+  useEffect(() => {
+    if (mission.status !== 'completed' || completionStats) return
+    let cancelled = false
+    ;(async () => {
+      const [{ data: pointsRow }, { data: countData }] = await Promise.all([
+        supabase.from('volunteer_point_transactions').select('points').eq('request_id', mission.request_id).maybeSingle(),
+        supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: mission.helper_id })
+      ])
+      if (cancelled) return
+      const completedCount = (countData as number | null) ?? 0
+      const leveledUpTo = LEVEL_UP_THRESHOLDS.includes(completedCount) ? getVolunteerActivityLevel(completedCount) : null
+      setCompletionStats({ points: (pointsRow as { points: number } | null)?.points ?? 0, completedCount, leveledUpTo })
+    })()
+    return () => { cancelled = true }
+  }, [mission.status, mission.request_id, mission.helper_id, completionStats])
+
+  async function advance(status: MissionStatus) {
+    setBusy(true)
+    try {
+      await missionRepository.advance(mission.id, status)
+      await queryClient.invalidateQueries({ queryKey: queryKeys.mission(mission.id) })
+    } catch (cause: any) { toast.show(translateActionError(t, cause), 'error') } finally { setBusy(false) }
+  }
+
+  async function release() {
+    setReleasing(true)
+    try {
+      const { error } = await supabase.rpc('release_help_request', { p_request_id: mission.request_id, p_reason: releaseReason })
+      if (error) throw error
+      if (session) await queryClient.invalidateQueries({ queryKey: queryKeys.activeMission(session.user.id) })
+      router.replace('/(tabs)')
+    } catch (cause: any) { toast.show(translateActionError(t, cause), 'error') } finally { setReleasing(false) }
+  }
+
+  if (mission.status === 'cancelled') {
+    return (
+      <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
+        <SuccessCheckmark tone="danger" />
+        <Text style={[typography.h2, styles.centerText, { color: theme.colors.textPrimary }]}>{t('volunteerJob.status.cancelled')}</Text>
+        <Button label={t('volunteerJob.back')} onPress={() => router.replace('/(tabs)')} />
+      </SafeAreaView>
+    )
+  }
+
+  if (mission.status === 'completed') {
+    return <HelperCompletion stats={completionStats} onDone={() => router.replace('/(tabs)')} />
+  }
+
+  const awaitingConfirmation = mission.status === 'awaiting_confirmation'
+  const timelineIndex = TIMELINE.findIndex(step => step.status === mission.status)
+  const showTimeline = timelineIndex !== -1
+  const title = t(`volunteerJob.status.${STATUS_LABEL[mission.status]}`)
+
+  return (
+    <SafeAreaView style={styles.fill}>
+      <MissionHero
+        latitude={mission.request?.latitude ?? 31.7784}
+        longitude={mission.request?.longitude ?? 35.2066}
+        searching={false}
+        onBack={() => router.replace('/(tabs)')}
+        header={
+          <>
+            <Text style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{title}</Text>
+            <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{awaitingConfirmation ? t('volunteerJob.awaitingConfirmationText') : t('volunteerJob.subtitle')}</Text>
+            {showTimeline ? <View style={styles.timelineWrap}><MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /></View> : null}
+          </>
+        }
+      />
+
+      <View style={[styles.sheet, { backgroundColor: theme.colors.surface }]}>
+        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
+          {other.data ? (
+            <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'SANAD'} uri={other.data.avatar_url} size={52} tone="primary" />}>
+              {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+            </Card>
+          ) : null}
+
+          <Card title={t('volunteerJob.requestId')} subtitle={mission.id.slice(0, 8).toUpperCase()} />
+
+          {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+
+          {awaitingConfirmation ? null : (
+            <>
+              <Button label={t('volunteerJob.openInGoogleMaps')} variant="outline" onPress={() => Linking.openURL(directionsHref(mission.request?.latitude ?? 0, mission.request?.longitude ?? 0))} />
+              <Button label={t('volunteerJob.onMyWay')} disabled={mission.status !== 'assigned' || busy} loading={busy && mission.status === 'assigned'} onPress={() => advance('on_the_way')} />
+              <Button label={t('volunteerJob.arrivedButton')} variant="community" disabled={mission.status !== 'on_the_way' || busy} loading={busy && mission.status === 'on_the_way'} onPress={() => advance('arrived')} />
+              <Button label={t('volunteerJob.completeButton')} variant="community" disabled={mission.status !== 'arrived' || busy} loading={busy && mission.status === 'arrived'} onPress={() => advance('awaiting_confirmation')} />
+
+              {confirmingRelease ? (
+                <Card tone="emergency" elevation="none">
+                  <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.release.confirmTitle')}</Text>
+                  <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.release.confirmMessage')}</Text>
+                  <View style={[styles.reasonRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    {RELEASE_REASONS.map(reason => (
+                      <Pressable key={reason} onPress={() => setReleaseReason(current => (current === reason ? null : reason))} style={[styles.reasonChip, { backgroundColor: releaseReason === reason ? theme.colors.emergency : theme.colors.surface, borderColor: releaseReason === reason ? theme.colors.emergency : theme.colors.border }]}>
+                        <Text style={[typography.caption, { color: releaseReason === reason ? theme.colors.onEmergency : theme.colors.textPrimary }]}>{t(`volunteerJob.release.reasons.${reason}`)}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                  <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    <Button label={t('volunteerJob.release.back')} variant="outline" style={styles.confirmButton} onPress={() => { setConfirmingRelease(false); setReleaseReason(null) }} />
+                    <Button label={t('volunteerJob.release.confirm')} variant="danger" style={styles.confirmButton} loading={releasing} onPress={release} />
+                  </View>
+                </Card>
+              ) : (
+                <Pressable onPress={() => setConfirmingRelease(true)} style={styles.releaseLink}>
+                  <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'underline' }]}>{t('volunteerJob.release.button')}</Text>
+                </Pressable>
+              )}
+            </>
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
+  )
 }
 
-export function DisputeScreen() {
-  const tr = useTrilingual()
-  const router = useRouter()
-  const toast = useToast()
-  const { missionId } = useLocalSearchParams<{ missionId: string }>()
-  const [details, setDetails] = useState('')
-  const submit = useMutation({ mutationFn: () => safetyRepository.dispute(String(missionId), details), onSuccess: () => { toast.show(tr('تم إرسال الاعتراض لفريق الأمان', 'הערעור נשלח לצוות הבטיחות', 'Dispute sent to the safety team'), 'success'); router.replace({ pathname: '/mission/[missionId]', params: { missionId: String(missionId) } }) }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  return <SafetyForm title={tr('اعتراض على الإنهاء', 'ערעור על סיום', 'Dispute completion')} body={tr('اشرح باختصار لماذا لم تكتمل المساندة. سيُحفظ سجل المهمة للمراجعة.', 'הסבירו בקצרה מדוע הסיוע לא הושלם. יומן המשימה יישמר לבדיקה.', 'Briefly explain why support was not completed. The mission log is preserved for review.')} value={details} onChange={setDetails} submitLabel={tr('إرسال الاعتراض', 'שליחת הערעור', 'Submit dispute')} loading={submit.isPending} onSubmit={() => submit.mutate()} />
-}
-
-export function ReportScreen() {
-  const tr = useTrilingual()
-  const router = useRouter()
-  const toast = useToast()
-  const { missionId, userId } = useLocalSearchParams<{ missionId: string; userId?: string }>()
-  const [details, setDetails] = useState('')
-  const [category, setCategory] = useState('safety_concern')
-  const submit = useMutation({ mutationFn: () => safetyRepository.report({ missionId: String(missionId), reportedUserId: userId ? String(userId) : null, category, details }), onSuccess: () => { toast.show(tr('وصل البلاغ إلى فريق الأمان', 'הדיווח הגיע לצוות הבטיחות', 'Report delivered to the safety team'), 'success'); router.back() }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  return <SafetyForm title={tr('إبلاغ فريق الأمان', 'דיווח לצוות הבטיחות', 'Report to safety team')} body={tr('إذا كان هناك خطر مباشر، اتصل بالشرطة على 100 أولاً.', 'במקרה של סכנה מיידית, התקשרו קודם למשטרה 100.', 'If there is immediate danger, call Police at 100 first.')} value={details} onChange={setDetails} submitLabel={tr('إرسال البلاغ', 'שליחת הדיווח', 'Send report')} loading={submit.isPending} onSubmit={() => submit.mutate()} categories={[['safety_concern', tr('شعرت بعدم الأمان', 'הרגשתי לא בטוח/ה', 'I felt unsafe')], ['harassment', tr('سلوك غير لائق', 'התנהגות בלתי הולמת', 'Inappropriate behavior')], ['fraud', tr('طلب مال أو بيانات حساسة', 'בקשת כסף או מידע רגיש', 'Asked for money or sensitive data')], ['other', tr('سبب آخر', 'סיבה אחרת', 'Another reason')]]} category={category} onCategory={setCategory} />
-}
-
-export function BlockUserScreen() {
+function CompletedHeader({ title, subtitle }: { title: string; subtitle: string }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
-  const tr = useTrilingual()
-  const router = useRouter()
-  const toast = useToast()
-  const { userId } = useLocalSearchParams<{ userId: string }>()
-  const [reason, setReason] = useState('')
-  const block = useMutation({ mutationFn: () => safetyRepository.block(String(userId), reason), onSuccess: () => { toast.show(tr('لن تتم مطابقتكما مستقبلاً', 'לא תותאמו זה לזו בעתיד', 'You will not be matched again'), 'success'); router.replace('/(tabs)') }, onError: cause => toast.show(localizeAppError(cause, tr), 'error') })
-  return <AppScreen header={<ScreenHeader title={tr('حظر المستخدم', 'חסימת משתמש/ת', 'Block user')} back />} contentStyle={styles.content}>
-    <Surface tone="emergency" bordered={false} padding="xl" style={styles.blockHero}><Prohibit size={42} color={theme.colors.emergency} weight="duotone" /><Text style={[typography.h2, { color: theme.colors.textPrimary }]}>{tr('لن تتم مطابقتكما مرة أخرى', 'לא תותאמו שוב', 'You will not be matched again')}</Text><Text style={[typography.body, { color: theme.colors.textSecondary }]}>{tr('الحظر خاص. لن نخبر الطرف الآخر، ويمكن لفريق الأمان مراجعة البلاغات المرتبطة.', 'החסימה פרטית. הצד השני לא יקבל הודעה וצוות הבטיחות יוכל לבדוק דיווחים.', 'Blocking is private. The other person is not notified, and safety reports can still be reviewed.')}</Text></Surface>
-    <TextArea label={tr('السبب (اختياري)', 'סיבה (אופציונלי)', 'Reason (optional)')} value={reason} onChangeText={setReason} />
-    <Button label={tr('تأكيد الحظر', 'אישור חסימה', 'Confirm block')} variant="danger" loading={block.isPending} onPress={() => block.mutate()} />
-    <Button label={tr('إلغاء', 'ביטול', 'Cancel')} variant="ghost" onPress={() => router.back()} />
-  </AppScreen>
+  const { stageStyle } = useStaggeredReveal(2)
+  return (
+    <>
+      <SuccessCheckmark tone="success" />
+      <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{title}</Animated.Text>
+      <Animated.Text style={[typography.small, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{subtitle}</Animated.Text>
+    </>
+  )
 }
 
-function SafetyForm({ title, body, value, onChange, submitLabel, onSubmit, loading, categories, category, onCategory }: { title: string; body: string; value: string; onChange: (value: string) => void; submitLabel: string; onSubmit: () => void; loading: boolean; categories?: [string, string][]; category?: string; onCategory?: (value: string) => void }) {
+function HelperCompletion({ stats, onDone }: { stats: { points: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null; onDone: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const tr = useTrilingual()
-  return <AppScreen header={<ScreenHeader title={title} back />} footer={<Button label={submitLabel} variant="danger" disabled={value.trim().length < 10} loading={loading} onPress={onSubmit} />} contentStyle={styles.content}>
-    <Surface tone="emergency" bordered={false}><View style={[styles.noticeRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}><WarningCircle size={25} color={theme.colors.emergency} weight="duotone" /><Text style={[typography.body, { color: theme.colors.textPrimary, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{body}</Text></View></Surface>
-    {categories ? <View style={styles.reportCategories}>{categories.map(([id, label]) => <Pressable key={id} onPress={() => onCategory?.(id)} style={[styles.reportCategory, { borderColor: category === id ? theme.colors.emergency : theme.colors.border, backgroundColor: category === id ? theme.colors.emergencySoft : theme.colors.surface }]}><Text style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{label}</Text>{category === id ? <CheckCircle size={21} color={theme.colors.emergency} weight="fill" /> : null}</Pressable>)}</View> : null}
-    <TextArea label={tr('التفاصيل', 'פרטים', 'Details')} value={value} onChangeText={onChange} placeholder={tr('اكتب ما حدث بوضوح ومن دون معلومات حساسة…', 'תארו בבירור מה קרה, בלי מידע רגיש…', 'Describe what happened clearly, without sensitive information…')} maxLength={1000} required />
-  </AppScreen>
+  const { t } = useTranslation()
+  const { stageStyle } = useStaggeredReveal(4)
+  return (
+    <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
+      <SuccessCheckmark tone="success" />
+      <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.title')}</Animated.Text>
+      <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('volunteerJob.completion.message')}</Animated.Text>
+      {stats ? (
+        <>
+          <Animated.View style={[styles.statsCard, stageStyle(2), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+            <Text style={[typography.hero, { color: theme.colors.primary }]}>{t('volunteerJob.completion.pointsEarned', { points: stats.points })}</Text>
+            <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('points.completedCount', { count: stats.completedCount })}</Text>
+          </Animated.View>
+          <Animated.View style={[stageStyle(3), styles.completionActions]}>
+            {stats.leveledUpTo ? (
+              <View style={[styles.levelUpBanner, { flexDirection: isRTL ? 'row-reverse' : 'row', backgroundColor: theme.colors.primarySoft }]}>
+                <Star size={18} color={ACTIVITY_LEVEL_COLORS[stats.leveledUpTo]} weight="fill" />
+                <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}</Text>
+              </View>
+            ) : null}
+            <Button label={t('volunteerJob.completion.backHome')} onPress={onDone} />
+          </Animated.View>
+        </>
+      ) : (
+        <ActivityIndicator color={theme.colors.primary} />
+      )}
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
-  content: { gap: space.xl },
-  mapOverlay: { flex: 1, alignItems: 'center', gap: space.md },
-  quickActions: { gap: space.md, flexWrap: 'wrap' },
-  iconBox: { width: 46, height: 46, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
-  safetyRow: { minHeight: 72, alignItems: 'center', gap: space.md, borderTopWidth: 1, borderBottomWidth: 1, paddingVertical: space.md },
-  noticeRow: { alignItems: 'flex-start', gap: space.md },
-  composer: { alignItems: 'center', gap: space.sm }, composerInput: { minHeight: 42 }, send: { width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  conversation: { minHeight: 640 }, messages: { gap: space.md },
-  bubble: { maxWidth: '82%', borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: space.lg, paddingVertical: space.md, gap: 4 },
-  completed: { minHeight: 760, justifyContent: 'center', gap: space.xxl }, completedIcon: { width: 92, height: 92, borderRadius: 34, backgroundColor: palette.onCivic, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
-  ratingHero: { alignItems: 'center', gap: space.lg, paddingVertical: space.xl }, tags: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, justifyContent: 'center' }, tag: { borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: space.lg, paddingVertical: space.sm },
-  blockHero: { alignItems: 'center', gap: space.md }, reportCategories: { gap: space.sm }, reportCategory: { minHeight: 58, borderWidth: 1, borderRadius: radius.md, padding: space.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md }
+  fill: { flex: 1 },
+  center: { alignItems: 'center', justifyContent: 'center' },
+  unavailable: { gap: space.md, padding: space.xl },
+  centerText: { textAlign: 'center' },
+
+  mapArea: { height: 250 },
+  map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
+  backButton: { position: 'absolute', top: space.lg },
+  radarWrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
+  radarRing: { width: 90, height: 90, borderRadius: 45 },
+
+  capsuleWrap: { marginTop: -56, paddingHorizontal: space.lg, zIndex: 5 },
+  capsule: { borderRadius: radius.lg, borderWidth: 1, padding: space.xl, gap: space.xs },
+  timelineWrap: { marginTop: space.lg },
+
+  sheet: { flex: 1, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.md, zIndex: 1 },
+  sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: space.md },
+
+  elapsedRow: { gap: 2 },
+  photo: { width: '100%', height: 160, borderRadius: radius.md },
+  confirmRow: { gap: space.sm },
+  confirmButton: { flex: 1 },
+
+  reasonRow: { flexWrap: 'wrap', gap: space.sm },
+  reasonChip: { borderWidth: 1, borderRadius: radius.pill, paddingVertical: 8, paddingHorizontal: space.md },
+  releaseLink: { alignItems: 'center', paddingVertical: space.md },
+
+  completionContent: { alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xxl },
+  completionActions: { width: '100%', gap: space.md, alignItems: 'stretch' },
+  statsCard: { borderWidth: 1, borderRadius: radius.lg, paddingVertical: space.xl, paddingHorizontal: space.xxl, alignItems: 'center', gap: 6, width: '100%' },
+  levelUpBanner: { alignSelf: 'center', alignItems: 'center', gap: 8, borderRadius: radius.pill, paddingVertical: 10, paddingHorizontal: space.lg }
 })

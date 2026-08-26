@@ -1,2 +1,5 @@
-import { Redirect } from 'expo-router'
-export default function RequesterIndex() { return <Redirect href="/requester/emergency" /> }
+import { RequestFlowScreen } from '../../../src/features/requester/RequestFlowScreens'
+
+export default function RequesterRoute() {
+  return <RequestFlowScreen />
+}
