@@ -1,7 +1,28 @@
+import type { RealtimeChannel } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { isMissingDatabaseObject, normalizeAppError, throwIfError } from '../services/errors'
 import type { HelpRequest } from '../types'
 import type { Mission, MissionEvent, MissionMessage, MissionStatus } from './domainTypes'
+
+// supabase-js reuses one channel object per topic name (SupabaseClient
+// caches by topic), so calling `.channel(topic).on(...)` again for a topic
+// that's already joined/joining throws ("cannot add postgres_changes
+// callbacks... after subscribe()") instead of creating an independent
+// second subscription - confirmed live when MissionProvider's app-wide
+// mission subscription and a screen-level one raced for the same topic.
+// Guarding here (rather than in every caller) makes the primitive safe for
+// more than one subscriber, and for React StrictMode's mount/cleanup/
+// remount, whose synchronous re-invoke can beat the async removeChannel()
+// from the first cleanup.
+function subscribeOnce(topic: string, bind: (channel: RealtimeChannel) => RealtimeChannel) {
+  const realtimeTopic = `realtime:${topic}`
+  const existing = supabase.getChannels().find(channel => channel.topic === realtimeTopic)
+  if (existing && (existing.state === 'joined' || existing.state === 'joining')) {
+    return () => {}
+  }
+  const channel = bind(supabase.channel(topic)).subscribe()
+  return () => { void supabase.removeChannel(channel) }
+}
 
 const ACTIVE_MISSION_STATUSES: MissionStatus[] = ['matching', 'assigned', 'on_the_way', 'arrived', 'in_progress', 'awaiting_confirmation']
 const ACTIVE_LEGACY_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived', 'awaiting_confirmation']
@@ -139,16 +160,16 @@ export const missionRepository = {
   },
 
   subscribe(missionId: string, listener: () => void) {
-    const channel = supabase.channel(`mission:${missionId}`)
+    return subscribeOnce(`mission:${missionId}`, channel => channel
       .on('postgres_changes', { event: '*', schema: 'public', table: 'missions', filter: `id=eq.${missionId}` }, listener)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mission_events', filter: `mission_id=eq.${missionId}` }, listener)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mission_messages', filter: `mission_id=eq.${missionId}` }, listener)
-      .subscribe()
-    return () => { void supabase.removeChannel(channel) }
+    )
   },
 
   subscribeToOpenRequests(listener: () => void) {
-    const channel = supabase.channel('v2-open-requests').on('postgres_changes', { event: '*', schema: 'public', table: 'help_requests' }, listener).subscribe()
-    return () => { void supabase.removeChannel(channel) }
+    return subscribeOnce('v2-open-requests', channel => channel
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'help_requests' }, listener)
+    )
   }
 }

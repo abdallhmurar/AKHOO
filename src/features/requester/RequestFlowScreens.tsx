@@ -15,7 +15,7 @@ import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { AppScreen, MapPanel, ProgressHeader, ScreenHeader } from '../../components/v2'
-import { Button, Card, TextArea } from '../../components/ui'
+import { Button, Surface, TextArea } from '../../components/ui'
 import type { ServiceType } from '../../types'
 
 const SERVICES: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarning }[] = [
@@ -158,18 +158,19 @@ export function RequestFlowScreen() {
           {SERVICES.map(item => {
             const selected = service === item.key
             return (
-              <Card
-                key={item.key}
-                onPress={() => selectService(item.key)}
-                tone={selected ? 'primary' : 'default'}
-                padding="lg"
-                style={[styles.service, selected && { borderColor: theme.colors.primary, borderWidth: 1.5 }]}
-              >
-                <View style={[styles.serviceIcon, { backgroundColor: selected ? theme.colors.primary : theme.colors.primarySoft }]}>
-                  <item.Icon size={26} color={selected ? theme.colors.onPrimary : theme.colors.primary} weight={selected ? 'fill' : 'duotone'} />
-                </View>
-                <Text style={[typography.bodyMedium, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: 'center' }]}>{t(item.labelKey)}</Text>
-              </Card>
+              <Pressable key={item.key} onPress={() => selectService(item.key)} style={styles.servicePressable}>
+                <Surface
+                  tone={selected ? 'primary' : 'default'}
+                  padding="lg"
+                  elevation="soft"
+                  style={[styles.service, selected && { borderColor: theme.colors.primary, borderWidth: 1.5 }]}
+                >
+                  <View style={[styles.serviceIcon, { backgroundColor: selected ? theme.colors.primary : theme.colors.primarySoft }]}>
+                    <item.Icon size={26} color={selected ? theme.colors.onPrimary : theme.colors.primary} weight={selected ? 'fill' : 'duotone'} />
+                  </View>
+                  <Text style={[typography.bodyMedium, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: 'center' }]}>{t(item.labelKey)}</Text>
+                </Surface>
+              </Pressable>
             )
           })}
         </View>
@@ -230,7 +231,8 @@ export function RequestFlowScreen() {
 
 const styles = StyleSheet.create({
   grid: { flexWrap: 'wrap', gap: space.md },
-  service: { width: '47%', minHeight: 128, alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  servicePressable: { width: '47%' },
+  service: { minHeight: 128, alignItems: 'center', justifyContent: 'center', gap: space.sm },
   serviceIcon: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   detailsGroup: { gap: space.lg },
   photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },

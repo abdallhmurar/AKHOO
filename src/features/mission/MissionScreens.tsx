@@ -46,11 +46,16 @@ const STATUS_LABEL: Record<MissionStatus, string> = {
   cancelled: 'cancelled', disputed: 'awaiting_confirmation'
 }
 
+// MissionProvider already holds the one realtime subscription for the
+// signed-in user's active mission and invalidates queryKeys.mission(id) on
+// every change (src/providers/MissionProvider.tsx) - subscribing again here
+// for the same mission:${id} channel throws ("cannot add postgres_changes
+// callbacks... after subscribe()", confirmed live against a real account's
+// active mission) because supabase-js reuses one channel object per topic
+// name. The 10s poll below is the floor; MissionProvider's push covers the
+// rest, so this screen doesn't need its own subscription.
 function useMissionDetail(missionId: string) {
-  const queryClient = useQueryClient()
-  const query = useQuery({ queryKey: queryKeys.mission(missionId), queryFn: () => missionRepository.get(missionId), enabled: !!missionId, refetchInterval: 10_000 })
-  useEffect(() => (missionId ? missionRepository.subscribe(missionId, () => { void queryClient.invalidateQueries({ queryKey: queryKeys.mission(missionId) }) }) : undefined), [missionId, queryClient])
-  return query
+  return useQuery({ queryKey: queryKeys.mission(missionId), queryFn: () => missionRepository.get(missionId), enabled: !!missionId, refetchInterval: 10_000 })
 }
 
 // Real SANAD live-mission screen - the same map+capsule+sheet composition as
