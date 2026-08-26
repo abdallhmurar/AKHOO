@@ -3,7 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "moduleSuffixes": [".native", ".ios", ".android", "", ".web"]
+    "moduleSuffixes": [".native", ".ios", ".android", "", ".web"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
   "exclude": ["node_modules", "supabase/functions", "admin"]
 }

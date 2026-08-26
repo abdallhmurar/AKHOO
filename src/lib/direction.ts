@@ -4,9 +4,13 @@ import type { TextStyle, ViewStyle } from 'react-native'
 
 const RTL_LANGUAGES = new Set(['ar', 'he'])
 
+export function isRTLLanguage(language: string) {
+  return RTL_LANGUAGES.has(language.slice(0, 2))
+}
+
 export function useIsRTL() {
   const { i18n } = useTranslation()
-  return RTL_LANGUAGES.has(i18n.language)
+  return isRTLLanguage(i18n.language)
 }
 
 export function dirStyles(isRTL: boolean): {

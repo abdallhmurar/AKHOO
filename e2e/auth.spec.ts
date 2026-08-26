@@ -1,66 +1,41 @@
 import { test, expect } from '@playwright/test'
 
-// These tests only exercise client-side validation and navigation between
-// auth modes - no signup/login is ever submitted, so nothing here touches
-// Supabase or creates real data. Full account-creation/login flows are
-// covered by the throwaway disposable-account scripts documented in
-// e2e/README.md, run manually against the linked project.
+// Client-only checks: invalid forms are never submitted to Supabase.
+test.use({ locale: 'en-US' })
 
-// These assertions are written against the Arabic strings, so pin the
-// browser locale explicitly rather than relying on the host/CI machine's
-// ambient locale (Playwright's default context locale follows the host,
-// which is why this failed unpinned: it rendered the English UI instead).
-test.use({ locale: 'ar-SA' })
-
-test.describe('auth screen', () => {
-  test('shows the login form by default', async ({ page }) => {
-    await page.goto('/')
-    await expect(page.getByText('تسجيل الدخول', { exact: true }).first()).toBeVisible()
-    await expect(page.getByPlaceholder('you@example.com')).toBeVisible()
+test.describe('SANAD V2 authentication', () => {
+  test('renders the rebuilt login experience', async ({ page }) => {
+    await page.goto('/login')
+    await expect(page.getByText('Welcome back', { exact: true })).toBeVisible()
+    await expect(page.getByLabel('Email address')).toBeVisible()
+    await expect(page.getByRole('textbox', { name: 'Password' })).toBeVisible()
   })
 
-  test('rejects an empty login submission with translated field errors, no navigation', async ({ page }) => {
-    await page.goto('/')
-    // .last() is the submit button - the AuthShell title heading above it
-    // renders the same "تسجيل الدخول" text first in DOM order.
-    await page.getByText('تسجيل الدخول', { exact: true }).last().click()
-    await expect(page.getByText('أدخل البريد الإلكتروني.')).toBeVisible()
-    await expect(page.getByText('كلمة المرور لازم تكون 6 أحرف على الأقل.')).toBeVisible()
-    // Still on the login screen - a real submission would have navigated away.
-    await expect(page.getByPlaceholder('you@example.com')).toBeVisible()
+  test('validates an empty login without a backend mutation', async ({ page }) => {
+    await page.goto('/login')
+    await page.getByRole('button', { name: 'Continue securely' }).click()
+    await expect(page.getByText('Enter your email and password')).toBeVisible()
+    await expect(page).toHaveURL(/\/login$/)
   })
 
-  test('switches to the signup form and back without losing the typed email', async ({ page }) => {
-    await page.goto('/')
-    await page.getByText('إنشاء حساب جديد', { exact: true }).click()
-    await expect(page.getByPlaceholder('مثال: أحمد محمود')).toBeVisible()
-    await page.getByText('تسجيل الدخول', { exact: true }).last().click()
-    await expect(page.getByPlaceholder('05X-XXX-XXXX')).toHaveCount(0)
+  test('navigates between login, signup, and password recovery', async ({ page }) => {
+    await page.goto('/login')
+    await page.getByRole('link', { name: 'Create account' }).click()
+    await expect(page.getByText('Create your SANAD identity')).toBeVisible()
+    await page.getByRole('button', { name: 'Back' }).last().click()
+    await page.getByRole('link', { name: 'Forgot password?' }).click()
+    await expect(page.getByText('Reset your password')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Send reset link' })).toBeVisible()
   })
 
-  test('rejects an empty signup submission with translated field errors', async ({ page }) => {
-    await page.goto('/')
-    await page.getByText('إنشاء حساب جديد', { exact: true }).click()
-    await page.getByText('إنشاء الحساب', { exact: true }).click()
-    await expect(page.getByText('أدخل اسمك الكامل.')).toBeVisible()
-    await expect(page.getByText('رقم الهاتف إجباري.')).toBeVisible()
-  })
-
-  test('flags an invalid phone number on signup without submitting', async ({ page }) => {
-    await page.goto('/')
-    await page.getByText('إنشاء حساب جديد', { exact: true }).click()
-    await page.getByPlaceholder('مثال: أحمد محمود').fill('اختبار')
-    await page.getByPlaceholder('05X-XXX-XXXX').fill('123')
-    await page.getByPlaceholder('you@example.com').fill('test@example.com')
-    await page.getByText('إنشاء الحساب', { exact: true }).click()
-    await expect(page.getByText('رقم هاتف غير صحيح.')).toBeVisible()
-  })
-
-  test('navigates to forgot-password and back to login', async ({ page }) => {
-    await page.goto('/')
-    await page.getByText('نسيت كلمة المرور؟', { exact: true }).click()
-    await expect(page.getByText('نسيت كلمة المرور؟', { exact: true }).first()).toBeVisible()
-    await page.getByText('العودة لتسجيل الدخول', { exact: true }).click()
-    await expect(page.getByPlaceholder('••••••••')).toBeVisible()
+  test('validates the complete signup form before submission', async ({ page }) => {
+    await page.goto('/signup')
+    await page.getByLabel('Full name').fill('Jerusalem Test User')
+    await page.getByLabel('Phone number').fill('123')
+    await page.getByLabel('Email address').fill('test@example.com')
+    await page.getByRole('textbox', { name: 'Password' }).fill('short')
+    await page.getByRole('button', { name: 'Create account' }).click()
+    await expect(page.getByText('Check every field. Password needs 8 characters and a number.')).toBeVisible()
+    await expect(page).toHaveURL(/\/signup$/)
   })
 })

@@ -3,9 +3,9 @@
     "name": "سَنَد",
     "slug": "sanad",
     "scheme": "sanad",
-    "version": "0.1.0",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.sanad.help",
@@ -25,6 +25,9 @@
       ]
     },
     "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-splash-screen",
       [
         "expo-location",
         {
@@ -36,12 +39,18 @@
       [
         "expo-notifications",
         {
-          "color": "#2F80FF"
+          "color": "#1768E5"
         }
       ],
       "expo-font",
       "@maplibre/maplibre-react-native"
     ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "web": {
+      "bundler": "metro"
+    },
     "extra": {
       "eas": {
         "projectId": "aa20e078-807b-4a20-ab29-b36f36d491de"

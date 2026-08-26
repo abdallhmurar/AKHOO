@@ -7,14 +7,20 @@ import { defineConfig, devices } from '@playwright/test'
 // baked into a suite that runs unattended against production data).
 export default defineConfig({
   testDir: 'e2e',
-  fullyParallel: true,
+  // Metro performs one expensive cold bundle. Serial browser work avoids
+  // twelve simultaneous first-load requests timing out on the bundler UI.
+  fullyParallel: false,
+  workers: 1,
+  timeout: 120_000,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:8090',
-    trace: 'retain-on-failure'
+    trace: 'retain-on-failure',
+    actionTimeout: 90_000
   },
+  expect: { timeout: 90_000 },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npx expo start --web --port 8090',

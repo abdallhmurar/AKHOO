@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleProp, StyleSheet, Text, View, ViewStyle } from 
 import { Camera, Map, Marker } from '@maplibre/maplibre-react-native'
 import type { CameraRef } from '@maplibre/maplibre-react-native'
 import { useTranslation } from 'react-i18next'
-import { colors, radius } from '../lib/theme'
+import { colors, palette, radius } from '../lib/theme'
 import { MAP_DEFAULT_ZOOM, MAP_FALLBACK_CENTER, MAP_FIT_BOUNDS_MAX_ZOOM, estimateZoomForSpan, MAP_STYLE_URL } from '../lib/mapProvider'
 import type { SanadMapMarker, SanadMapPoint, SanadMapRef } from './SanadMap.types'
 
@@ -115,8 +115,8 @@ export function SanadMap({
 const styles = StyleSheet.create({
   wrap: { borderRadius: radius.md, overflow: 'hidden', borderWidth: 1, borderColor: colors.border, marginTop: 12 },
   map: { flex: 1, backgroundColor: colors.sageSoft },
-  pin: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.forest, borderWidth: 3, borderColor: '#fff' },
-  requestPin: { width: 18, height: 18, borderRadius: 9, backgroundColor: colors.sand, borderWidth: 3, borderColor: '#fff' },
+  pin: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.forest, borderWidth: 3, borderColor: palette.onCivic },
+  requestPin: { width: 18, height: 18, borderRadius: 9, backgroundColor: colors.sand, borderWidth: 3, borderColor: palette.onCivic },
   requestPinSelected: { width: 26, height: 26, borderRadius: 13, backgroundColor: colors.forest, borderWidth: 4 },
   loadingOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', gap: 8 },
   loadingText: { color: colors.forest, fontSize: 12.5, fontWeight: '700' }

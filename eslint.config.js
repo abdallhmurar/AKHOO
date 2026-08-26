@@ -5,6 +5,12 @@ module.exports = defineConfig([
   {
     ignores: [
       'dist/**',
+      'dist-v2-check/**',
+      'dist-v2-android-check/**',
+      'dist-v2-all-check/**',
+      '.expo/**',
+      'playwright-report/**',
+      'test-results/**',
       '.baseline-dist/**',
       '.gh-pages-worktree/**',
       'node_modules/**',

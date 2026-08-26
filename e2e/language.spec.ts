@@ -1,40 +1,36 @@
 import { test, expect } from '@playwright/test'
 
-// The language picker itself only lives on the authenticated Account
-// screen, so these tests drive language selection the way the app's own
-// detectDeviceLanguage() does - via the browser/OS locale - rather than
-// requiring a real login. This still exercises the real code path (src/lib/
-// i18n.ts) and covers the AR/HE/EN + RTL/LTR matrix without touching
-// Supabase.
-
-test.describe('language detection + RTL/LTR', () => {
-  test('defaults to Arabic (RTL) with no stored preference and no matching browser locale', async ({ browser }) => {
-    const context = await browser.newContext({ locale: 'fr-FR' })
+test.describe('first launch and language direction', () => {
+  test('starts in Arabic RTL', async ({ browser }) => {
+    const context = await browser.newContext({ locale: 'ar-SA' })
     const page = await context.newPage()
-    await page.goto('/')
-    await expect(page.getByText('تسجيل الدخول', { exact: true }).first()).toBeVisible()
+    await page.goto('/language')
+    await expect(page.getByText('اختر لغتك')).toBeVisible()
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
     await context.close()
   })
 
-  test('renders Hebrew (RTL) for a he-IL browser locale', async ({ browser }) => {
+  test('renders Hebrew in RTL', async ({ browser }) => {
     const context = await browser.newContext({ locale: 'he-IL' })
     const page = await context.newPage()
-    await page.goto('/')
-    await expect(page.getByText('התחברות', { exact: true }).first()).toBeVisible()
+    await page.goto('/language')
+    await expect(page.getByText('בחירת שפה')).toBeVisible()
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     await expect(page.locator('html')).toHaveAttribute('lang', 'he')
     await context.close()
   })
 
-  test('renders English (LTR) for an en-US browser locale', async ({ browser }) => {
+  test('renders English in LTR and completes first launch', async ({ browser }) => {
     const context = await browser.newContext({ locale: 'en-US' })
     const page = await context.newPage()
     await page.goto('/')
-    await expect(page.getByText('Log In', { exact: true }).first()).toBeVisible()
+    await expect(page.getByText('Choose your language')).toBeVisible()
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await page.getByRole('radio').filter({ hasText: 'English' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page.getByText('Nearby support, when you need it')).toBeVisible()
+    await expect(page).toHaveURL(/\/welcome$/)
     await context.close()
   })
 })

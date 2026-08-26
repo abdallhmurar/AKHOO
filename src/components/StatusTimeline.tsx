@@ -3,7 +3,7 @@ import type { ComponentType } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Check } from 'phosphor-react-native'
 import type { IconProps } from 'phosphor-react-native'
-import { colors, font, radius, shadow } from '../lib/theme'
+import { colors, font, palette, radius, shadow } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 
 // Horizontal segmented tracker with icon nodes (reference board: 21st.dev
@@ -34,7 +34,7 @@ export function StatusTimeline({
           return (
             <Fragment key={step.key}>
               <View style={[styles.node, done && styles.nodeDone, current && styles.nodeCurrent]}>
-                <Icon size={13} color={done || current ? '#fff' : colors.muted} weight={done || current ? 'fill' : 'regular'} />
+                <Icon size={13} color={done || current ? palette.onCivic : colors.muted} weight={done || current ? 'fill' : 'regular'} />
               </View>
               {index < steps.length - 1 ? <View style={[styles.track, done && styles.trackDone]} /> : null}
             </Fragment>

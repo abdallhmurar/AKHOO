@@ -1,6 +1,10 @@
 node_modules/
 .expo/
+expo-env.d.ts
 dist/
+dist-v2-check/
+dist-v2-android-check/
+dist-v2-all-check/
 .env
 *.log
 .DS_Store

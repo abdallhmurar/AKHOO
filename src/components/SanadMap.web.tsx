@@ -96,12 +96,13 @@ export function SanadMap({
 
     const resizeObserver = new ResizeObserver(() => map.resize())
     resizeObserver.observe(containerRef.current)
+    const requestMarkers = requestMarkersRef.current
 
     return () => {
       clearTimeout(revealTimeout)
       resizeObserver.disconnect()
-      requestMarkersRef.current.forEach(marker => marker.remove())
-      requestMarkersRef.current.clear()
+      requestMarkers.forEach(marker => marker.remove())
+      requestMarkers.clear()
       map.remove()
       mapRef.current = null
       markerRef.current = null

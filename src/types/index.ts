@@ -16,6 +16,12 @@ export type HelpRequest = {
   photo_url: string | null
   awaiting_confirmation_at: string | null
   confirmation_rejected_at: string | null
+  /** Additive SANAD V2 fields; optional while older deployments roll out. */
+  category_id?: string | null
+  scenario_id?: string | null
+  urgency?: 'standard' | 'urgent' | 'emergency_redirected'
+  location_accuracy?: number | null
+  location_label?: string | null
 }
 
 export type Profile = {

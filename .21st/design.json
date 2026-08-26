@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "project": {
+    "name": "sanad",
+    "productType": "Jerusalem-first civic assistance mobile platform",
+    "stack": [
+      "react-native",
+      "expo-router"
+    ]
+  },
+  "sources": {
+    "tokens": ["src/lib/theme.ts", "src/lib/typography.ts"],
+    "components": ["src/components/ui", "src/components/v2"],
+    "assets": ["assets"],
+    "instructions": [".21st/DESIGN.md"]
+  },
+  "design": {
+    "colorMode": "light-first semantic system with dark-safe component tones",
+    "colors": {
+      "navy": "#0B1F33",
+      "signalBlue": "#1768E5",
+      "communityTeal": "#147D62",
+      "emergencyCoral": "#C93D34",
+      "rewardGold": "#D99B22",
+      "fog": "#F3F6FA"
+    },
+    "typography": {
+      "ar": "Noto Sans Arabic",
+      "he": "Noto Sans Hebrew",
+      "en": "Inter"
+    },
+    "spacing": { "scale": [4, 8, 12, 16, 24, 32, 40, 48] },
+    "radius": { "control": 12, "card": 18, "sheet": 28, "pill": 999 },
+    "shadows": { "rule": "Use shadows only for floating navigation, modals, sheets, and map controls" },
+    "motion": { "rule": "Calm, functional, reduced-motion aware" },
+    "density": "comfortable mobile"
+  },
+  "components": {
+    "installed": ["components/ui", "components/v2"],
+    "preferredPrimitives": ["accessible React Native primitives", "map-first mission sheet", "four-tab navigation"],
+    "patterns": ["equal need-help and can-help actions", "signal-led status hierarchy", "immutable mission timeline"]
+  },
+  "constraints": {
+    "must": [
+      "Arabic and Hebrew RTL plus English LTR",
+      "equal prominence for I Need Help and I Can Help",
+      "accessible controls with loading, disabled, and error states",
+      "map-first live mission states",
+      "use Civic Signal semantic tokens"
+    ],
+    "avoid": [
+      "restyling the old screen layouts",
+      "emergency-red everywhere",
+      "decorative gradients and glass effects",
+      "unlabeled icon-only controls",
+      "hardcoded physical left/right layout"
+    ]
+  },
+  "decisions": [
+    {
+      "name": "SANAD V2 Civic Signal",
+      "status": "approved",
+      "reason": "Calm civic infrastructure with decisive signal hierarchy and human community warmth",
+      "source": "approved sanad-v2-visual-direction.html and implementation brief"
+    }
+  ],
+  "evidence": [
+    {
+      "fact": "project.stack:react-native+expo-router",
+      "source": "package.json"
+    },
+    {
+      "fact": "design.tokens:civic-signal",
+      "source": "src/lib/theme.ts"
+    }
+  ],
+  "generatedAt": "2026-08-26T10:30:00.000Z"
+}
