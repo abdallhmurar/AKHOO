@@ -56,6 +56,12 @@
         "projectId": "aa20e078-807b-4a20-ab29-b36f36d491de"
       }
     },
-    "owner": "abad003"
+    "owner": "abad003",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/aa20e078-807b-4a20-ab29-b36f36d491de"
+    }
   }
 }
