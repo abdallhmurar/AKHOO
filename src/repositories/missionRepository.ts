@@ -2,7 +2,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { isMissingDatabaseObject, normalizeAppError, throwIfError } from '../services/errors'
 import type { HelpRequest } from '../types'
-import type { Mission, MissionEvent, MissionMessage, MissionStatus } from './domainTypes'
+import type { Mission, MissionStatus } from './domainTypes'
 
 // supabase-js reuses one channel object per topic name (SupabaseClient
 // caches by topic), so calling `.channel(topic).on(...)` again for a topic
@@ -85,35 +85,6 @@ export const missionRepository = {
     return result.data ? attachRequest(result.data as Omit<Mission, 'request' | 'source'>) : null
   },
 
-  async events(missionId: string): Promise<MissionEvent[]> {
-    const { data, error } = await supabase.from('mission_events').select('*').eq('mission_id', missionId).order('created_at')
-    if (error && isMissingDatabaseObject(error)) return []
-    throwIfError(error, { domain: 'missions', operation: 'events' })
-    return (data ?? []) as MissionEvent[]
-  },
-
-  async messages(missionId: string): Promise<MissionMessage[]> {
-    const { data, error } = await supabase.from('mission_messages').select('*').eq('mission_id', missionId).order('created_at')
-    if (error && isMissingDatabaseObject(error)) return []
-    throwIfError(error, { domain: 'missions', operation: 'messages' })
-    return (data ?? []) as MissionMessage[]
-  },
-
-  async helperLocation(missionId: string): Promise<{ latitude: number; longitude: number; updated_at: string } | null> {
-    const { data, error } = await supabase.rpc('get_mission_helper_location', { p_mission_id: missionId })
-    if (error && isMissingDatabaseObject(error)) return null
-    throwIfError(error, { domain: 'missions', operation: 'helper-location' })
-    const value = Array.isArray(data) ? data[0] : data
-    if (!value || value.latitude == null || value.longitude == null) return null
-    return value as { latitude: number; longitude: number; updated_at: string }
-  },
-
-  async sendMessage(missionId: string, body: string): Promise<MissionMessage> {
-    const { data, error } = await supabase.rpc('send_mission_message', { p_mission_id: missionId, p_body: body.trim() })
-    throwIfError(error, { domain: 'missions', operation: 'send-message' })
-    return (Array.isArray(data) ? data[0] : data) as MissionMessage
-  },
-
   async accept(missionId: string): Promise<Mission> {
     const result = await supabase.rpc('accept_mission', { p_mission_id: missionId })
     if (result.error && isMissingDatabaseObject(result.error)) {
@@ -162,8 +133,6 @@ export const missionRepository = {
   subscribe(missionId: string, listener: () => void) {
     return subscribeOnce(`mission:${missionId}`, channel => channel
       .on('postgres_changes', { event: '*', schema: 'public', table: 'missions', filter: `id=eq.${missionId}` }, listener)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mission_events', filter: `mission_id=eq.${missionId}` }, listener)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mission_messages', filter: `mission_id=eq.${missionId}` }, listener)
     )
   },
 

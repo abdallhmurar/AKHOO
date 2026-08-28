@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 import { throwIfError } from '../services/errors'
-import type { BusinessPhoto, BusinessRating, Membership, Partner, PartnerOffer, Review } from '../types'
+import type { BusinessPhoto, BusinessRating, Partner, PartnerOffer, Review } from '../types'
 
 export type BusinessDetail = Partner & { photos: BusinessPhoto[]; rating: BusinessRating | null; offers: PartnerOffer[]; reviews: Review[] }
 
@@ -45,23 +45,5 @@ export const communityRepository = {
     const { data, error } = await supabase.from('partner_offers').select('*, partner:partners(*)').eq('id', id).eq('status', 'approved').maybeSingle()
     throwIfError(error, { domain: 'community', operation: 'offer' })
     return data as PartnerOffer | null
-  },
-
-  async membership(userId: string): Promise<Membership | null> {
-    const { data, error } = await supabase.from('memberships').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle()
-    throwIfError(error, { domain: 'community', operation: 'membership' })
-    return data as Membership | null
-  },
-
-  async requestPlusMembership(market = 'jerusalem') {
-    const { data, error } = await supabase.rpc('request_sanad_plus_membership', { p_market: market })
-    throwIfError(error, { domain: 'community', operation: 'request-plus-membership' })
-    return (Array.isArray(data) ? data[0] : data) as Membership
-  },
-
-  async redeemOffer(offerId: string) {
-    const { data, error } = await supabase.rpc('redeem_offer', { p_offer_id: offerId })
-    throwIfError(error, { domain: 'community', operation: 'redeem-offer' })
-    return data
   }
 }
