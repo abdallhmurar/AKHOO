@@ -8,7 +8,7 @@ import { normalizeAppError, type AppError } from '../services/errors'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
 
-type AuthStatus = 'restoring' | 'signed-out' | 'signed-in' | 'session-expired' | 'restricted'
+type AuthStatus = 'restoring' | 'signed-out' | 'signed-in' | 'restricted'
 
 type AuthContextValue = {
   session: Session | null
@@ -21,7 +21,6 @@ type AuthContextValue = {
   signUp: (input: SignUpInput) => ReturnType<typeof authRepository.signUp>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
-  clearSessionState: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -32,8 +31,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [status, setStatus] = useState<AuthStatus>('restoring')
   const [error, setError] = useState<AppError | null>(null)
   const mounted = useRef(true)
-  const manualSignOut = useRef(false)
-  const previousUser = useRef<string | null>(null)
 
   const loadProfile = useCallback(async (userId: string) => {
     try {
@@ -58,7 +55,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
         if (initialUrl) await consumeAuthLink(initialUrl)
         const restored = await authRepository.getSession()
         if (!mounted.current) return
-        previousUser.current = restored?.user.id ?? null
         setSession(restored)
         if (restored) await loadProfile(restored.user.id)
         else setStatus('signed-out')
@@ -69,19 +65,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     }
     void restore()
-    const unsubscribeAuth = authRepository.subscribe((event, next) => {
+    const unsubscribeAuth = authRepository.subscribe((_event, next) => {
       if (!mounted.current) return
-      const hadUser = previousUser.current
-      const nextUser = next?.user.id ?? null
-      previousUser.current = nextUser
       setSession(next)
+      const nextUser = next?.user.id ?? null
       if (nextUser) {
         void loadProfile(nextUser)
       } else {
         setProfile(null)
-        const unexpected = hadUser && event === 'SIGNED_OUT' && !manualSignOut.current
-        setStatus(unexpected ? 'session-expired' : 'signed-out')
-        manualSignOut.current = false
+        setStatus('signed-out')
       }
     })
     const linkSubscription = Linking.addEventListener('url', ({ url }) => {
@@ -107,18 +99,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [])
 
   const signOut = useCallback(async () => {
-    manualSignOut.current = true
     await signOutSafely()
   }, [])
 
   const refreshProfile = useCallback(async () => {
     if (session?.user.id) await loadProfile(session.user.id)
   }, [session?.user.id, loadProfile])
-
-  const clearSessionState = useCallback(() => {
-    setStatus(session ? 'signed-in' : 'signed-out')
-    setError(null)
-  }, [session])
 
   const value = useMemo<AuthContextValue>(() => ({
     session,
@@ -130,9 +116,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     signIn,
     signUp,
     signOut,
-    refreshProfile,
-    clearSessionState
-  }), [session, profile, status, error, signIn, signUp, signOut, refreshProfile, clearSessionState])
+    refreshProfile
+  }), [session, profile, status, error, signIn, signUp, signOut, refreshProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -13,7 +13,7 @@ import { supabase } from '../../lib/supabase'
 import { buildAvailableUpsertPayload } from '../../lib/volunteerAvailability'
 import type { NearbyRequest } from '../../lib/nearbyRequests'
 import { useAndroidBackHandler } from '../../lib/useAndroidBackHandler'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -143,7 +143,8 @@ export function HelperHomeScreen() {
       if (!available) {
         const position = await getCurrentCoords()
         const pushToken = await registerForPushNotificationsAsync().catch(() => null)
-        await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, pushToken))
+        const { error } = await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, pushToken))
+        if (error) throw error
         setCoords(position)
         setAvailable(true)
         await loadRequests(position)
@@ -196,9 +197,9 @@ export function HelperHomeScreen() {
         </Card>
         <SectionHeading title={t('volunteer.howItWorks.title')} />
         <View style={styles.howItWorksList}>
-          <HowItWorksRow index={1} Icon={MapPin} text={t('volunteer.howItWorks.mapItem')} last={false} />
-          <HowItWorksRow index={2} Icon={HandHeart} text={t('volunteer.howItWorks.chooseItem')} last={false} />
-          <HowItWorksRow index={3} Icon={Star} text={t('volunteer.howItWorks.starItem')} last />
+          <HowItWorksRow Icon={MapPin} text={t('volunteer.howItWorks.mapItem')} last={false} />
+          <HowItWorksRow Icon={HandHeart} text={t('volunteer.howItWorks.chooseItem')} last={false} />
+          <HowItWorksRow Icon={Star} text={t('volunteer.howItWorks.starItem')} last />
         </View>
       </AppScreen>
     )
@@ -210,7 +211,7 @@ export function HelperHomeScreen() {
         <SanadMap ref={mapRef} latitude={coords.latitude} longitude={coords.longitude} zoom={13} interactive markers={requestMarkers} selectedId={selectedId} onMarkerPress={setSelectedId} style={styles.map} />
       ) : null}
 
-      <View style={[styles.topBar, shadow.floating, { top: space.lg, backgroundColor: theme.colors.surface, borderColor: theme.colors.border, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.topBar, shadow.floating, { top: space.lg, backgroundColor: theme.colors.surface, borderColor: theme.colors.border, ...dirStyles(isRTL).row }]}>
         <IconButton label={t('common.back')} size={36} icon={<BackIcon size={18} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
         <View style={styles.statusPillWrap}>
           <StatusBadge tone="success" dot label={requests.length ? `${t('volunteer.availableNow')} · ${t('volunteer.nearbyCount', { count: requests.length })}` : t('volunteer.availableNow')} />
@@ -240,26 +241,26 @@ export function HelperHomeScreen() {
         {selectedRequest ? (
           <>
             <StatusBadge tone="success" dot label={t('volunteer.sheet.newNearby')} />
-            <View style={[styles.sheetTop, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.sheetTop, dirStyles(isRTL).row]}>
               <View style={[styles.sheetIcon, { backgroundColor: theme.colors.primarySoft }]}>
                 {(() => { const Svc = serviceByKey[selectedRequest.service_type].Icon; return <Svc size={26} color={theme.colors.primary} weight="duotone" /> })()}
               </View>
               <Text style={[typography.h3, { color: theme.colors.textPrimary, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{t(serviceByKey[selectedRequest.service_type].labelKey)}</Text>
             </View>
-            <View style={[styles.tagsRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-              <View style={[styles.tag, { backgroundColor: theme.colors.primarySoft, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.tagsRow, dirStyles(isRTL).row]}>
+              <View style={[styles.tag, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
                 <MapPin size={12} color={theme.colors.primary} weight="fill" />
                 <Text style={[typography.caption, { color: theme.colors.primary }]}>{t('volunteer.distanceKm', { distance: selectedRequest.distance.toFixed(1) })}</Text>
               </View>
-              <View style={[styles.tag, { backgroundColor: theme.colors.primarySoft, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={[styles.tag, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
                 <Clock size={12} color={theme.colors.primary} weight="fill" />
                 <Text style={[typography.caption, { color: theme.colors.primary }]}>{formatElapsed(now - new Date(selectedRequest.created_at).getTime(), t)}</Text>
               </View>
             </View>
             {selectedRequest.note ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{selectedRequest.note}</Text> : null}
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} /> : null}
-            <View style={[styles.sheetActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-              <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${selectedRequest.latitude},${selectedRequest.longitude}`)} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.sheetActions, dirStyles(isRTL).row]}>
+              <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${selectedRequest.latitude},${selectedRequest.longitude}`)} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
                 <MapPin size={16} color={theme.colors.primary} />
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('volunteer.openExternal')}</Text>
               </Pressable>
@@ -272,13 +273,12 @@ export function HelperHomeScreen() {
   )
 }
 
-function HowItWorksRow({ index, Icon, text, last }: { index: number; Icon: Icon; text: string; last: boolean }) {
+function HowItWorksRow({ Icon, text, last }: { Icon: Icon; text: string; last: boolean }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  void index
   return (
-    <View style={[styles.howItWorksRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+    <View style={[styles.howItWorksRow, dirStyles(isRTL).row]}>
       <View style={styles.howItWorksRailCol}>
         <View style={[styles.howItWorksNode, { backgroundColor: theme.colors.communitySoft, borderColor: theme.colors.border }]}>
           <Icon size={16} color={theme.colors.community} weight="duotone" />

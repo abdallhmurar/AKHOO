@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import { Modal as NativeModal, Pressable, StyleSheet, Text, View } from 'react-native'
 import { X } from 'phosphor-react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { IconButton } from './IconButton'
@@ -26,7 +26,7 @@ export function Modal({ visible, onClose, title, dismissible = true, children }:
         <Pressable accessibilityRole="button" accessibilityLabel={closeLabel} disabled={!dismissible} onPress={onClose} style={StyleSheet.absoluteFill} />
         <View accessibilityViewIsModal style={[styles.dialog, shadow.floating, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           {title || dismissible ? (
-            <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.header, dirStyles(isRTL).row]}>
               {title ? <Text style={[typography.h3, { color: theme.colors.textPrimary, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text> : <View style={styles.spacer} />}
               {dismissible ? <IconButton label={closeLabel} size={38} icon={<X size={19} color={theme.colors.textPrimary} />} onPress={onClose} /> : null}
             </View>

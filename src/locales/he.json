@@ -434,6 +434,7 @@
       "notAvailableInMarket": "הפעלת חברות SANAD+ עדיין לא זמינה באזור שלך."
     },
     "offer": {
+      "title": "פרטי המבצע",
       "use": "השתמש במבצע",
       "free": "חינם",
       "termsTitle": "תנאים",
@@ -445,6 +446,8 @@
       "notFound": "מבצע זה כבר לא זמין."
     },
     "business": {
+      "title": "פרטי העסק",
+      "verified": "עסק מאומת",
       "hasOffer": "הטבה",
       "call": "התקשרות",
       "whatsapp": "וואטסאפ",

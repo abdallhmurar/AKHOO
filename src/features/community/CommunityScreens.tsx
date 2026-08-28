@@ -11,7 +11,7 @@ import { telHref, whatsappHref, directionsHref } from '../../lib/contactLinks'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../../lib/market'
 import { useMembership, resolveOfferUseAction } from '../../lib/membership'
 import { computeOfferPriceDisplay, formatPrice } from '../../lib/offerPricing'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -134,13 +134,13 @@ export function CommunityHubScreen() {
           {data.offers.length === 0 ? (
             <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
           ) : (
-            <View style={[styles.rail, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>{data.offers.map(offer => <OfferCard key={offer.id} offer={offer} business={businessById[offer.partner_id]} rating={data.ratings[offer.partner_id]} onPress={() => openOffer(offer.id)} />)}</View>
+            <View style={[styles.rail, dirStyles(isRTL).row]}>{data.offers.map(offer => <OfferCard key={offer.id} offer={offer} business={businessById[offer.partner_id]} rating={data.ratings[offer.partner_id]} onPress={() => openOffer(offer.id)} />)}</View>
           )}
           <SectionHeading title={t('perks.businessesTitle')} />
           {data.businesses.length === 0 ? (
             <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
           ) : (
-            <View style={[styles.grid, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>{data.businesses.map(business => <BusinessCard key={business.id} business={business} rating={data.ratings[business.id]} hasOffer={businessHasOffer.has(business.id)} onPress={() => openBusiness(business.id)} />)}</View>
+            <View style={[styles.grid, dirStyles(isRTL).row]}>{data.businesses.map(business => <BusinessCard key={business.id} business={business} rating={data.ratings[business.id]} hasOffer={businessHasOffer.has(business.id)} onPress={() => openBusiness(business.id)} />)}</View>
           )}
         </>
       )}
@@ -187,12 +187,12 @@ export function BusinessDetailScreen() {
       )}
 
       <Card>
-        <View style={[styles.row, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.row, dirStyles(isRTL).row]}>
           <Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{t(`perks.categories.${business.category}`)}</Text>
           <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} />
         </View>
         {business.description ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left', marginTop: space.sm }]}>{business.description}</Text> : null}
-        <View style={[styles.quickButtons, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.quickButtons, dirStyles(isRTL).row]}>
           {business.phone ? <Button fullWidth={false} label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
           {business.whatsapp ? <Button fullWidth={false} label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
           {business.latitude != null && business.longitude != null ? <Button fullWidth={false} label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!))} /> : null}
@@ -204,7 +204,7 @@ export function BusinessDetailScreen() {
       {business.opening_hours && Object.keys(business.opening_hours).length > 0 ? (
         <Card title={t('perks.business.hoursTitle')} elevation="none">
           <View>{(['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const).filter(day => business.opening_hours?.[day]).map(day => (
-            <View key={day} style={[styles.hoursRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View key={day} style={[styles.hoursRow, dirStyles(isRTL).row]}>
               <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t(`perks.business.days.${day}`)}</Text>
               <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{business.opening_hours![day]}</Text>
             </View>
@@ -223,7 +223,7 @@ export function BusinessDetailScreen() {
       {reviews.length === 0 ? <EmptyState Icon={Star} title={t('perks.business.noReviews')} /> : (
         <View style={styles.list}>{reviews.map(review => (
           <Card key={review.id} elevation="none">
-            <View style={[styles.row, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.row, dirStyles(isRTL).row]}>
               <RatingStars rating={review.rating} count={1} size={12.5} />
               <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{new Date(review.created_at).toLocaleDateString()}</Text>
             </View>
@@ -273,12 +273,12 @@ export function OfferDetailScreen() {
   const imageUri = offer.image_url ?? business.logo_url ?? null
 
   return (
-    <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} />} contentStyle={styles.content}>
+    <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} />} contentStyle={styles.content}>
       {imageUri ? <Image source={{ uri: imageUri }} style={styles.offerHero} resizeMode="cover" /> : <View style={[styles.offerHero, styles.galleryFallback, { backgroundColor: theme.colors.rewardSoft }]} />}
       {offer.member_only ? <PlusBadge size="md" /> : null}
       <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.title}</Text>
 
-      <Pressable onPress={() => router.push({ pathname: '/community/business/[businessId]', params: { businessId: business.id } })} style={[styles.businessRow, { flexDirection: isRTL ? 'row-reverse' : 'row', borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
+      <Pressable onPress={() => router.push({ pathname: '/community/business/[businessId]', params: { businessId: business.id } })} style={[styles.businessRow, { ...dirStyles(isRTL).row, borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
         {business.logo_url ? <Image source={{ uri: business.logo_url }} style={styles.businessLogo} /> : <View style={[styles.businessLogo, { backgroundColor: theme.colors.primarySoft }]} />}
         <View style={{ flex: 1, gap: 2 }}>
           <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{business.name}</Text>
@@ -313,7 +313,7 @@ function OfferPriceBlock({ price }: { price: ReturnType<typeof computeOfferPrice
   if (price.kind === 'free_benefit') return <Text style={[typography.h2, { color: theme.colors.primary }]}>{t('perks.offer.free')}</Text>
 
   return (
-    <View style={[styles.priceRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+    <View style={[styles.priceRow, dirStyles(isRTL).row]}>
       {price.originalPrice != null && price.offerPrice != null ? (
         <>
           <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'line-through' }]}>{formatPrice(price.originalPrice, symbol)}</Text>

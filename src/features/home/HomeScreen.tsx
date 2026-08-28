@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { CarProfile, HandHeart, Storefront } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth, useMission } from '../../providers'
@@ -33,8 +33,8 @@ export function HomeScreen() {
 
   return (
     <AppScreen contentStyle={styles.content}>
-      <View style={[styles.top, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-        <View style={[styles.identity, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.top, dirStyles(isRTL).row]}>
+        <View style={[styles.identity, dirStyles(isRTL).row]}>
           <Avatar name={profile?.full_name || 'SANAD'} uri={profile?.avatar_url} size={44} />
           <View>
             <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.brand')}</Text>
@@ -45,7 +45,7 @@ export function HomeScreen() {
 
       {activeKind ? (
         <Card tone="primary" bordered={false} elevation="soft" onPress={resumeActive} style={styles.resumeCard}>
-          <View style={[styles.resumeTop, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+          <View style={[styles.resumeTop, dirStyles(isRTL).row]}>
             <StatusBadge label={t('home.liveNow')} tone="success" dot />
           </View>
           <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>
@@ -58,7 +58,7 @@ export function HomeScreen() {
         <Text style={[typography.eyebrow, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.title')}</Text>
       </View>
 
-      <View style={[styles.dual, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.dual, dirStyles(isRTL).row]}>
         <ActionCard
           large
           Icon={CarProfile}

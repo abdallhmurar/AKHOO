@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { Check, CircleIcon } from 'phosphor-react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 
@@ -15,7 +15,7 @@ export function MissionTimeline({ steps, activeIndex }: { steps: TimelineStep[];
     const active = index === activeIndex
     const color = done || active ? theme.colors.primary : theme.colors.borderStrong
     return (
-      <View key={step.key} style={[styles.row, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View key={step.key} style={[styles.row, dirStyles(isRTL).row]}>
         <View style={styles.rail}>
           <View style={[styles.node, { backgroundColor: done || active ? color : theme.colors.surface, borderColor: color }]}>{done ? <Check size={13} color={theme.colors.onPrimary} weight="bold" /> : active ? <CircleIcon size={8} color={theme.colors.onPrimary} weight="fill" /> : null}</View>
           {index < steps.length - 1 ? <View style={[styles.line, { backgroundColor: done ? theme.colors.primary : theme.colors.border }]} /> : null}

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
@@ -28,7 +28,7 @@ function AuthFrame({ title, subtitle, onBack, children }: { title: string; subti
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   return (
     <AppScreen contentStyle={styles.content}>
-      <View style={[styles.topRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.topRow, dirStyles(isRTL).row]}>
         {onBack ? <IconButton label={t('common.back')} icon={<BackIcon size={18} color={theme.colors.primary} />} onPress={onBack} size={38} tone="primary" /> : <View style={styles.backSpacer} />}
       </View>
       <Text style={[typography.h1, styles.title, { color: theme.colors.textPrimary }]}>{title}</Text>
@@ -161,10 +161,12 @@ export function SignupScreen() {
 }
 
 export function ForgotPasswordScreen() {
+  const theme = useSanadTheme()
   const { t } = useTranslation()
   const router = useRouter()
   const tr = useErrorTranslator()
-  const [email, setEmail] = useState('')
+  const { email: prefilledEmail } = useLocalSearchParams<{ email?: string }>()
+  const [email, setEmail] = useState(prefilledEmail ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const [sent, setSent] = useState(false)
@@ -186,7 +188,7 @@ export function ForgotPasswordScreen() {
   if (sent) {
     return (
       <AuthFrame title={t('auth.forgot.sent.title')} onBack={() => router.replace('/login')}>
-        <CheckCircle size={44} color="#2E9468" weight="fill" style={styles.centerIcon} />
+        <CheckCircle size={44} color={theme.colors.success} weight="fill" style={styles.centerIcon} />
         <Text style={styles.sentText}>{t('auth.forgot.sent.text', { email: email.trim() })}</Text>
         <FooterLink prompt="" label={t('auth.forgot.sent.resend')} onPress={submit} />
       </AuthFrame>
@@ -234,12 +236,13 @@ export function ResetPasswordScreen() {
 }
 
 export function RestrictedAccountScreen() {
+  const theme = useSanadTheme()
   const { t } = useTranslation()
   const { signOut } = useAuth()
   const router = useRouter()
   return (
     <AuthFrame title={t('auth.restricted.title')} subtitle={t('auth.restricted.message')}>
-      <ShieldCheck size={44} color="#BD5A50" weight="duotone" style={styles.centerIcon} />
+      <ShieldCheck size={44} color={theme.colors.danger} weight="duotone" style={styles.centerIcon} />
       <Button label={t('account.logout')} variant="outline" onPress={async () => { await signOut(); router.replace('/login') }} />
     </AuthFrame>
   )

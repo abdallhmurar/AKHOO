@@ -1,7 +1,7 @@
 import type { Icon } from 'phosphor-react-native'
 import { CaretLeft, CaretRight } from 'phosphor-react-native'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { palette, radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 
@@ -17,7 +17,7 @@ export function ActionCard({ title, description, label, Icon, tone = 'primary', 
   const inverse = tone === 'primary' || tone === 'community'
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress} style={({ pressed }) => [styles.card, large && styles.large, shadow.soft, { backgroundColor: fills[tone], borderColor: inverse ? 'transparent' : theme.colors.border }, pressed && styles.pressed]}>
-      <View style={[styles.top, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.top, dirStyles(isRTL).row]}>
         <View style={[styles.icon, { backgroundColor: inverse ? palette.whiteAlpha12 : `${inks[tone]}12` }]}><Icon size={large ? 29 : 24} color={inks[tone]} weight="duotone" /></View>
         <Arrow size={20} color={inks[tone]} />
       </View>

@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
@@ -217,7 +217,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
           {awaitingConfirmation ? (
             <Card tone="primary" elevation="none">
               <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.confirmPrompt')}</Text>
-              <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
                 <Button label={t('activeRequest.confirmReject')} variant="outline" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(false)} />
                 <Button label={t('activeRequest.confirmAccept')} variant="community" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(true)} />
               </View>
@@ -250,7 +250,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
 
           {searching ? (
             confirmingCancel ? (
-              <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
                 <Button label={t('activeRequest.cancelBack')} variant="outline" style={styles.confirmButton} onPress={() => setConfirmingCancel(false)} />
                 <Button label={t('activeRequest.cancelConfirm')} variant="danger" style={styles.confirmButton} loading={busy} onPress={cancel} />
               </View>
@@ -374,16 +374,16 @@ function HelperMissionView({ mission }: { mission: Mission }) {
                 <Card tone="emergency" elevation="none">
                   <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.release.confirmTitle')}</Text>
                   <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.release.confirmMessage')}</Text>
-                  <View style={[styles.reasonRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <View style={[styles.reasonRow, dirStyles(isRTL).row]}>
                     {RELEASE_REASONS.map(reason => (
                       <Pressable key={reason} onPress={() => setReleaseReason(current => (current === reason ? null : reason))} style={[styles.reasonChip, { backgroundColor: releaseReason === reason ? theme.colors.emergency : theme.colors.surface, borderColor: releaseReason === reason ? theme.colors.emergency : theme.colors.border }]}>
                         <Text style={[typography.caption, { color: releaseReason === reason ? theme.colors.onEmergency : theme.colors.textPrimary }]}>{t(`volunteerJob.release.reasons.${reason}`)}</Text>
                       </Pressable>
                     ))}
                   </View>
-                  <View style={[styles.confirmRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
                     <Button label={t('volunteerJob.release.back')} variant="outline" style={styles.confirmButton} onPress={() => { setConfirmingRelease(false); setReleaseReason(null) }} />
-                    <Button label={t('volunteerJob.release.confirm')} variant="danger" style={styles.confirmButton} loading={releasing} onPress={release} />
+                    <Button label={t('volunteerJob.release.confirm')} variant="danger" style={styles.confirmButton} loading={releasing} disabled={!releaseReason} onPress={release} />
                   </View>
                 </Card>
               ) : (
@@ -431,7 +431,7 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; complete
           </Animated.View>
           <Animated.View style={[stageStyle(3), styles.completionActions]}>
             {stats.leveledUpTo ? (
-              <View style={[styles.levelUpBanner, { flexDirection: isRTL ? 'row-reverse' : 'row', backgroundColor: theme.colors.primarySoft }]}>
+              <View style={[styles.levelUpBanner, { ...dirStyles(isRTL).row, backgroundColor: theme.colors.primarySoft }]}>
                 <Star size={18} color={ACTIVITY_LEVEL_COLORS[stats.leveledUpTo]} weight="fill" />
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}</Text>
               </View>
@@ -449,7 +449,6 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; complete
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   center: { alignItems: 'center', justifyContent: 'center' },
-  unavailable: { gap: space.md, padding: space.xl },
   centerText: { textAlign: 'center' },
 
   mapArea: { height: 250 },

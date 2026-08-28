@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { PressableProps, ViewStyle } from 'react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 
@@ -61,7 +61,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
         style
       ]}
     >
-      <View style={[styles.content, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.content, dirStyles(isRTL).row]}>
         {loading ? <ActivityIndicator size="small" color={blocked ? theme.colors.disabledContent : foregrounds[variant]} /> : leading}
         <Text numberOfLines={1} style={[typography.button, { color: blocked ? theme.colors.disabledContent : foregrounds[variant] }]}>{label}</Text>
         {!loading ? trailing : null}

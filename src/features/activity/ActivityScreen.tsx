@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, HandHeart, Lifebuoy, Trophy } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -33,7 +33,7 @@ export function ActivityScreen() {
   return (
     <AppScreen contentStyle={styles.content}>
       <ScreenHeader title={t('activity.title')} subtitle={t('activity.subtitle')} />
-      <View style={[styles.stats, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.stats, dirStyles(isRTL).row]}>
         <Stat value={received} label={t('activity.filters.received')} tone="primary" />
         <Stat value={given} label={t('activity.filters.given')} tone="community" />
         <Stat value={points} label={t('activity.filters.points')} tone="reward" />
@@ -82,13 +82,13 @@ function ActivityRow({ entry, last, onPress }: { entry: ActivityEntry; last: boo
   const color = entry.type === 'received' ? theme.colors.primary : entry.type === 'given' ? theme.colors.community : theme.colors.rewardPressed
   const title = entry.type === 'received' ? t('activity.roleRequester') : entry.type === 'given' ? t('activity.roleVolunteer') : t('activity.pointsTitle')
   return (
-    <Pressable disabled={!onPress} onPress={onPress} style={[styles.activityRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+    <Pressable disabled={!onPress} onPress={onPress} style={[styles.activityRow, dirStyles(isRTL).row]}>
       <View style={styles.rail}>
         <View style={[styles.node, { backgroundColor: `${color}18` }]}><Icon size={21} color={color} weight="duotone" /></View>
         {!last ? <View style={[styles.line, { backgroundColor: theme.colors.border }]} /> : null}
       </View>
       <View style={[styles.activityCard, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
-        <View style={[styles.activityTop, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.activityTop, dirStyles(isRTL).row]}>
           <View style={{ flex: 1 }}>
             <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
             <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{entry.title}</Text>

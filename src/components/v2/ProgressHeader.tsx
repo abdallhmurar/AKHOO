@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 
@@ -10,7 +10,7 @@ export function ProgressHeader({ step, total, label }: { step: number; total: nu
   const progress = Math.min(1, Math.max(0, step / total))
   return (
     <View style={styles.wrap}>
-      <View style={[styles.row, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}><Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{label}</Text><Text style={[typography.caption, { color: theme.colors.textMuted }]}>{step}/{total}</Text></View>
+      <View style={[styles.row, dirStyles(isRTL).row]}><Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{label}</Text><Text style={[typography.caption, { color: theme.colors.textMuted }]}>{step}/{total}</Text></View>
       <View style={[styles.track, { backgroundColor: theme.colors.surfaceStrong }]}><View style={[styles.fill, { backgroundColor: theme.colors.primary, width: `${progress * 100}%` }]} /></View>
     </View>
   )

@@ -10,7 +10,7 @@ import { resolveRequestHelpBack } from '../../lib/backNavigation'
 import type { RequestHelpStep } from '../../lib/backNavigation'
 import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -154,7 +154,7 @@ export function RequestFlowScreen() {
       <ProgressHeader step={stepIndex + 1} total={STEPS.length} label={stepTitles[step]} />
 
       {step === 'type' ? (
-        <View style={[styles.grid, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.grid, dirStyles(isRTL).row]}>
           {SERVICES.map(item => {
             const selected = service === item.key
             return (
@@ -214,9 +214,9 @@ export function RequestFlowScreen() {
             longitude={coords.longitude}
             height={300}
             overlay={
-              <View style={[styles.locationOverlay, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={[styles.locationOverlay, dirStyles(isRTL).row]}>
                 <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.currentLocation')}</Text>
-                <Pressable onPress={fetchLocation} style={[styles.refreshRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Pressable onPress={fetchLocation} style={[styles.refreshRow, dirStyles(isRTL).row]}>
                   <ArrowClockwise size={14} color={theme.colors.primary} />
                   <Text style={[typography.caption, { color: theme.colors.primary }]}>{t('request.refreshLocation')}</Text>
                 </Pressable>

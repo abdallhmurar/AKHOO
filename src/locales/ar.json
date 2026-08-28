@@ -434,6 +434,7 @@
       "notAvailableInMarket": "تفعيل عضوية SANAD+ مش متاح لسا بمنطقتك."
     },
     "offer": {
+      "title": "تفاصيل العرض",
       "use": "استخدام العرض",
       "free": "مجاناً",
       "termsTitle": "الشروط",
@@ -445,6 +446,8 @@
       "notFound": "هاد العرض ما عاد متاح."
     },
     "business": {
+      "title": "تفاصيل المصلحة",
+      "verified": "مصلحة موثقة",
       "hasOffer": "عرض",
       "call": "اتصال",
       "whatsapp": "واتساب",

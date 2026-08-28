@@ -2,7 +2,7 @@ import { forwardRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import type { TextInputProps, TextStyle } from 'react-native'
 import { Eye, EyeSlash } from 'phosphor-react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useLanguageDirection } from '../../providers/LanguageDirectionProvider'
@@ -29,7 +29,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(function TextFiel
   return (
     <View style={styles.wrap}>
       {label ? <Text style={[typography.smallMedium, direction, { color: theme.colors.textPrimary }]}>{label}{required ? ' *' : ''}</Text> : null}
-      <View style={[styles.inputWrap, { backgroundColor: editable ? theme.colors.surface : theme.colors.disabledBackground, borderColor: error ? theme.colors.danger : focused ? theme.colors.focus : theme.colors.borderStrong, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <View style={[styles.inputWrap, { backgroundColor: editable ? theme.colors.surface : theme.colors.disabledBackground, borderColor: error ? theme.colors.danger : focused ? theme.colors.focus : theme.colors.borderStrong, ...dirStyles(isRTL).row }]}>
         <TextInput
           ref={ref}
           {...props}

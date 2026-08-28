@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { palette, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { Surface, type SurfaceProps } from './Surface'
@@ -22,7 +22,7 @@ export function Card({ title, subtitle, leading, trailing, onPress, accessibilit
   const content = (
     <Surface elevation="soft" {...surfaceProps} style={style}>
       {(leading || title || subtitle || trailing) ? (
-        <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.header, dirStyles(isRTL).row]}>
           {leading}
           <View style={styles.copy}>
             {title ? <Text style={[typography.title, { color: onNavy ? palette.onCivic : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text> : null}

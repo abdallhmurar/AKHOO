@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 
@@ -10,7 +10,7 @@ export function Tabs<T extends string>({ value, options, onChange, label }: { va
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   return (
-    <View accessibilityRole="tablist" accessibilityLabel={label} style={[styles.wrap, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+    <View accessibilityRole="tablist" accessibilityLabel={label} style={[styles.wrap, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border, ...dirStyles(isRTL).row }]}>
       {options.map(option => {
         const selected = option.value === value
         return (

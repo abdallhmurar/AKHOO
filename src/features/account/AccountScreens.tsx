@@ -6,8 +6,9 @@ import { Camera, SignOut } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
+import { translateActionError } from '../../lib/rpcErrors'
 import { stopBackgroundLocationUpdates } from '../../lib/location'
-import { useIsRTL } from '../../lib/direction'
+import { dirStyles, useIsRTL } from '../../lib/direction'
 import { space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -81,8 +82,8 @@ export function AccountHomeScreen() {
       if (error) throw error
       await refreshProfile()
       Alert.alert(t('account.success.title'), t('account.success.profileUpdated'))
-    } catch (error: any) {
-      setProfileError(error.message ?? t('common.error'))
+    } catch (cause: any) {
+      setProfileError(translateActionError(t, cause))
     } finally {
       setSavingProfile(false)
     }
@@ -94,11 +95,11 @@ export function AccountHomeScreen() {
     setSavingPassword(true)
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword })
-      if (error) { setPasswordError(error.message); return }
+      if (error) throw error
       setNewPassword('')
       Alert.alert(t('account.success.title'), t('account.success.passwordUpdated'))
-    } catch (error: any) {
-      setPasswordError(error.message ?? t('common.error'))
+    } catch (cause: any) {
+      setPasswordError(translateActionError(t, cause))
     } finally {
       setSavingPassword(false)
     }
@@ -155,7 +156,7 @@ export function AccountHomeScreen() {
         <LanguagePicker />
       </View>
 
-      <Pressable onPress={logout} style={[styles.logoutRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <Pressable onPress={logout} style={[styles.logoutRow, dirStyles(isRTL).row]}>
         <SignOut size={18} color={theme.colors.danger} />
         <Text style={[typography.bodyMedium, { color: theme.colors.danger }]}>{t('account.logout')}</Text>
       </Pressable>

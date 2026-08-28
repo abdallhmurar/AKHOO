@@ -434,6 +434,7 @@
       "notAvailableInMarket": "SANAD+ membership activation isn't available in your region yet."
     },
     "offer": {
+      "title": "Offer details",
       "use": "Use offer",
       "free": "Free",
       "termsTitle": "Terms",
@@ -445,6 +446,8 @@
       "notFound": "This offer is no longer available."
     },
     "business": {
+      "title": "Business details",
+      "verified": "Verified business",
       "hasOffer": "Offer",
       "call": "Call",
       "whatsapp": "WhatsApp",
