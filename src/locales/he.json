@@ -28,6 +28,10 @@
       "alreadyReleased": "כבר שחררת בקשה זו, ולכן לא ניתן לקבל אותה שוב."
     }
   },
+  "welcome": {
+    "createAccount": "יצירת חשבון",
+    "haveAccount": "כבר יש לי חשבון"
+  },
   "auth": {
     "login": {
       "title": "התחברות",

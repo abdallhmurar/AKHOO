@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
@@ -13,11 +14,13 @@ import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
 import { Button, IconButton, TextField } from '../../components/ui'
 
+const welcomeBackground = require('../../../assets/images/1.png')
+
 // Real SANAD auth family, rebuilt on ccodex's Civic Signal components
 // (Button/TextField/IconButton) but with the flat, minimal composition the
 // user already approved for Auth V2 - no navy hero band, no illustration,
-// no "welcome" splash, no mandatory first-launch language picker, no email
-// verification code screen, no offline/session-expired detours, no
+// no mandatory first-launch language picker, no email verification code
+// screen, no offline/session-expired detours, no
 // confirm-password field, 6-character minimum password (matches the real
 // signIn/signUp validation, not an invented 8-char+digit rule).
 function AuthFrame({ title, subtitle, onBack, children }: { title: string; subtitle?: string; onBack?: () => void; children: React.ReactNode }) {
@@ -60,6 +63,31 @@ function FooterLink({ prompt, label, onPress }: { prompt: string; label: string;
   )
 }
 
+export function WelcomeScreen() {
+  const { t } = useTranslation()
+  const insets = useSafeAreaInsets()
+  const router = useRouter()
+  return (
+    <View style={styles.welcomeBg}>
+      <Image
+        source={welcomeBackground}
+        resizeMode="cover"
+        // The plain 1.png export is at @2x-ish pixel dimensions with no
+        // density suffix, so Metro reports its intrinsic size as if it
+        // were 1x - explicit width/height (not just absoluteFill's inset
+        // properties) are needed to make the image actually fill and
+        // center-crop within its container instead of rendering at native
+        // pixel size and overflowing.
+        style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]}
+      />
+      <View style={[styles.welcomeActions, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+        <Button label={t('welcome.createAccount')} size="lg" onPress={() => router.push('/signup')} />
+        <Button label={t('welcome.haveAccount')} variant="secondary" size="lg" onPress={() => router.push('/login')} />
+      </View>
+    </View>
+  )
+}
+
 export function LoginScreen() {
   const { t } = useTranslation()
   const isRTL = useIsRTL()
@@ -89,7 +117,7 @@ export function LoginScreen() {
   }
 
   return (
-    <AuthFrame title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
+    <AuthFrame title={t('auth.login.title')} subtitle={t('auth.login.subtitle')} onBack={() => router.back()}>
       <TextField label={t('auth.login.emailLabel')} placeholder={t('auth.login.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.login.passwordLabel')} placeholder={t('auth.login.passwordPlaceholder')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <Pressable onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} hitSlop={8} style={{ alignSelf: isRTL ? 'flex-start' : 'flex-end' }}>
@@ -148,7 +176,7 @@ export function SignupScreen() {
   }
 
   return (
-    <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')}>
+    <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')} onBack={() => router.back()}>
       <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={value => { setName(value); setErrors(e => ({ ...e, name: undefined })) }} error={errors.name} />
       <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: undefined })) }} error={errors.phone} keyboardType="phone-pad" />
       <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
@@ -249,6 +277,8 @@ export function RestrictedAccountScreen() {
 }
 
 const styles = StyleSheet.create({
+  welcomeBg: { flex: 1, justifyContent: 'flex-end', overflow: 'hidden' },
+  welcomeActions: { paddingHorizontal: space.xl, paddingTop: space.lg, gap: space.md },
   content: { paddingTop: space.lg, gap: 0 },
   topRow: { minHeight: 38, marginBottom: space.xl },
   backSpacer: { width: 38, height: 38 },

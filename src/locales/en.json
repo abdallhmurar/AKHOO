@@ -28,6 +28,10 @@
       "alreadyReleased": "You already released this request, so you can't accept it again."
     }
   },
+  "welcome": {
+    "createAccount": "Create Account",
+    "haveAccount": "I already have an account"
+  },
   "auth": {
     "login": {
       "title": "Log In",

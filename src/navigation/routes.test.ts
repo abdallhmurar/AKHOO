@@ -11,9 +11,9 @@ describe('SANAD route architecture', () => {
     expect(new Set(paths).size).toBe(paths.length)
   })
 
-  it('applies session guards deterministically - no first-launch language gate or welcome splash', () => {
+  it('applies session guards deterministically - no first-launch language gate', () => {
     expect(resolveLaunchRoute({ bootstrapped: false, hasSession: false, restricted: false })).toBe(null)
-    expect(resolveLaunchRoute({ bootstrapped: true, hasSession: false, restricted: false })).toBe('/login')
+    expect(resolveLaunchRoute({ bootstrapped: true, hasSession: false, restricted: false })).toBe('/welcome')
     expect(resolveLaunchRoute({ bootstrapped: true, hasSession: true, restricted: true })).toBe('/restricted')
     expect(resolveLaunchRoute({ bootstrapped: true, hasSession: true, restricted: false })).toBe('/(tabs)')
   })

@@ -28,6 +28,10 @@
       "alreadyReleased": "سبت هاد الطلب قبل شوي، ما فيك تستلمه مرة ثانية."
     }
   },
+  "welcome": {
+    "createAccount": "إنشاء حساب",
+    "haveAccount": "عندي حساب"
+  },
   "auth": {
     "login": {
       "title": "تسجيل الدخول",

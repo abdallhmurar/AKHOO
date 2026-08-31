@@ -1,4 +1,4 @@
-export const publicRoutes = ['/login', '/signup', '/forgot-password', '/reset-password', '/restricted'] as const
+export const publicRoutes = ['/welcome', '/login', '/signup', '/forgot-password', '/reset-password', '/restricted'] as const
 
 export const tabRoutes = ['/(tabs)', '/(tabs)/community', '/(tabs)/activity', '/(tabs)/account'] as const
 
@@ -23,12 +23,12 @@ export type LaunchState = {
 }
 
 // Real SANAD launch resolution: no mandatory first-launch language picker
-// (language auto-detects, changeable later from Account) and no "welcome"
-// marketing splash - unauthenticated users land directly on Login, matching
-// both the original app and the approved Auth V2 reference.
+// (language auto-detects, changeable later from Account) - unauthenticated
+// users land on the Welcome screen, which offers "create account" / "I
+// already have an account" into Signup/Login.
 export function resolveLaunchRoute(state: LaunchState) {
   if (!state.bootstrapped) return null
   if (state.restricted) return '/restricted' as const
-  if (!state.hasSession) return '/login' as const
+  if (!state.hasSession) return '/welcome' as const
   return '/(tabs)' as const
 }

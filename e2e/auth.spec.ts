@@ -4,6 +4,17 @@ import { test, expect } from '@playwright/test'
 test.use({ locale: 'en-US' })
 
 test.describe('SANAD authentication', () => {
+  test('the welcome screen routes into signup and login', async ({ page }) => {
+    await page.goto('/welcome')
+    await expect(page.getByRole('button', { name: 'Create Account' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'I already have an account' })).toBeVisible()
+    await page.getByRole('button', { name: 'I already have an account' }).click()
+    await expect(page).toHaveURL(/\/login$/)
+    await page.goto('/welcome')
+    await page.getByRole('button', { name: 'Create Account' }).click()
+    await expect(page).toHaveURL(/\/signup$/)
+  })
+
   test('renders the real login screen', async ({ page }) => {
     await page.goto('/login')
     await expect(page.getByRole('button', { name: 'Log In' })).toBeVisible()
