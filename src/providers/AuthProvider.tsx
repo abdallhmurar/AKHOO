@@ -8,6 +8,14 @@ import { normalizeAppError, type AppError } from '../services/errors'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
 
+// Captured at module load, before Expo Router mounts. On web, an OAuth
+// redirect lands back with #access_token=... in the URL, but Expo Router's
+// own linking setup rewrites the visible URL to the resolved route (history
+// replaceState) as it mounts - which runs before this provider's effect and
+// silently strips the hash. Reading window.location.href this early, before
+// any router code executes, avoids that race entirely.
+const capturedWebUrl = typeof window !== 'undefined' ? window.location.href : null
+
 type AuthStatus = 'restoring' | 'signed-out' | 'signed-in' | 'restricted'
 
 type AuthContextValue = {
@@ -52,7 +60,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     let authLinksActive = true
     const restore = async () => {
       try {
-        const initialUrl = await Linking.getInitialURL()
+        const initialUrl = capturedWebUrl ?? await Linking.getInitialURL()
         if (initialUrl) await consumeAuthLink(initialUrl)
         const restored = await authRepository.getSession()
         if (!mounted.current) return
