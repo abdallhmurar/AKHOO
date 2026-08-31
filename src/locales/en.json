@@ -33,6 +33,9 @@
     "haveAccount": "I already have an account"
   },
   "auth": {
+    "orContinueWith": "or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
     "login": {
       "title": "Log In",
       "subtitle": "Welcome back.",

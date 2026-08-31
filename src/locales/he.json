@@ -33,6 +33,9 @@
     "haveAccount": "כבר יש לי חשבון"
   },
   "auth": {
+    "orContinueWith": "או המשיכו עם",
+    "continueWithGoogle": "המשך עם Google",
+    "continueWithApple": "המשך עם Apple",
     "login": {
       "title": "התחברות",
       "subtitle": "ברוך שובך.",

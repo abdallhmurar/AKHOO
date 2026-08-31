@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
+import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, GoogleLogo, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
-import { authRepository } from '../../repositories/authRepository'
+import { authRepository, type OAuthProvider } from '../../repositories/authRepository'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
 import { Button, IconButton, TextField } from '../../components/ui'
@@ -60,6 +60,57 @@ function FooterLink({ prompt, label, onPress }: { prompt: string; label: string;
     <Text style={[typography.small, styles.footer, { color: theme.colors.textMuted }]}>
       {prompt} <Text onPress={onPress} style={[typography.smallMedium, { color: theme.colors.primary }]}>{label}</Text>
     </Text>
+  )
+}
+
+/** Google/Apple continue-with buttons - shared by Login and Signup since the same OAuth call signs a returning user in or creates the account on first use. */
+function OAuthButtons() {
+  const { t } = useTranslation()
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { signInWithOAuth } = useAuth()
+  const tr = useErrorTranslator()
+  const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null)
+  const [error, setError] = useState<string | undefined>()
+
+  async function handlePress(provider: OAuthProvider) {
+    setError(undefined)
+    setLoadingProvider(provider)
+    try {
+      await signInWithOAuth(provider)
+    } catch (cause) {
+      setError(localizeAppError(cause, tr))
+    } finally {
+      setLoadingProvider(null)
+    }
+  }
+
+  return (
+    <View style={styles.oauthGroup}>
+      <View style={[styles.dividerRow, dirStyles(isRTL).row]}>
+        <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
+        <Text style={[typography.small, { color: theme.colors.textMuted }]}>{t('auth.orContinueWith')}</Text>
+        <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
+      </View>
+      <Button
+        label={t('auth.continueWithGoogle')}
+        variant="outline"
+        loading={loadingProvider === 'google'}
+        disabled={loadingProvider !== null}
+        leading={<GoogleLogo size={20} color={theme.colors.textPrimary} weight="bold" />}
+        onPress={() => handlePress('google')}
+      />
+      <Button
+        label={t('auth.continueWithApple')}
+        variant="outline"
+        loading={loadingProvider === 'apple'}
+        disabled={loadingProvider !== null}
+        leading={<AppleLogo size={20} color={theme.colors.textPrimary} weight="fill" />}
+        onPress={() => handlePress('apple')}
+      />
+      <FormError message={error} />
+    </View>
   )
 }
 
@@ -125,6 +176,7 @@ export function LoginScreen() {
       </Pressable>
       <FormError message={errors.form} />
       <Button label={t('auth.login.submit')} loading={loading} onPress={submit} />
+      <OAuthButtons />
       <FooterLink prompt={t('auth.login.noAccount')} label={t('auth.login.signUpLink')} onPress={() => router.push('/signup')} />
     </AuthFrame>
   )
@@ -183,6 +235,7 @@ export function SignupScreen() {
       <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <FormError message={errors.form} />
       <Button label={t('auth.signup.submit')} loading={loading} onPress={submit} />
+      <OAuthButtons />
       <FooterLink prompt={t('auth.signup.haveAccount')} label={t('auth.signup.loginLink')} onPress={() => router.replace('/login')} />
     </AuthFrame>
   )
@@ -288,5 +341,8 @@ const styles = StyleSheet.create({
   formError: { textAlign: 'center', borderRadius: radius.md, paddingVertical: 10 },
   footer: { textAlign: 'center' },
   centerIcon: { alignSelf: 'center' },
-  sentText: { textAlign: 'center' }
+  sentText: { textAlign: 'center' },
+  oauthGroup: { gap: space.md },
+  dividerRow: { alignItems: 'center', gap: space.sm },
+  dividerLine: { flex: 1, height: 1 }
 })

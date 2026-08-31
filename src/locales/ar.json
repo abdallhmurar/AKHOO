@@ -33,6 +33,9 @@
     "haveAccount": "عندي حساب"
   },
   "auth": {
+    "orContinueWith": "أو تابع عبر",
+    "continueWithGoogle": "المتابعة عبر جوجل",
+    "continueWithApple": "المتابعة عبر Apple",
     "login": {
       "title": "تسجيل الدخول",
       "subtitle": "أهلاً فيك من جديد.",

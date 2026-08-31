@@ -1,3 +1,5 @@
+import { Platform } from 'react-native'
+import * as WebBrowser from 'expo-web-browser'
 import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { normalizeAppError, throwIfError } from '../services/errors'
@@ -8,6 +10,8 @@ export type SignUpInput = {
   fullName: string
   phone: string
 }
+
+export type OAuthProvider = 'google' | 'apple'
 
 export const authRepository = {
   async getSession() {
@@ -41,6 +45,38 @@ export const authRepository = {
     })
     throwIfError(error, { domain: 'auth', operation: 'sign-up' })
     return data
+  },
+
+  /**
+   * Signs in with Google/Apple, creating the account on first use - same
+   * behavior Supabase gives every OAuth provider, no separate signup call.
+   * Web does a full-page redirect; native opens an in-app browser session
+   * and relies on the app's existing `sanad://` deep-link listener
+   * (AuthProvider) to pick up the resulting session once it redirects back.
+   */
+  async signInWithOAuth(provider: OAuthProvider) {
+    if (Platform.OS === 'web') {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin }
+      })
+      throwIfError(error, { domain: 'auth', operation: `oauth-${provider}` })
+      return
+    }
+
+    const redirectTo = 'sanad://auth-callback'
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo, skipBrowserRedirect: true }
+    })
+    throwIfError(error, { domain: 'auth', operation: `oauth-${provider}` })
+    if (!data.url) throw normalizeAppError('Could not start sign-in.', { domain: 'auth', operation: `oauth-${provider}` })
+
+    // A 'cancel'/'dismiss' result just means the user closed the sheet -
+    // not an error worth surfacing. A 'success' result means the browser
+    // redirected back to sanad://; the app's deep-link listener (already
+    // wired for password-reset links) picks up the session from there.
+    await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
   },
 
   async resendVerification(email: string, emailRedirectTo?: string) {

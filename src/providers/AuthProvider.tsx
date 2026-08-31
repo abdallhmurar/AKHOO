@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { authRepository, type SignUpInput } from '../repositories/authRepository'
+import { authRepository, type OAuthProvider, type SignUpInput } from '../repositories/authRepository'
 import { profileRepository } from '../repositories/profileRepository'
 import { consumeAuthLink, signOutSafely } from '../services/authService'
 import { normalizeAppError, type AppError } from '../services/errors'
@@ -19,6 +19,7 @@ type AuthContextValue = {
   isRestricted: boolean
   signIn: (email: string, password: string) => Promise<void>
   signUp: (input: SignUpInput) => ReturnType<typeof authRepository.signUp>
+  signInWithOAuth: (provider: OAuthProvider) => Promise<void>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -98,6 +99,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     try { return await authRepository.signUp(input) } catch (cause) { const next = normalizeAppError(cause, { domain: 'auth', operation: 'sign-up' }); setError(next); throw next }
   }, [])
 
+  const signInWithOAuth = useCallback(async (provider: OAuthProvider) => {
+    setError(null)
+    try { await authRepository.signInWithOAuth(provider) } catch (cause) { const next = normalizeAppError(cause, { domain: 'auth', operation: `oauth-${provider}` }); setError(next); throw next }
+  }, [])
+
   const signOut = useCallback(async () => {
     await signOutSafely()
   }, [])
@@ -115,9 +121,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     isRestricted: status === 'restricted' || profile?.is_banned === true,
     signIn,
     signUp,
+    signInWithOAuth,
     signOut,
     refreshProfile
-  }), [session, profile, status, error, signIn, signUp, signOut, refreshProfile])
+  }), [session, profile, status, error, signIn, signUp, signInWithOAuth, signOut, refreshProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
