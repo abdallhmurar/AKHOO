@@ -2,6 +2,7 @@ import * as Linking from 'expo-linking'
 import type { Session } from '@supabase/supabase-js'
 import { stopBackgroundLocationUpdates } from '../lib/location'
 import { authRepository } from '../repositories/authRepository'
+import { normalizeAppError } from './errors'
 
 export type AuthLinkResult = {
   handled: boolean
@@ -26,6 +27,17 @@ export async function consumeAuthLink(url: string): Promise<AuthLinkResult> {
   const accessToken = params.get('access_token')
   const refreshToken = params.get('refresh_token')
   const code = params.get('code')
+
+  // Google/Apple (or Supabase itself) can redirect back with an error
+  // instead of a token - e.g. a misconfigured provider, a redirect URL not
+  // on the allow list, or a denied consent. Without this check that failure
+  // was silently swallowed: `handled: false` with no thrown error, so the
+  // caller just fell back to signed-out with nothing visible to explain why.
+  const errorCode = params.get('error') ?? params.get('error_code')
+  if (errorCode) {
+    const description = params.get('error_description') ?? errorCode
+    throw normalizeAppError(description.replace(/\+/g, ' '), { domain: 'auth', operation: 'oauth-callback', metadata: { errorCode } })
+  }
 
   if (accessToken && refreshToken) {
     const session = await authRepository.setSession(accessToken, refreshToken)

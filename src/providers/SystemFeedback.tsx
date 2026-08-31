@@ -11,7 +11,15 @@ import { useLanguageDirection } from './LanguageDirectionProvider'
 export function ErrorToastBridge() {
   const toast = useToast()
   const { language } = useLanguageDirection()
-  useEffect(() => subscribeToAppErrors(({ error }) => toast.show(localizeAppError(error, (ar, he, en) => language === 'en' ? en : language === 'he' ? he : ar), 'error')), [language, toast])
+  useEffect(() => subscribeToAppErrors(({ error }) => {
+    // A provider OAuth error (e.g. Google/Apple/Supabase misconfiguration)
+    // has no meaningful localized translation - show the real message
+    // instead of a generic "something went wrong" that hides the cause.
+    const message = error.context?.operation === 'oauth-callback'
+      ? error.message
+      : localizeAppError(error, (ar, he, en) => language === 'en' ? en : language === 'he' ? he : ar)
+    toast.show(message, 'error')
+  }), [language, toast])
   return null
 }
 
