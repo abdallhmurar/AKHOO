@@ -4,7 +4,7 @@ import type { Session } from '@supabase/supabase-js'
 import { authRepository, type OAuthProvider, type SignUpInput } from '../repositories/authRepository'
 import { profileRepository } from '../repositories/profileRepository'
 import { consumeAuthLink, signOutSafely } from '../services/authService'
-import { normalizeAppError, type AppError } from '../services/errors'
+import { normalizeAppError, reportAppError, type AppError } from '../services/errors'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
 
@@ -69,7 +69,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
         else setStatus('signed-out')
       } catch (cause) {
         if (!mounted.current) return
-        setError(normalizeAppError(cause, { domain: 'auth', operation: 'restore' }))
+        // Surfaced as a toast (not just kept in context state, which nothing
+        // reads) so a failed auth-link exchange - e.g. an OAuth or
+        // password-reset redirect - is visible instead of silently dropping
+        // the user back on the signed-out Welcome screen.
+        setError(reportAppError(cause, { domain: 'auth', operation: 'restore' }))
         setStatus('signed-out')
       }
     }
@@ -87,7 +91,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     })
     const linkSubscription = Linking.addEventListener('url', ({ url }) => {
       if (!authLinksActive) return
-      consumeAuthLink(url).catch(cause => setError(normalizeAppError(cause, { domain: 'auth', operation: 'deep-link' })))
+      consumeAuthLink(url).catch(cause => setError(reportAppError(cause, { domain: 'auth', operation: 'deep-link' })))
     })
     return () => {
       mounted.current = false
