@@ -8,6 +8,7 @@ dist-v2-all-check/
 .env
 *.log
 .DS_Store
+desktop.ini
 supabase/.temp/
 playwright-report/
 test-results/
