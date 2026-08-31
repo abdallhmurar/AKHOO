@@ -35,7 +35,7 @@ export function HomeScreen() {
     <AppScreen contentStyle={styles.content}>
       <View style={[styles.top, dirStyles(isRTL).row]}>
         <View style={[styles.identity, dirStyles(isRTL).row]}>
-          <Avatar name={profile?.full_name || 'SANAD'} uri={profile?.avatar_url} size={44} />
+          <Avatar name={profile?.full_name || 'AKHOO'} uri={profile?.avatar_url} size={44} />
           <View>
             <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.brand')}</Text>
             <Text style={[typography.small, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.greeting', { name: profile?.full_name?.trim().split(/\s+/)[0] || t('home.guestName') })}</Text>

@@ -1,12 +1,12 @@
-# SANAD V2 — Jerusalem Civic Assistance
+# AKHOO — Jerusalem Roadside & Civic Assistance
 
-SANAD is a Jerusalem-first civic assistance platform for safe, non-emergency community support. Arabic is the primary language, with complete Hebrew and English support. Arabic and Hebrew render RTL; English renders LTR.
+AKHOO (أخوو) is a Jerusalem-first mutual-aid platform for safe, non-emergency community and roadside support. Arabic is the primary language, with complete Hebrew and English support. Arabic and Hebrew render RTL; English renders LTR.
 
-سَنَد منصة مساندة مدنية تبدأ من القدس، وتربط من يحتاج مساعدة مجتمعية آمنة بمن يستطيع تقديمها. المنصة ليست بديلاً لخدمات الطوارئ.
+أخوو منصة مساندة مدنية تبدأ من القدس، وتربط من يحتاج مساعدة مجتمعية آمنة بمن يستطيع تقديمها. المنصة ليست بديلاً لخدمات الطوارئ.
 
 ## V2 status
 
-This repository has been transformed in place from the V1 manual-screen architecture to SANAD V2:
+This repository has been transformed in place from the V1 manual-screen architecture to AKHOO V2:
 
 - Expo Router with typed, protected routes and deep links.
 - Civic Signal design system and shared accessible components.
@@ -72,7 +72,7 @@ app/                         Expo Router routes and route-group guards
   (requester)/requester/     emergency-to-matching request journey
   (helper)/helper/           onboarding-to-nearby-request journey
   mission/[missionId]/       live mission, chat, completion, rating, safety
-  community/                 businesses, offers, SANAD+, rewards, points
+  community/                 businesses, offers, AKHOO+, rewards, points
   account/                   profile, settings, language, privacy, safety
 src/
   components/ui/             reusable Civic Signal primitives
@@ -114,5 +114,5 @@ The migration is additive: it preserves `profiles`, `help_requests`, existing pa
 - Apply and verify migration `0017` on staging.
 - Configure EAS Android/iOS signing plus APNs/FCM credentials.
 - Run physical-device checks for maps, location background mode, image permissions, push notifications, and RTL screen-reader navigation.
-- Connect a production payment provider before enabling paid SANAD+ membership; the current flow records a safe membership request and does not charge the user.
+- Connect a production payment provider before enabling paid AKHOO+ membership; the current flow records a safe membership request and does not charge the user.
 - Complete App Store / Google Play privacy, safety, moderation, and emergency-disclaimer review.

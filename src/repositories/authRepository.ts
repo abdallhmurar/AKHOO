@@ -51,7 +51,7 @@ export const authRepository = {
    * Signs in with Google/Apple, creating the account on first use - same
    * behavior Supabase gives every OAuth provider, no separate signup call.
    * Web does a full-page redirect; native opens an in-app browser session
-   * and relies on the app's existing `sanad://` deep-link listener
+   * and relies on the app's existing `akhoo://` deep-link listener
    * (AuthProvider) to pick up the resulting session once it redirects back.
    */
   async signInWithOAuth(provider: OAuthProvider) {
@@ -64,7 +64,7 @@ export const authRepository = {
       return
     }
 
-    const redirectTo = 'sanad://auth-callback'
+    const redirectTo = 'akhoo://auth-callback'
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo, skipBrowserRedirect: true }
@@ -74,7 +74,7 @@ export const authRepository = {
 
     // A 'cancel'/'dismiss' result just means the user closed the sheet -
     // not an error worth surfacing. A 'success' result means the browser
-    // redirected back to sanad://; the app's deep-link listener (already
+    // redirected back to akhoo://; the app's deep-link listener (already
     // wired for password-reset links) picks up the session from there.
     await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
   },
@@ -88,7 +88,7 @@ export const authRepository = {
     throwIfError(error, { domain: 'auth', operation: 'resend-verification' })
   },
 
-  async requestPasswordReset(email: string, redirectTo = 'sanad://reset-password') {
+  async requestPasswordReset(email: string, redirectTo = 'akhoo://reset-password') {
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo })
     throwIfError(error, { domain: 'auth', operation: 'request-password-reset' })
   },

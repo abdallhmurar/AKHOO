@@ -128,7 +128,7 @@
     }
   },
   "home": {
-    "brand": "SANAD",
+    "brand": "AKHOO",
     "greeting": "Hi {{name}}",
     "guestName": "there",
     "resumeRequest": "You have an active help request — continue it",
@@ -169,7 +169,7 @@
     },
     "pilotZone": {
       "title": "Outside the Pilot Area",
-      "message": "SANAD is currently available within the Jerusalem pilot area."
+      "message": "AKHOO is currently available within the Jerusalem pilot area."
     }
   },
   "activeRequest": {
@@ -184,7 +184,7 @@
     },
     "title": "Help Request",
     "subtitleSearching": "Anyone nearby and available can see and accept your request.",
-    "subtitleCompleted": "Thank you for using SANAD ❤️",
+    "subtitleCompleted": "Thank you for using AKHOO ❤️",
     "subtitleAwaitingConfirmation": "They say they've finished helping — confirm it actually reached you.",
     "subtitleTracking": "The request status updates live between you and whoever's helping.",
     "releasedNotice": {
@@ -247,7 +247,7 @@
     },
     "completion": {
       "title": "Mission completed",
-      "message": "Thank you for being SANAD for someone today.",
+      "message": "Thank you for being AKHOO for someone today.",
       "pointsEarned": "+{{points}} points",
       "backHome": "Back to Home"
     }
@@ -280,7 +280,7 @@
       "acceptFailedTitle": "We couldn't accept the request"
     },
     "backgroundNotification": {
-      "title": "SANAD - You're available as a volunteer",
+      "title": "AKHOO - You're available as a volunteer",
       "body": "Your location updates so you can see nearby help requests, even while the app is in the background."
     }
   },
@@ -384,14 +384,14 @@
     "bronze": "Bronze Helper",
     "silver": "Silver Helper",
     "gold": "Gold Helper",
-    "green": "SANAD Green",
+    "green": "AKHOO Green",
     "levelUpMessage": "🎉 You've reached {{levelName}}"
   },
   "map": {
     "loading": "Loading map..."
   },
   "perks": {
-    "title": "SANAD Perks",
+    "title": "AKHOO Perks",
     "subtitle": "Offers and services near you",
     "searchPlaceholder": "Search a business or offer",
     "categoriesTitle": "Categories",
@@ -415,9 +415,9 @@
     "rating": { "new": "New" },
     "plusBadge": "PLUS",
     "hero": {
-      "title": "SANAD+",
-      "subtitle": "Unlocks using member offers with SANAD's partners.",
-      "cta": "Learn about SANAD+"
+      "title": "AKHOO+",
+      "subtitle": "Unlocks using member offers with AKHOO's partners.",
+      "cta": "Learn about AKHOO+"
     },
     "empty": {
       "offersTitle": "No offers right now",
@@ -428,17 +428,17 @@
       "searchMessage": "Try a different search term or category."
     },
     "membershipSheet": {
-      "offerLockedTitle": "This offer is for SANAD+ members",
-      "offerLockedMessage": "Subscribe to use this offer and other SANAD+ offers.",
-      "genericTitle": "SANAD+",
-      "genericMessage": "Volunteer help always stays free. SANAD+ unlocks using real offers with our partners.",
-      "benefitDiscounts": "Real discounts with SANAD's trusted partners",
+      "offerLockedTitle": "This offer is for AKHOO+ members",
+      "offerLockedMessage": "Subscribe to use this offer and other AKHOO+ offers.",
+      "genericTitle": "AKHOO+",
+      "genericMessage": "Volunteer help always stays free. AKHOO+ unlocks using real offers with our partners.",
+      "benefitDiscounts": "Real discounts with AKHOO's trusted partners",
       "benefitPriority": "Priority when professional backup services launch",
-      "benefitSupport": "Dedicated support for SANAD+ members",
-      "learnMore": "Learn about SANAD+",
+      "benefitSupport": "Dedicated support for AKHOO+ members",
+      "learnMore": "Learn about AKHOO+",
       "notNow": "Not now",
       "comingSoon": "In-app subscription is coming soon.",
-      "notAvailableInMarket": "SANAD+ membership activation isn't available in your region yet."
+      "notAvailableInMarket": "AKHOO+ membership activation isn't available in your region yet."
     },
     "offer": {
       "title": "Offer details",
@@ -449,7 +449,7 @@
       "validNoLimit": "No expiry date",
       "viewBusiness": "View business",
       "contactTitle": "Contact the business to use this offer",
-      "contactMessage": "SANAD doesn't book the offer for you - reach out to the business directly to use it.",
+      "contactMessage": "AKHOO doesn't book the offer for you - reach out to the business directly to use it.",
       "notFound": "This offer is no longer available."
     },
     "business": {

@@ -228,7 +228,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
             <Card
               title={other.data.full_name || t('activeRequest.defaultVolunteerName')}
               subtitle={t('points.completedCount', { count: volunteerCount.data ?? 0 })}
-              leading={<Avatar name={other.data.full_name || 'SANAD'} uri={other.data.avatar_url} size={52} tone="community" />}
+              leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="community" />}
               trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
             >
               {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
@@ -354,7 +354,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
       <View style={[styles.sheet, { backgroundColor: theme.colors.surface }]}>
         <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
           {other.data ? (
-            <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'SANAD'} uri={other.data.avatar_url} size={52} tone="primary" />}>
+            <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="primary" />}>
               {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
             </Card>
           ) : null}

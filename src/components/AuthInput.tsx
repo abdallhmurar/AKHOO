@@ -5,7 +5,7 @@ import { colors, font, radius, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 
 // Auth V2 field - a leading-icon pill with placeholder text and no separate
-// label row, matching the reference's field anatomy/density (SANAD's other
+// label row, matching the reference's field anatomy/density (AKHOO's other
 // screens keep their own labeled TextField untouched; this is Auth-only).
 export function AuthInput({
   Icon,

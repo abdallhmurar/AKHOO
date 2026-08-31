@@ -128,7 +128,7 @@
     }
   },
   "home": {
-    "brand": "سَنَد",
+    "brand": "أخوو",
     "greeting": "أهلاً {{name}}",
     "guestName": "فيك",
     "resumeRequest": "لسا عندك طلب مساعدة نشط — تابعه",
@@ -169,7 +169,7 @@
     },
     "pilotZone": {
       "title": "خارج منطقة التجربة",
-      "message": "سَنَد متاح حاليًا ضمن منطقة التجربة في القدس."
+      "message": "أخوو متاح حاليًا ضمن منطقة التجربة في القدس."
     }
   },
   "activeRequest": {
@@ -184,7 +184,7 @@
     },
     "title": "طلب المساعدة",
     "subtitleSearching": "أي حدا متاح وقريب منك يقدر يشوف طلبك ويستلمه.",
-    "subtitleCompleted": "شكراً لاستخدام سَنَد ❤️",
+    "subtitleCompleted": "شكراً لاستخدام أخوو ❤️",
     "subtitleAwaitingConfirmation": "قالوا إنهم خلصوا المساعدة — أكّد إذا وصلتك فعلاً.",
     "subtitleTracking": "حالة الطلب تتحدث مباشرة بينك وبين يلي بيساعدك.",
     "releasedNotice": {
@@ -247,7 +247,7 @@
     },
     "completion": {
       "title": "تمت المهمة بنجاح",
-      "message": "شكراً لأنك كنت سَنَد لحدا اليوم.",
+      "message": "شكراً لأنك كنت أخوو لحدا اليوم.",
       "pointsEarned": "+{{points}} نقاط",
       "backHome": "الرجوع للرئيسية"
     }
@@ -280,7 +280,7 @@
       "acceptFailedTitle": "ما قدرنا نستلم الطلب"
     },
     "backgroundNotification": {
-      "title": "سَنَد - أنت متاح كمتطوع",
+      "title": "أخوو - أنت متاح كمتطوع",
       "body": "موقعك يتحدث حتى تشوف طلبات المساعدة القريبة، حتى لو التطبيق بالخلفية."
     }
   },
@@ -384,14 +384,14 @@
     "bronze": "مساعد برونزي",
     "silver": "مساعد فضي",
     "gold": "مساعد ذهبي",
-    "green": "سَنَد الأخضر",
+    "green": "أخوو الأخضر",
     "levelUpMessage": "🎉 وصلت لدرجة {{levelName}}"
   },
   "map": {
     "loading": "جارٍ تحميل الخريطة..."
   },
   "perks": {
-    "title": "مزايا سَنَد",
+    "title": "مزايا أخوو",
     "subtitle": "عروض وخدمات قريبة منك",
     "searchPlaceholder": "دوّر على عمل تجاري أو عرض",
     "categoriesTitle": "التصنيفات",
@@ -415,9 +415,9 @@
     "rating": { "new": "جديد" },
     "plusBadge": "PLUS",
     "hero": {
-      "title": "SANAD+",
-      "subtitle": "بيفتح استخدام عروض الأعضاء عند شركاء سَنَد.",
-      "cta": "تعرف على SANAD+"
+      "title": "AKHOO+",
+      "subtitle": "بيفتح استخدام عروض الأعضاء عند شركاء أخوو.",
+      "cta": "تعرف على AKHOO+"
     },
     "empty": {
       "offersTitle": "ما في عروض حالياً",
@@ -428,17 +428,17 @@
       "searchMessage": "جرب كلمة بحث ثانية أو تصنيف مختلف."
     },
     "membershipSheet": {
-      "offerLockedTitle": "هاد العرض متاح لأعضاء SANAD+",
-      "offerLockedMessage": "اشترك حتى تستفيد من هاد العرض وباقي عروض SANAD+.",
-      "genericTitle": "SANAD+",
-      "genericMessage": "مساعدة المتطوعين بتضل مجانية دائماً. SANAD+ بيفتح استخدام عروض حقيقية عند شركائنا.",
-      "benefitDiscounts": "خصومات حقيقية عند شركاء سَنَد الموثوقين",
+      "offerLockedTitle": "هاد العرض متاح لأعضاء AKHOO+",
+      "offerLockedMessage": "اشترك حتى تستفيد من هاد العرض وباقي عروض AKHOO+.",
+      "genericTitle": "AKHOO+",
+      "genericMessage": "مساعدة المتطوعين بتضل مجانية دائماً. AKHOO+ بيفتح استخدام عروض حقيقية عند شركائنا.",
+      "benefitDiscounts": "خصومات حقيقية عند شركاء أخوو الموثوقين",
       "benefitPriority": "أولوية عند توفر خدمات احترافية بالمستقبل",
-      "benefitSupport": "دعم مخصص لأعضاء SANAD+",
-      "learnMore": "تعرف على SANAD+",
+      "benefitSupport": "دعم مخصص لأعضاء AKHOO+",
+      "learnMore": "تعرف على AKHOO+",
       "notNow": "ليس الآن",
       "comingSoon": "الاشتراك جوا التطبيق رح يتوفر قريباً.",
-      "notAvailableInMarket": "تفعيل عضوية SANAD+ مش متاح لسا بمنطقتك."
+      "notAvailableInMarket": "تفعيل عضوية AKHOO+ مش متاح لسا بمنطقتك."
     },
     "offer": {
       "title": "تفاصيل العرض",
@@ -449,7 +449,7 @@
       "validNoLimit": "بدون تاريخ انتهاء",
       "viewBusiness": "عرض العمل التجاري",
       "contactTitle": "تواصل مباشرة لاستخدام العرض",
-      "contactMessage": "سَنَد ما بتحجز العرض تلقائياً - تواصل مع العمل التجاري مباشرة لاستخدامه.",
+      "contactMessage": "أخوو ما بتحجز العرض تلقائياً - تواصل مع العمل التجاري مباشرة لاستخدامه.",
       "notFound": "هاد العرض ما عاد متاح."
     },
     "business": {
@@ -475,7 +475,7 @@
   },
   "navigation": {
     "home": "الرئيسية",
-    "perks": "مزايا سَنَد",
+    "perks": "مزايا أخوو",
     "activity": "نشاطي",
     "account": "حسابي"
   }

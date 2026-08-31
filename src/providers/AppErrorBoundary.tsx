@@ -13,14 +13,14 @@ export class AppErrorBoundary extends Component<PropsWithChildren, State> {
   state: State = { error: null }
   static getDerivedStateFromError(error: Error): State { return { error } }
   componentDidCatch(error: Error, info: ErrorInfo) {
-    if (__DEV__) console.error('[SANAD boundary]', error.message, info.componentStack)
+    if (__DEV__) console.error('[AKHOO boundary]', error.message, info.componentStack)
   }
   render(): ReactNode {
     if (!this.state.error) return this.props.children
     const language = i18next.language?.startsWith('en') ? 'en' : i18next.language?.startsWith('he') ? 'he' : 'ar'
     const tr = (ar: string, he: string, en: string) => language === 'en' ? en : language === 'he' ? he : ar
     const align = language === 'en' ? 'left' as const : 'right' as const
-    return <View style={styles.wrap}><View style={styles.icon}><WarningCircle size={40} color={civicColors.emergencyCoral} weight="duotone" /></View><Text style={[styles.title, { fontFamily: getFontFamily(language, 'bold'), textAlign: align }]}>{tr('تعذر على سَنَد فتح هذه الشاشة', 'סַנַד לא הצליח לפתוח את המסך', 'SANAD could not open this screen')}</Text><Text style={[styles.body, { fontFamily: getFontFamily(language), textAlign: align }]}>{tr('بياناتك آمنة. حاول فتح الشاشة مجدداً.', 'המידע שלך בטוח. נסו לפתוח את המסך שוב.', 'Your data is safe. Try opening the screen again.')}</Text><Button label={tr('المحاولة مجدداً', 'ניסיון חוזר', 'Try again')} onPress={() => this.setState({ error: null })} /></View>
+    return <View style={styles.wrap}><View style={styles.icon}><WarningCircle size={40} color={civicColors.emergencyCoral} weight="duotone" /></View><Text style={[styles.title, { fontFamily: getFontFamily(language, 'bold'), textAlign: align }]}>{tr('تعذر على أخوو فتح هذه الشاشة', 'אחוו לא הצליח לפתוח את המסך', 'AKHOO could not open this screen')}</Text><Text style={[styles.body, { fontFamily: getFontFamily(language), textAlign: align }]}>{tr('بياناتك آمنة. حاول فتح الشاشة مجدداً.', 'המידע שלך בטוח. נסו לפתוח את המסך שוב.', 'Your data is safe. Try opening the screen again.')}</Text><Button label={tr('المحاولة مجدداً', 'ניסיון חוזר', 'Try again')} onPress={() => this.setState({ error: null })} /></View>
   }
 }
 

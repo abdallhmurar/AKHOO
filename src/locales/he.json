@@ -128,7 +128,7 @@
     }
   },
   "home": {
-    "brand": "סנד",
+    "brand": "אחוו",
     "greeting": "שלום {{name}}",
     "guestName": "אליך",
     "resumeRequest": "יש לך בקשת עזרה פעילה — המשך/י אותה",
@@ -169,7 +169,7 @@
     },
     "pilotZone": {
       "title": "מחוץ לאזור הפיילוט",
-      "message": "סנד זמין כרגע באזור הפיילוט בירושלים."
+      "message": "אחוו זמין כרגע באזור הפיילוט בירושלים."
     }
   },
   "activeRequest": {
@@ -184,7 +184,7 @@
     },
     "title": "בקשת עזרה",
     "subtitleSearching": "כל מי שזמין וקרוב יכול לראות את בקשתך ולקבל אותה.",
-    "subtitleCompleted": "תודה שהשתמשת בסנד ❤️",
+    "subtitleCompleted": "תודה שהשתמשת באחוו ❤️",
     "subtitleAwaitingConfirmation": "צוין שסיימו לעזור — אשר/י שהעזרה אכן הגיעה אליך.",
     "subtitleTracking": "סטטוס הבקשה מתעדכן בזמן אמת בינך לבין מי שעוזר/ת לך.",
     "releasedNotice": {
@@ -247,7 +247,7 @@
     },
     "completion": {
       "title": "המשימה הושלמה בהצלחה",
-      "message": "תודה שהיית סנד למישהו היום.",
+      "message": "תודה שהיית אחוו למישהו היום.",
       "pointsEarned": "+{{points}} נקודות",
       "backHome": "חזרה לדף הבית"
     }
@@ -280,7 +280,7 @@
       "acceptFailedTitle": "לא הצלחנו לקבל את הבקשה"
     },
     "backgroundNotification": {
-      "title": "סנד - את/ה זמין/ה כמתנדב/ת",
+      "title": "אחוו - את/ה זמין/ה כמתנדב/ת",
       "body": "המיקום שלך מתעדכן כדי שתוכל/י לראות בקשות עזרה קרובות, גם כשהאפליקציה ברקע."
     }
   },
@@ -384,14 +384,14 @@
     "bronze": "עוזר/ת ברונזה",
     "silver": "עוזר/ת כסף",
     "gold": "עוזר/ת זהב",
-    "green": "סנד ירוק",
+    "green": "אחוו ירוק",
     "levelUpMessage": "🎉 הגעת לדרגת {{levelName}}"
   },
   "map": {
     "loading": "טוען מפה..."
   },
   "perks": {
-    "title": "הטבות סנד",
+    "title": "הטבות אחוו",
     "subtitle": "מבצעים ושירותים לידך",
     "searchPlaceholder": "חיפוש עסק או מבצע",
     "categoriesTitle": "קטגוריות",
@@ -415,9 +415,9 @@
     "rating": { "new": "חדש" },
     "plusBadge": "PLUS",
     "hero": {
-      "title": "SANAD+",
+      "title": "AKHOO+",
       "subtitle": "פותח שימוש במבצעים לחברים אצל השותפים של סָנָד.",
-      "cta": "מידע על SANAD+"
+      "cta": "מידע על AKHOO+"
     },
     "empty": {
       "offersTitle": "אין מבצעים כרגע",
@@ -428,17 +428,17 @@
       "searchMessage": "נסו מונח חיפוש אחר או קטגוריה אחרת."
     },
     "membershipSheet": {
-      "offerLockedTitle": "מבצע זה מיועד לחברי SANAD+",
-      "offerLockedMessage": "הצטרפו כדי להשתמש במבצע הזה ובמבצעי SANAD+ נוספים.",
-      "genericTitle": "SANAD+",
-      "genericMessage": "עזרת המתנדבים תמיד תישאר חינמית. SANAD+ פותחת שימוש במבצעים אמיתיים אצל השותפים שלנו.",
+      "offerLockedTitle": "מבצע זה מיועד לחברי AKHOO+",
+      "offerLockedMessage": "הצטרפו כדי להשתמש במבצע הזה ובמבצעי AKHOO+ נוספים.",
+      "genericTitle": "AKHOO+",
+      "genericMessage": "עזרת המתנדבים תמיד תישאר חינמית. AKHOO+ פותחת שימוש במבצעים אמיתיים אצל השותפים שלנו.",
       "benefitDiscounts": "הנחות אמיתיות אצל שותפים אמינים של סָנָד",
       "benefitPriority": "עדיפות כאשר שירותי גיבוי מקצועי ייכנסו לפעולה",
-      "benefitSupport": "תמיכה ייעודית לחברי SANAD+",
-      "learnMore": "מידע על SANAD+",
+      "benefitSupport": "תמיכה ייעודית לחברי AKHOO+",
+      "learnMore": "מידע על AKHOO+",
       "notNow": "לא עכשיו",
       "comingSoon": "הרשמה בתוך האפליקציה תהיה זמינה בקרוב.",
-      "notAvailableInMarket": "הפעלת חברות SANAD+ עדיין לא זמינה באזור שלך."
+      "notAvailableInMarket": "הפעלת חברות AKHOO+ עדיין לא זמינה באזור שלך."
     },
     "offer": {
       "title": "פרטי המבצע",

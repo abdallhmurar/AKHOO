@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "سَنَد",
-    "slug": "sanad",
-    "scheme": "sanad",
+    "name": "أخوو",
+    "slug": "akhoo",
+    "scheme": "akhoo",
     "version": "2.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.sanad.help",
+      "bundleIdentifier": "app.akhoo.help",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true
       }
     },
     "android": {
-      "package": "app.sanad.help",
+      "package": "app.akhoo.help",
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
@@ -31,8 +31,8 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "سَنَد يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك. / SANAD needs your location to send your help request to nearby volunteers. / לסָנָד דרוש המיקום שלך כדי לשלוח את בקשת העזרה למתנדבים קרובים.",
-          "locationAlwaysAndWhenInUsePermission": "سَنَد يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية. / SANAD needs your location while you're available as a volunteer, so nearby requests reach you even in the background. / לסָנָד דרוש המיקום שלך בזמן זמינותך כמתנדב, כדי שבקשות קרובות יגיעו אליך גם ברקע.",
+          "locationWhenInUsePermission": "أخوو يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك. / AKHOO needs your location to send your help request to nearby volunteers. / לאחוו דרוש המיקום שלך כדי לשלוח את בקשת העזרה למתנדבים קרובים.",
+          "locationAlwaysAndWhenInUsePermission": "أخوو يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية. / AKHOO needs your location while you're available as a volunteer, so nearby requests reach you even in the background. / לאחוו דרוש המיקום שלך בזמן זמינותך כמתנדב, כדי שבקשות קרובות יגיעו אליך גם ברקע.",
           "isAndroidBackgroundLocationEnabled": true
         }
       ],

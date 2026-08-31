@@ -11,7 +11,7 @@ import { Tactile } from './Tactile'
 
 // No real subscription route exists yet (memberships has no client insert
 // path - a payment webhook/RPC is a future phase) regardless of the
-// market's sanadPlus flag, so "Learn about SANAD+" never fakes a checkout -
+// market's sanadPlus flag, so "Learn about AKHOO+" never fakes a checkout -
 // it just reveals an honest current-state note in place. When the flag
 // itself is off for this market, purchasing isn't offered at all (a
 // distinct, more definitive message) - but the member_only restriction
