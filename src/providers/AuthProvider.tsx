@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { PropsWithChildren } from 'react'
+import { Platform } from 'react-native'
 import type { Session } from '@supabase/supabase-js'
 import { authRepository, type OAuthProvider, type SignUpInput } from '../repositories/authRepository'
 import { profileRepository } from '../repositories/profileRepository'
@@ -89,7 +90,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
         setStatus('signed-out')
       }
     })
-    const linkSubscription = Linking.addEventListener('url', ({ url }) => {
+    // Native only: on web, expo-linking's 'url' event is actually just the
+    // browser's generic 'message' event in disguise, unrelated to real
+    // navigation - it can fire from an unrelated postMessage (an analytics
+    // script, a browser extension) while the OAuth code/token is still
+    // sitting in the URL, re-consuming it a second time and racing the
+    // proper handling in restore() above. That race intermittently "won"
+    // with a stale failure right after a real sign-in had just succeeded.
+    const linkSubscription = Platform.OS === 'web' ? null : Linking.addEventListener('url', ({ url }) => {
       if (!authLinksActive) return
       consumeAuthLink(url).catch(cause => setError(reportAppError(cause, { domain: 'auth', operation: 'deep-link' })))
     })
@@ -97,7 +105,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       mounted.current = false
       authLinksActive = false
       unsubscribeAuth()
-      linkSubscription.remove()
+      linkSubscription?.remove()
     }
   }, [loadProfile])
 
