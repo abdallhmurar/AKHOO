@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, GoogleLogo, ShieldCheck } from 'phosphor-react-native'
+import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
@@ -12,7 +12,7 @@ import { useAuth } from '../../providers'
 import { authRepository, type OAuthProvider } from '../../repositories/authRepository'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
-import { Button, IconButton, TextField } from '../../components/ui'
+import { Button, GoogleLogoColored, IconButton, TextField } from '../../components/ui'
 
 const welcomeBackground = require('../../../assets/images/1.png')
 
@@ -98,7 +98,7 @@ function OAuthButtons() {
         variant="outline"
         loading={loadingProvider === 'google'}
         disabled={loadingProvider !== null}
-        leading={<GoogleLogo size={20} color={theme.colors.textPrimary} weight="bold" />}
+        leading={<GoogleLogoColored size={20} />}
         onPress={() => handlePress('google')}
       />
       <Button

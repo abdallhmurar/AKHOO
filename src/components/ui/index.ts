@@ -1,5 +1,6 @@
 export * from './Avatar'
 export * from './BottomSheet'
+export * from './BrandIcons'
 export * from './Button'
 export * from './Card'
 export * from './IconButton'
