@@ -6,7 +6,7 @@ import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phos
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
-import { radius, space, useSanadTheme } from '../../lib/theme'
+import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { authRepository, type OAuthProvider } from '../../repositories/authRepository'
@@ -86,6 +86,8 @@ function OAuthButtons() {
     }
   }
 
+  const oauthButtonStyle = { borderRadius: radius.pill, backgroundColor: theme.colors.surface, ...shadow.soft }
+
   return (
     <View style={styles.oauthGroup}>
       <View style={[styles.dividerRow, dirStyles(isRTL).row]}>
@@ -95,7 +97,8 @@ function OAuthButtons() {
       </View>
       <Button
         label={t('auth.continueWithGoogle')}
-        variant="outline"
+        variant="secondary"
+        style={oauthButtonStyle}
         loading={loadingProvider === 'google'}
         disabled={loadingProvider !== null}
         leading={<GoogleLogoColored size={20} />}
@@ -103,7 +106,8 @@ function OAuthButtons() {
       />
       <Button
         label={t('auth.continueWithApple')}
-        variant="outline"
+        variant="secondary"
+        style={oauthButtonStyle}
         loading={loadingProvider === 'apple'}
         disabled={loadingProvider !== null}
         leading={<AppleLogo size={20} color={theme.colors.textPrimary} weight="fill" />}
