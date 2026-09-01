@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": {
-    "name": "sanad",
+    "name": "akhoo",
     "productType": "Jerusalem-first civic assistance mobile platform",
     "stack": [
       "react-native",

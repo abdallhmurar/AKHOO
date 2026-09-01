@@ -23,5 +23,5 @@ admin/*.tsbuildinfo
 
 # Firebase service account key (FCM push credential) - local/EAS-upload
 # only, must never be committed.
-sanad-35360-firebase-adminsdk-fbsvc-eea0d25588.json
+akhoo-firebase-adminsdk-fbsvc-eea0d25588.json
 *firebase-adminsdk*.json
