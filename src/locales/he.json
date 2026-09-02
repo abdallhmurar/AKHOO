@@ -55,7 +55,7 @@
     "signup": {
       "title": "יצירת חשבון",
       "subtitle": "התחל/י את מסע העזרה והנתינה שלך.",
-      "avatarHint": "תמונת פרופיל (אופציונלי)",
+      "avatarHint": "תמונת פרופיל",
       "nameLabel": "שם מלא",
       "namePlaceholder": "לדוגמה: אחמד מחמוד",
       "phoneLabel": "מספר טלפון",
@@ -63,15 +63,18 @@
       "emailLabel": "אימייל",
       "emailPlaceholder": "you@example.com",
       "passwordLabel": "סיסמה",
+      "confirmPasswordLabel": "אימות סיסמה",
       "submit": "יצירת חשבון",
       "haveAccount": "כבר יש לך חשבון?",
       "loginLink": "התחברות",
       "errors": {
+        "photoRequired": "יש להוסיף תמונת פרופיל.",
         "nameRequired": "הזן/י את שמך המלא.",
         "phoneRequired": "מספר טלפון הוא שדה חובה.",
         "phoneInvalid": "מספר טלפון לא תקין.",
         "emailRequired": "הזן/י כתובת אימייל.",
-        "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים."
+        "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים.",
+        "passwordMismatch": "הסיסמאות לא תואמות."
       },
       "permissionPhotos": {
         "title": "נדרשת הרשאת גישה לתמונות",

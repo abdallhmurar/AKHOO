@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
+import * as ImagePicker from 'expo-image-picker'
+import { AppleLogo, ArrowLeft, ArrowRight, Camera, CheckCircle, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
@@ -10,9 +11,12 @@ import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { authRepository, type OAuthProvider } from '../../repositories/authRepository'
+import { profileRepository } from '../../repositories/profileRepository'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
 import { Button, GoogleLogoColored, IconButton, TextField } from '../../components/ui'
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 const welcomeBackground = require('../../../assets/images/1.png')
 
@@ -195,34 +199,58 @@ function ForgotLinkText() {
 
 export function SignupScreen() {
   const { t } = useTranslation()
+  const theme = useSanadTheme()
   const router = useRouter()
   const { signUp } = useAuth()
+  const typography = useAppTypography()
   const tr = useErrorTranslator()
+  const [avatarUri, setAvatarUri] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<{ name?: string; phone?: string; email?: string; password?: string; form?: string }>({})
+  const [errors, setErrors] = useState<{ photo?: string; name?: string; phone?: string; email?: string; password?: string; confirmPassword?: string; form?: string }>({})
+
+  async function pickAvatar() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (permission.status !== 'granted') {
+      Alert.alert(t('auth.signup.permissionPhotos.title'), t('auth.signup.permissionPhotos.message'))
+      return
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
+    if (result.canceled || !result.assets[0]) return
+    const asset = result.assets[0]
+    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert(t('common.error'), t('account.errors.imageTooLarge'))
+      return
+    }
+    setAvatarUri(asset.uri)
+    setErrors(e => ({ ...e, photo: undefined }))
+  }
 
   async function submit() {
     const next: typeof errors = {}
+    if (!avatarUri) next.photo = t('auth.signup.errors.photoRequired')
     if (!name.trim()) next.name = t('auth.signup.errors.nameRequired')
     const normalizedPhone = phone.trim() ? normalizePhone(phone.trim()) : null
     if (!phone.trim()) next.phone = t('auth.signup.errors.phoneRequired')
     else if (!normalizedPhone) next.phone = t('auth.signup.errors.phoneInvalid')
     if (!email.trim()) next.email = t('auth.signup.errors.emailRequired')
     if (password.length < 6) next.password = t('auth.signup.errors.passwordTooShort')
+    else if (confirmPassword !== password) next.confirmPassword = t('auth.signup.errors.passwordMismatch')
     setErrors(next)
-    if (Object.keys(next).length > 0 || !normalizedPhone) return
+    if (Object.keys(next).length > 0 || !normalizedPhone || !avatarUri) return
     setLoading(true)
     try {
       const result = await signUp({ email: email.trim(), password, fullName: name.trim(), phone: normalizedPhone })
-      if (!result.session) {
+      if (result.session) {
+        try { await profileRepository.uploadAvatar(result.session.user.id, avatarUri) } catch { /* account creation already succeeded; avatar can be added later from Account */ }
+        router.replace('/(tabs)')
+      } else {
         Alert.alert(t('auth.signup.created.title'), t('auth.signup.created.message'))
         router.replace('/login')
-      } else {
-        router.replace('/(tabs)')
       }
     } catch (cause) {
       setErrors({ form: localizeAppError(cause, tr) })
@@ -233,10 +261,25 @@ export function SignupScreen() {
 
   return (
     <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')} onBack={() => router.back()}>
+      <View style={styles.avatarWrap}>
+        <Pressable onPress={pickAvatar} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: errors.photo ? theme.colors.danger : theme.colors.border }]}>
+          {avatarUri ? (
+            <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
+          ) : (
+            <Camera size={26} color={theme.colors.textMuted} weight="light" />
+          )}
+          <View style={[styles.avatarEditBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.background }]}>
+            <Camera size={13} color={theme.colors.onPrimary} weight="fill" />
+          </View>
+        </Pressable>
+        <Text style={[typography.small, styles.avatarHint, { color: theme.colors.textMuted }]}>{t('auth.signup.avatarHint')}</Text>
+        {errors.photo ? <Text style={[typography.small, { color: theme.colors.danger }]}>{errors.photo}</Text> : null}
+      </View>
       <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={value => { setName(value); setErrors(e => ({ ...e, name: undefined })) }} error={errors.name} />
       <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: undefined })) }} error={errors.phone} keyboardType="phone-pad" />
       <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
+      <TextField label={t('auth.signup.confirmPasswordLabel')} value={confirmPassword} onChangeText={value => { setConfirmPassword(value); setErrors(e => ({ ...e, confirmPassword: undefined })) }} error={errors.confirmPassword} secureTextEntry secureToggle />
       <FormError message={errors.form} />
       <Button label={t('auth.signup.submit')} loading={loading} onPress={submit} />
       <OAuthButtons />
@@ -348,5 +391,10 @@ const styles = StyleSheet.create({
   sentText: { textAlign: 'center' },
   oauthGroup: { gap: space.md },
   dividerRow: { alignItems: 'center', gap: space.sm },
-  dividerLine: { flex: 1, height: 1 }
+  dividerLine: { flex: 1, height: 1 },
+  avatarWrap: { alignItems: 'center', gap: space.xs },
+  avatarPicker: { width: 88, height: 88, borderRadius: 44, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  avatarImage: { width: '100%', height: '100%' },
+  avatarEditBadge: { position: 'absolute', bottom: 0, right: 0, width: 26, height: 26, borderRadius: 13, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  avatarHint: { marginTop: space.xs }
 })

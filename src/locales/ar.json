@@ -55,7 +55,7 @@
     "signup": {
       "title": "إنشاء حساب",
       "subtitle": "ابدأ رحلتك في المساعدة والعطاء.",
-      "avatarHint": "صورة شخصية (اختياري)",
+      "avatarHint": "الصورة الشخصية",
       "nameLabel": "الاسم الكامل",
       "namePlaceholder": "مثال: أحمد محمود",
       "phoneLabel": "رقم الهاتف",
@@ -63,15 +63,18 @@
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "you@example.com",
       "passwordLabel": "كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
       "submit": "إنشاء الحساب",
       "haveAccount": "لديك حساب بالفعل؟",
       "loginLink": "تسجيل الدخول",
       "errors": {
+        "photoRequired": "أضف صورة شخصية.",
         "nameRequired": "أدخل اسمك الكامل.",
         "phoneRequired": "رقم الهاتف إجباري.",
         "phoneInvalid": "رقم هاتف غير صحيح.",
         "emailRequired": "أدخل البريد الإلكتروني.",
-        "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل."
+        "passwordTooShort": "كلمة المرور لازم تكون 6 أحرف على الأقل.",
+        "passwordMismatch": "كلمتا المرور غير متطابقتين."
       },
       "permissionPhotos": {
         "title": "لازم إذن الصور",

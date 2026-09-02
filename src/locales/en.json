@@ -55,7 +55,7 @@
     "signup": {
       "title": "Create Account",
       "subtitle": "Start your journey of helping and giving.",
-      "avatarHint": "Profile photo (optional)",
+      "avatarHint": "Profile photo",
       "nameLabel": "Full Name",
       "namePlaceholder": "e.g. Ahmad Mahmoud",
       "phoneLabel": "Phone Number",
@@ -63,15 +63,18 @@
       "emailLabel": "Email",
       "emailPlaceholder": "you@example.com",
       "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
       "submit": "Create Account",
       "haveAccount": "Already have an account?",
       "loginLink": "Log In",
       "errors": {
+        "photoRequired": "Add a profile photo.",
         "nameRequired": "Enter your full name.",
         "phoneRequired": "Phone number is required.",
         "phoneInvalid": "Invalid phone number.",
         "emailRequired": "Enter your email.",
-        "passwordTooShort": "Password must be at least 6 characters."
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "passwordMismatch": "Passwords don't match."
       },
       "permissionPhotos": {
         "title": "Photo Access Needed",
