@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
-import { CarProfile, HandHeart, Storefront } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
@@ -8,6 +7,10 @@ import { useAppTypography } from '../../lib/typography'
 import { useAuth, useMission } from '../../providers'
 import { ActionCard, AppScreen } from '../../components/v2'
 import { Avatar, Card, StatusBadge, Surface } from '../../components/ui'
+
+const needHelpIllustration = require('../../../assets/images/help-car.png')
+const wantToHelpIllustration = require('../../../assets/images/help-hands.png')
+const discoverIllustration = require('../../../assets/images/help-shop.png')
 
 // Real SANAD Home: two equal-weight core actions (Request Help / Help
 // Mode), a light discovery link to Perks, and the real "no call center"
@@ -58,32 +61,29 @@ export function HomeScreen() {
         <Text style={[typography.eyebrow, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.title')}</Text>
       </View>
 
-      <View style={[styles.dual, dirStyles(isRTL).row]}>
+      <View style={styles.stack}>
         <ActionCard
-          large
-          Icon={CarProfile}
+          illustration={needHelpIllustration}
           tone="primary"
           title={t('home.needHelp.title')}
           description={t('home.needHelp.text')}
           onPress={() => (activeKind === 'request' ? resumeActive() : router.push('/requester'))}
         />
         <ActionCard
-          large
-          Icon={HandHeart}
+          illustration={wantToHelpIllustration}
           tone="community"
           title={t('home.wantToHelp.title')}
           description={t('home.wantToHelp.text')}
           onPress={() => (activeKind === 'job' ? resumeActive() : router.push('/helper'))}
         />
+        <ActionCard
+          illustration={discoverIllustration}
+          tone="neutral"
+          title={t('home.discoverPerks.title')}
+          description={t('home.discoverPerks.text')}
+          onPress={() => router.push('/community')}
+        />
       </View>
-
-      <ActionCard
-        Icon={Storefront}
-        tone="neutral"
-        title={t('home.discoverPerks.title')}
-        description={t('home.discoverPerks.text')}
-        onPress={() => router.push('/community')}
-      />
 
       <Surface tone="muted" bordered={false} padding="lg" style={styles.notice}>
         <Text style={[typography.caption, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.notice')}</Text>
@@ -99,6 +99,6 @@ const styles = StyleSheet.create({
   resumeCard: { gap: space.sm },
   resumeTop: { alignItems: 'center' },
   heroCopy: { marginTop: space.xs },
-  dual: { gap: space.md },
+  stack: { gap: space.md },
   notice: { marginTop: space.xs, borderRadius: radius.lg }
 })
