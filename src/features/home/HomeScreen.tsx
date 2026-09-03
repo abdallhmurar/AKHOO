@@ -8,9 +8,12 @@ import { useAuth, useMission } from '../../providers'
 import { ActionCard, AppScreen } from '../../components/v2'
 import { Avatar, Card, StatusBadge, Surface } from '../../components/ui'
 
-const needHelpIllustration = require('../../../assets/images/help-car.png')
-const wantToHelpIllustration = require('../../../assets/images/help-hands.png')
-const discoverIllustration = require('../../../assets/images/help-shop.png')
+const needHelpIllustration = require('../../../assets/images/help-car-illustration.png')
+const needHelpFullCard = require('../../../assets/images/help-car.png')
+const wantToHelpIllustration = require('../../../assets/images/help-hands-illustration.png')
+const wantToHelpFullCard = require('../../../assets/images/help-hands.png')
+const discoverIllustration = require('../../../assets/images/help-shop-illustration.png')
+const discoverFullCard = require('../../../assets/images/help-shop.png')
 
 // Real SANAD Home: two equal-weight core actions (Request Help / Help
 // Mode), a light discovery link to Perks, and the real "no call center"
@@ -64,6 +67,7 @@ export function HomeScreen() {
       <View style={styles.stack}>
         <ActionCard
           illustration={needHelpIllustration}
+          fullCard={needHelpFullCard}
           tone="primary"
           title={t('home.needHelp.title')}
           description={t('home.needHelp.text')}
@@ -71,6 +75,7 @@ export function HomeScreen() {
         />
         <ActionCard
           illustration={wantToHelpIllustration}
+          fullCard={wantToHelpFullCard}
           tone="community"
           title={t('home.wantToHelp.title')}
           description={t('home.wantToHelp.text')}
@@ -78,6 +83,7 @@ export function HomeScreen() {
         />
         <ActionCard
           illustration={discoverIllustration}
+          fullCard={discoverFullCard}
           tone="neutral"
           title={t('home.discoverPerks.title')}
           description={t('home.discoverPerks.text')}
