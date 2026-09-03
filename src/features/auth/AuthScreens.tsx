@@ -15,8 +15,10 @@ import { profileRepository } from '../../repositories/profileRepository'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
 import { Button, GoogleLogoColored, IconButton, TextField } from '../../components/ui'
+import { PasswordStrength } from '../../components/PasswordStrength'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const welcomeBackground = require('../../../assets/images/1.png')
 
@@ -161,6 +163,7 @@ export function LoginScreen() {
   async function submit() {
     const next: typeof errors = {}
     if (!email.trim()) next.email = t('auth.login.errors.emailRequired')
+    else if (!EMAIL_REGEX.test(email.trim())) next.email = t('auth.login.errors.emailInvalid')
     if (password.length < 6) next.password = t('auth.login.errors.passwordTooShort')
     setErrors(next)
     if (Object.keys(next).length > 0) return
@@ -212,6 +215,22 @@ export function SignupScreen() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ photo?: string; name?: string; phone?: string; email?: string; password?: string; confirmPassword?: string; form?: string }>({})
+  const [created, setCreated] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [resendSent, setResendSent] = useState(false)
+
+  async function resendConfirmation() {
+    setResending(true)
+    setResendSent(false)
+    try {
+      await authRepository.resendVerification(email.trim())
+      setResendSent(true)
+    } catch (cause) {
+      setErrors({ form: localizeAppError(cause, tr) })
+    } finally {
+      setResending(false)
+    }
+  }
 
   async function pickAvatar() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -238,6 +257,7 @@ export function SignupScreen() {
     if (!phone.trim()) next.phone = t('auth.signup.errors.phoneRequired')
     else if (!normalizedPhone) next.phone = t('auth.signup.errors.phoneInvalid')
     if (!email.trim()) next.email = t('auth.signup.errors.emailRequired')
+    else if (!EMAIL_REGEX.test(email.trim())) next.email = t('auth.signup.errors.emailInvalid')
     if (password.length < 6) next.password = t('auth.signup.errors.passwordTooShort')
     else if (confirmPassword !== password) next.confirmPassword = t('auth.signup.errors.passwordMismatch')
     setErrors(next)
@@ -249,14 +269,26 @@ export function SignupScreen() {
         try { await profileRepository.uploadAvatar(result.session.user.id, avatarUri) } catch { /* account creation already succeeded; avatar can be added later from Account */ }
         router.replace('/(tabs)')
       } else {
-        Alert.alert(t('auth.signup.created.title'), t('auth.signup.created.message'))
-        router.replace('/login')
+        setCreated(true)
       }
     } catch (cause) {
       setErrors({ form: localizeAppError(cause, tr) })
     } finally {
       setLoading(false)
     }
+  }
+
+  if (created) {
+    return (
+      <AuthFrame title={t('auth.signup.created.title')} onBack={() => router.replace('/login')}>
+        <CheckCircle size={44} color={theme.colors.success} weight="fill" style={styles.centerIcon} />
+        <Text style={styles.sentText}>{t('auth.signup.created.message')}</Text>
+        <FormError message={errors.form} />
+        <Button label={t('auth.signup.created.goToLogin')} onPress={() => router.replace('/login')} />
+        <FooterLink prompt="" label={resendSent ? t('auth.signup.created.resendSent') : t('auth.signup.created.resend')} onPress={resendConfirmation} />
+        {resending ? <Text style={[typography.small, { color: theme.colors.textMuted, textAlign: 'center' }]}>...</Text> : null}
+      </AuthFrame>
+    )
   }
 
   return (
@@ -279,6 +311,7 @@ export function SignupScreen() {
       <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: undefined })) }} error={errors.phone} keyboardType="phone-pad" />
       <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
+      <PasswordStrength password={password} />
       <TextField label={t('auth.signup.confirmPasswordLabel')} value={confirmPassword} onChangeText={value => { setConfirmPassword(value); setErrors(e => ({ ...e, confirmPassword: undefined })) }} error={errors.confirmPassword} secureTextEntry secureToggle />
       <FormError message={errors.form} />
       <Button label={t('auth.signup.submit')} loading={loading} onPress={submit} />

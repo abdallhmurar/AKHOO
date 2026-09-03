@@ -49,6 +49,7 @@
       "signUpLink": "Create one",
       "errors": {
         "emailRequired": "Enter your email.",
+        "emailInvalid": "Invalid email address.",
         "passwordTooShort": "Password must be at least 6 characters."
       }
     },
@@ -73,6 +74,7 @@
         "phoneRequired": "Phone number is required.",
         "phoneInvalid": "Invalid phone number.",
         "emailRequired": "Enter your email.",
+        "emailInvalid": "Invalid email address.",
         "passwordTooShort": "Password must be at least 6 characters.",
         "passwordMismatch": "Passwords don't match."
       },
@@ -82,7 +84,10 @@
       },
       "created": {
         "title": "Account Created",
-        "message": "If email confirmation is enabled, open the confirmation email then log in."
+        "message": "If email confirmation is enabled, open the confirmation email then log in.",
+        "resend": "Didn't get it? Resend",
+        "resendSent": "A new confirmation email was sent.",
+        "goToLogin": "Log in now"
       }
     },
     "forgot": {
