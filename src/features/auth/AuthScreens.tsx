@@ -308,7 +308,7 @@ export function SignupScreen() {
         {errors.photo ? <Text style={[typography.small, { color: theme.colors.danger }]}>{errors.photo}</Text> : null}
       </View>
       <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={value => { setName(value); setErrors(e => ({ ...e, name: undefined })) }} error={errors.name} />
-      <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: undefined })) }} error={errors.phone} keyboardType="phone-pad" />
+      <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: value.trim() && !normalizePhone(value.trim()) ? t('auth.signup.errors.phoneInvalid') : undefined })) }} error={errors.phone} keyboardType="phone-pad" />
       <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: value.trim() && !EMAIL_REGEX.test(value.trim()) ? t('auth.signup.errors.emailInvalid') : undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined, confirmPassword: confirmPassword && confirmPassword !== value ? t('auth.signup.errors.passwordMismatch') : undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <PasswordStrength password={password} />
