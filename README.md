@@ -10,12 +10,12 @@ This repository has been transformed in place from the V1 manual-screen architec
 
 - Expo Router with typed, protected routes and deep links.
 - Civic Signal design system and shared accessible components.
-- Requester, helper, live-mission, community, rewards, activity, account, and safety flows.
+- Requester, helper, live-mission, community, activity, and account flows.
 - Arabic, Hebrew, and English fonts, copy, layout direction, and mirrored navigation.
 - TanStack Query plus repository/service boundaries; active screens no longer call Supabase directly.
-- Additive Supabase V2 migration with RLS, secured RPCs, private request media, and realtime mission data.
+- RLS-secured Supabase schema (`supabase/migrations/0001`-`0016`), applied incrementally - no separate staged V2 migration exists.
 
-The V2 database migration is prepared but is not automatically applied to any linked production project. Validate it on staging first.
+An earlier, broader "civic assistance" rewrite (nine assistance categories, in-app chat, a rewards marketplace, paid membership billing) was scoped back out after review because it didn't match the real product or a migration that was ever applied. What's described in this README is the current, real app.
 
 ## Stack
 
@@ -57,7 +57,6 @@ npx expo start --dev-client
 npm run typecheck
 npm run lint
 npm test
-npm run test:migration
 npm run e2e
 ```
 
@@ -67,13 +66,12 @@ The committed browser suite is deliberately read-only against Supabase. It cover
 
 ```text
 app/                         Expo Router routes and route-group guards
-  (auth)/                    welcome, login, signup, verification, recovery
+  (auth)/                    welcome, login, signup, forgot-password, reset-password
   (tabs)/                    Home, Community, Activity, Account
   (requester)/requester/     emergency-to-matching request journey
   (helper)/helper/           onboarding-to-nearby-request journey
-  mission/[missionId]/       live mission, chat, completion, rating, safety
-  community/                 businesses, offers, AKHOO+, rewards, points
-  account/                   profile, settings, language, privacy, safety
+  mission/[missionId]/       live mission screen
+  community/                 businesses, offers, AKHOO+ membership
 src/
   components/ui/             reusable Civic Signal primitives
   components/v2/             product-level composed components
@@ -81,25 +79,19 @@ src/
   providers/                 auth, language/direction, query, mission state
   repositories/              typed data access; Supabase boundary
   services/                  errors, media, preferences, query keys
-  domain/                    civic categories, scenarios, and shared rules
 supabase/migrations/
-  0001_initial_schema.sql    preserved V1 baseline
-  0017_sanad_v2_civic_platform.sql  additive V2 upgrade
+  0001_initial_schema.sql    baseline schema
+  0002-0016                  incremental features, hardening, and fixes
 ```
-
-See [SANAD V2 architecture](docs/SANAD_V2_ARCHITECTURE.md) for route ownership, data flow, security, and release gates.
 
 ## Database rollout
 
-1. Back up the linked Supabase project.
+1. Back up the linked Supabase project before applying new migrations.
 2. Create or refresh a staging branch/project from production.
-3. Run `npm run test:migration`.
-4. Apply migrations to staging with the Supabase CLI.
-5. Exercise requester/helper missions with two disposable staging users.
-6. Verify RLS, signed private media, realtime events, push credentials, and rollback procedures.
-7. Apply to production only after the staging sign-off.
-
-The migration is additive: it preserves `profiles`, `help_requests`, existing partner/offer data, and legacy RPC fallbacks while adding V2 entities and synchronization.
+3. Apply pending migrations to staging with the Supabase CLI.
+4. Exercise requester/helper missions with two disposable staging users.
+5. Verify RLS, realtime events, push credentials, and rollback procedures.
+6. Apply to production only after the staging sign-off.
 
 ## Visual previews
 
@@ -111,7 +103,7 @@ The migration is additive: it preserves `profiles`, `help_requests`, existing pa
 
 ## Release gates
 
-- Apply and verify migration `0017` on staging.
+- Apply and verify pending migrations on staging before production.
 - Configure EAS Android/iOS signing plus APNs/FCM credentials.
 - Run physical-device checks for maps, location background mode, image permissions, push notifications, and RTL screen-reader navigation.
 - Connect a production payment provider before enabling paid AKHOO+ membership; the current flow records a safe membership request and does not charge the user.
