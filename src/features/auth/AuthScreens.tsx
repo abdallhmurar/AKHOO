@@ -180,7 +180,7 @@ export function LoginScreen() {
 
   return (
     <AuthFrame title={t('auth.login.title')} subtitle={t('auth.login.subtitle')} onBack={() => router.back()}>
-      <TextField label={t('auth.login.emailLabel')} placeholder={t('auth.login.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
+      <TextField label={t('auth.login.emailLabel')} placeholder={t('auth.login.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: value.trim() && !EMAIL_REGEX.test(value.trim()) ? t('auth.login.errors.emailInvalid') : undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.login.passwordLabel')} placeholder={t('auth.login.passwordPlaceholder')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <Pressable onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} hitSlop={8} style={{ alignSelf: isRTL ? 'flex-start' : 'flex-end' }}>
         <ForgotLinkText />
@@ -309,10 +309,10 @@ export function SignupScreen() {
       </View>
       <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={value => { setName(value); setErrors(e => ({ ...e, name: undefined })) }} error={errors.name} />
       <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: undefined })) }} error={errors.phone} keyboardType="phone-pad" />
-      <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
-      <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
+      <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: value.trim() && !EMAIL_REGEX.test(value.trim()) ? t('auth.signup.errors.emailInvalid') : undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
+      <TextField label={t('auth.signup.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined, confirmPassword: confirmPassword && confirmPassword !== value ? t('auth.signup.errors.passwordMismatch') : undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <PasswordStrength password={password} />
-      <TextField label={t('auth.signup.confirmPasswordLabel')} value={confirmPassword} onChangeText={value => { setConfirmPassword(value); setErrors(e => ({ ...e, confirmPassword: undefined })) }} error={errors.confirmPassword} secureTextEntry secureToggle />
+      <TextField label={t('auth.signup.confirmPasswordLabel')} value={confirmPassword} onChangeText={value => { setConfirmPassword(value); setErrors(e => ({ ...e, confirmPassword: value && value !== password ? t('auth.signup.errors.passwordMismatch') : undefined })) }} error={errors.confirmPassword} secureTextEntry secureToggle />
       <FormError message={errors.form} />
       <Button label={t('auth.signup.submit')} loading={loading} onPress={submit} />
       <OAuthButtons />
