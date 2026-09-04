@@ -1,30 +1,32 @@
 import type { ImageSourcePropType } from 'react-native'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import type { AnimationObject } from 'lottie-react-native'
 import { useIsRTL } from '../../lib/direction'
 import { radius, shadow, space } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
-import { LottieBackground } from './LottieBackground'
 
 const CARD_HEIGHT = 210
 
 /**
- * A hero-style card with a photo background and a looping Lottie motion
- * overlay (glow/smoke/shine effects) behind translatable text - unlike
- * ActionCard's baked-text Arabic image, nothing here is locked to one
- * language, so it renders the same way for ar/he/en.
+ * A hero-style card with a photo background behind translatable text -
+ * unlike ActionCard's baked-text Arabic image, nothing here is locked to
+ * one language, so it renders the same way for ar/he/en.
+ *
+ * The Lottie motion overlay this was meant to have is parked for now:
+ * three straight attempts to composite it over the photo on web (WASM
+ * canvas with a blend mode, then an explicit transparent background
+ * config, then lottie-web's SVG renderer) all failed to reproduce what
+ * the source HTML preview showed. Re-add it once that's solved in
+ * isolation, away from this component.
  */
 export function AnimatedActionCard({
   title,
   description,
   background,
-  animation,
   onPress
 }: {
   title: string
   description: string
   background: ImageSourcePropType
-  animation: AnimationObject
   onPress: () => void
 }) {
   const typography = useAppTypography()
@@ -37,9 +39,6 @@ export function AnimatedActionCard({
       style={({ pressed }) => [styles.card, shadow.soft, pressed && styles.pressed]}
     >
       <Image source={background} resizeMode="cover" style={StyleSheet.absoluteFill} />
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LottieBackground source={animation} style={StyleSheet.absoluteFill} />
-      </View>
       <View style={[styles.copy, isRTL ? styles.copyRTL : styles.copyLTR]}>
         <Text style={[typography.h2, styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
         <Text style={[typography.small, styles.description, { textAlign: isRTL ? 'right' : 'left' }]}>{description}</Text>
