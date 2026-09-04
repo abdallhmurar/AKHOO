@@ -2,6 +2,12 @@ import { useState } from "react";
 
 type Locale = "ar" | "he" | "en";
 
+const COPY = {
+  ar: { text: "بدي مساعدة من أخوو", rtl: true },
+  he: { text: "אני צריך עזרה מאחוו", rtl: true },
+  en: { text: "I need help from AKHOO", rtl: false },
+} as const;
+
 type Props = {
   locale?: Locale;
   onPress: () => void;
@@ -10,12 +16,9 @@ type Props = {
 const videoAsset = require("./help-card-video.mp4");
 const videoUri = typeof videoAsset === "string" ? videoAsset : videoAsset.uri;
 
-/**
- * Trying a video background instead of photo + Lottie. No text yet - just
- * getting the video itself showing correctly as a clickable button first.
- */
-export default function HelpCardLottie({ onPress }: Props) {
+export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
   const [pressed, setPressed] = useState(false);
+  const copy = COPY[locale] ?? COPY.ar;
 
   return (
     <div
@@ -60,6 +63,33 @@ export default function HelpCardLottie({ onPress }: Props) {
           display: "block",
         }}
       />
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <span
+          style={{
+            direction: copy.rtl ? "rtl" : "ltr",
+            color: "#0B1F33",
+            fontSize: 22,
+            fontWeight: 800,
+            padding: "10px 22px",
+            borderRadius: 999,
+            backgroundColor: "rgba(255,255,255,0.72)",
+            backdropFilter: "blur(4px)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {copy.text}
+        </span>
+      </div>
     </div>
   );
 }
