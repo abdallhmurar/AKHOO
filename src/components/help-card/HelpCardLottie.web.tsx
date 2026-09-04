@@ -3,9 +3,9 @@ import { useState } from "react";
 type Locale = "ar" | "he" | "en";
 
 const COPY = {
-  ar: { text: "بدي مساعدة من أخوو", rtl: true },
-  he: { text: "אני צריך עזרה מאחוו", rtl: true },
-  en: { text: "I need help from AKHOO", rtl: false },
+  ar: { title: "بدي مساعدة", subtitle: "من أخوو", rtl: true },
+  he: { title: "אני צריך עזרה", subtitle: "מאחוו", rtl: true },
+  en: { title: "I need help", subtitle: "from AKHOO", rtl: false },
 } as const;
 
 type Props = {
@@ -72,22 +72,36 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
           right: copy.rtl ? "6%" : undefined,
           left: copy.rtl ? undefined : "6%",
           display: "flex",
-          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
           pointerEvents: "none",
           maxWidth: "60%",
+          direction: copy.rtl ? "rtl" : "ltr",
+          textAlign: copy.rtl ? "right" : "left",
         }}
       >
         <span
           style={{
-            direction: copy.rtl ? "rtl" : "ltr",
-            textAlign: copy.rtl ? "right" : "left",
             color: "#1768E5",
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: 800,
+            lineHeight: 1.15,
             textShadow: "0 1px 2px rgba(255,255,255,0.5)",
           }}
         >
-          {copy.text}
+          {copy.title}
+        </span>
+        <span
+          style={{
+            color: "#1768E5",
+            fontSize: 17,
+            fontWeight: 500,
+            opacity: 0.85,
+            marginTop: 4,
+            textShadow: "0 1px 2px rgba(255,255,255,0.5)",
+          }}
+        >
+          {copy.subtitle}
         </span>
       </div>
     </div>
