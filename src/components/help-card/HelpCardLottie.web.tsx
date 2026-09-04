@@ -82,7 +82,7 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       >
         <span
           style={{
-            color: "#0F3FBF",
+            color: "#fa453c",
             fontSize: 42,
             fontWeight: 800,
             lineHeight: 1.15,
@@ -93,9 +93,9 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         </span>
         <span
           style={{
-            color: "#5B7FDB",
-            fontSize: 24,
-            fontWeight: 600,
+            color: "#56627e",
+            fontSize: 30,
+            fontWeight: 500,
             marginTop: 8,
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
