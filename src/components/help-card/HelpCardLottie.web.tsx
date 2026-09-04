@@ -3,9 +3,33 @@ import { useEffect, useState } from "react";
 type Locale = "ar" | "he" | "en";
 
 const COPY = {
-  ar: { title: "بدي مساعدة", subtitle: "أحتاج مساعدة الآن من شخص قريب", rtl: true },
-  he: { title: "אני צריך עזרה", subtitle: "אני זקוק לעזרה עכשיו ממישהו קרוב", rtl: true },
-  en: { title: "I need help", subtitle: "I need help now from someone nearby", rtl: false },
+  ar: {
+    title: "بدي مساعدة",
+    subtitle: "أحتاج مساعدة الآن من شخص قريب",
+    rtl: true,
+    fontFamily: "'Lateef', serif",
+    titleSize: 44,
+    subtitleSize: 32,
+  },
+  he: {
+    title: "אני צריך עזרה",
+    subtitle: "אני זקוק לעזרה עכשיו ממישהו קרוב",
+    rtl: true,
+    fontFamily: "'Gveret Levin', cursive",
+    // Handwriting script reads cramped small - sized up a bit more than the others.
+    titleSize: 48,
+    subtitleSize: 36,
+  },
+  en: {
+    title: "I need help",
+    subtitle: "I need help now from someone nearby",
+    rtl: false,
+    fontFamily: "'Iosevka Charon Mono', monospace",
+    // Monospace runs wider per character than the others - sized down so the
+    // subtitle doesn't overflow the 60% box, with tighter tracking on the title.
+    titleSize: 34,
+    subtitleSize: 22,
+  },
 } as const;
 
 type Props = {
@@ -16,18 +40,20 @@ type Props = {
 const videoAsset = require("./help-card-video.mp4");
 const videoUri = typeof videoAsset === "string" ? videoAsset : videoAsset.uri;
 
-const RAKKAS_FONT_LINK_ID = "help-card-rakkas-font";
+const FONT_LINK_ID = "help-card-fonts";
+const FONT_LINK_HREF =
+  "https://fonts.googleapis.com/css2?family=Lateef&family=Gveret+Levin&family=Iosevka+Charon+Mono&display=swap";
 
 export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
   const [pressed, setPressed] = useState(false);
   const copy = COPY[locale] ?? COPY.ar;
 
   useEffect(() => {
-    if (document.getElementById(RAKKAS_FONT_LINK_ID)) return;
+    if (document.getElementById(FONT_LINK_ID)) return;
     const link = document.createElement("link");
-    link.id = RAKKAS_FONT_LINK_ID;
+    link.id = FONT_LINK_ID;
     link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Rakkas&display=swap";
+    link.href = FONT_LINK_HREF;
     document.head.appendChild(link);
   }, []);
 
@@ -92,11 +118,12 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       >
         <span
           style={{
-            fontFamily: "'Rakkas', cursive",
+            fontFamily: copy.fontFamily,
             color: "#CE2029",
-            fontSize: 42,
+            fontSize: copy.titleSize,
             fontWeight: 400,
             lineHeight: 1.15,
+            letterSpacing: copy.rtl ? undefined : "-0.5px",
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
         >
@@ -104,9 +131,9 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         </span>
         <span
           style={{
-            fontFamily: "'Rakkas', cursive",
+            fontFamily: copy.fontFamily,
             color: "#111111",
-            fontSize: 34,
+            fontSize: copy.subtitleSize,
             fontWeight: 400,
             marginTop: 8,
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
