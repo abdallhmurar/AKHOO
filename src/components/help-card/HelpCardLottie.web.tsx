@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Locale = "ar" | "he" | "en";
 
 const COPY = {
-  ar: { title: "بدي مساعدة", subtitle: "من أخوو", rtl: true },
-  he: { title: "אני צריך עזרה", subtitle: "מאחוו", rtl: true },
-  en: { title: "I need help", subtitle: "from AKHOO", rtl: false },
+  ar: { title: "بدي مساعدة", subtitle: "أحتاج مساعدة الآن من شخص قريب", rtl: true },
+  he: { title: "אני צריך עזרה", subtitle: "אני זקוק לעזרה עכשיו ממישהו קרוב", rtl: true },
+  en: { title: "I need help", subtitle: "I need help now from someone nearby", rtl: false },
 } as const;
 
 type Props = {
@@ -16,9 +16,20 @@ type Props = {
 const videoAsset = require("./help-card-video.mp4");
 const videoUri = typeof videoAsset === "string" ? videoAsset : videoAsset.uri;
 
+const RAKKAS_FONT_LINK_ID = "help-card-rakkas-font";
+
 export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
   const [pressed, setPressed] = useState(false);
   const copy = COPY[locale] ?? COPY.ar;
+
+  useEffect(() => {
+    if (document.getElementById(RAKKAS_FONT_LINK_ID)) return;
+    const link = document.createElement("link");
+    link.id = RAKKAS_FONT_LINK_ID;
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Rakkas&display=swap";
+    document.head.appendChild(link);
+  }, []);
 
   return (
     <div
@@ -81,9 +92,10 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       >
         <span
           style={{
-            color: "#fa453c",
+            fontFamily: "'Rakkas', cursive",
+            color: "#CE2029",
             fontSize: 42,
-            fontWeight: 800,
+            fontWeight: 400,
             lineHeight: 1.15,
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
@@ -92,9 +104,10 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         </span>
         <span
           style={{
-            color: "#56627e",
-            fontSize: 30,
-            fontWeight: 500,
+            fontFamily: "'Rakkas', cursive",
+            color: "#111111",
+            fontSize: 34,
+            fontWeight: 400,
             marginTop: 8,
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
