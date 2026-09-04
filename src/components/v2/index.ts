@@ -1,4 +1,5 @@
 export * from './ActionCard'
+export * from './AnimatedActionCard'
 export * from './AppScreen'
 export * from './ListRow'
 export * from './MapPanel'

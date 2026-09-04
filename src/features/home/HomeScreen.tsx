@@ -5,11 +5,11 @@ import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth, useMission } from '../../providers'
-import { ActionCard, AppScreen } from '../../components/v2'
+import { ActionCard, AnimatedActionCard, AppScreen } from '../../components/v2'
 import { Avatar, Card, StatusBadge, Surface } from '../../components/ui'
 
-const needHelpIllustration = require('../../../assets/images/help-car-illustration.png')
-const needHelpFullCard = require('../../../assets/images/help-car.png')
+const needHelpBackground = require('../../../assets/images/help-car-bg.jpg')
+const needHelpMotion = require('../../../assets/animations/help-car-motion.json')
 const wantToHelpIllustration = require('../../../assets/images/help-hands-illustration.png')
 const wantToHelpFullCard = require('../../../assets/images/help-hands.png')
 const discoverIllustration = require('../../../assets/images/help-shop-illustration.png')
@@ -65,10 +65,9 @@ export function HomeScreen() {
       </View>
 
       <View style={styles.stack}>
-        <ActionCard
-          illustration={needHelpIllustration}
-          fullCard={needHelpFullCard}
-          tone="primary"
+        <AnimatedActionCard
+          background={needHelpBackground}
+          animation={needHelpMotion}
           title={t('home.needHelp.title')}
           description={t('home.needHelp.text')}
           onPress={() => (activeKind === 'request' ? resumeActive() : router.push('/requester'))}
