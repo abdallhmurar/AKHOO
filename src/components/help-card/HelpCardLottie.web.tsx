@@ -82,23 +82,22 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       >
         <span
           style={{
-            color: "#1768E5",
-            fontSize: 28,
+            color: "#0F3FBF",
+            fontSize: 42,
             fontWeight: 800,
             lineHeight: 1.15,
-            textShadow: "0 1px 2px rgba(255,255,255,0.5)",
+            textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
         >
           {copy.title}
         </span>
         <span
           style={{
-            color: "#1768E5",
-            fontSize: 17,
-            fontWeight: 500,
-            opacity: 0.85,
-            marginTop: 4,
-            textShadow: "0 1px 2px rgba(255,255,255,0.5)",
+            color: "#5B7FDB",
+            fontSize: 24,
+            fontWeight: 600,
+            marginTop: 8,
+            textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
         >
           {copy.subtitle}
