@@ -5,10 +5,10 @@ import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth, useMission } from '../../providers'
-import { ActionCard, AnimatedActionCard, AppScreen } from '../../components/v2'
+import { ActionCard, AppScreen } from '../../components/v2'
 import { Avatar, Card, StatusBadge, Surface } from '../../components/ui'
+import HelpCardLottie from '../../components/help-card/HelpCardLottie'
 
-const needHelpBackground = require('../../../assets/images/help-car-bg.jpg')
 const wantToHelpIllustration = require('../../../assets/images/help-hands-illustration.png')
 const wantToHelpFullCard = require('../../../assets/images/help-hands.png')
 const discoverIllustration = require('../../../assets/images/help-shop-illustration.png')
@@ -24,7 +24,8 @@ export function HomeScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const helpCardLocale = i18n.language.startsWith('he') ? 'he' : i18n.language.startsWith('en') ? 'en' : 'ar'
   const router = useRouter()
   const { profile } = useAuth()
   const { activeMission, isRequester } = useMission()
@@ -64,10 +65,8 @@ export function HomeScreen() {
       </View>
 
       <View style={styles.stack}>
-        <AnimatedActionCard
-          background={needHelpBackground}
-          title={t('home.needHelp.title')}
-          description={t('home.needHelp.text')}
+        <HelpCardLottie
+          locale={helpCardLocale}
           onPress={() => (activeKind === 'request' ? resumeActive() : router.push('/requester'))}
         />
         <ActionCard
