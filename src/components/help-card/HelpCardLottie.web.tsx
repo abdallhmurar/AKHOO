@@ -120,7 +120,7 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         style={{
           position: "absolute",
           top: "24%",
-          [copy.rtl ? "right" : "left"]: "5.5%",
+          right: "5.5%",
           width: "42%",
           zIndex: 3,
           textAlign: copy.rtl ? "right" : "left",
