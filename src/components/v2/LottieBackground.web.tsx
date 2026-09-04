@@ -1,13 +1,32 @@
-import { DotLottieReact } from '@lottiefiles/dotlottie-react'
-import type { AnimationObject } from 'lottie-react-native'
+import { useEffect, useRef } from 'react'
+import { View } from 'react-native'
 import type { StyleProp, ViewStyle } from 'react-native'
+import type { AnimationObject } from 'lottie-react-native'
+import lottie from 'lottie-web'
 
 /**
- * Web: lottie-react-native's own web wrapper doesn't expose the underlying
- * WASM canvas's backgroundColor config, and it defaults to opaque - the
- * animation was painting over the photo behind it instead of compositing
- * with it. Talking to DotLottieReact directly lets us force it transparent.
+ * Web: the user's own working HTML preview used lottie-web's classic SVG
+ * renderer (transparent by nature, composites over the photo behind it with
+ * no extra config) - not the WASM/canvas engine lottie-react-native's web
+ * wrapper uses, which was painting an opaque backdrop over the photo no
+ * matter what background config was passed. This talks to lottie-web
+ * directly, the same way that working preview did.
  */
 export function LottieBackground({ source, style }: { source: AnimationObject; style?: StyleProp<ViewStyle> }) {
-  return <DotLottieReact data={JSON.stringify(source)} autoplay loop backgroundColor="#00000000" style={style as React.CSSProperties} />
+  const containerRef = useRef<View>(null)
+
+  useEffect(() => {
+    const node = containerRef.current as unknown as HTMLElement | null
+    if (!node) return
+    const anim = lottie.loadAnimation({
+      container: node,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: source
+    })
+    return () => anim.destroy()
+  }, [source])
+
+  return <View ref={containerRef} style={style} />
 }
