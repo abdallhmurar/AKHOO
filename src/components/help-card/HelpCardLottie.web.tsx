@@ -67,24 +67,24 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       <div
         style={{
           position: "absolute",
-          inset: 0,
+          top: 0,
+          bottom: 0,
+          right: copy.rtl ? "6%" : undefined,
+          left: copy.rtl ? undefined : "6%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
           pointerEvents: "none",
+          maxWidth: "60%",
         }}
       >
         <span
           style={{
             direction: copy.rtl ? "rtl" : "ltr",
-            color: "#0B1F33",
-            fontSize: 22,
+            textAlign: copy.rtl ? "right" : "left",
+            color: "#1768E5",
+            fontSize: 24,
             fontWeight: 800,
-            padding: "10px 22px",
-            borderRadius: 999,
-            backgroundColor: "rgba(255,255,255,0.72)",
-            backdropFilter: "blur(4px)",
-            whiteSpace: "nowrap",
+            textShadow: "0 1px 2px rgba(255,255,255,0.5)",
           }}
         >
           {copy.text}
