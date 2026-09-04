@@ -61,7 +61,6 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
           height: "100%",
           objectFit: "cover",
           display: "block",
-          transform: "scale(1.06)",
         }}
       />
 
