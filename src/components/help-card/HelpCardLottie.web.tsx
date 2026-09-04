@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 type Locale = "ar" | "he" | "en";
 
@@ -46,7 +46,8 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         display: "block",
         transform: pressed ? "scale(0.985)" : "scale(1)",
         transition: "transform 0.16s ease",
-      }}
+        containerType: "inline-size",
+      } as CSSProperties}
     >
       <video
         src={videoUri}
@@ -83,7 +84,7 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         <span
           style={{
             color: "#fa453c",
-            fontSize: 42,
+            fontSize: "2.2cqw",
             fontWeight: 800,
             lineHeight: 1.15,
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
@@ -94,9 +95,9 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
         <span
           style={{
             color: "#56627e",
-            fontSize: 30,
+            fontSize: "1.57cqw",
             fontWeight: 500,
-            marginTop: 8,
+            marginTop: "0.4cqw",
             textShadow: "0 1px 2px rgba(255,255,255,0.6)",
           }}
         >
