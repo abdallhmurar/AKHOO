@@ -1,9 +1,10 @@
 import type { ImageSourcePropType } from 'react-native'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import LottieView, { type AnimationObject } from 'lottie-react-native'
+import type { AnimationObject } from 'lottie-react-native'
 import { useIsRTL } from '../../lib/direction'
 import { radius, shadow, space } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
+import { LottieBackground } from './LottieBackground'
 
 const CARD_HEIGHT = 210
 
@@ -37,7 +38,7 @@ export function AnimatedActionCard({
     >
       <Image source={background} resizeMode="cover" style={StyleSheet.absoluteFill} />
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LottieView source={animation} autoPlay loop style={StyleSheet.absoluteFill} />
+        <LottieBackground source={animation} style={StyleSheet.absoluteFill} />
       </View>
       <View style={[styles.copy, isRTL ? styles.copyRTL : styles.copyLTR]}>
         <Text style={[typography.h2, styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
