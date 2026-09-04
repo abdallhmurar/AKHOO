@@ -8,9 +8,8 @@ import { useAuth, useMission } from '../../providers'
 import { ActionCard, AppScreen } from '../../components/v2'
 import { Avatar, Card, StatusBadge, Surface } from '../../components/ui'
 import HelpCardLottie from '../../components/help-card/HelpCardLottie'
+import WantToHelpCard from '../../components/want-to-help-card/WantToHelpCard'
 
-const wantToHelpIllustration = require('../../../assets/images/help-hands-illustration.png')
-const wantToHelpFullCard = require('../../../assets/images/help-hands.png')
 const discoverIllustration = require('../../../assets/images/help-shop-illustration.png')
 const discoverFullCard = require('../../../assets/images/help-shop.png')
 
@@ -69,10 +68,7 @@ export function HomeScreen() {
           locale={helpCardLocale}
           onPress={() => (activeKind === 'request' ? resumeActive() : router.push('/requester'))}
         />
-        <ActionCard
-          illustration={wantToHelpIllustration}
-          fullCard={wantToHelpFullCard}
-          tone="community"
+        <WantToHelpCard
           title={t('home.wantToHelp.title')}
           description={t('home.wantToHelp.text')}
           onPress={() => (activeKind === 'job' ? resumeActive() : router.push('/helper'))}
