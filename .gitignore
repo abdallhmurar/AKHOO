@@ -25,3 +25,8 @@ admin/*.tsbuildinfo
 # only, must never be committed.
 akhoo-firebase-adminsdk-fbsvc-eea0d25588.json
 *firebase-adminsdk*.json
+
+# App Store Connect API key (EAS build/submit credential) - local/EAS-upload
+# only, must never be committed.
+credentials/
+*.p8

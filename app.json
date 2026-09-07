@@ -10,7 +10,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "app.akhoo.help",
       "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

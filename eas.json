@@ -25,5 +25,16 @@
       "autoIncrement": true,
       "channel": "production"
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6809610412",
+        "appleTeamId": "KMZS5NXXHB",
+        "ascApiKeyPath": "./credentials/ios/AuthKey_KX75ANFZ49.p8",
+        "ascApiKeyIssuerId": "08c65b01-1819-4e93-ba29-48d94dc9f3e0",
+        "ascApiKeyId": "KX75ANFZ49"
+      }
+    }
   }
 }
