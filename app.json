@@ -35,13 +35,22 @@
         {
           "locationWhenInUsePermission": "أخوو يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك. / AKHOO needs your location to send your help request to nearby volunteers. / לאחוו דרוש המיקום שלך כדי לשלוח את בקשת העזרה למתנדבים קרובים.",
           "locationAlwaysAndWhenInUsePermission": "أخوو يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية. / AKHOO needs your location while you're available as a volunteer, so nearby requests reach you even in the background. / לאחוו דרוש המיקום שלך בזמן זמינותך כמתנדב, כדי שבקשות קרובות יגיעו אליך גם ברקע.",
-          "isAndroidBackgroundLocationEnabled": true
+          "isAndroidBackgroundLocationEnabled": true,
+          "isIosBackgroundLocationEnabled": true
         }
       ],
       [
         "expo-notifications",
         {
           "color": "#1768E5"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "أخوو يحتاج الوصول لصورك حتى تختار صورة شخصية أو صورة لطلب المساعدة. / AKHOO needs access to your photos so you can pick a profile picture or a photo for a help request. / לאחוו דרוש גישה לתמונות שלך כדי לבחור תמונת פרופיל או תמונה לבקשת עזרה.",
+          "cameraPermission": false,
+          "microphonePermission": false
         }
       ],
       "expo-font",
