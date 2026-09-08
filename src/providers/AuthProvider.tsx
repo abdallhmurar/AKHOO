@@ -128,7 +128,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const signInWithOAuth = useCallback(async (provider: OAuthProvider) => {
     setError(null)
-    try { await authRepository.signInWithOAuth(provider) } catch (cause) { const next = normalizeAppError(cause, { domain: 'auth', operation: `oauth-${provider}` }); setError(next); throw next }
+    try {
+      const callbackUrl = await authRepository.signInWithOAuth(provider)
+      if (callbackUrl) await consumeAuthLink(callbackUrl)
+    } catch (cause) {
+      const next = normalizeAppError(cause, { domain: 'auth', operation: `oauth-${provider}` }); setError(next); throw next
+    }
   }, [])
 
   const signOut = useCallback(async () => {

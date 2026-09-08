@@ -50,18 +50,21 @@ export const authRepository = {
   /**
    * Signs in with Google/Apple, creating the account on first use - same
    * behavior Supabase gives every OAuth provider, no separate signup call.
-   * Web does a full-page redirect; native opens an in-app browser session
-   * and relies on the app's existing `akhoo://` deep-link listener
-   * (AuthProvider) to pick up the resulting session once it redirects back.
+   * Web does a full-page redirect. Native returns the `akhoo://auth-callback`
+   * URL (or null if the user cancelled) for the caller to hand to
+   * `consumeAuthLink` - `ASWebAuthenticationSession` (what this runs on under
+   * the hood on iOS) intercepts its own callback scheme internally and
+   * resolves it only through this promise's result; it never reaches the
+   * app's normal `Linking` 'url' event, so nothing else will ever see it.
    */
-  async signInWithOAuth(provider: OAuthProvider) {
+  async signInWithOAuth(provider: OAuthProvider): Promise<string | null> {
     if (Platform.OS === 'web') {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: { redirectTo: window.location.origin }
       })
       throwIfError(error, { domain: 'auth', operation: `oauth-${provider}` })
-      return
+      return null
     }
 
     const redirectTo = 'akhoo://auth-callback'
@@ -72,11 +75,10 @@ export const authRepository = {
     throwIfError(error, { domain: 'auth', operation: `oauth-${provider}` })
     if (!data.url) throw normalizeAppError('Could not start sign-in.', { domain: 'auth', operation: `oauth-${provider}` })
 
-    // A 'cancel'/'dismiss' result just means the user closed the sheet -
-    // not an error worth surfacing. A 'success' result means the browser
-    // redirected back to akhoo://; the app's deep-link listener (already
-    // wired for password-reset links) picks up the session from there.
-    await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
+    // A 'cancel'/'dismiss' result just means the user closed the sheet - not
+    // an error worth surfacing, just nothing for the caller to consume.
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
+    return result.type === 'success' ? result.url : null
   },
 
   async resendVerification(email: string, emailRedirectTo?: string) {
