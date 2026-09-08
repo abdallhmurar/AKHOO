@@ -15,7 +15,14 @@ import * as Linking from 'expo-linking'
 // replaceState) as it mounts - which runs before this provider's effect and
 // silently strips the hash. Reading window.location.href this early, before
 // any router code executes, avoids that race entirely.
-const capturedWebUrl = typeof window !== 'undefined' ? window.location.href : null
+//
+// Gated on Platform.OS, not `typeof window` - React Native aliases
+// `global.window = global` for web-library compatibility, so `window` is
+// always defined natively too, just without a `.location`. This module runs
+// at import time (Expo Router evaluates every provider while building the
+// route tree), so an unguarded `window.location.href` crashed the app on
+// every native launch, before any screen ever rendered.
+const capturedWebUrl = Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.href : null
 
 type AuthStatus = 'restoring' | 'signed-out' | 'signed-in' | 'restricted'
 
