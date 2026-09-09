@@ -341,7 +341,9 @@
       "darkMode": "מצב כהה",
       "billing": "חיוב",
       "privacy": "פרטיות ואבטחה",
-      "help": "עזרה ותמיכה"
+      "help": "עזרה ותמיכה",
+      "privacyPolicy": "מדיניות פרטיות",
+      "termsOfUse": "תנאי שימוש"
     },
     "sections": {
       "personalInfo": "פרטים אישיים",

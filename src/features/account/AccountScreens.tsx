@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { Bell, Camera, CreditCard, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, UserCircle } from 'phosphor-react-native'
+import { Bell, Camera, CreditCard, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, UserCircle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -17,6 +17,8 @@ import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
 import { Button, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
+import { LegalDocumentScreen } from './LegalDocumentScreen'
+import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
@@ -123,7 +125,7 @@ export function AccountHomeScreen() {
           trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
-        <ListRow Icon={ShieldCheck} tone="neutral" title={t('account.menu.privacy')} subtitle={t('account.comingSoon')} />
+        <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />
         <ListRow Icon={Lifebuoy} tone="neutral" title={t('account.menu.help')} subtitle={t('account.comingSoon')} />
       </View>
 
@@ -223,6 +225,29 @@ export function AccountLanguageScreen() {
       </View>
     </AppScreen>
   )
+}
+
+export function AccountPrivacyScreen() {
+  const theme = useSanadTheme()
+  const { t } = useTranslation()
+  const router = useRouter()
+  return (
+    <AppScreen contentStyle={styles.content}>
+      <ScreenHeader title={t('account.menu.privacy')} back />
+      <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <ListRow Icon={ShieldCheck} title={t('account.menu.privacyPolicy')} onPress={() => router.push('/(tabs)/account/privacy-policy')} />
+        <ListRow Icon={FileText} title={t('account.menu.termsOfUse')} onPress={() => router.push('/(tabs)/account/terms')} />
+      </View>
+    </AppScreen>
+  )
+}
+
+export function AccountPrivacyPolicyScreen() {
+  return <LegalDocumentScreen title="سياسة الخصوصية" brand="أخوو | AKHOO" blocks={privacyPolicyBlocks} />
+}
+
+export function AccountTermsScreen() {
+  return <LegalDocumentScreen title="شروط الاستخدام" brand="أخوو | AKHOO" blocks={termsOfUseBlocks} />
 }
 
 const styles = StyleSheet.create({

@@ -341,7 +341,9 @@
       "darkMode": "Dark Mode",
       "billing": "Billing",
       "privacy": "Privacy & Security",
-      "help": "Help & Support"
+      "help": "Help & Support",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfUse": "Terms of Use"
     },
     "sections": {
       "personalInfo": "Personal info",
