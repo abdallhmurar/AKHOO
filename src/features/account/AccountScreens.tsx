@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Alert, Image, Linking, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { Bell, Camera, CreditCard, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning } from 'phosphor-react-native'
+import * as Clipboard from 'expo-clipboard'
+import { ArrowLeft, ArrowRight, Bell, Camera, Check, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -12,17 +13,19 @@ import { deleteAccountSafely } from '../../services/authService'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { getNotificationsEnabled, setNotificationsEnabled } from '../../lib/notificationPreference'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { radius, space, useSanadTheme } from '../../lib/theme'
+import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth, useThemeMode } from '../../providers'
 import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
-import { Button, TextField } from '../../components/ui'
+import { Button, IconButton, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+const HELP_WHATSAPP_DISPLAY = '0509956046'
+const HELP_WHATSAPP_HREF = 'https://wa.me/972509956046'
 
 // Real SANAD Account - ported from the intact src/screens/AccountScreen.tsx
 // business logic (profile update, password change, real points card, logout
@@ -128,7 +131,7 @@ export function AccountHomeScreen() {
         />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />
-        <ListRow Icon={Lifebuoy} tone="neutral" title={t('account.menu.help')} subtitle={t('account.comingSoon')} />
+        <ListRow Icon={Lifebuoy} title={t('account.menu.help')} onPress={() => router.push('/(tabs)/account/help')} />
       </View>
 
       <Pressable onPress={logout} style={[styles.logoutRow, dirStyles(isRTL).row]}>
@@ -321,6 +324,69 @@ export function AccountTermsScreen() {
   return <LegalDocumentScreen title="شروط الاستخدام" brand="أخوو | AKHOO" blocks={termsOfUseBlocks} />
 }
 
+export function AccountHelpScreen() {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
+  const [copied, setCopied] = useState(false)
+
+  async function copyNumber() {
+    await Clipboard.setStringAsync(HELP_WHATSAPP_DISPLAY)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  const backLabel = i18n.language === 'en' ? 'Back' : i18n.language === 'he' ? 'חזרה' : 'العودة'
+
+  return (
+    <AppScreen contentStyle={styles.content} scrollProps={{ contentContainerStyle: { flexGrow: 1 } }}>
+      <View style={[styles.brandRow, dirStyles(isRTL).row]}>
+        <IconButton label={backLabel} size={42} icon={<BackIcon size={21} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
+        <View style={styles.brandLogoWrap}>
+          <Image source={require('../../../assets/images/icon.png')} style={styles.brandLogo} resizeMode="contain" />
+        </View>
+        <View style={styles.brandPlaceholder} />
+      </View>
+
+      <View style={styles.helpTitleBlock}>
+        <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('account.menu.help')}</Text>
+        <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('account.help.subtitle')}</Text>
+      </View>
+
+      <View style={styles.helpCardWrap}>
+        <View style={[styles.helpCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+          <View style={[styles.helpIconCircle, { backgroundColor: theme.colors.communitySoft }]}>
+            <WhatsappLogo size={42} color={theme.colors.community} weight="fill" />
+          </View>
+          <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('account.help.cardTitle')}</Text>
+          <Text style={[typography.body, styles.helpCardDescription, { color: theme.colors.textSecondary }]}>{t('account.help.cardDescription')}</Text>
+
+          <Pressable
+            onPress={copyNumber}
+            accessibilityRole="button"
+            style={[styles.phonePill, dirStyles(isRTL).row, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border }]}
+          >
+            <Text style={[typography.title, { color: theme.colors.textPrimary }]}>{HELP_WHATSAPP_DISPLAY}</Text>
+            {copied ? <Check size={16} color={theme.colors.community} weight="bold" /> : <Copy size={16} color={theme.colors.textMuted} />}
+          </Pressable>
+
+          <Button
+            label={t('account.help.openButton')}
+            variant="community"
+            leading={<WhatsappLogo size={18} color={theme.colors.onCommunity} weight="fill" />}
+            onPress={() => Linking.openURL(HELP_WHATSAPP_HREF)}
+          />
+
+          <Text style={[typography.small, styles.helpFootnote, { color: theme.colors.textMuted }]}>{t('account.help.footnote')}</Text>
+        </View>
+      </View>
+    </AppScreen>
+  )
+}
+
 const styles = StyleSheet.create({
   content: { paddingTop: space.lg, gap: space.sm },
   identity: { alignItems: 'center', marginTop: space.md, marginBottom: space.sm },
@@ -330,5 +396,16 @@ const styles = StyleSheet.create({
   menu: { borderRadius: radius.lg, borderWidth: 1, paddingHorizontal: space.lg, marginTop: space.sm },
   sectionLabel: { textTransform: 'uppercase', marginTop: space.xs },
   card: { borderRadius: 18, borderWidth: 1, padding: space.lg, gap: space.md },
-  logoutRow: { alignSelf: 'center', alignItems: 'center', gap: 8, paddingVertical: 14, marginTop: space.sm }
+  logoutRow: { alignSelf: 'center', alignItems: 'center', gap: 8, paddingVertical: 14, marginTop: space.sm },
+  brandRow: { alignItems: 'center' },
+  brandLogoWrap: { flex: 1, alignItems: 'center' },
+  brandLogo: { width: 36, height: 36 },
+  brandPlaceholder: { width: 42 },
+  helpTitleBlock: { gap: 4, marginTop: space.md },
+  helpCardWrap: { flex: 1, justifyContent: 'center' },
+  helpCard: { borderRadius: 24, borderWidth: 1, padding: space.xl, gap: space.md, alignItems: 'center', ...shadow.soft },
+  helpIconCircle: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center' },
+  helpCardDescription: { textAlign: 'center' },
+  phonePill: { alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', gap: 8, borderWidth: 1, borderRadius: radius.pill, paddingVertical: 12, paddingHorizontal: space.lg },
+  helpFootnote: { textAlign: 'center' }
 })

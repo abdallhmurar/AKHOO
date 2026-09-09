@@ -379,6 +379,13 @@
         "passwordLabel": "הסיסמה הנוכחית",
         "deleteButton": "מחק/י את חשבוני לצמיתות"
       }
+    },
+    "help": {
+      "subtitle": "צור איתנו קשר ישירות דרך WhatsApp",
+      "cardTitle": "תמיכה ב-WhatsApp",
+      "cardDescription": "לשאלות ולעזרה ניתן לפנות אלינו ישירות",
+      "openButton": "פתיחת WhatsApp",
+      "footnote": "תועבר ישירות לשיחת WhatsApp"
     }
   },
   "admin": {

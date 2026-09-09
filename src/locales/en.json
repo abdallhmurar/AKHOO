@@ -379,6 +379,13 @@
         "passwordLabel": "Current Password",
         "deleteButton": "Permanently Delete My Account"
       }
+    },
+    "help": {
+      "subtitle": "Contact us directly via WhatsApp",
+      "cardTitle": "WhatsApp Support",
+      "cardDescription": "Contact us directly for questions and assistance",
+      "openButton": "Open WhatsApp",
+      "footnote": "You will be redirected directly to a WhatsApp chat"
     }
   },
   "admin": {
