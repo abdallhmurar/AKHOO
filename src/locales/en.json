@@ -361,6 +361,24 @@
       "title": "Done",
       "profileUpdated": "Your account has been updated.",
       "passwordUpdated": "Your password has been changed."
+    },
+    "delete": {
+      "sectionLabel": "Account Management",
+      "title": "Delete Account",
+      "subtitle": "Permanently remove your account and data",
+      "warning": {
+        "title": "Delete Account",
+        "message": "Your account and all associated data will be permanently deleted, including your profile, points, and activity history. This action cannot be undone once confirmed, and your account and data cannot be recovered after deletion.",
+        "continueButton": "Continue to Confirmation"
+      },
+      "confirm": {
+        "title": "Confirm Deletion",
+        "instruction": "To confirm deleting your account, type the following phrase exactly:",
+        "phrase": "أريد حذف حسابي",
+        "phraseLabel": "Type the phrase above",
+        "passwordLabel": "Current Password",
+        "deleteButton": "Permanently Delete My Account"
+      }
     }
   },
   "admin": {

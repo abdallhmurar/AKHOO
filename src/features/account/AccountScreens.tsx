@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { Bell, Camera, CreditCard, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, UserCircle } from 'phosphor-react-native'
+import { Bell, Camera, CreditCard, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
 import { translateActionError } from '../../lib/rpcErrors'
 import { stopBackgroundLocationUpdates } from '../../lib/location'
+import { deleteAccountSafely } from '../../services/authService'
+import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { getNotificationsEnabled, setNotificationsEnabled } from '../../lib/notificationPreference'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
@@ -142,6 +144,7 @@ export function AccountProfileScreen() {
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t } = useTranslation()
+  const router = useRouter()
   const { profile, session, refreshProfile } = useAuth()
 
   const [name, setName] = useState(profile?.full_name ?? '')
@@ -209,6 +212,74 @@ export function AccountProfileScreen() {
         <PasswordStrength password={newPassword} />
         {passwordError ? <Text style={[typography.small, { color: theme.colors.danger }]}>{passwordError}</Text> : null}
         <Button label={t('account.updatePassword')} variant="outline" loading={savingPassword} onPress={savePassword} />
+      </View>
+
+      <Text style={[typography.eyebrow, styles.sectionLabel, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('account.delete.sectionLabel')}</Text>
+      <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <ListRow Icon={Trash} destructive title={t('account.delete.title')} subtitle={t('account.delete.subtitle')} onPress={() => router.push('/(tabs)/account/delete-warning')} />
+      </View>
+    </AppScreen>
+  )
+}
+
+export function AccountDeleteWarningScreen() {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const { t } = useTranslation()
+  const router = useRouter()
+
+  return (
+    <AppScreen contentStyle={styles.content}>
+      <ScreenHeader title={t('account.delete.warning.title')} back />
+      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <Warning size={40} color={theme.colors.danger} weight="fill" />
+        <Text style={[typography.body, { color: theme.colors.textPrimary }]}>{t('account.delete.warning.message')}</Text>
+        <Button label={t('account.delete.warning.continueButton')} variant="danger" onPress={() => router.push('/(tabs)/account/delete-confirm')} />
+      </View>
+    </AppScreen>
+  )
+}
+
+export function AccountDeleteConfirmScreen() {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
+
+  const [phrase, setPhrase] = useState('')
+  const [password, setPassword] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const requiredPhrase = t('account.delete.confirm.phrase')
+  const canDelete = phrase.trim() === requiredPhrase && password.length > 0
+
+  async function handleDelete() {
+    if (!canDelete) return
+    setError(null)
+    setDeleting(true)
+    try {
+      await deleteAccountSafely(password)
+      router.replace('/login')
+    } catch (cause) {
+      const tr: ErrorTranslator = (ar, he, en) => (i18n.language === 'en' ? en : i18n.language === 'he' ? he : ar)
+      setError(localizeAppError(cause, tr))
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  return (
+    <AppScreen contentStyle={styles.content}>
+      <ScreenHeader title={t('account.delete.confirm.title')} back />
+      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('account.delete.confirm.instruction')}</Text>
+        <Text style={[typography.h3, { color: theme.colors.danger, textAlign: isRTL ? 'right' : 'left' }]}>{requiredPhrase}</Text>
+        <TextField label={t('account.delete.confirm.phraseLabel')} value={phrase} onChangeText={value => { setPhrase(value); setError(null) }} />
+        <TextField label={t('account.delete.confirm.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setError(null) }} secureTextEntry secureToggle />
+        {error ? <Text style={[typography.small, { color: theme.colors.danger }]}>{error}</Text> : null}
+        <Button label={t('account.delete.confirm.deleteButton')} variant="danger" disabled={!canDelete} loading={deleting} onPress={handleDelete} />
       </View>
     </AppScreen>
   )

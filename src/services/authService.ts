@@ -65,3 +65,15 @@ export async function signOutSafely() {
     await authRepository.signOut()
   }
 }
+
+/**
+ * Deletes the account (server-side, via authRepository.deleteAccount - not
+ * cosmetic), then stops background location work and clears the local
+ * session the same way signOutSafely does. Only reaches the sign-out step
+ * if the deletion itself actually succeeded.
+ */
+export async function deleteAccountSafely(password: string) {
+  await authRepository.deleteAccount(password)
+  await stopBackgroundLocationUpdates().catch(() => {})
+  await authRepository.signOut()
+}

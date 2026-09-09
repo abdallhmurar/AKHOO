@@ -128,6 +128,27 @@ export const authRepository = {
     throwIfError(error, { domain: 'auth', operation: 'sign-out' })
   },
 
+  /**
+   * Re-authenticates with the current password (the real check - not
+   * cosmetic) before calling the delete-account Edge Function, which uses
+   * the service role key server-side to actually delete the auth.users row.
+   * Every other table (profiles, help_requests, volunteer_profiles, etc.)
+   * cascades or nulls out through FK constraints already in the schema, so
+   * nothing else needs to run here.
+   */
+  async deleteAccount(password: string): Promise<void> {
+    const { data: userData, error: userError } = await supabase.auth.getUser()
+    throwIfError(userError, { domain: 'auth', operation: 'delete-account' })
+    const email = userData.user?.email
+    if (!email) throw normalizeAppError('Could not verify your account.', { domain: 'auth', operation: 'delete-account' })
+
+    const { error: reauthError } = await supabase.auth.signInWithPassword({ email, password })
+    throwIfError(reauthError, { domain: 'auth', operation: 'delete-account-reauth' })
+
+    const { error: fnError } = await supabase.functions.invoke('delete-account')
+    throwIfError(fnError, { domain: 'auth', operation: 'delete-account' })
+  },
+
   subscribe(listener: (event: AuthChangeEvent, session: Session | null) => void) {
     const { data } = supabase.auth.onAuthStateChange(listener)
     return () => data.subscription.unsubscribe()
