@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, BatteryWarning, Camera, GasPump, Lock, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, Camera, Warning } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -15,15 +15,14 @@ import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { AppScreen, MapPanel, ProgressHeader, ScreenHeader } from '../../components/v2'
-import { Button, Surface, TextArea } from '../../components/ui'
+import { Button, TextArea } from '../../components/ui'
 import type { ServiceType } from '../../types'
 
-const SERVICES: { key: ServiceType; labelKey: string; Icon: typeof BatteryWarning }[] = [
-  { key: 'battery', labelKey: 'request.battery', Icon: BatteryWarning },
-  { key: 'tire', labelKey: 'request.tire', Icon: Tire },
-  { key: 'fuel', labelKey: 'request.fuel', Icon: GasPump },
-  { key: 'locked_car', labelKey: 'request.lockedCar', Icon: Lock },
-  { key: 'other', labelKey: 'request.other', Icon: Wrench }
+const SERVICES: { key: ServiceType; labelKey: string; image: number }[] = [
+  { key: 'tire', labelKey: 'request.tire', image: require('../../../assets/images/service-tire.png') },
+  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') },
+  { key: 'fuel', labelKey: 'request.fuel', image: require('../../../assets/images/service-fuel.png') },
+  { key: 'battery', labelKey: 'request.battery', image: require('../../../assets/images/service-battery.png') }
 ]
 
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
@@ -146,7 +145,9 @@ export function RequestFlowScreen() {
   return (
     <AppScreen
       scroll={step !== 'location'}
-      header={<ScreenHeader title={stepTitles[step]} subtitle={stepSubtitles[step]} back onBack={back} />}
+      header={step === 'type'
+        ? <ScreenHeader title="" back onBack={back} />
+        : <ScreenHeader title={stepTitles[step]} subtitle={stepSubtitles[step]} back onBack={back} />}
       footer={step === 'location'
         ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!coords || outsideZone} />
         : <Button label={t('common.next')} onPress={next} />}
@@ -154,26 +155,24 @@ export function RequestFlowScreen() {
       <ProgressHeader step={stepIndex + 1} total={STEPS.length} label={stepTitles[step]} />
 
       {step === 'type' ? (
-        <View style={[styles.grid, dirStyles(isRTL).row]}>
-          {SERVICES.map(item => {
-            const selected = service === item.key
-            return (
-              <Pressable key={item.key} onPress={() => selectService(item.key)} style={styles.servicePressable}>
-                <Surface
-                  tone={selected ? 'primary' : 'default'}
-                  padding="lg"
-                  elevation="soft"
-                  style={[styles.service, selected && { borderColor: theme.colors.primary, borderWidth: 1.5 }]}
-                >
-                  <View style={[styles.serviceIcon, { backgroundColor: selected ? theme.colors.primary : theme.colors.primarySoft }]}>
-                    <item.Icon size={26} color={selected ? theme.colors.onPrimary : theme.colors.primary} weight={selected ? 'fill' : 'duotone'} />
+        <>
+          <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
+          <View style={[styles.grid, dirStyles(isRTL).row]}>
+            {SERVICES.map(item => {
+              const selected = service === item.key
+              return (
+                <Pressable key={item.key} onPress={() => selectService(item.key)} style={styles.serviceCard}>
+                  <View style={[styles.serviceCardInner, { backgroundColor: theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}>
+                    <Image source={item.image} style={styles.serviceImage} resizeMode="cover" />
+                    <View style={[styles.serviceLabelWrap, { backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface }]}>
+                      <Text numberOfLines={2} style={[typography.smallMedium, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: 'center' }]}>{t(item.labelKey)}</Text>
+                    </View>
                   </View>
-                  <Text style={[typography.bodyMedium, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: 'center' }]}>{t(item.labelKey)}</Text>
-                </Surface>
-              </Pressable>
-            )
-          })}
-        </View>
+                </Pressable>
+              )
+            })}
+          </View>
+        </>
       ) : null}
 
       {step === 'details' ? (
@@ -230,10 +229,12 @@ export function RequestFlowScreen() {
 }
 
 const styles = StyleSheet.create({
-  grid: { flexWrap: 'wrap', gap: space.md },
-  servicePressable: { width: '47%' },
-  service: { minHeight: 128, alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  serviceIcon: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  typeHeading: { marginBottom: space.xs },
+  grid: { gap: space.sm },
+  serviceCard: { flex: 1 },
+  serviceCardInner: { borderRadius: radius.lg, overflow: 'hidden' },
+  serviceImage: { width: '100%', height: 110 },
+  serviceLabelWrap: { paddingVertical: space.sm, paddingHorizontal: 4 },
   detailsGroup: { gap: space.lg },
   photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
