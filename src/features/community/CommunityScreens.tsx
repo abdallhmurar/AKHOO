@@ -27,6 +27,7 @@ import { PlusBadge } from '../../components/PlusBadge'
 import { PlusHeroCard } from '../../components/PlusHeroCard'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
+import { VolunteerPointsCard } from '../../components/VolunteerPointsCard'
 
 type DiscoverData = { businesses: Partner[]; offers: PartnerOffer[]; ratings: Record<string, BusinessRating> }
 
@@ -58,6 +59,7 @@ export function CommunityHubScreen() {
   const isRTL = useIsRTL()
   const { t } = useTranslation()
   const router = useRouter()
+  const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<PartnerCategory | 'all'>('all')
   const [membershipOpen, setMembershipOpen] = useState(false)
@@ -94,6 +96,7 @@ export function CommunityHubScreen() {
 
   return (
     <AppScreen header={<ScreenHeader title={t('perks.title')} subtitle={t('perks.subtitle')} />} contentStyle={styles.content}>
+      {profile ? <VolunteerPointsCard userId={profile.id} memberSince={profile.created_at} onViewActivity={() => router.push('/(tabs)/activity')} /> : null}
       <TextField value={search} onChangeText={setSearch} placeholder={t('perks.searchPlaceholder')} />
       <CategoryChipsRow selected={category} onSelect={category => { Haptics.selectionAsync().catch(() => {}); setCategory(category) }} />
       <PlusHeroCard onPress={() => setMembershipOpen(true)} />

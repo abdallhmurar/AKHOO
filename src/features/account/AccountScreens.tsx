@@ -17,7 +17,6 @@ import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
 import { Button, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
-import { VolunteerPointsCard } from '../../components/VolunteerPointsCard'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
@@ -106,8 +105,6 @@ export function AccountHomeScreen() {
         <Text style={[typography.h2, { color: theme.colors.textPrimary, marginTop: space.md }]}>{profile.full_name?.trim() || t('account.title')}</Text>
         <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{session?.user.email ?? ''}</Text>
       </View>
-
-      <VolunteerPointsCard userId={profile.id} memberSince={profile.created_at} onViewActivity={() => router.push('/(tabs)/activity')} />
 
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} />
