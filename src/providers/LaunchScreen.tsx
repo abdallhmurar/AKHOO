@@ -1,21 +1,44 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import { civicColors, palette } from '../lib/theme'
+import { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { useVideoPlayer, VideoView } from 'expo-video'
+import { civicColors } from '../lib/theme'
+import { detectDeviceLanguage, type AppLanguage } from '../lib/i18n'
 
-/** Native: no video pipeline set up yet, so this keeps a static mark + spinner (also fixes the leftover "SANAD" wordmark from before the rebrand). */
+// Metro needs static string literals to resolve requires - can't build the
+// path from the current language at runtime, so each language's video is
+// required separately here and looked up below. Mirrors LaunchScreen.web.tsx.
+const VIDEO_BY_LOCALE: Record<AppLanguage, number> = {
+  ar: require('./launch-video-ar.mp4'),
+  he: require('./launch-video-he.mp4'),
+  en: require('./launch-video-en.mp4')
+}
+
+/**
+ * Native: same per-language video background as web. This screen renders
+ * before LanguageDirectionProvider is ready (it IS the loading gate shown
+ * while i18n/fonts initialize), so there's no i18n.language to read yet -
+ * reuses the same device-locale detection initI18n falls back to before a
+ * stored preference exists, so the very first thing a user sees already
+ * guesses right instead of defaulting to Arabic for everyone.
+ */
 export function LaunchScreen() {
+  const [locale, setLocale] = useState<AppLanguage>('ar')
+  useEffect(() => { setLocale(detectDeviceLanguage()) }, [])
+  const videoSource = VIDEO_BY_LOCALE[locale] ?? VIDEO_BY_LOCALE.ar
+
+  const player = useVideoPlayer(videoSource, p => {
+    p.loop = true
+    p.muted = true
+    p.play()
+  })
+
   return (
     <View style={styles.launch}>
-      <View style={styles.mark}><Text style={styles.markText}>A</Text></View>
-      <Text style={styles.wordmark}>AKHOO</Text>
-      <ActivityIndicator color={civicColors.signalBlue} style={styles.spinner} />
+      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  launch: { flex: 1, backgroundColor: civicColors.fog, alignItems: 'center', justifyContent: 'center' },
-  mark: { width: 64, height: 64, borderRadius: 22, backgroundColor: civicColors.navy, alignItems: 'center', justifyContent: 'center' },
-  markText: { color: palette.onCivic, fontFamily: 'Inter_800ExtraBold', fontSize: 30 },
-  wordmark: { color: civicColors.navy, fontFamily: 'Inter_800ExtraBold', fontSize: 20, letterSpacing: 3, marginTop: 16 },
-  spinner: { marginTop: 24 }
+  launch: { flex: 1, backgroundColor: civicColors.fog, overflow: 'hidden' }
 })

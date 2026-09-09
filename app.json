@@ -55,6 +55,7 @@
       ],
       "expo-font",
       "expo-web-browser",
+      "expo-video",
       "@maplibre/maplibre-react-native"
     ],
     "experiments": {

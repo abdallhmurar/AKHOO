@@ -1,48 +1,33 @@
-import React, { useMemo, useRef } from "react";
-import {
-  Animated,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import LottieView from "lottie-react-native";
+import { useRef } from "react";
+import { Animated, Pressable, StyleSheet } from "react-native";
+import { useVideoPlayer, VideoView } from "expo-video";
 
 type Locale = "ar" | "he" | "en";
-
-const COPY = {
-  ar: {
-    title: "بدي مساعدة",
-    line1: "عندي مشكلة وبدي حدا",
-    line2: "قريب يساعدني بسرعة وأمان",
-    rtl: true,
-  },
-  he: {
-    title: "אני צריך עזרה",
-    line1: "יש לי בעיה ואני צריך מישהו",
-    line2: "קרוב שיעזור לי מהר ובבטחה",
-    rtl: true,
-  },
-  en: {
-    title: "I need help",
-    line1: "I have a problem and need someone",
-    line2: "nearby to help quickly and safely",
-    rtl: false,
-  },
-} as const;
 
 type Props = {
   locale?: Locale;
   onPress: () => void;
 };
 
-export default function HelpCardLottie({
-  locale = "ar",
-  onPress,
-}: Props) {
+// Metro needs static string literals to resolve requires - can't build the
+// path from `locale` at runtime, so each language's video is required
+// separately here and looked up below. Mirrors HelpCardLottie.web.tsx.
+const VIDEO_BY_LOCALE: Record<Locale, number> = {
+  ar: require("./help-card-video-ar.mp4"),
+  he: require("./help-card-video-he.mp4"),
+  en: require("./help-card-video-en.mp4"),
+};
+
+/** Text is baked into each per-language video now (from Grok) - no overlay. */
+export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
   const pressed = useRef(new Animated.Value(0)).current;
-  const copy = useMemo(() => COPY[locale] ?? COPY.ar, [locale]);
+  const videoSource = VIDEO_BY_LOCALE[locale] ?? VIDEO_BY_LOCALE.ar;
+
+  const player = useVideoPlayer(videoSource, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.play();
+  });
 
   const animate = (value: number) => {
     Animated.spring(pressed, {
@@ -66,75 +51,8 @@ export default function HelpCardLottie({
         onPressIn={() => animate(1)}
         onPressOut={() => animate(0)}
         accessibilityRole="button"
-        accessibilityLabel={`${copy.title}. ${copy.line1}. ${copy.line2}`}
       >
-        {/* ONE background only. Do not create a second card or blue panel. */}
-        <Image
-          source={require("./help-card-background-clean.png")}
-          resizeMode="cover"
-          style={StyleSheet.absoluteFill}
-        />
-
-        {/* Transparent animation overlay only. pointerEvents lives on this
-            wrapper, not LottieView itself - this project's installed
-            lottie-react-native version doesn't type that prop on LottieView. */}
-        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-          <LottieView
-            source={require("./help-card-3d-motion.json")}
-            autoPlay
-            loop
-            resizeMode="cover"
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
-
-        {/* Native text = changes with app language. */}
-        <View pointerEvents="none" style={styles.copy}>
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.72}
-            style={[
-              styles.title,
-              {
-                textAlign: copy.rtl ? "right" : "left",
-                writingDirection: copy.rtl ? "rtl" : "ltr",
-              },
-            ]}
-          >
-            {copy.title}
-          </Text>
-
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.72}
-            style={[
-              styles.line,
-              {
-                textAlign: copy.rtl ? "right" : "left",
-                writingDirection: copy.rtl ? "rtl" : "ltr",
-              },
-            ]}
-          >
-            {copy.line1}
-          </Text>
-
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.72}
-            style={[
-              styles.line,
-              {
-                textAlign: copy.rtl ? "right" : "left",
-                writingDirection: copy.rtl ? "rtl" : "ltr",
-              },
-            ]}
-          >
-            {copy.line2}
-          </Text>
-        </View>
+        <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" />
       </Pressable>
     </Animated.View>
   );
@@ -151,30 +69,5 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 24,
     backgroundColor: "transparent",
-  },
-  copy: {
-    position: "absolute",
-    top: "24%",
-    right: "5.5%",
-    width: "42%",
-  },
-  title: {
-    color: "#FFFFFF",
-    fontSize: 36,
-    lineHeight: 42,
-    fontWeight: "900",
-    marginBottom: 20,
-    textShadowColor: "rgba(0,0,0,0.22)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 5,
-  },
-  line: {
-    color: "#FFFFFF",
-    fontSize: 19,
-    lineHeight: 28,
-    fontWeight: "600",
-    textShadowColor: "rgba(0,0,0,0.16)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
 });
