@@ -334,6 +334,14 @@
     "language": "اللغة",
     "memberSince": "عضو منذ {{date}}",
     "viewActivity": "عرض نشاطي",
+    "comingSoon": "قريبًا",
+    "menu": {
+      "profile": "الملف الشخصي",
+      "notifications": "الإشعارات",
+      "billing": "الفوترة",
+      "privacy": "الخصوصية والأمان",
+      "help": "المساعدة والدعم"
+    },
     "sections": {
       "personalInfo": "المعلومات الشخصية",
       "security": "الأمان",

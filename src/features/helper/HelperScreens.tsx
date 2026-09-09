@@ -7,6 +7,7 @@ import type { Icon } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../../lib/location'
 import { registerForPushNotificationsAsync } from '../../lib/notifications'
+import { getNotificationsEnabled } from '../../lib/notificationPreference'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
@@ -142,7 +143,8 @@ export function HelperHomeScreen() {
     try {
       if (!available) {
         const position = await getCurrentCoords()
-        const pushToken = await registerForPushNotificationsAsync().catch(() => null)
+        const notificationsEnabled = await getNotificationsEnabled()
+        const pushToken = notificationsEnabled ? await registerForPushNotificationsAsync().catch(() => null) : null
         const { error } = await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, pushToken))
         if (error) throw error
         setCoords(position)

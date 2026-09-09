@@ -334,6 +334,14 @@
     "language": "Language",
     "memberSince": "Member since {{date}}",
     "viewActivity": "View my activity",
+    "comingSoon": "Coming soon",
+    "menu": {
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "billing": "Billing",
+      "privacy": "Privacy & Security",
+      "help": "Help & Support"
+    },
     "sections": {
       "personalInfo": "Personal info",
       "security": "Security",

@@ -334,6 +334,14 @@
     "language": "שפה",
     "memberSince": "חבר/ה מאז {{date}}",
     "viewActivity": "צפייה בפעילות שלי",
+    "comingSoon": "בקרוב",
+    "menu": {
+      "profile": "פרופיל",
+      "notifications": "התראות",
+      "billing": "חיוב",
+      "privacy": "פרטיות ואבטחה",
+      "help": "עזרה ותמיכה"
+    },
     "sections": {
       "personalInfo": "פרטים אישיים",
       "security": "אבטחה",
