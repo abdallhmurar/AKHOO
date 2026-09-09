@@ -298,27 +298,24 @@ export const font = {
 } as const
 
 export const type = {
-  // display/hero/title/h1/numeric/statLg give more line-height headroom
-  // (relative to font size) than the rest - same fix as src/lib/typography.ts:
-  // Tajawal's Arabic glyphs sit taller in their em box than these old ratios
-  // assumed, so on a real device (this app was only tested on web until this
-  // week) the top got clipped, worst on statLg's old 54/52 (1.04x) ratio -
-  // tight enough that the clipped sliver rendered as a stray mark floating
-  // above the digit (VolunteerPointsCard's points total).
-  display: { fontFamily: font.extraBold, fontSize: 38, lineHeight: 50, letterSpacing: -0.5 },
-  hero: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 42, letterSpacing: -0.4 },
-  title: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 35 },
-  h1: { fontFamily: font.extraBold, fontSize: 24, lineHeight: 33 },
-  h2: { fontFamily: font.extraBold, fontSize: 19, lineHeight: 26 },
-  h3: { fontFamily: font.bold, fontSize: 16, lineHeight: 22 },
-  section: { fontFamily: font.bold, fontSize: 17, lineHeight: 23 },
-  eyebrow: { fontFamily: font.bold, fontSize: 11.5, lineHeight: 15, letterSpacing: 1 },
-  bodyLarge: { fontFamily: font.regular, fontSize: 16, lineHeight: 24 },
-  body: { fontFamily: font.regular, fontSize: 14.5, lineHeight: 21 },
-  bodyMedium: { fontFamily: font.medium, fontSize: 14.5, lineHeight: 21 },
-  small: { fontFamily: font.regular, fontSize: 12.5, lineHeight: 18 },
-  caption: { fontFamily: font.regular, fontSize: 11.5, lineHeight: 16 },
-  button: { fontFamily: font.bold, fontSize: 15, lineHeight: 19 },
-  numeric: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 44, letterSpacing: -0.5 },
-  statLg: { fontFamily: font.extraBold, fontSize: 52, lineHeight: 70, letterSpacing: -1.5 }
+  // Every size here is one notch smaller than before (on top of the
+  // generous line-height-to-font-size ratio already fixed for Tajawal's
+  // taller Arabic glyphs) per explicit request: shrink all text and numbers
+  // a step, not just widen their line boxes.
+  display: { fontFamily: font.extraBold, fontSize: 34, lineHeight: 45, letterSpacing: -0.5 },
+  hero: { fontFamily: font.extraBold, fontSize: 29, lineHeight: 38, letterSpacing: -0.4 },
+  title: { fontFamily: font.extraBold, fontSize: 23, lineHeight: 31 },
+  h1: { fontFamily: font.extraBold, fontSize: 21, lineHeight: 29 },
+  h2: { fontFamily: font.extraBold, fontSize: 17, lineHeight: 23 },
+  h3: { fontFamily: font.bold, fontSize: 15, lineHeight: 21 },
+  section: { fontFamily: font.bold, fontSize: 16, lineHeight: 22 },
+  eyebrow: { fontFamily: font.bold, fontSize: 10.5, lineHeight: 14, letterSpacing: 1 },
+  bodyLarge: { fontFamily: font.regular, fontSize: 15, lineHeight: 22 },
+  body: { fontFamily: font.regular, fontSize: 13.5, lineHeight: 20 },
+  bodyMedium: { fontFamily: font.medium, fontSize: 13.5, lineHeight: 20 },
+  small: { fontFamily: font.regular, fontSize: 11.5, lineHeight: 17 },
+  caption: { fontFamily: font.regular, fontSize: 10.5, lineHeight: 15 },
+  button: { fontFamily: font.bold, fontSize: 14, lineHeight: 18 },
+  numeric: { fontFamily: font.extraBold, fontSize: 28, lineHeight: 38, letterSpacing: -0.5 },
+  statLg: { fontFamily: font.extraBold, fontSize: 46, lineHeight: 62, letterSpacing: -1.5 }
 } as const

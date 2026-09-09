@@ -48,30 +48,24 @@ export function createTypography(language: string | undefined) {
     fontFamily: family(weight), fontSize, lineHeight, ...extra
   })
   return {
-    // display/hero/h1/h2 give more line-height headroom (relative to their
-    // font size) than the smaller styles below - Arabic and Hebrew glyphs
-    // (NotoSansArabic/NotoSansHebrew) sit taller in their em box than Inter
-    // does, and at these larger sizes the old tighter ratios clipped the
-    // top of the text on a real device (never caught on web, where the
-    // browser's own text layout is more forgiving of tight line-height).
-    display: text('extraBold', 36, 48, { letterSpacing: -0.7 }),
-    hero: text('extraBold', 30, 40, { letterSpacing: -0.45 }),
-    h1: text('bold', 26, 36, { letterSpacing: -0.25 }),
-    h2: text('bold', 22, 30),
-    h3: text('bold', 18, 25),
-    title: text('semibold', 16, 23),
-    body: text('regular', 15, 23),
-    bodyMedium: text('medium', 15, 23),
-    small: text('regular', 13, 19),
-    smallMedium: text('medium', 13, 19),
-    caption: text('medium', 12, 17),
-    eyebrow: text('bold', 11, 16, { letterSpacing: 0.7 }),
-    button: text('bold', 15, 20),
-    // Was 38 (1.19x) - the tightest ratio in this whole scale, and it
-    // clipped the top of Eastern Arabic-Indic digits badly enough that the
-    // clipped sliver rendered as a stray mark floating above the number
-    // (the activity screen's point/given/received stat cards).
-    numeric: text('extraBold', 32, 44, { letterSpacing: -0.7 })
+    // Every size here is one notch smaller than before (on top of the
+    // generous line-height-to-font-size ratio already fixed for
+    // NotoSansArabic/NotoSansHebrew's taller glyphs) per explicit request:
+    // shrink all text and numbers a step, not just widen their line boxes.
+    display: text('extraBold', 32, 42, { letterSpacing: -0.7 }),
+    hero: text('extraBold', 27, 36, { letterSpacing: -0.45 }),
+    h1: text('bold', 23, 32, { letterSpacing: -0.25 }),
+    h2: text('bold', 20, 27),
+    h3: text('bold', 16, 22),
+    title: text('semibold', 15, 22),
+    body: text('regular', 14, 21),
+    bodyMedium: text('medium', 14, 21),
+    small: text('regular', 12, 18),
+    smallMedium: text('medium', 12, 18),
+    caption: text('medium', 11, 16),
+    eyebrow: text('bold', 10, 15, { letterSpacing: 0.7 }),
+    button: text('bold', 14, 19),
+    numeric: text('extraBold', 28, 38, { letterSpacing: -0.7 })
   } as const
 }
 
