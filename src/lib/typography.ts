@@ -48,10 +48,16 @@ export function createTypography(language: string | undefined) {
     fontFamily: family(weight), fontSize, lineHeight, ...extra
   })
   return {
-    display: text('extraBold', 36, 44, { letterSpacing: -0.7 }),
-    hero: text('extraBold', 30, 38, { letterSpacing: -0.45 }),
-    h1: text('bold', 26, 34, { letterSpacing: -0.25 }),
-    h2: text('bold', 22, 29),
+    // display/hero/h1/h2 give more line-height headroom (relative to their
+    // font size) than the smaller styles below - Arabic and Hebrew glyphs
+    // (NotoSansArabic/NotoSansHebrew) sit taller in their em box than Inter
+    // does, and at these larger sizes the old tighter ratios clipped the
+    // top of the text on a real device (never caught on web, where the
+    // browser's own text layout is more forgiving of tight line-height).
+    display: text('extraBold', 36, 48, { letterSpacing: -0.7 }),
+    hero: text('extraBold', 30, 40, { letterSpacing: -0.45 }),
+    h1: text('bold', 26, 36, { letterSpacing: -0.25 }),
+    h2: text('bold', 22, 30),
     h3: text('bold', 18, 25),
     title: text('semibold', 16, 23),
     body: text('regular', 15, 23),
