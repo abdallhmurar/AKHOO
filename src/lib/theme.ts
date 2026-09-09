@@ -1,4 +1,4 @@
-import { useColorScheme } from 'react-native'
+import { useThemeMode } from '../providers/ThemeModeProvider'
 
 /** SANAD V2 — Civic Signal immutable brand anchors. */
 export const civicColors = {
@@ -224,8 +224,8 @@ export function getSanadTheme(mode: SanadThemeMode = 'light') {
 export type SanadTheme = ReturnType<typeof getSanadTheme>
 
 export function useSanadTheme(): SanadTheme {
-  const scheme = useColorScheme()
-  return getSanadTheme(scheme === 'dark' ? 'dark' : 'light')
+  const { isDark } = useThemeMode()
+  return getSanadTheme(isDark ? 'dark' : 'light')
 }
 
 /** Legacy aliases retained while V1 screens move to the V2 primitives. */

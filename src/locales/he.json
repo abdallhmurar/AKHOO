@@ -338,6 +338,7 @@
     "menu": {
       "profile": "פרופיל",
       "notifications": "התראות",
+      "darkMode": "מצב כהה",
       "billing": "חיוב",
       "privacy": "פרטיות ואבטחה",
       "help": "עזרה ותמיכה"

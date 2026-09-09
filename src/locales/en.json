@@ -338,6 +338,7 @@
     "menu": {
       "profile": "Profile",
       "notifications": "Notifications",
+      "darkMode": "Dark Mode",
       "billing": "Billing",
       "privacy": "Privacy & Security",
       "help": "Help & Support"

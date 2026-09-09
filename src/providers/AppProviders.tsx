@@ -27,6 +27,7 @@ import { ToastProvider } from '../components/ui'
 import { AppErrorBoundary } from './AppErrorBoundary'
 import { ConnectivityBanner, ErrorToastBridge } from './SystemFeedback'
 import { LaunchScreen } from './LaunchScreen'
+import { ThemeModeProvider } from './ThemeModeProvider'
 
 export function AppProviders({ children }: PropsWithChildren) {
   const [fontsLoaded] = useFonts({
@@ -34,25 +35,28 @@ export function AppProviders({ children }: PropsWithChildren) {
     NotoSansArabic_400Regular, NotoSansArabic_500Medium, NotoSansArabic_600SemiBold, NotoSansArabic_700Bold, NotoSansArabic_800ExtraBold,
     NotoSansHebrew_400Regular, NotoSansHebrew_500Medium, NotoSansHebrew_600SemiBold, NotoSansHebrew_700Bold, NotoSansHebrew_800ExtraBold
   })
-  if (!fontsLoaded) return <LaunchScreen />
   return (
-    <GestureHandlerRootView style={styles.fill}>
-      <SafeAreaProvider>
-        <LanguageDirectionProvider>
-          <LanguageReadyGate>
-            <QueryProvider>
-              <AuthProvider>
-                <MissionProvider>
-                  <BottomSheetModalProvider>
-                    <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /></ToastProvider>
-                  </BottomSheetModalProvider>
-                </MissionProvider>
-              </AuthProvider>
-            </QueryProvider>
-          </LanguageReadyGate>
-        </LanguageDirectionProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ThemeModeProvider>
+      {!fontsLoaded ? <LaunchScreen /> : (
+        <GestureHandlerRootView style={styles.fill}>
+          <SafeAreaProvider>
+            <LanguageDirectionProvider>
+              <LanguageReadyGate>
+                <QueryProvider>
+                  <AuthProvider>
+                    <MissionProvider>
+                      <BottomSheetModalProvider>
+                        <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /></ToastProvider>
+                      </BottomSheetModalProvider>
+                    </MissionProvider>
+                  </AuthProvider>
+                </QueryProvider>
+              </LanguageReadyGate>
+            </LanguageDirectionProvider>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      )}
+    </ThemeModeProvider>
   )
 }
 

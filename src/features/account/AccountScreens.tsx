@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { Bell, Camera, CreditCard, Globe, Lifebuoy, ShieldCheck, SignOut, UserCircle } from 'phosphor-react-native'
+import { Bell, Camera, CreditCard, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, UserCircle } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -12,7 +12,7 @@ import { getNotificationsEnabled, setNotificationsEnabled } from '../../lib/noti
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
-import { useAuth } from '../../providers'
+import { useAuth, useThemeMode } from '../../providers'
 import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
 import { Button, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
@@ -34,6 +34,7 @@ export function AccountHomeScreen() {
   const { t } = useTranslation()
   const router = useRouter()
   const { profile, session, refreshProfile, signOut } = useAuth()
+  const { isDark, setDark } = useThemeMode()
 
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [notificationsEnabled, setNotificationsEnabledState] = useState(true)
@@ -115,6 +116,12 @@ export function AccountHomeScreen() {
           trailing={<Switch value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
         <ListRow Icon={Globe} title={t('account.language')} onPress={() => router.push('/(tabs)/account/language')} />
+        <ListRow
+          Icon={Moon}
+          title={t('account.menu.darkMode')}
+          onPress={() => setDark(!isDark)}
+          trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
+        />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} tone="neutral" title={t('account.menu.privacy')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={Lifebuoy} tone="neutral" title={t('account.menu.help')} subtitle={t('account.comingSoon')} />
