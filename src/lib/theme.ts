@@ -298,11 +298,18 @@ export const font = {
 } as const
 
 export const type = {
-  display: { fontFamily: font.extraBold, fontSize: 38, lineHeight: 44, letterSpacing: -0.5 },
-  hero: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 38, letterSpacing: -0.4 },
-  title: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 32 },
-  h1: { fontFamily: font.extraBold, fontSize: 24, lineHeight: 30 },
-  h2: { fontFamily: font.extraBold, fontSize: 19, lineHeight: 25 },
+  // display/hero/title/h1/numeric/statLg give more line-height headroom
+  // (relative to font size) than the rest - same fix as src/lib/typography.ts:
+  // Tajawal's Arabic glyphs sit taller in their em box than these old ratios
+  // assumed, so on a real device (this app was only tested on web until this
+  // week) the top got clipped, worst on statLg's old 54/52 (1.04x) ratio -
+  // tight enough that the clipped sliver rendered as a stray mark floating
+  // above the digit (VolunteerPointsCard's points total).
+  display: { fontFamily: font.extraBold, fontSize: 38, lineHeight: 50, letterSpacing: -0.5 },
+  hero: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 42, letterSpacing: -0.4 },
+  title: { fontFamily: font.extraBold, fontSize: 26, lineHeight: 35 },
+  h1: { fontFamily: font.extraBold, fontSize: 24, lineHeight: 33 },
+  h2: { fontFamily: font.extraBold, fontSize: 19, lineHeight: 26 },
   h3: { fontFamily: font.bold, fontSize: 16, lineHeight: 22 },
   section: { fontFamily: font.bold, fontSize: 17, lineHeight: 23 },
   eyebrow: { fontFamily: font.bold, fontSize: 11.5, lineHeight: 15, letterSpacing: 1 },
@@ -312,6 +319,6 @@ export const type = {
   small: { fontFamily: font.regular, fontSize: 12.5, lineHeight: 18 },
   caption: { fontFamily: font.regular, fontSize: 11.5, lineHeight: 16 },
   button: { fontFamily: font.bold, fontSize: 15, lineHeight: 19 },
-  numeric: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 36, letterSpacing: -0.5 },
-  statLg: { fontFamily: font.extraBold, fontSize: 52, lineHeight: 54, letterSpacing: -1.5 }
+  numeric: { fontFamily: font.extraBold, fontSize: 32, lineHeight: 44, letterSpacing: -0.5 },
+  statLg: { fontFamily: font.extraBold, fontSize: 52, lineHeight: 70, letterSpacing: -1.5 }
 } as const
