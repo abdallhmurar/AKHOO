@@ -19,6 +19,15 @@ import { PasswordStrength } from '../../components/PasswordStrength'
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+// Login/signup are usually pushed from Welcome, so router.back() is enough -
+// but a fresh app open can land directly on one of them (e.g. after signing
+// out) with no history to go back to, which made the button silently do
+// nothing. Falling back to Welcome explicitly guarantees it always works.
+function backToWelcome(router: ReturnType<typeof useRouter>) {
+  if (router.canGoBack()) router.back()
+  else router.replace('/welcome')
+}
+
 // Real SANAD auth family, rebuilt on ccodex's Civic Signal components
 // (Button/TextField/IconButton) but with the flat, minimal composition the
 // user already approved for Auth V2 - no navy hero band, no illustration,
@@ -151,7 +160,7 @@ export function LoginScreen() {
   }
 
   return (
-    <AuthFrame title={t('auth.login.title')} subtitle={t('auth.login.subtitle')} onBack={() => router.back()}>
+    <AuthFrame title={t('auth.login.title')} subtitle={t('auth.login.subtitle')} onBack={() => backToWelcome(router)}>
       <TextField label={t('auth.login.emailLabel')} placeholder={t('auth.login.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: value.trim() && !EMAIL_REGEX.test(value.trim()) ? t('auth.login.errors.emailInvalid') : undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
       <TextField label={t('auth.login.passwordLabel')} placeholder={t('auth.login.passwordPlaceholder')} value={password} onChangeText={value => { setPassword(value); setErrors(e => ({ ...e, password: undefined })) }} error={errors.password} secureTextEntry secureToggle />
       <Pressable onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} hitSlop={8} style={{ alignSelf: isRTL ? 'flex-start' : 'flex-end' }}>
@@ -264,7 +273,7 @@ export function SignupScreen() {
   }
 
   return (
-    <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')} onBack={() => router.back()}>
+    <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')} onBack={() => backToWelcome(router)}>
       <View style={styles.avatarWrap}>
         <Pressable onPress={pickAvatar} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: errors.photo ? theme.colors.danger : theme.colors.border }]}>
           {avatarUri ? (
