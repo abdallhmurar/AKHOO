@@ -67,7 +67,11 @@ export function createTypography(language: string | undefined) {
     caption: text('medium', 12, 17),
     eyebrow: text('bold', 11, 16, { letterSpacing: 0.7 }),
     button: text('bold', 15, 20),
-    numeric: text('extraBold', 32, 38, { letterSpacing: -0.7 })
+    // Was 38 (1.19x) - the tightest ratio in this whole scale, and it
+    // clipped the top of Eastern Arabic-Indic digits badly enough that the
+    // clipped sliver rendered as a stray mark floating above the number
+    // (the activity screen's point/given/received stat cards).
+    numeric: text('extraBold', 32, 44, { letterSpacing: -0.7 })
   } as const
 }
 
