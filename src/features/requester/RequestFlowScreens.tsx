@@ -20,21 +20,43 @@ import type { ServiceType } from '../../types'
 
 type Locale = 'ar' | 'he' | 'en'
 
-// The tire banner has its own title/description baked into the image per
-// language (a wide illustrated card, not just an icon), unlike the other
-// three services which still use a single locale-invariant image next to
-// an app-rendered label - so it needs its own per-locale require map.
-// Metro needs static string literals to resolve requires, same reason
-// WelcomeScreen/LaunchScreen require each language's video separately.
-const TIRE_BANNER_BY_LOCALE: Record<Locale, number> = {
-  ar: require('../../../assets/images/service-tire-ar.png'),
-  he: require('../../../assets/images/service-tire-he.png'),
-  en: require('../../../assets/images/service-tire-en.png')
+// Battery, fuel and tire each have their own title/description baked into
+// the image per language (a wide illustrated card, not just an icon), so
+// they need their own per-locale require maps. Metro needs static string
+// literals to resolve requires, same reason WelcomeScreen/LaunchScreen
+// require each language's video separately. "Other" still uses a single
+// locale-invariant image next to an app-rendered label.
+// Rendered before "other" in the list, in this order.
+const BANNER_SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] = [
+  {
+    key: 'battery',
+    byLocale: {
+      ar: require('../../../assets/images/service-battery-ar.png'),
+      he: require('../../../assets/images/service-battery-he.png'),
+      en: require('../../../assets/images/service-battery-en.png')
+    }
+  },
+  {
+    key: 'fuel',
+    byLocale: {
+      ar: require('../../../assets/images/service-fuel-ar.png'),
+      he: require('../../../assets/images/service-fuel-he.png'),
+      en: require('../../../assets/images/service-fuel-en.png')
+    }
+  }
+]
+
+// Rendered after "other" in the list.
+const TIRE_BANNER: { key: ServiceType; byLocale: Record<Locale, number> } = {
+  key: 'tire',
+  byLocale: {
+    ar: require('../../../assets/images/service-tire-ar.png'),
+    he: require('../../../assets/images/service-tire-he.png'),
+    en: require('../../../assets/images/service-tire-en.png')
+  }
 }
 
 const SERVICES: { key: ServiceType; labelKey: string; image: number }[] = [
-  { key: 'battery', labelKey: 'request.battery', image: require('../../../assets/images/service-battery.png') },
-  { key: 'fuel', labelKey: 'request.fuel', image: require('../../../assets/images/service-fuel.png') },
   { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') }
 ]
 
@@ -156,6 +178,19 @@ export function RequestFlowScreen() {
     }
   }
 
+  function renderServiceBanner(item: { key: ServiceType; byLocale: Record<Locale, number> }) {
+    const selected = service === item.key
+    return (
+      <Pressable
+        key={item.key}
+        onPress={() => selectService(item.key)}
+        style={[styles.serviceBanner, { borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}
+      >
+        <Image source={item.byLocale[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+      </Pressable>
+    )
+  }
+
   return (
     <AppScreen
       scroll={step !== 'location'}
@@ -172,6 +207,7 @@ export function RequestFlowScreen() {
         <>
           <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
           <View style={styles.list}>
+            {BANNER_SERVICES.map(item => renderServiceBanner(item))}
             {SERVICES.map(item => {
               const selected = service === item.key
               return (
@@ -185,12 +221,7 @@ export function RequestFlowScreen() {
                 </Pressable>
               )
             })}
-            <Pressable
-              onPress={() => selectService('tire')}
-              style={[styles.serviceBanner, { borderColor: service === 'tire' ? theme.colors.primary : theme.colors.border, borderWidth: service === 'tire' ? 2 : 1 }]}
-            >
-              <Image source={TIRE_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
-            </Pressable>
+            {renderServiceBanner(TIRE_BANNER)}
           </View>
         </>
       ) : null}
