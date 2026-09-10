@@ -19,10 +19,10 @@ import { Button, TextArea } from '../../components/ui'
 import type { ServiceType } from '../../types'
 
 const SERVICES: { key: ServiceType; labelKey: string; image: number }[] = [
-  { key: 'tire', labelKey: 'request.tire', image: require('../../../assets/images/service-tire.png') },
-  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') },
+  { key: 'battery', labelKey: 'request.battery', image: require('../../../assets/images/service-battery.png') },
   { key: 'fuel', labelKey: 'request.fuel', image: require('../../../assets/images/service-fuel.png') },
-  { key: 'battery', labelKey: 'request.battery', image: require('../../../assets/images/service-battery.png') }
+  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') },
+  { key: 'tire', labelKey: 'request.tire', image: require('../../../assets/images/service-tire.png') }
 ]
 
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
@@ -157,17 +157,17 @@ export function RequestFlowScreen() {
       {step === 'type' ? (
         <>
           <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
-          <View style={[styles.grid, dirStyles(isRTL).row]}>
+          <View style={styles.list}>
             {SERVICES.map(item => {
               const selected = service === item.key
               return (
-                <Pressable key={item.key} onPress={() => selectService(item.key)} style={styles.serviceCard}>
-                  <View style={[styles.serviceCardInner, { backgroundColor: theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}>
-                    <Image source={item.image} style={styles.serviceImage} resizeMode="cover" />
-                    <View style={[styles.serviceLabelWrap, { backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface }]}>
-                      <Text numberOfLines={2} style={[typography.smallMedium, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: 'center' }]}>{t(item.labelKey)}</Text>
-                    </View>
-                  </View>
+                <Pressable
+                  key={item.key}
+                  onPress={() => selectService(item.key)}
+                  style={[styles.serviceRow, dirStyles(isRTL).row, { backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}
+                >
+                  <Text style={[typography.h3, styles.serviceRowLabel, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(item.labelKey)}</Text>
+                  <Image source={item.image} style={styles.serviceRowImage} resizeMode="cover" />
                 </Pressable>
               )
             })}
@@ -230,11 +230,10 @@ export function RequestFlowScreen() {
 
 const styles = StyleSheet.create({
   typeHeading: { marginBottom: space.xs },
-  grid: { gap: space.sm },
-  serviceCard: { flex: 1 },
-  serviceCardInner: { borderRadius: radius.lg, overflow: 'hidden' },
-  serviceImage: { width: '100%', height: 110 },
-  serviceLabelWrap: { paddingVertical: space.sm, paddingHorizontal: 4 },
+  list: { gap: space.sm },
+  serviceRow: { alignItems: 'center', gap: space.md, padding: space.sm, borderRadius: radius.lg },
+  serviceRowLabel: { flex: 1 },
+  serviceRowImage: { width: 84, height: 84, borderRadius: radius.md },
   detailsGroup: { gap: space.lg },
   photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
