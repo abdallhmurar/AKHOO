@@ -155,12 +155,20 @@
     "other": "Something Else",
     "step": {
       "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing.", "short": "Problem" },
-      "details": { "title": "Details", "subtitle": "A note or photo helps whoever's helping understand more (optional)." },
+      "details": {
+        "title": "Details",
+        "subtitle": "Help us understand the problem better",
+        "badge": "Help Request",
+        "selectedProblem": "Selected Problem",
+        "stepOf": "Step {{current}} of {{total}}",
+        "addPhotoTitle": "Add a photo of the problem",
+        "addPhotoSubtitle": "Optional, but helps the helper understand the situation faster",
+        "footer": "With you always on the road"
+      },
       "location": { "title": "Location", "subtitle": "We'll share your current location with whoever takes your request." }
     },
     "noteLabel": "Note for whoever helps (optional)",
-    "notePlaceholder": "e.g. Car battery is completely dead, I'm in a public parking lot.",
-    "addPhoto": "Add a photo (optional)",
+    "notePlaceholder": "e.g. The rear tire is flat and the car is stopped on the side of the road.",
     "locating": "Locating you...",
     "retryLocation": "Try again",
     "currentLocation": "Your current location",

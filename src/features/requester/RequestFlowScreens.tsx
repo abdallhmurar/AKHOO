@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, Camera, Warning } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowRight, BatteryWarning, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -11,7 +11,7 @@ import type { RequestHelpStep } from '../../lib/backNavigation'
 import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { radius, space, useSanadTheme } from '../../lib/theme'
+import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { AppScreen, MapPanel, ProgressHeader, ScreenHeader } from '../../components/v2'
@@ -60,6 +60,15 @@ const SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] = [
   }
 ]
 
+// Small icon + label shown in the details step's "selected problem" summary
+// card - distinct from the big per-locale banners used for selection itself.
+const SERVICE_SUMMARY: Partial<Record<ServiceType, { labelKey: string; Icon: typeof Tire }>> = {
+  battery: { labelKey: 'request.battery', Icon: BatteryWarning },
+  fuel: { labelKey: 'request.fuel', Icon: GasPump },
+  other: { labelKey: 'request.other', Icon: Wrench },
+  tire: { labelKey: 'request.tire', Icon: Tire }
+}
+
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
@@ -92,6 +101,7 @@ export function RequestFlowScreen() {
   const stepTitles: Record<RequestHelpStep, string> = { type: t('request.step.type.title'), details: t('request.step.details.title'), location: t('request.step.location.title') }
   const stepSubtitles: Record<RequestHelpStep, string> = { type: t('request.step.type.subtitle'), details: t('request.step.details.subtitle'), location: t('request.step.location.subtitle') }
   const outsideZone = !!coords && pilotZones.length > 0 && !isWithinAnyZone(coords.latitude, coords.longitude, pilotZones)
+  const selectedSummary = service ? SERVICE_SUMMARY[service] : undefined
 
   useEffect(() => { getActivePilotZones().then(setPilotZones).catch(() => {}) }, [])
 
@@ -191,17 +201,36 @@ export function RequestFlowScreen() {
     )
   }
 
+  function renderStepCircles() {
+    const current = stepIndex + 1
+    const nodes = []
+    for (let n = 1; n <= STEPS.length; n++) {
+      if (n > 1) {
+        nodes.push(<View key={`line-${n}`} style={[styles.stepLine, { backgroundColor: current >= n ? theme.colors.primary : theme.colors.border }]} />)
+      }
+      const isCurrent = current === n
+      nodes.push(
+        <View key={`circle-${n}`} style={[styles.stepCircle, { backgroundColor: isCurrent ? theme.colors.primary : theme.colors.surface, borderColor: isCurrent ? theme.colors.primary : theme.colors.border }]}>
+          <Text style={[typography.smallMedium, { color: isCurrent ? theme.colors.onPrimary : theme.colors.textMuted }]}>{n}</Text>
+        </View>
+      )
+    }
+    return nodes
+  }
+
   return (
     <AppScreen
       scroll={step !== 'location'}
-      header={step === 'type'
+      header={step === 'type' || step === 'details'
         ? <ScreenHeader title="" back onBack={back} />
         : <ScreenHeader title={stepTitles[step]} subtitle={stepSubtitles[step]} back onBack={back} />}
       footer={step === 'location'
         ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!coords || outsideZone} />
-        : <Button label={t('common.next')} onPress={next} />}
+        : step === 'details'
+          ? <Button label={t('common.next')} trailing={<ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />
+          : <Button label={t('common.next')} onPress={next} />}
     >
-      <ProgressHeader step={stepIndex + 1} total={STEPS.length} label={stepTitles[step]} />
+      {step === 'location' ? <ProgressHeader step={stepIndex + 1} total={STEPS.length} label={stepTitles[step]} /> : null}
 
       {step === 'type' ? (
         <>
@@ -214,15 +243,60 @@ export function RequestFlowScreen() {
 
       {step === 'details' ? (
         <View style={styles.detailsGroup}>
-          <TextArea label={t('request.noteLabel')} value={note} onChangeText={setNote} placeholder={t('request.notePlaceholder')} />
+          <View style={styles.detailsBadgeWrap}>
+            <View style={[styles.detailsBadge, dirStyles(isRTL).row, { backgroundColor: theme.colors.primarySoft }]}>
+              <Text style={[typography.caption, { color: theme.colors.primary }]}>{t('request.step.details.badge')}</Text>
+              <HandHeart size={14} color={theme.colors.primary} weight="fill" />
+            </View>
+          </View>
+          <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.step.details.title')}</Text>
+          <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('request.step.details.subtitle')}</Text>
+
+          <View style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
+          <Text style={[typography.small, styles.stepOfText, { color: theme.colors.textSecondary, textAlign: 'center' }]}>
+            {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
+          </Text>
+
+          {selectedSummary ? (
+            <View style={[styles.summaryCard, dirStyles(isRTL).row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+              <View style={[styles.summaryIconCircle, { backgroundColor: theme.colors.primarySoft }]}>
+                <selectedSummary.Icon size={26} color={theme.colors.primary} weight="duotone" />
+              </View>
+              <View style={styles.summaryTextWrap}>
+                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.details.selectedProblem')}</Text>
+                <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(selectedSummary.labelKey)}</Text>
+              </View>
+            </View>
+          ) : null}
+
+          <View style={[styles.noteCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+            <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
+              <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.noteLabel')}</Text>
+              <Pencil size={16} color={theme.colors.textMuted} />
+            </View>
+            <TextArea value={note} onChangeText={setNote} placeholder={t('request.notePlaceholder')} maxLength={500} />
+            <Text style={[typography.caption, styles.charCounter, { color: theme.colors.textMuted, alignSelf: isRTL ? 'flex-start' : 'flex-end' }]}>{note.length}/500</Text>
+          </View>
+
           <Pressable onPress={pickPhoto} style={[styles.photoPicker, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
             {photoUri ? <Image source={{ uri: photoUri }} style={styles.photoPreview} /> : (
               <View style={styles.photoPlaceholder}>
-                <Camera size={22} color={theme.colors.textMuted} weight="light" />
-                <Text style={[typography.small, { color: theme.colors.textMuted }]}>{t('request.addPhoto')}</Text>
+                <View style={styles.photoIconWrap}>
+                  <Images size={26} color={theme.colors.primary} weight="duotone" />
+                  <View style={[styles.photoPlusBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.surface }]}>
+                    <Plus size={10} color={theme.colors.onPrimary} weight="bold" />
+                  </View>
+                </View>
+                <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{t('request.step.details.addPhotoTitle')}</Text>
+                <Text style={[typography.small, styles.photoSubtitle, { color: theme.colors.textMuted }]}>{t('request.step.details.addPhotoSubtitle')}</Text>
               </View>
             )}
           </Pressable>
+
+          <View style={[styles.detailsFooterRow, dirStyles(isRTL).row]}>
+            <MapPin size={16} color={theme.colors.textMuted} />
+            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('request.step.details.footer')}</Text>
+          </View>
         </View>
       ) : null}
 
@@ -271,8 +345,24 @@ const styles = StyleSheet.create({
   serviceBanner: { borderRadius: radius.lg, overflow: 'hidden' },
   serviceBannerImage: { width: '100%', height: 120 },
   detailsGroup: { gap: space.lg },
-  photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
+  detailsBadgeWrap: { alignItems: 'center' },
+  detailsBadge: { alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: space.md, borderRadius: radius.pill },
+  stepCirclesRow: { alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  stepCircle: { width: 32, height: 32, borderRadius: radius.pill, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  stepLine: { width: 36, height: 2 },
+  stepOfText: { marginTop: -space.xs },
+  summaryCard: { alignItems: 'center', gap: space.md, padding: space.lg, borderRadius: radius.lg, borderWidth: 1, ...shadow.soft },
+  summaryIconCircle: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  summaryTextWrap: { flex: 1, gap: 2 },
+  noteCard: { gap: space.sm, padding: space.lg, borderRadius: radius.lg, borderWidth: 1, ...shadow.soft },
+  noteLabelRow: { alignItems: 'center', gap: 6 },
+  charCounter: {},
+  photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', ...shadow.soft },
+  photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg, paddingHorizontal: space.lg },
+  photoIconWrap: { width: 52, height: 52, alignItems: 'center', justifyContent: 'center', marginBottom: space.xs },
+  photoPlusBadge: { position: 'absolute', bottom: -2, right: -2, width: 18, height: 18, borderRadius: radius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  photoSubtitle: { textAlign: 'center' },
+  detailsFooterRow: { alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.xs },
   photoPreview: { width: '100%', height: 170 },
   locationState: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
   locationOverlay: { flex: 1, justifyContent: 'space-between', alignItems: 'center' },
