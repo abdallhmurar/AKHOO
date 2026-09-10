@@ -18,11 +18,24 @@ import { AppScreen, MapPanel, ProgressHeader, ScreenHeader } from '../../compone
 import { Button, TextArea } from '../../components/ui'
 import type { ServiceType } from '../../types'
 
+type Locale = 'ar' | 'he' | 'en'
+
+// The tire banner has its own title/description baked into the image per
+// language (a wide illustrated card, not just an icon), unlike the other
+// three services which still use a single locale-invariant image next to
+// an app-rendered label - so it needs its own per-locale require map.
+// Metro needs static string literals to resolve requires, same reason
+// WelcomeScreen/LaunchScreen require each language's video separately.
+const TIRE_BANNER_BY_LOCALE: Record<Locale, number> = {
+  ar: require('../../../assets/images/service-tire-ar.png'),
+  he: require('../../../assets/images/service-tire-he.png'),
+  en: require('../../../assets/images/service-tire-en.png')
+}
+
 const SERVICES: { key: ServiceType; labelKey: string; image: number }[] = [
   { key: 'battery', labelKey: 'request.battery', image: require('../../../assets/images/service-battery.png') },
   { key: 'fuel', labelKey: 'request.fuel', image: require('../../../assets/images/service-fuel.png') },
-  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') },
-  { key: 'tire', labelKey: 'request.tire', image: require('../../../assets/images/service-tire.png') }
+  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') }
 ]
 
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
@@ -37,7 +50,8 @@ export function RequestFlowScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale: Locale = i18n.language.startsWith('he') ? 'he' : i18n.language.startsWith('en') ? 'en' : 'ar'
   const router = useRouter()
   const { session } = useAuth()
   const userId = session!.user.id
@@ -171,6 +185,12 @@ export function RequestFlowScreen() {
                 </Pressable>
               )
             })}
+            <Pressable
+              onPress={() => selectService('tire')}
+              style={[styles.serviceBanner, { borderColor: service === 'tire' ? theme.colors.primary : theme.colors.border, borderWidth: service === 'tire' ? 2 : 1 }]}
+            >
+              <Image source={TIRE_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+            </Pressable>
           </View>
         </>
       ) : null}
@@ -234,6 +254,8 @@ const styles = StyleSheet.create({
   serviceRow: { alignItems: 'center', gap: space.md, padding: space.sm, borderRadius: radius.lg },
   serviceRowLabel: { flex: 1 },
   serviceRowImage: { width: 84, height: 84, borderRadius: radius.md },
+  serviceBanner: { borderRadius: radius.lg, overflow: 'hidden' },
+  serviceBannerImage: { width: '100%', height: 120 },
   detailsGroup: { gap: space.lg },
   photoPicker: { minHeight: 100, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   photoPlaceholder: { alignItems: 'center', gap: 6, paddingVertical: space.lg },
