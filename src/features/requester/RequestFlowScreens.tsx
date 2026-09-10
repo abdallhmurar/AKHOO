@@ -20,14 +20,12 @@ import type { ServiceType } from '../../types'
 
 type Locale = 'ar' | 'he' | 'en'
 
-// Battery, fuel and tire each have their own title/description baked into
-// the image per language (a wide illustrated card, not just an icon), so
-// they need their own per-locale require maps. Metro needs static string
-// literals to resolve requires, same reason WelcomeScreen/LaunchScreen
-// require each language's video separately. "Other" still uses a single
-// locale-invariant image next to an app-rendered label.
-// Rendered before "other" in the list, in this order.
-const BANNER_SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] = [
+// Every service now has its own title/description baked into the image per
+// language (a wide illustrated banner, not just an icon), so each needs its
+// own per-locale require map. Metro needs static string literals to resolve
+// requires, same reason WelcomeScreen/LaunchScreen require each language's
+// video separately.
+const SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] = [
   {
     key: 'battery',
     byLocale: {
@@ -43,21 +41,23 @@ const BANNER_SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] 
       he: require('../../../assets/images/service-fuel-he.png'),
       en: require('../../../assets/images/service-fuel-en.png')
     }
+  },
+  {
+    key: 'other',
+    byLocale: {
+      ar: require('../../../assets/images/service-other-ar.png'),
+      he: require('../../../assets/images/service-other-he.png'),
+      en: require('../../../assets/images/service-other-en.png')
+    }
+  },
+  {
+    key: 'tire',
+    byLocale: {
+      ar: require('../../../assets/images/service-tire-ar.png'),
+      he: require('../../../assets/images/service-tire-he.png'),
+      en: require('../../../assets/images/service-tire-en.png')
+    }
   }
-]
-
-// Rendered after "other" in the list.
-const TIRE_BANNER: { key: ServiceType; byLocale: Record<Locale, number> } = {
-  key: 'tire',
-  byLocale: {
-    ar: require('../../../assets/images/service-tire-ar.png'),
-    he: require('../../../assets/images/service-tire-he.png'),
-    en: require('../../../assets/images/service-tire-en.png')
-  }
-}
-
-const SERVICES: { key: ServiceType; labelKey: string; image: number }[] = [
-  { key: 'other', labelKey: 'request.other', image: require('../../../assets/images/service-other.png') }
 ]
 
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
@@ -207,21 +207,7 @@ export function RequestFlowScreen() {
         <>
           <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
           <View style={styles.list}>
-            {BANNER_SERVICES.map(item => renderServiceBanner(item))}
-            {SERVICES.map(item => {
-              const selected = service === item.key
-              return (
-                <Pressable
-                  key={item.key}
-                  onPress={() => selectService(item.key)}
-                  style={[styles.serviceRow, dirStyles(isRTL).row, { backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}
-                >
-                  <Text style={[typography.h3, styles.serviceRowLabel, { color: selected ? theme.colors.primary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(item.labelKey)}</Text>
-                  <Image source={item.image} style={styles.serviceRowImage} resizeMode="cover" />
-                </Pressable>
-              )
-            })}
-            {renderServiceBanner(TIRE_BANNER)}
+            {SERVICES.map(item => renderServiceBanner(item))}
           </View>
         </>
       ) : null}
@@ -282,9 +268,6 @@ export function RequestFlowScreen() {
 const styles = StyleSheet.create({
   typeHeading: { marginBottom: space.xs },
   list: { gap: space.sm },
-  serviceRow: { alignItems: 'center', gap: space.md, padding: space.sm, borderRadius: radius.lg },
-  serviceRowLabel: { flex: 1 },
-  serviceRowImage: { width: 84, height: 84, borderRadius: radius.md },
   serviceBanner: { borderRadius: radius.lg, overflow: 'hidden' },
   serviceBannerImage: { width: '100%', height: 120 },
   detailsGroup: { gap: space.lg },
