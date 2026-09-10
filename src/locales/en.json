@@ -162,8 +162,7 @@
         "selectedProblem": "Selected Problem",
         "stepOf": "Step {{current}} of {{total}}",
         "addPhotoTitle": "Add a photo of the problem",
-        "addPhotoSubtitle": "Optional, but helps the helper understand the situation faster",
-        "footer": "With you always on the road"
+        "addPhotoSubtitle": "Optional, but helps the helper understand the situation faster"
       },
       "location": { "title": "Location", "subtitle": "We'll share your current location with whoever takes your request." }
     },

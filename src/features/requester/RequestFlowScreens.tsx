@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, ArrowRight, BatteryWarning, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowRight, BatteryWarning, GasPump, HandHeart, Images, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -292,11 +292,6 @@ export function RequestFlowScreen() {
               </View>
             )}
           </Pressable>
-
-          <View style={[styles.detailsFooterRow, dirStyles(isRTL).row]}>
-            <MapPin size={16} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('request.step.details.footer')}</Text>
-          </View>
         </View>
       ) : null}
 
@@ -362,7 +357,6 @@ const styles = StyleSheet.create({
   photoIconWrap: { width: 52, height: 52, alignItems: 'center', justifyContent: 'center', marginBottom: space.xs },
   photoPlusBadge: { position: 'absolute', bottom: -2, right: -2, width: 18, height: 18, borderRadius: radius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   photoSubtitle: { textAlign: 'center' },
-  detailsFooterRow: { alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.xs },
   photoPreview: { width: '100%', height: 170 },
   locationState: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
   locationOverlay: { flex: 1, justifyContent: 'space-between', alignItems: 'center' },
