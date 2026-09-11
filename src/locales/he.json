@@ -234,6 +234,7 @@
     "volunteerLabel": "המסייע/ת",
     "defaultVolunteerName": "מסייע/ת",
     "callButton": "התקשר/י אל {{phone}}",
+    "chatButton": "צ'אט",
     "backToHome": "חזרה לבחירת תפקיד",
     "cancel": "ביטול הבקשה",
     "cancelConfirm": "כן, בטל/י את הבקשה",
@@ -244,6 +245,17 @@
       "hours": "{{count}} שעות",
       "hoursAndMinutes": "{{hours}} שעות ו-{{minutes}} דקות"
     }
+  },
+  "chat": {
+    "placeholder": "כתוב/י הודעה...",
+    "empty": "התחילו את השיחה",
+    "capability": {
+      "messages": "הודעות",
+      "photos": "תמונות",
+      "video": "וידאו"
+    },
+    "attachError": "לא הצלחנו להעלות את הקובץ. נסו שוב.",
+    "sendError": "לא הצלחנו לשלוח את ההודעה. נסו שוב."
   },
   "volunteerJob": {
     "status": {
@@ -261,6 +273,7 @@
     "requesterLabel": "מבקש/ת העזרה",
     "defaultRequesterName": "משתמש",
     "callButton": "התקשר/י אל {{phone}}",
+    "chatButton": "צ'אט",
     "openInGoogleMaps": "פתח/י את המיקום במפות גוגל",
     "onMyWay": "אני בדרך",
     "arrivedButton": "הגעתי",

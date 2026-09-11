@@ -234,6 +234,7 @@
     "volunteerLabel": "الشخص المساعد",
     "defaultVolunteerName": "مساعد",
     "callButton": "اتصل بـ {{phone}}",
+    "chatButton": "المحادثة",
     "backToHome": "العودة لاختيار الدور",
     "cancel": "إلغاء الطلب",
     "cancelConfirm": "نعم، ألغي الطلب",
@@ -244,6 +245,17 @@
       "hours": "{{count}} ساعة",
       "hoursAndMinutes": "{{hours}} ساعة و{{minutes}} دقيقة"
     }
+  },
+  "chat": {
+    "placeholder": "اكتب رسالتك...",
+    "empty": "ابدأ المحادثة",
+    "capability": {
+      "messages": "رسائل",
+      "photos": "صور",
+      "video": "فيديو"
+    },
+    "attachError": "ما قدرنا نرفع الملف. حاول مرة ثانية.",
+    "sendError": "ما قدرنا نرسل الرسالة. حاول مرة ثانية."
   },
   "volunteerJob": {
     "status": {
@@ -261,6 +273,7 @@
     "requesterLabel": "صاحب الطلب",
     "defaultRequesterName": "مستخدم",
     "callButton": "اتصل بـ {{phone}}",
+    "chatButton": "المحادثة",
     "openInGoogleMaps": "افتح الموقع بخرائط جوجل",
     "onMyWay": "أنا في الطريق",
     "arrivedButton": "وصلت للموقع",

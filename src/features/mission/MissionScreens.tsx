@@ -4,7 +4,7 @@ import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAre
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
-import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Car, CheckCircle, ClipboardText, MapPin, Star, Tree, UserFocus } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
 import { dirStyles, useIsRTL } from '../../lib/direction'
@@ -31,12 +31,12 @@ import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
 const RELEASE_REASONS = ['cannot_reach', 'emergency', 'accepted_by_mistake', 'other'] as const
 type ReleaseReason = (typeof RELEASE_REASONS)[number]
 const LEVEL_UP_THRESHOLDS = [5, 15, 30, 60]
-const TIMELINE: { status: MissionStatus; labelKey: string }[] = [
-  { status: 'assigned', labelKey: 'common.timeline.accepted' },
-  { status: 'on_the_way', labelKey: 'common.timeline.on_the_way' },
-  { status: 'arrived', labelKey: 'common.timeline.arrived' },
-  { status: 'awaiting_confirmation', labelKey: 'common.timeline.awaiting_confirmation' },
-  { status: 'completed', labelKey: 'common.timeline.completed' }
+const TIMELINE: { status: MissionStatus; labelKey: string; Icon: typeof Car }[] = [
+  { status: 'assigned', labelKey: 'common.timeline.accepted', Icon: Handshake },
+  { status: 'on_the_way', labelKey: 'common.timeline.on_the_way', Icon: Car },
+  { status: 'arrived', labelKey: 'common.timeline.arrived', Icon: MapPin },
+  { status: 'awaiting_confirmation', labelKey: 'common.timeline.awaiting_confirmation', Icon: SealCheck },
+  { status: 'completed', labelKey: 'common.timeline.completed', Icon: FlagCheckered }
 ]
 // Legacy rows never carry 'in_progress' or 'disputed' - map them onto the
 // nearest real i18n status key rather than adding new copy for states this
@@ -63,9 +63,10 @@ function useMissionDetail(missionId: string) {
 // the intact src/screens/ActiveRequestScreen.tsx (requester side) and
 // VolunteerJobScreen.tsx (helper side), merged into one route keyed by role
 // since missionRepository already normalizes both sides into a single
-// Mission shape. Not ccodex's invented chat/dispute/report/block/rating
-// flows - none of that exists in the real product; a mission's only
-// cross-party contact is a direct phone call.
+// Mission shape. Cross-party contact is a phone call plus a real chat
+// (text/photo/video, see MissionChatScreen and messageRepository) - not
+// ccodex's invented dispute/report/block/rating flows, none of which exist
+// in the real product.
 export function LiveMissionScreen() {
   const theme = useSanadTheme()
   const router = useRouter()
@@ -361,7 +362,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
       ) : (
         <>
           <Text style={[typography.h2, styles.centerText, { color: theme.colors.textPrimary }]}>{t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)}</Text>
-          {showTimeline ? <MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /> : null}
+          {showTimeline ? <MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey), Icon: step.Icon }))} activeIndex={timelineIndex} /> : null}
         </>
       )}
 
@@ -389,6 +390,15 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
           trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
         >
           {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+          <Button label={t('activeRequest.chatButton')} variant="outline" leading={<ChatCircleDots size={18} color={theme.colors.primary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+          <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
+            <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
+            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
+            <Camera size={13} color={theme.colors.textMuted} />
+            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
+            <VideoCameraIcon size={13} color={theme.colors.textMuted} />
+            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+          </View>
         </Card>
       ) : null}
 
@@ -479,7 +489,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
           <>
             <Text style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{title}</Text>
             <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{awaitingConfirmation ? t('volunteerJob.awaitingConfirmationText') : t('volunteerJob.subtitle')}</Text>
-            {showTimeline ? <View style={styles.timelineWrap}><MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /></View> : null}
+            {showTimeline ? <View style={styles.timelineWrap}><MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey), Icon: step.Icon }))} activeIndex={timelineIndex} /></View> : null}
           </>
         }
       />
@@ -489,6 +499,15 @@ function HelperMissionView({ mission }: { mission: Mission }) {
           {other.data ? (
             <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="primary" />}>
               {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+              <Button label={t('volunteerJob.chatButton')} variant="outline" leading={<ChatCircleDots size={18} color={theme.colors.primary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+              <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
+                <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
+                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
+                <Camera size={13} color={theme.colors.textMuted} />
+                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
+                <VideoCameraIcon size={13} color={theme.colors.textMuted} />
+                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+              </View>
             </Card>
           ) : null}
 
@@ -598,6 +617,7 @@ const styles = StyleSheet.create({
   sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: space.md },
 
   photo: { width: '100%', height: 160, borderRadius: radius.md },
+  chatCapabilityRow: { alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap' },
   confirmRow: { gap: space.sm },
   confirmButton: { flex: 1 },
 

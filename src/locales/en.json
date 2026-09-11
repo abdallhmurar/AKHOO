@@ -234,6 +234,7 @@
     "volunteerLabel": "Helper",
     "defaultVolunteerName": "Helper",
     "callButton": "Call {{phone}}",
+    "chatButton": "Chat",
     "backToHome": "Back to role selection",
     "cancel": "Cancel Request",
     "cancelConfirm": "Yes, cancel the request",
@@ -244,6 +245,17 @@
       "hours": "{{count}} hr",
       "hoursAndMinutes": "{{hours}} hr {{minutes}} min"
     }
+  },
+  "chat": {
+    "placeholder": "Type your message...",
+    "empty": "Start the conversation",
+    "capability": {
+      "messages": "Messages",
+      "photos": "Photos",
+      "video": "Video"
+    },
+    "attachError": "We couldn't upload the file. Try again.",
+    "sendError": "We couldn't send the message. Try again."
   },
   "volunteerJob": {
     "status": {
@@ -261,6 +273,7 @@
     "requesterLabel": "Requester",
     "defaultRequesterName": "User",
     "callButton": "Call {{phone}}",
+    "chatButton": "Chat",
     "openInGoogleMaps": "Open location in Google Maps",
     "onMyWay": "I'm on my way",
     "arrivedButton": "I've arrived",
