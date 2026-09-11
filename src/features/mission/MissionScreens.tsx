@@ -389,15 +389,17 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
           leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="community" />}
           trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
         >
-          {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
-          <Button label={t('activeRequest.chatButton')} variant="outline" leading={<ChatCircleDots size={18} color={theme.colors.primary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
-          <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
-            <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
-            <Camera size={13} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
-            <VideoCameraIcon size={13} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+          <View style={styles.contactActions}>
+            {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+            <Button label={t('activeRequest.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+            <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
+              <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
+              <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
+              <Camera size={13} color={theme.colors.textMuted} />
+              <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
+              <VideoCameraIcon size={13} color={theme.colors.textMuted} />
+              <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+            </View>
           </View>
         </Card>
       ) : null}
@@ -498,15 +500,17 @@ function HelperMissionView({ mission }: { mission: Mission }) {
         <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
           {other.data ? (
             <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="primary" />}>
-              {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
-              <Button label={t('volunteerJob.chatButton')} variant="outline" leading={<ChatCircleDots size={18} color={theme.colors.primary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
-              <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
-                <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
-                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
-                <Camera size={13} color={theme.colors.textMuted} />
-                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
-                <VideoCameraIcon size={13} color={theme.colors.textMuted} />
-                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+              <View style={styles.contactActions}>
+                {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+                <Button label={t('volunteerJob.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+                <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
+                  <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
+                  <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
+                  <Camera size={13} color={theme.colors.textMuted} />
+                  <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.photos')}</Text>
+                  <VideoCameraIcon size={13} color={theme.colors.textMuted} />
+                  <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.video')}</Text>
+                </View>
               </View>
             </Card>
           ) : null}
@@ -617,7 +621,8 @@ const styles = StyleSheet.create({
   sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: space.md },
 
   photo: { width: '100%', height: 160, borderRadius: radius.md },
-  chatCapabilityRow: { alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap' },
+  contactActions: { gap: space.sm },
+  chatCapabilityRow: { alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap', marginTop: 2 },
   confirmRow: { gap: space.sm },
   confirmButton: { flex: 1 },
 

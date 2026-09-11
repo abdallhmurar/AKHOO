@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Alert, FlatList, Image, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { ArrowLeft, ArrowRight, Camera, PaperPlaneTilt } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Camera, PaperPlaneTilt, X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -30,7 +30,8 @@ export function MissionChatScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const closeLabel = i18n.language === 'en' ? 'Close' : i18n.language === 'he' ? 'סגירה' : 'إغلاق'
   const router = useRouter()
   const { missionId } = useLocalSearchParams<{ missionId: string }>()
   const { session } = useAuth()
@@ -41,6 +42,7 @@ export function MissionChatScreen() {
   const other = useQuery({ queryKey: otherId ? queryKeys.profile(otherId) : ['participant'], queryFn: () => profileRepository.get(otherId!), enabled: !!otherId })
 
   const [text, setText] = useState('')
+  const [previewUri, setPreviewUri] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
   const listRef = useRef<FlatList<ChatMessage>>(null)
@@ -107,7 +109,11 @@ export function MissionChatScreen() {
     return (
       <View style={[styles.bubbleRow, { justifyContent: (isMine !== isRTL) ? 'flex-end' : 'flex-start' }]}>
         <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleTheirs, { backgroundColor: isMine ? theme.colors.primary : theme.colors.surface, borderColor: theme.colors.border, borderWidth: isMine ? 0 : 1 }]}>
-          {item.media_type === 'image' && item.media_url ? <Image source={{ uri: item.media_url }} style={styles.bubbleImage} /> : null}
+          {item.media_type === 'image' && item.media_url ? (
+            <Pressable onPress={() => setPreviewUri(item.media_url)} accessibilityRole="button" accessibilityLabel={t('chat.capability.photos')}>
+              <Image source={{ uri: item.media_url }} style={styles.bubbleImage} />
+            </Pressable>
+          ) : null}
           {item.media_type === 'video' && item.media_url ? <ChatVideoBubble uri={item.media_url} /> : null}
           {item.body ? <Text style={[typography.body, { color: isMine ? theme.colors.onPrimary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{item.body}</Text> : null}
         </View>
@@ -157,6 +163,14 @@ export function MissionChatScreen() {
           </Pressable>
         </View>
       </View>
+
+      <Modal visible={!!previewUri} transparent animationType="fade" onRequestClose={() => setPreviewUri(null)} statusBarTranslucent>
+        <View style={styles.imageViewerBackdrop}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPreviewUri(null)} accessibilityRole="button" accessibilityLabel={closeLabel} />
+          {previewUri ? <Image source={{ uri: previewUri }} style={styles.imageViewerImage} resizeMode="contain" /> : null}
+          <IconButton label={closeLabel} size={40} style={styles.imageViewerClose} icon={<X size={20} color="#fff" />} onPress={() => setPreviewUri(null)} />
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   )
 }
@@ -182,5 +196,8 @@ const styles = StyleSheet.create({
   attachButton: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   textInput: { flex: 1, minHeight: 40, maxHeight: 120, paddingHorizontal: space.md, paddingVertical: 10 },
   sendButton: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  sendIconRTL: { transform: [{ scaleX: -1 }] }
+  sendIconRTL: { transform: [{ scaleX: -1 }] },
+  imageViewerBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', alignItems: 'center', justifyContent: 'center' },
+  imageViewerImage: { width: '100%', height: '100%' },
+  imageViewerClose: { position: 'absolute', top: space.xxl, right: space.lg, backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'transparent' }
 })
