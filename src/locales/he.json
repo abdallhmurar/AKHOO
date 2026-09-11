@@ -206,10 +206,22 @@
       "cancelled": "הבקשה בוטלה"
     },
     "title": "בקשת עזרה",
-    "subtitleSearching": "כל מי שזמין וקרוב יכול לראות את בקשתך ולקבל אותה.",
+    "subtitleSearching": "סידרנו את הבקשה שלך ומחפשים את האדם הקרוב ביותר שיעזור",
     "subtitleCompleted": "תודה שהשתמשת באחוו ❤️",
     "subtitleAwaitingConfirmation": "צוין שסיימו לעזור — אשר/י שהעזרה אכן הגיעה אליך.",
     "subtitleTracking": "סטטוס הבקשה מתעדכן בזמן אמת בינך לבין מי שעוזר/ת לך.",
+    "searchingCard": {
+      "title": "מחפשים מתנדב/ת",
+      "subtitle": "אנחנו מחפשים כרגע את האדם המתאים והקרוב ביותר אליך",
+      "notice": "תקבל/י התראה ברגע שהבקשה תתקבל"
+    },
+    "timeline": {
+      "problemType": { "title": "סוג הבעיה", "subtitle": "סוג הבעיה נקבע" },
+      "details": { "title": "פרטים", "subtitle": "פרטי הבעיה נוספו" },
+      "location": { "title": "מיקום", "subtitle": "המיקום שלך נקבע על המפה" },
+      "findingHelper": { "title": "חיפוש מתנדב/ת", "subtitle": "מחפשים עבורך את הספק הקרוב ביותר" }
+    },
+    "updateStatus": "עדכון סטטוס",
     "releasedNotice": {
       "title": "מי שעזר/ה קודם כבר לא יכול/ה להשלים את זה",
       "message": "אנחנו מחפשים מישהו קרוב נוסף."
@@ -217,7 +229,6 @@
     "confirmPrompt": "האם העזרה אכן הושלמה?",
     "confirmAccept": "כן, העזרה הושלמה",
     "confirmReject": "העזרה לא הושלמה",
-    "requestId": "מספר בקשה",
     "waitingSince": "ממתין/ה מאז",
     "volunteerSince": "עוזר/ת לך מאז",
     "volunteerLabel": "המסייע/ת",

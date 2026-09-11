@@ -206,10 +206,22 @@
       "cancelled": "تم إلغاء الطلب"
     },
     "title": "طلب المساعدة",
-    "subtitleSearching": "أي حدا متاح وقريب منك يقدر يشوف طلبك ويستلمه.",
+    "subtitleSearching": "رتبنا طلبك ونبحث لك عن أقرب شخص للمساعدة",
     "subtitleCompleted": "شكراً لاستخدام أخوو ❤️",
     "subtitleAwaitingConfirmation": "قالوا إنهم خلصوا المساعدة — أكّد إذا وصلتك فعلاً.",
     "subtitleTracking": "حالة الطلب تتحدث مباشرة بينك وبين يلي بيساعدك.",
+    "searchingCard": {
+      "title": "جاري العثور على مساعد",
+      "subtitle": "نبحث الآن عن أقرب شخص مناسب وقريب منك",
+      "notice": "سيصلك إشعار فور قبول الطلب"
+    },
+    "timeline": {
+      "problemType": { "title": "نوع المشكلة", "subtitle": "تم تحديد نوع المشكلة" },
+      "details": { "title": "التفاصيل", "subtitle": "تم إضافة تفاصيل المشكلة" },
+      "location": { "title": "الموقع", "subtitle": "تم تحديد موقعك على الخريطة" },
+      "findingHelper": { "title": "العثور على مساعد", "subtitle": "نبحث عن أقرب مقدم خدمة لك" }
+    },
+    "updateStatus": "تحديث الحالة",
     "releasedNotice": {
       "title": "الشخص السابق ما عاد قادر يكمل المهمة",
       "message": "جاري البحث عن حدا آخر قريب منك."
@@ -217,7 +229,6 @@
     "confirmPrompt": "هل تمت المساعدة بنجاح؟",
     "confirmAccept": "تمت المساعدة بنجاح",
     "confirmReject": "المساعدة لم تكتمل",
-    "requestId": "رقم الطلب",
     "waitingSince": "بتنتظر منذ",
     "volunteerSince": "بيساعدك منذ",
     "volunteerLabel": "الشخص المساعد",

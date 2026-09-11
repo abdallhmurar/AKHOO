@@ -3,7 +3,8 @@ import type { ReactNode } from 'react'
 import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, ArrowRight, Star } from 'phosphor-react-native'
+import Svg, { Path } from 'react-native-svg'
+import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Car, CheckCircle, ClipboardText, MapPin, Star, Tree, UserFocus } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
 import { dirStyles, useIsRTL } from '../../lib/direction'
@@ -22,7 +23,7 @@ import { profileRepository } from '../../repositories/profileRepository'
 import type { Mission, MissionStatus } from '../../repositories/domainTypes'
 import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
-import { MissionTimeline } from '../../components/v2'
+import { AppScreen, MapPanel, MissionTimeline, ScreenHeader } from '../../components/v2'
 import { SanadMap } from '../../components/SanadMap'
 import { SuccessCheckmark } from '../../components/SuccessCheckmark'
 import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
@@ -130,6 +131,123 @@ function MissionHero({ latitude, longitude, searching, header, onBack }: { latit
   )
 }
 
+// Layered pulsing rings around a solid core - built on the plain Animated
+// API (native-driver-eligible), same convention as useStaggeredReveal and
+// MissionHero's existing radar pulse, rather than pulling in reanimated for
+// this one effect.
+function SearchingCard() {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const { t } = useTranslation()
+  const ring1 = useRef(new Animated.Value(0)).current
+  const ring2 = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    function makeLoop(value: Animated.Value, delay: number) {
+      return Animated.loop(Animated.sequence([
+        Animated.delay(delay),
+        Animated.timing(value, { toValue: 1, duration: 1800, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+        Animated.timing(value, { toValue: 0, duration: 0, useNativeDriver: true })
+      ]))
+    }
+    const loop1 = makeLoop(ring1, 0)
+    const loop2 = makeLoop(ring2, 900)
+    loop1.start()
+    loop2.start()
+    return () => { loop1.stop(); loop2.stop() }
+  }, [ring1, ring2])
+
+  function ringStyle(value: Animated.Value) {
+    return {
+      opacity: value.interpolate({ inputRange: [0, 0.6, 1], outputRange: [0.5, 0.18, 0] }),
+      transform: [{ scale: value.interpolate({ inputRange: [0, 1], outputRange: [1, 2.4] }) }]
+    }
+  }
+
+  return (
+    <View style={[styles.searchingCard, shadow.soft, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <View style={styles.searchingIconWrap}>
+        <Animated.View style={[styles.searchingRing, { backgroundColor: theme.colors.primary }, ringStyle(ring1)]} />
+        <Animated.View style={[styles.searchingRing, { backgroundColor: theme.colors.primary }, ringStyle(ring2)]} />
+        <View style={[styles.searchingCore, { backgroundColor: theme.colors.primary }]}>
+          <UserFocus size={28} color={theme.colors.onPrimary} weight="fill" />
+        </View>
+      </View>
+      <Text style={[typography.h3, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.searchingCard.title')}</Text>
+      <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{t('activeRequest.searchingCard.subtitle')}</Text>
+      <View style={[styles.searchingNotice, { backgroundColor: theme.colors.primarySoft }]}>
+        <Text style={[typography.caption, styles.centerText, { color: theme.colors.primary }]}>{t('activeRequest.searchingCard.notice')}</Text>
+      </View>
+    </View>
+  )
+}
+
+const ROAD_STEPS: { titleKey: string; subtitleKey: string; Icon: typeof Car }[] = [
+  { titleKey: 'activeRequest.timeline.problemType.title', subtitleKey: 'activeRequest.timeline.problemType.subtitle', Icon: Car },
+  { titleKey: 'activeRequest.timeline.details.title', subtitleKey: 'activeRequest.timeline.details.subtitle', Icon: ClipboardText },
+  { titleKey: 'activeRequest.timeline.location.title', subtitleKey: 'activeRequest.timeline.location.subtitle', Icon: MapPin },
+  { titleKey: 'activeRequest.timeline.findingHelper.title', subtitleKey: 'activeRequest.timeline.findingHelper.subtitle', Icon: UserFocus }
+]
+const ROAD_ROW_HEIGHT = 84
+const ROAD_WIDTH = 56
+
+// A gentle S-curve winding behind the step markers - purely decorative, an
+// illustrated stand-in for "the road to finding your helper" rather than a
+// literal progress bar (MissionTimeline already covers real mission
+// progress once a helper is matched).
+function buildRoadPath() {
+  const total = ROAD_ROW_HEIGHT * ROAD_STEPS.length
+  let d = `M${ROAD_WIDTH / 2},0`
+  for (let i = 0; i < ROAD_STEPS.length; i++) {
+    const midY = ROAD_ROW_HEIGHT * i + ROAD_ROW_HEIGHT / 2
+    const nextY = ROAD_ROW_HEIGHT * (i + 1)
+    const controlX = i % 2 === 0 ? ROAD_WIDTH * 0.1 : ROAD_WIDTH * 0.9
+    d += ` Q${controlX},${midY} ${ROAD_WIDTH / 2},${nextY}`
+  }
+  return { d, total }
+}
+
+function RoadTimeline({ activeIndex }: { activeIndex: number }) {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { t } = useTranslation()
+  const { d, total } = buildRoadPath()
+
+  return (
+    <View style={[styles.roadRow, dirStyles(isRTL).row]}>
+      <View style={styles.roadSteps}>
+        {ROAD_STEPS.map((step, index) => {
+          const done = index < activeIndex
+          const active = index === activeIndex
+          const Icon = step.Icon
+          return (
+            <View key={step.titleKey} style={[styles.roadStepCard, { backgroundColor: active ? theme.colors.primarySoft : 'transparent' }]}>
+              <View style={[styles.roadStepBadge, { backgroundColor: done ? theme.colors.communitySoft : active ? theme.colors.primary : theme.colors.surfaceMuted, borderColor: theme.colors.border }]}>
+                {done ? <CheckCircle size={18} color={theme.colors.community} weight="fill" /> : <Icon size={18} color={active ? theme.colors.onPrimary : theme.colors.textMuted} weight={active ? 'fill' : 'regular'} />}
+              </View>
+              <View style={styles.roadStepText}>
+                <Text style={[typography.bodyMedium, { color: active ? theme.colors.primary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(step.titleKey)}</Text>
+                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t(step.subtitleKey)}</Text>
+              </View>
+            </View>
+          )
+        })}
+      </View>
+      <View style={[styles.roadColumn, { height: total }]}>
+        <Svg width={ROAD_WIDTH} height={total} style={StyleSheet.absoluteFill}>
+          <Path d={d} stroke={theme.colors.border} strokeWidth={4} strokeDasharray="2,10" strokeLinecap="round" fill="none" />
+        </Svg>
+        <Tree size={20} color={theme.colors.community} weight="fill" style={[styles.roadTree, { top: ROAD_ROW_HEIGHT * 0.5 - 10 }]} />
+        <Buildings size={22} color={theme.colors.textMuted} style={[styles.roadBuildings, { top: ROAD_ROW_HEIGHT * 2.5 - 11 }]} />
+        <View style={[styles.roadCar, { top: ROAD_ROW_HEIGHT * activeIndex + ROAD_ROW_HEIGHT / 2 - 14, backgroundColor: theme.colors.primary }]}>
+          <Car size={16} color={theme.colors.onPrimary} weight="fill" />
+        </View>
+      </View>
+    </View>
+  )
+}
+
 function RequesterMissionView({ mission }: { mission: Mission }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
@@ -144,6 +262,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
   const [confirmingCancel, setConfirmingCancel] = useState(false)
   const [respondingToCompletion, setRespondingToCompletion] = useState(false)
   const [justReleased, setJustReleased] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const prevRef = useRef<{ status: MissionStatus; helperId: string | null } | null>(null)
   const volunteerCount = useQuery({
     queryKey: mission.helper_id ? ['volunteer-completed-count', mission.helper_id] : ['volunteer-completed-count'],
@@ -182,6 +301,11 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
     } catch (cause: any) { toast.show(translateActionError(t, cause), 'error') } finally { setRespondingToCompletion(false) }
   }
 
+  async function refreshStatus() {
+    setRefreshing(true)
+    try { await queryClient.invalidateQueries({ queryKey: queryKeys.mission(mission.id) }) } finally { setRefreshing(false) }
+  }
+
   const finished = mission.status === 'completed' || mission.status === 'cancelled'
   const searching = mission.status === 'matching'
   const awaitingConfirmation = mission.status === 'awaiting_confirmation'
@@ -190,77 +314,86 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
   const elapsedSince = searching ? mission.created_at : mission.accepted_at ?? mission.created_at
   const subtitle = searching ? t('activeRequest.subtitleSearching') : mission.status === 'completed' ? t('activeRequest.subtitleCompleted') : awaitingConfirmation ? t('activeRequest.subtitleAwaitingConfirmation') : t('activeRequest.subtitleTracking')
 
+  if (mission.status === 'completed') {
+    return (
+      <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
+        <CompletedHeader title={t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)} subtitle={subtitle} />
+        <Button label={t('activeRequest.backToHome')} onPress={() => router.replace('/(tabs)')} />
+      </SafeAreaView>
+    )
+  }
+
   return (
-    <SafeAreaView style={styles.fill}>
-      <MissionHero
-        latitude={mission.request?.latitude ?? 31.7784}
-        longitude={mission.request?.longitude ?? 35.2066}
-        searching={searching}
-        onBack={() => router.replace('/(tabs)')}
-        header={mission.status === 'completed' ? (
-          <CompletedHeader title={t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)} subtitle={subtitle} />
+    <AppScreen
+      header={<ScreenHeader title="" back onBack={() => router.replace('/(tabs)')} />}
+      footer={
+        confirmingCancel ? (
+          <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
+            <Button label={t('activeRequest.cancelBack')} variant="outline" style={styles.confirmButton} onPress={() => setConfirmingCancel(false)} />
+            <Button label={t('activeRequest.cancelConfirm')} variant="danger" style={styles.confirmButton} loading={busy} onPress={cancel} />
+          </View>
+        ) : finished ? (
+          <Button label={t('activeRequest.backToHome')} onPress={() => router.replace('/(tabs)')} />
+        ) : searching ? (
+          <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
+            <Button label={t('activeRequest.cancel')} variant="outline" style={styles.confirmButton} onPress={cancel} />
+            <Button label={t('activeRequest.updateStatus')} variant="outline" leading={<ArrowClockwise size={16} color={theme.colors.primary} />} loading={refreshing} style={styles.confirmButton} onPress={refreshStatus} />
+          </View>
         ) : (
-          <>
-            <Text style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)}</Text>
-            <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{subtitle}</Text>
-            {showTimeline ? <View style={styles.timelineWrap}><MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /></View> : null}
-          </>
-        )}
-      />
+          <Button label={t('activeRequest.updateStatus')} variant="outline" leading={<ArrowClockwise size={16} color={theme.colors.primary} />} loading={refreshing} onPress={refreshStatus} />
+        )
+      }
+    >
+      <Text style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.title')}</Text>
+      <Text style={[typography.body, styles.centerText, { color: theme.colors.textSecondary }]}>{subtitle}</Text>
 
-      <View style={[styles.sheet, { backgroundColor: theme.colors.surface }]}>
-        <ScrollView contentContainerStyle={styles.sheetContent} showsVerticalScrollIndicator={false}>
-          {justReleased && searching ? (
-            <Card tone="default" elevation="none" title={t('activeRequest.releasedNotice.title')} subtitle={t('activeRequest.releasedNotice.message')} />
-          ) : null}
+      <MapPanel latitude={mission.request?.latitude ?? 31.7784} longitude={mission.request?.longitude ?? 35.2066} height={200} interactive={false} overlay={null} />
 
-          {awaitingConfirmation ? (
-            <Card tone="primary" elevation="none">
-              <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.confirmPrompt')}</Text>
-              <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
-                <Button label={t('activeRequest.confirmReject')} variant="outline" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(false)} />
-                <Button label={t('activeRequest.confirmAccept')} variant="community" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(true)} />
-              </View>
-            </Card>
-          ) : null}
+      {justReleased && searching ? (
+        <Card tone="default" elevation="none" title={t('activeRequest.releasedNotice.title')} subtitle={t('activeRequest.releasedNotice.message')} />
+      ) : null}
 
-          {other.data ? (
-            <Card
-              title={other.data.full_name || t('activeRequest.defaultVolunteerName')}
-              subtitle={t('points.completedCount', { count: volunteerCount.data ?? 0 })}
-              leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="community" />}
-              trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
-            >
-              {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
-            </Card>
-          ) : null}
+      {searching ? (
+        <>
+          <SearchingCard />
+          <RoadTimeline activeIndex={3} />
+        </>
+      ) : (
+        <>
+          <Text style={[typography.h2, styles.centerText, { color: theme.colors.textPrimary }]}>{t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)}</Text>
+          {showTimeline ? <MissionTimeline steps={TIMELINE.map(step => ({ key: step.status, label: t(step.labelKey) }))} activeIndex={timelineIndex} /> : null}
+        </>
+      )}
 
-          <Card title={t('activeRequest.requestId')} subtitle={mission.id.slice(0, 8).toUpperCase()}>
-            {!finished ? (
-              <View style={styles.elapsedRow}>
-                <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{searching ? t('activeRequest.waitingSince') : t('activeRequest.volunteerSince')}</Text>
-                <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{formatElapsed(now - new Date(elapsedSince).getTime(), t)}</Text>
-              </View>
-            ) : null}
-          </Card>
+      {!finished ? (
+        <Text style={[typography.caption, styles.centerText, { color: theme.colors.textMuted }]}>
+          {searching ? t('activeRequest.waitingSince') : t('activeRequest.volunteerSince')} {formatElapsed(now - new Date(elapsedSince).getTime(), t)}
+        </Text>
+      ) : null}
 
-          {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+      {awaitingConfirmation ? (
+        <Card tone="primary" elevation="none">
+          <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.confirmPrompt')}</Text>
+          <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
+            <Button label={t('activeRequest.confirmReject')} variant="outline" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(false)} />
+            <Button label={t('activeRequest.confirmAccept')} variant="community" style={styles.confirmButton} loading={respondingToCompletion} onPress={() => respond(true)} />
+          </View>
+        </Card>
+      ) : null}
 
-          {finished ? <Button label={t('activeRequest.backToHome')} onPress={() => router.replace('/(tabs)')} /> : null}
+      {other.data ? (
+        <Card
+          title={other.data.full_name || t('activeRequest.defaultVolunteerName')}
+          subtitle={t('points.completedCount', { count: volunteerCount.data ?? 0 })}
+          leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="community" />}
+          trailing={<VolunteerActivityBadge completedCount={volunteerCount.data ?? 0} />}
+        >
+          {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
+        </Card>
+      ) : null}
 
-          {searching ? (
-            confirmingCancel ? (
-              <View style={[styles.confirmRow, dirStyles(isRTL).row]}>
-                <Button label={t('activeRequest.cancelBack')} variant="outline" style={styles.confirmButton} onPress={() => setConfirmingCancel(false)} />
-                <Button label={t('activeRequest.cancelConfirm')} variant="danger" style={styles.confirmButton} loading={busy} onPress={cancel} />
-              </View>
-            ) : (
-              <Button label={t('activeRequest.cancel')} variant="outline" onPress={cancel} />
-            )
-          ) : null}
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+      {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+    </AppScreen>
   )
 }
 
@@ -464,10 +597,25 @@ const styles = StyleSheet.create({
   sheet: { flex: 1, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, marginTop: -radius.md, zIndex: 1 },
   sheetContent: { padding: space.xl, paddingTop: space.xxl, gap: space.md },
 
-  elapsedRow: { gap: 2 },
   photo: { width: '100%', height: 160, borderRadius: radius.md },
   confirmRow: { gap: space.sm },
   confirmButton: { flex: 1 },
+
+  searchingCard: { alignItems: 'center', gap: space.sm, padding: space.xl, borderRadius: radius.lg, borderWidth: 1 },
+  searchingIconWrap: { width: 88, height: 88, alignItems: 'center', justifyContent: 'center', marginBottom: space.xs },
+  searchingRing: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: 44 },
+  searchingCore: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  searchingNotice: { marginTop: space.sm, borderRadius: radius.pill, paddingVertical: 8, paddingHorizontal: space.lg },
+
+  roadRow: { gap: space.sm },
+  roadSteps: { flex: 1, gap: 0 },
+  roadStepCard: { flexDirection: 'row', alignItems: 'center', gap: space.md, height: ROAD_ROW_HEIGHT, borderRadius: radius.md, paddingHorizontal: space.sm },
+  roadStepBadge: { width: 36, height: 36, borderRadius: radius.pill, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  roadStepText: { flex: 1, gap: 1 },
+  roadColumn: { width: ROAD_WIDTH },
+  roadTree: { position: 'absolute', left: 4 },
+  roadBuildings: { position: 'absolute', right: 2 },
+  roadCar: { position: 'absolute', left: ROAD_WIDTH / 2 - 14, width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
 
   reasonRow: { flexWrap: 'wrap', gap: space.sm },
   reasonChip: { borderWidth: 1, borderRadius: radius.pill, paddingVertical: 8, paddingHorizontal: space.md },

@@ -206,10 +206,22 @@
       "cancelled": "Request cancelled"
     },
     "title": "Help Request",
-    "subtitleSearching": "Anyone nearby and available can see and accept your request.",
+    "subtitleSearching": "We've arranged your request and are looking for the closest person to help",
     "subtitleCompleted": "Thank you for using AKHOO ❤️",
     "subtitleAwaitingConfirmation": "They say they've finished helping — confirm it actually reached you.",
     "subtitleTracking": "The request status updates live between you and whoever's helping.",
+    "searchingCard": {
+      "title": "Finding a helper",
+      "subtitle": "We're now searching for the closest suitable person near you",
+      "notice": "You'll be notified as soon as the request is accepted"
+    },
+    "timeline": {
+      "problemType": { "title": "Problem Type", "subtitle": "Problem type has been set" },
+      "details": { "title": "Details", "subtitle": "Problem details have been added" },
+      "location": { "title": "Location", "subtitle": "Your location has been set on the map" },
+      "findingHelper": { "title": "Finding a Helper", "subtitle": "We're searching for the closest helper for you" }
+    },
+    "updateStatus": "Update Status",
     "releasedNotice": {
       "title": "The previous helper could no longer complete this",
       "message": "We're looking for someone else nearby."
@@ -217,7 +229,6 @@
     "confirmPrompt": "Did the help actually happen?",
     "confirmAccept": "Yes, help was completed",
     "confirmReject": "Help wasn't completed",
-    "requestId": "Request ID",
     "waitingSince": "Waiting since",
     "volunteerSince": "Helping you since",
     "volunteerLabel": "Helper",
