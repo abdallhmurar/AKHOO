@@ -33,6 +33,7 @@ export function SanadMap({
   markers,
   selectedId,
   onMarkerPress,
+  onMapPress,
   interactive = false,
   style,
   ref
@@ -44,6 +45,7 @@ export function SanadMap({
   markers?: SanadMapMarker[]
   selectedId?: string | null
   onMarkerPress?: (id: string) => void
+  onMapPress?: (point: SanadMapPoint) => void
   interactive?: boolean
   style?: StyleProp<ViewStyle>
   ref?: React.Ref<SanadMapRef>
@@ -55,9 +57,11 @@ export function SanadMap({
   const markerRef = useRef<Marker | null>(null)
   const requestMarkersRef = useRef<Map<string, Marker>>(new Map())
   const onMarkerPressRef = useRef(onMarkerPress)
+  const onMapPressRef = useRef(onMapPress)
   const mounted = useRef(false)
   const [styleLoaded, setStyleLoaded] = useState(false)
   onMarkerPressRef.current = onMarkerPress
+  onMapPressRef.current = onMapPress
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -85,6 +89,7 @@ export function SanadMap({
       setStyleLoaded(true)
     }
     map.on('load', reveal)
+    map.on('click', event => { onMapPressRef.current?.({ latitude: event.lngLat.lat, longitude: event.lngLat.lng }) })
     map.on('error', event => {
       if (__DEV__) console.warn('[SanadMap] MapLibre error:', event.error)
       reveal()

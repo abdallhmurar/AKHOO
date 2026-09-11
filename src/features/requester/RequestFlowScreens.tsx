@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, ArrowRight, BatteryWarning, GasPump, HandHeart, Images, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowRight, BatteryWarning, CheckCircle, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
+import { searchAddress, reverseGeocode } from '../../lib/geocoding'
+import type { GeocodeResult } from '../../lib/geocoding'
+import { MAP_FALLBACK_CENTER } from '../../lib/mapProvider'
 import { resolveRequestHelpBack } from '../../lib/backNavigation'
 import type { RequestHelpStep } from '../../lib/backNavigation'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -14,8 +17,8 @@ import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
-import { AppScreen, MapPanel, ProgressHeader, ScreenHeader } from '../../components/v2'
-import { Button, TextArea } from '../../components/ui'
+import { AppScreen, MapPanel, ScreenHeader } from '../../components/v2'
+import { Button, TextArea, TextField } from '../../components/ui'
 import type { ServiceType } from '../../types'
 
 type Locale = 'ar' | 'he' | 'en'
@@ -69,6 +72,14 @@ const SERVICE_SUMMARY: Partial<Record<ServiceType, { labelKey: string; Icon: typ
   tire: { labelKey: 'request.tire', Icon: Tire }
 }
 
+// Safety-tip banner shown at the end of the location step, same per-locale
+// baked-in-text illustration pattern as the service banners above.
+const LOCATION_BANNER_BY_LOCALE: Record<Locale, number> = {
+  ar: require('../../../assets/images/service-location-ar.png'),
+  he: require('../../../assets/images/service-location-he.png'),
+  en: require('../../../assets/images/service-location-en.png')
+}
+
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
@@ -97,17 +108,59 @@ export function RequestFlowScreen() {
   const [loading, setLoading] = useState(false)
   const [pilotZones, setPilotZones] = useState<PilotZone[]>([])
 
+  // A manually-picked location takes over from the GPS-detected one -
+  // they're mutually exclusive, never merged, so submit() and the pilot
+  // zone check only ever need to look at one point: activeCoords.
+  const [manualLocation, setManualLocation] = useState<{ latitude: number; longitude: number; address: string | null } | null>(null)
+  const [locationAddress, setLocationAddress] = useState<string | null>(null)
+  const [resolvingAddress, setResolvingAddress] = useState(false)
+
+  const [manualLocationOpen, setManualLocationOpen] = useState(false)
+  const [pickerPoint, setPickerPoint] = useState<{ latitude: number; longitude: number } | null>(null)
+  const [pickerAddress, setPickerAddress] = useState<string | null>(null)
+  const [pickerResolvingAddress, setPickerResolvingAddress] = useState(false)
+  const [pickerQuery, setPickerQuery] = useState('')
+  const [pickerResults, setPickerResults] = useState<GeocodeResult[]>([])
+  const [pickerSearching, setPickerSearching] = useState(false)
+
   const stepIndex = STEPS.indexOf(step)
-  const stepTitles: Record<RequestHelpStep, string> = { type: t('request.step.type.title'), details: t('request.step.details.title'), location: t('request.step.location.title') }
-  const stepSubtitles: Record<RequestHelpStep, string> = { type: t('request.step.type.subtitle'), details: t('request.step.details.subtitle'), location: t('request.step.location.subtitle') }
-  const outsideZone = !!coords && pilotZones.length > 0 && !isWithinAnyZone(coords.latitude, coords.longitude, pilotZones)
+  const activeCoords = manualLocation ?? coords
+  const outsideZone = !!activeCoords && pilotZones.length > 0 && !isWithinAnyZone(activeCoords.latitude, activeCoords.longitude, pilotZones)
   const selectedSummary = service ? SERVICE_SUMMARY[service] : undefined
 
   useEffect(() => { getActivePilotZones().then(setPilotZones).catch(() => {}) }, [])
 
+  useEffect(() => {
+    if (!activeCoords) { setLocationAddress(null); return }
+    if (manualLocation?.address) { setLocationAddress(manualLocation.address); return }
+    let cancelled = false
+    setResolvingAddress(true)
+    reverseGeocode(activeCoords.latitude, activeCoords.longitude).then(address => {
+      if (!cancelled) { setLocationAddress(address); setResolvingAddress(false) }
+    })
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCoords?.latitude, activeCoords?.longitude, manualLocation?.address])
+
+  useEffect(() => {
+    if (!manualLocationOpen) return
+    const query = pickerQuery.trim()
+    if (query.length < 3) { setPickerResults([]); return }
+    const controller = new AbortController()
+    const timeout = setTimeout(() => {
+      setPickerSearching(true)
+      searchAddress(query, controller.signal)
+        .then(setPickerResults)
+        .catch(() => {})
+        .finally(() => setPickerSearching(false))
+    }, 500)
+    return () => { clearTimeout(timeout); controller.abort() }
+  }, [pickerQuery, manualLocationOpen])
+
   async function fetchLocation() {
     setLocating(true)
     setLocationError(null)
+    setManualLocation(null)
     try {
       setCoords(await getCurrentCoords())
     } catch (error: any) {
@@ -115,6 +168,37 @@ export function RequestFlowScreen() {
     } finally {
       setLocating(false)
     }
+  }
+
+  function openManualLocationPicker() {
+    const seed = manualLocation ?? activeCoords ?? MAP_FALLBACK_CENTER
+    setPickerPoint(seed)
+    setPickerAddress(manualLocation?.address ?? locationAddress)
+    setPickerQuery('')
+    setPickerResults([])
+    setManualLocationOpen(true)
+  }
+
+  async function handlePickerMapPress(point: { latitude: number; longitude: number }) {
+    setPickerPoint(point)
+    setPickerAddress(null)
+    setPickerResolvingAddress(true)
+    const address = await reverseGeocode(point.latitude, point.longitude)
+    setPickerAddress(address)
+    setPickerResolvingAddress(false)
+  }
+
+  function selectSearchResult(result: GeocodeResult) {
+    setPickerPoint({ latitude: result.latitude, longitude: result.longitude })
+    setPickerAddress(result.label)
+    setPickerQuery(result.label)
+    setPickerResults([])
+  }
+
+  function confirmManualLocation() {
+    if (!pickerPoint) return
+    setManualLocation({ ...pickerPoint, address: pickerAddress })
+    setManualLocationOpen(false)
   }
 
   function goToStep(next: RequestHelpStep) {
@@ -159,7 +243,7 @@ export function RequestFlowScreen() {
   }
 
   async function submit() {
-    if (!service || !coords || outsideZone) return
+    if (!service || !activeCoords || outsideZone) return
     setLoading(true)
     try {
       let photoUrl: string | null = null
@@ -175,8 +259,8 @@ export function RequestFlowScreen() {
         requester_id: userId,
         service_type: service,
         note: note.trim() || null,
-        latitude: coords.latitude,
-        longitude: coords.longitude,
+        latitude: activeCoords.latitude,
+        longitude: activeCoords.longitude,
         photo_url: photoUrl
       }).select('id').single()
       if (error) throw error
@@ -218,20 +302,57 @@ export function RequestFlowScreen() {
     return nodes
   }
 
+  if (manualLocationOpen) {
+    return (
+      <AppScreen
+        header={<ScreenHeader title={t('request.location.addManualButton')} back onBack={() => setManualLocationOpen(false)} />}
+        footer={<Button label={t('request.location.confirmButton')} onPress={confirmManualLocation} disabled={!pickerPoint} />}
+      >
+        <TextField
+          value={pickerQuery}
+          onChangeText={setPickerQuery}
+          placeholder={t('request.location.searchPlaceholder')}
+          autoFocus
+        />
+        {pickerSearching ? (
+          <ActivityIndicator color={theme.colors.primary} />
+        ) : pickerResults.length > 0 ? (
+          <View style={[styles.searchResultsList, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+            {pickerResults.map((result, index) => (
+              <Pressable
+                key={`${result.latitude},${result.longitude}`}
+                onPress={() => selectSearchResult(result)}
+                style={[styles.searchResultRow, dirStyles(isRTL).row, index > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.border }]}
+              >
+                <MapPin size={16} color={theme.colors.textMuted} />
+                <Text numberOfLines={2} style={[typography.small, styles.searchResultLabel, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{result.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : pickerQuery.trim().length >= 3 ? (
+          <Text style={[typography.small, { color: theme.colors.textMuted, textAlign: 'center' }]}>{t('request.location.noResults')}</Text>
+        ) : null}
+
+        {pickerPoint ? (
+          <MapPanel latitude={pickerPoint.latitude} longitude={pickerPoint.longitude} height={280} interactive overlay={null} onMapPress={handlePickerMapPress} />
+        ) : null}
+        <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>{t('request.location.tapMapHint')}</Text>
+        <Text style={[typography.smallMedium, { color: theme.colors.textPrimary, textAlign: 'center' }]}>
+          {pickerResolvingAddress ? t('request.location.resolvingAddress') : pickerAddress}
+        </Text>
+      </AppScreen>
+    )
+  }
+
   return (
     <AppScreen
-      scroll={step !== 'location'}
-      header={step === 'type' || step === 'details'
-        ? <ScreenHeader title="" back onBack={back} />
-        : <ScreenHeader title={stepTitles[step]} subtitle={stepSubtitles[step]} back onBack={back} />}
+      header={<ScreenHeader title="" back onBack={back} />}
       footer={step === 'location'
-        ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!coords || outsideZone} />
+        ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!activeCoords || outsideZone} />
         : step === 'details'
           ? <Button label={t('common.next')} trailing={<ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />
           : <Button label={t('common.next')} onPress={next} />}
     >
-      {step === 'location' ? <ProgressHeader step={stepIndex + 1} total={STEPS.length} label={stepTitles[step]} /> : null}
-
       {step === 'type' ? (
         <>
           <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
@@ -296,39 +417,60 @@ export function RequestFlowScreen() {
       ) : null}
 
       {step === 'location' ? (
-        locating ? (
-          <View style={styles.locationState}>
-            <ActivityIndicator color={theme.colors.primary} />
-            <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('request.locating')}</Text>
-          </View>
-        ) : locationError ? (
-          <View style={styles.locationState}>
-            <Text style={[typography.smallMedium, { color: theme.colors.danger, textAlign: 'center' }]}>{locationError}</Text>
-            <Button label={t('request.retryLocation')} variant="outline" onPress={fetchLocation} />
-          </View>
-        ) : coords && outsideZone ? (
-          <View style={styles.locationState}>
-            <Warning size={32} color={theme.colors.reward} weight="fill" />
-            <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.pilotZone.title')}</Text>
-            <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('request.pilotZone.message')}</Text>
-            <Button label={t('request.retryLocation')} variant="outline" onPress={fetchLocation} />
-          </View>
-        ) : coords ? (
-          <MapPanel
-            latitude={coords.latitude}
-            longitude={coords.longitude}
-            height={300}
-            overlay={
-              <View style={[styles.locationOverlay, dirStyles(isRTL).row]}>
-                <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.currentLocation')}</Text>
-                <Pressable onPress={fetchLocation} style={[styles.refreshRow, dirStyles(isRTL).row]}>
-                  <ArrowClockwise size={14} color={theme.colors.primary} />
-                  <Text style={[typography.caption, { color: theme.colors.primary }]}>{t('request.refreshLocation')}</Text>
-                </Pressable>
+        <View style={styles.detailsGroup}>
+          <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.step.location.title')}</Text>
+          <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('request.step.location.subtitle')}</Text>
+
+          <View style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
+          <Text style={[typography.small, styles.stepOfText, { color: theme.colors.textSecondary, textAlign: 'center' }]}>
+            {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
+          </Text>
+
+          {locating ? (
+            <View style={styles.locationState}>
+              <ActivityIndicator color={theme.colors.primary} />
+              <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('request.locating')}</Text>
+            </View>
+          ) : locationError ? (
+            <View style={styles.locationState}>
+              <Text style={[typography.smallMedium, { color: theme.colors.danger, textAlign: 'center' }]}>{locationError}</Text>
+              <Button label={t('request.retryLocation')} variant="outline" onPress={fetchLocation} />
+            </View>
+          ) : activeCoords && outsideZone ? (
+            <View style={styles.locationState}>
+              <Warning size={32} color={theme.colors.reward} weight="fill" />
+              <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.pilotZone.title')}</Text>
+              <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('request.pilotZone.message')}</Text>
+              <Button label={t('request.retryLocation')} variant="outline" onPress={fetchLocation} />
+            </View>
+          ) : activeCoords ? (
+            <>
+              <MapPanel latitude={activeCoords.latitude} longitude={activeCoords.longitude} height={260} overlay={null} />
+
+              <View style={[styles.summaryCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
+                  <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.location.selectedLabel')}</Text>
+                  <MapPin size={16} color={theme.colors.textMuted} />
+                </View>
+                <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
+                  <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{manualLocation ? t('request.location.manualValue') : t('request.currentLocation')}</Text>
+                  <CheckCircle size={18} color={theme.colors.community} weight="fill" />
+                </View>
+                <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                  {resolvingAddress ? t('request.location.resolvingAddress') : (locationAddress ?? '')}
+                </Text>
+                <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.location.privacyNote')}</Text>
               </View>
-            }
-          />
-        ) : null
+
+              <View style={[styles.locationActionsRow, dirStyles(isRTL).row]}>
+                <Button label={t('request.refreshLocation')} variant="outline" leading={<ArrowClockwise size={16} color={theme.colors.primary} />} onPress={fetchLocation} style={styles.locationActionButton} />
+                <Button label={t('request.location.addManualButton')} variant="outline" leading={<MapPin size={16} color={theme.colors.primary} />} onPress={openManualLocationPicker} style={styles.locationActionButton} />
+              </View>
+            </>
+          ) : null}
+
+          <Image source={LOCATION_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+        </View>
       ) : null}
     </AppScreen>
   )
@@ -359,6 +501,9 @@ const styles = StyleSheet.create({
   photoSubtitle: { textAlign: 'center' },
   photoPreview: { width: '100%', height: 170 },
   locationState: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
-  locationOverlay: { flex: 1, justifyContent: 'space-between', alignItems: 'center' },
-  refreshRow: { alignItems: 'center', gap: 5 }
+  locationActionsRow: { gap: space.sm },
+  locationActionButton: { flex: 1 },
+  searchResultsList: { borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden' },
+  searchResultRow: { alignItems: 'center', gap: space.sm, padding: space.md },
+  searchResultLabel: { flex: 1 }
 })

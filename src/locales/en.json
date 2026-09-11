@@ -164,7 +164,18 @@
         "addPhotoTitle": "Add a photo of the problem",
         "addPhotoSubtitle": "Optional, but helps the helper understand the situation faster"
       },
-      "location": { "title": "Location", "subtitle": "We'll share your current location with whoever takes your request." }
+      "location": { "title": "Set Your Location", "subtitle": "Your current location helps the helper reach you quickly" }
+    },
+    "location": {
+      "selectedLabel": "Selected Location",
+      "manualValue": "Manually added location",
+      "privacyNote": "This location will only be shared with your helper",
+      "resolvingAddress": "Resolving address...",
+      "addManualButton": "Add Manual Location",
+      "searchPlaceholder": "Search for an address...",
+      "tapMapHint": "Or tap the map to set the location",
+      "confirmButton": "Confirm Location",
+      "noResults": "No results found"
     },
     "noteLabel": "Note for whoever helps (optional)",
     "notePlaceholder": "e.g. The rear tire is flat and the car is stopped on the side of the road.",

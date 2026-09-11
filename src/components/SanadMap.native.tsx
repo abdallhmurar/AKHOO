@@ -22,6 +22,7 @@ export function SanadMap({
   markers,
   selectedId,
   onMarkerPress,
+  onMapPress,
   interactive = false,
   style,
   ref
@@ -33,6 +34,7 @@ export function SanadMap({
   markers?: SanadMapMarker[]
   selectedId?: string | null
   onMarkerPress?: (id: string) => void
+  onMapPress?: (point: SanadMapPoint) => void
   interactive?: boolean
   style?: StyleProp<ViewStyle>
   ref?: React.Ref<SanadMapRef>
@@ -91,6 +93,10 @@ export function SanadMap({
         doubleTapZoom={interactive}
         onDidFinishLoadingMap={() => setStyleLoaded(true)}
         onDidFailLoadingMap={() => setStyleLoaded(true)}
+        onPress={onMapPress ? event => {
+          const [lng, lat] = event.nativeEvent.lngLat
+          onMapPress({ latitude: lat, longitude: lng })
+        } : undefined}
       >
         <Camera ref={cameraRef} initialViewState={{ center, zoom }} />
         <Marker lngLat={center}>

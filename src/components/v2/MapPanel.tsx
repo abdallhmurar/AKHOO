@@ -10,7 +10,7 @@ import { SanadMap } from '../SanadMap'
 import type { SanadMapMarker } from '../SanadMap.types'
 import { IconButton, StatusBadge } from '../ui'
 
-export function MapPanel({ latitude = 31.7784, longitude = 35.2066, markers = [], selectedId, onMarkerPress, height = 310, overlay, interactive = true }: { latitude?: number; longitude?: number; markers?: SanadMapMarker[]; selectedId?: string | null; onMarkerPress?: (id: string) => void; height?: number; overlay?: ReactNode; interactive?: boolean }) {
+export function MapPanel({ latitude = 31.7784, longitude = 35.2066, markers = [], selectedId, onMarkerPress, onMapPress, height = 310, overlay, interactive = true }: { latitude?: number; longitude?: number; markers?: SanadMapMarker[]; selectedId?: string | null; onMarkerPress?: (id: string) => void; onMapPress?: (point: { latitude: number; longitude: number }) => void; height?: number; overlay?: ReactNode; interactive?: boolean }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
@@ -19,10 +19,10 @@ export function MapPanel({ latitude = 31.7784, longitude = 35.2066, markers = []
   const tr = (ar: string, he: string, en: string) => language === 'en' ? en : language === 'he' ? he : ar
   return (
     <View style={[styles.wrap, shadow.soft, { height, borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceMuted }]}>
-      <SanadMap key={mapKey} latitude={latitude} longitude={longitude} zoom={13} interactive={interactive} markers={markers} selectedId={selectedId} onMarkerPress={onMarkerPress} style={styles.map} />
+      <SanadMap key={mapKey} latitude={latitude} longitude={longitude} zoom={13} interactive={interactive} markers={markers} selectedId={selectedId} onMarkerPress={onMarkerPress} onMapPress={onMapPress} style={styles.map} />
       <View style={[styles.top, isRTL ? styles.topRTL : styles.topLTR]}><StatusBadge label={tr('منطقة خدمة القدس', 'אזור השירות בירושלים', 'Jerusalem service area')} tone="success" dot /></View>
       <View style={[styles.controls, isRTL ? styles.controlsRTL : styles.controlsLTR]}><IconButton label={tr('إعادة توسيط الخريطة', 'מרכוז המפה מחדש', 'Recenter map')} icon={<Crosshair size={20} color={theme.colors.primary} />} onPress={() => setMapKey(value => value + 1)} /></View>
-      {overlay ? <View style={[styles.overlay, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>{overlay}</View> : (
+      {overlay !== undefined ? (overlay ? <View style={[styles.overlay, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>{overlay}</View> : null) : (
         <View style={[styles.overlay, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, ...dirStyles(isRTL).row }]}>
           <View style={[styles.overlayIcon, { backgroundColor: theme.colors.primarySoft }]}><MapPin size={18} color={theme.colors.primary} weight="fill" /></View>
           <View style={styles.overlayCopy}><Text style={[typography.smallMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{tr('موقعك التقريبي', 'המיקום המשוער שלך', 'Your approximate location')}</Text><Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{tr('يُشارك فقط أثناء طلب نشط', 'משותף רק במהלך בקשה פעילה', 'Shared only during an active request')}</Text></View>
