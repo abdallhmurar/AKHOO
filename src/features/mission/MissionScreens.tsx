@@ -30,6 +30,7 @@ import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
 import { AppScreen, MapPanel, MissionTimeline, ScreenHeader } from '../../components/v2'
 import { SanadMap } from '../../components/SanadMap'
+import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { SuccessCheckmark } from '../../components/SuccessCheckmark'
 import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
 
@@ -579,6 +580,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
               <Button
                 label={t(navigationApp === 'waze' ? 'volunteerJob.openInWaze' : 'volunteerJob.openInGoogleMaps')}
                 variant="outline"
+                leading={<NavigationAppIcon app={navigationApp} size={18} />}
                 onPress={() => Linking.openURL(directionsHref(mission.request?.latitude ?? 0, mission.request?.longitude ?? 0, navigationApp))}
               />
               <Button label={t('volunteerJob.onMyWay')} disabled={mission.status !== 'assigned' || busy} loading={busy && mission.status === 'assigned'} onPress={() => advance('on_the_way')} />

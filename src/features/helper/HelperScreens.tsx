@@ -27,6 +27,7 @@ import { queryKeys } from '../../services/queryKeys'
 import type { ServiceType } from '../../types'
 import { AppScreen, ScreenHeader, SectionHeading } from '../../components/v2'
 import { BottomSheet, Button, Card, IconButton, StatusBadge, useToast } from '../../components/ui'
+import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { SanadMap } from '../../components/SanadMap'
 import type { SanadMapRef } from '../../components/SanadMap.types'
 
@@ -266,7 +267,7 @@ export function HelperHomeScreen() {
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} /> : null}
             <View style={[styles.sheetActions, dirStyles(isRTL).row]}>
               <Pressable onPress={() => Linking.openURL(directionsHref(selectedRequest.latitude, selectedRequest.longitude, navigationApp))} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
-                <MapPin size={16} color={theme.colors.primary} />
+                <NavigationAppIcon app={navigationApp} size={16} />
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('volunteer.openExternal')}</Text>
               </Pressable>
               <Button label={t('volunteer.accept')} variant="community" loading={accepting} onPress={() => accept(selectedRequest)} style={styles.acceptButton} />

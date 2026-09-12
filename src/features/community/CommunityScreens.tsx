@@ -23,6 +23,7 @@ import { BusinessCard } from '../../components/BusinessCard'
 import { CategoryChipsRow } from '../../components/CategoryChipsRow'
 import { EmptyState } from '../../components/EmptyState'
 import { MembershipSheet } from '../../components/MembershipSheet'
+import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { OfferCard } from '../../components/OfferCard'
 import { PlusBadge } from '../../components/PlusBadge'
 import { PlusHeroCard } from '../../components/PlusHeroCard'
@@ -200,7 +201,7 @@ export function BusinessDetailScreen() {
         <View style={[styles.quickButtons, dirStyles(isRTL).row]}>
           {business.phone ? <Button fullWidth={false} label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
           {business.whatsapp ? <Button fullWidth={false} label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
-          {business.latitude != null && business.longitude != null ? <Button fullWidth={false} label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
+          {business.latitude != null && business.longitude != null ? <Button fullWidth={false} label={t('perks.business.directions')} variant="outline" leading={<NavigationAppIcon app={navigationApp} size={18} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
         </View>
       </Card>
 
@@ -303,7 +304,7 @@ export function OfferDetailScreen() {
       <BottomSheet visible={contactOpen} onClose={() => setContactOpen(false)} title={t('perks.offer.contactTitle')} subtitle={t('perks.offer.contactMessage')}>
         {business.phone ? <Button label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
         {business.whatsapp ? <Button label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
-        {business.latitude != null && business.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
+        {business.latitude != null && business.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<NavigationAppIcon app={navigationApp} size={18} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
       </BottomSheet>
     </AppScreen>
   )
