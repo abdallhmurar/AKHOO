@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
 import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
+import { getLastReadAt } from '../../lib/chatReadTracker'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -20,6 +21,8 @@ import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { missionRepository } from '../../repositories/missionRepository'
 import { profileRepository } from '../../repositories/profileRepository'
+import { messageRepository } from '../../repositories/messageRepository'
+import type { ChatMessage } from '../../repositories/messageRepository'
 import type { Mission, MissionStatus } from '../../repositories/domainTypes'
 import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
@@ -92,6 +95,37 @@ export function LiveMissionScreen() {
 function useOtherParty(mission: Mission, isRequester: boolean) {
   const otherId = isRequester ? mission.helper_id : mission.requester_id
   return useQuery({ queryKey: otherId ? queryKeys.profile(otherId) : ['participant'], queryFn: () => profileRepository.get(otherId!), enabled: !!otherId })
+}
+
+// Unread badge on the chat button - "unread" is tracked purely on-device
+// (chatReadTracker), refreshed on focus so coming back from the chat
+// screen clears it immediately, not just on the next poll.
+function useUnreadChatCount(requestId: string | undefined, currentUserId: string | undefined) {
+  const queryClient = useQueryClient()
+  const [lastReadAt, setLastReadAtState] = useState<string | null>(null)
+
+  const messagesQuery = useQuery({
+    queryKey: requestId ? queryKeys.missionMessages(requestId) : ['messages'],
+    queryFn: () => messageRepository.list(requestId!),
+    enabled: !!requestId
+  })
+
+  useEffect(() => {
+    if (!requestId) return
+    return messageRepository.subscribe(requestId, message => {
+      queryClient.setQueryData<ChatMessage[]>(queryKeys.missionMessages(requestId), current =>
+        current?.some(existing => existing.id === message.id) ? current : [...(current ?? []), message]
+      )
+    })
+  }, [requestId, queryClient])
+
+  useFocusEffect(useCallback(() => {
+    if (!requestId) { setLastReadAtState(null); return }
+    getLastReadAt(requestId).then(setLastReadAtState)
+  }, [requestId]))
+
+  if (!requestId || !currentUserId) return 0
+  return (messagesQuery.data ?? []).filter(message => message.sender_id !== currentUserId && (!lastReadAt || message.created_at > lastReadAt)).length
 }
 
 function MissionHero({ latitude, longitude, searching, header, onBack }: { latitude: number; longitude: number; searching: boolean; header: ReactNode; onBack: () => void }) {
@@ -258,6 +292,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
   const toast = useToast()
   const queryClient = useQueryClient()
   const other = useOtherParty(mission, true)
+  const unreadCount = useUnreadChatCount(other.data ? mission.request_id : undefined, mission.requester_id)
   const [now, setNow] = useState(Date.now())
   const [busy, setBusy] = useState(false)
   const [confirmingCancel, setConfirmingCancel] = useState(false)
@@ -391,7 +426,14 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
         >
           <View style={styles.contactActions}>
             {other.data.phone ? <Button label={t('activeRequest.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
-            <Button label={t('activeRequest.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+            <View style={styles.chatButtonWrap}>
+              <Button label={t('activeRequest.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+              {unreadCount > 0 ? (
+                <View style={[styles.unreadBadge, { [isRTL ? 'left' : 'right']: -6, backgroundColor: theme.colors.emergency, borderColor: theme.colors.surface }]}>
+                  <Text style={[typography.caption, styles.unreadBadgeText]}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+                </View>
+              ) : null}
+            </View>
             <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
               <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
               <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
@@ -419,6 +461,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
   const queryClient = useQueryClient()
   const { session } = useAuth()
   const other = useOtherParty(mission, false)
+  const unreadCount = useUnreadChatCount(other.data ? mission.request_id : undefined, mission.helper_id ?? undefined)
   const [busy, setBusy] = useState(false)
   const [confirmingRelease, setConfirmingRelease] = useState(false)
   const [releaseReason, setReleaseReason] = useState<ReleaseReason | null>(null)
@@ -502,7 +545,14 @@ function HelperMissionView({ mission }: { mission: Mission }) {
             <Card title={other.data.full_name || t('volunteerJob.defaultRequesterName')} subtitle={t('volunteerJob.requesterLabel')} leading={<Avatar name={other.data.full_name || 'AKHOO'} uri={other.data.avatar_url} size={52} tone="primary" />}>
               <View style={styles.contactActions}>
                 {other.data.phone ? <Button label={t('volunteerJob.callButton', { phone: other.data.phone })} variant="community" onPress={() => Linking.openURL(telHref(other.data!.phone!))} /> : null}
-                <Button label={t('volunteerJob.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+                <View style={styles.chatButtonWrap}>
+                  <Button label={t('volunteerJob.chatButton')} variant="primary" leading={<ChatCircleDots size={18} color={theme.colors.onPrimary} />} onPress={() => router.push({ pathname: '/mission/[missionId]/chat', params: { missionId: mission.id } })} />
+                  {unreadCount > 0 ? (
+                    <View style={[styles.unreadBadge, { [isRTL ? 'left' : 'right']: -6, backgroundColor: theme.colors.emergency, borderColor: theme.colors.surface }]}>
+                      <Text style={[typography.caption, styles.unreadBadgeText]}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+                    </View>
+                  ) : null}
+                </View>
                 <View style={[styles.chatCapabilityRow, dirStyles(isRTL).row]}>
                   <PaperPlaneTilt size={13} color={theme.colors.textMuted} />
                   <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('chat.capability.messages')}</Text>
@@ -622,6 +672,9 @@ const styles = StyleSheet.create({
 
   photo: { width: '100%', height: 160, borderRadius: radius.md },
   contactActions: { gap: space.sm },
+  chatButtonWrap: { position: 'relative' },
+  unreadBadge: { position: 'absolute', top: -6, minWidth: 20, height: 20, borderRadius: 10, borderWidth: 2, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
+  unreadBadgeText: { color: '#fff', fontSize: 11, lineHeight: 13 },
   chatCapabilityRow: { alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap', marginTop: 2 },
   confirmRow: { gap: space.sm },
   confirmButton: { flex: 1 },

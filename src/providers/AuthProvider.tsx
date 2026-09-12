@@ -6,6 +6,8 @@ import { authRepository, type OAuthProvider, type SignUpInput } from '../reposit
 import { profileRepository } from '../repositories/profileRepository'
 import { consumeAuthLink, signOutSafely } from '../services/authService'
 import { normalizeAppError, reportAppError, type AppError } from '../services/errors'
+import { getNotificationsEnabled } from '../lib/notificationPreference'
+import { registerForPushNotificationsAsync } from '../lib/notifications'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
 
@@ -56,6 +58,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setProfile(next)
       setStatus(next?.is_banned ? 'restricted' : 'signed-in')
       setError(null)
+      // Fire-and-forget: a general per-user push token (chat notifications
+      // need to reach a pure requester too, not just an available
+      // volunteer - see 0018_chat_push_notifications.sql). Never blocks
+      // sign-in on a permission prompt or a slow/failed token fetch.
+      if (next && !next.is_banned) {
+        getNotificationsEnabled()
+          .then(enabled => enabled ? registerForPushNotificationsAsync() : null)
+          .then(token => { if (token) return profileRepository.savePushToken(userId, token) })
+          .catch(() => {})
+      }
     } catch (cause) {
       if (!mounted.current) return
       setError(normalizeAppError(cause, { domain: 'auth', operation: 'load-profile' }))

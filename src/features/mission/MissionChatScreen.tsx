@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { ArrowLeft, ArrowRight, Camera, PaperPlaneTilt, X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
+import { setLastReadAt } from '../../lib/chatReadTracker'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { translateActionError } from '../../lib/rpcErrors'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
@@ -53,6 +54,13 @@ export function MissionChatScreen() {
     queryFn: () => messageRepository.list(row!.request_id),
     enabled: !!row?.request_id
   })
+
+  // Marks the request as read up to "now" whenever this screen has it open
+  // and messages are showing - covers both the initial open and any new
+  // message arriving live while the user is already looking at the chat.
+  useEffect(() => {
+    if (row?.request_id && messagesQuery.data) void setLastReadAt(row.request_id, new Date().toISOString())
+  }, [row?.request_id, messagesQuery.data])
 
   useEffect(() => {
     if (!row?.request_id) return

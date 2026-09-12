@@ -38,6 +38,17 @@ export const profileRepository = {
     return data as Profile
   },
 
+  // Separate from update() - push_token isn't part of the app-facing
+  // Profile shape (PROFILE_COLUMNS never selects it back), just a
+  // write-only destination for chat push notifications to reach a user
+  // who has never gone available as a volunteer (the only other place a
+  // push token gets stored is volunteer_profiles.push_token, written only
+  // when toggling availability).
+  async savePushToken(userId: string, token: string) {
+    const { error } = await supabase.from('profiles').update({ push_token: token }).eq('id', userId)
+    throwIfError(error, { domain: 'profile', operation: 'save-push-token' })
+  },
+
   async uploadAvatar(userId: string, uri: string) {
     const uploaded = await mediaService.upload({
       bucket: 'avatars',
