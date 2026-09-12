@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
@@ -23,6 +23,7 @@ import { missionRepository } from '../../repositories/missionRepository'
 import { profileRepository } from '../../repositories/profileRepository'
 import { messageRepository } from '../../repositories/messageRepository'
 import type { ChatMessage } from '../../repositories/messageRepository'
+import { ratingRepository } from '../../repositories/ratingRepository'
 import type { Mission, MissionStatus } from '../../repositories/domainTypes'
 import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
@@ -352,10 +353,12 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
 
   if (mission.status === 'completed') {
     return (
-      <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
-        <CompletedHeader title={t(`activeRequest.status.${STATUS_LABEL[mission.status]}`)} subtitle={subtitle} />
-        <Button label={t('activeRequest.backToHome')} onPress={() => router.replace('/(tabs)')} />
-      </SafeAreaView>
+      <RequesterCompletion
+        mission={mission}
+        volunteerName={other.data?.full_name ?? null}
+        onDone={() => router.replace('/(tabs)')}
+        onNewRequest={() => router.replace('/requester')}
+      />
     )
   }
 
@@ -605,16 +608,112 @@ function HelperMissionView({ mission }: { mission: Mission }) {
   )
 }
 
-function CompletedHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function SummaryRow({ label, value, isRTL, last }: { label: string; value: string; isRTL: boolean; last?: boolean }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
-  const { stageStyle } = useStaggeredReveal(2)
   return (
-    <>
-      <SuccessCheckmark tone="success" />
-      <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{title}</Animated.Text>
-      <Animated.Text style={[typography.small, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{subtitle}</Animated.Text>
-    </>
+    <View style={[styles.summaryRow, dirStyles(isRTL).row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.border }]}>
+      <Text style={[typography.small, { color: theme.colors.textMuted }]}>{label}</Text>
+      <Text numberOfLines={1} style={[typography.bodyMedium, { color: theme.colors.textPrimary }]}>{value}</Text>
+    </View>
+  )
+}
+
+// Real ending for a requester's mission (design brief: replace the mostly-
+// empty checkmark+title+button screen with a proper receipt-style close -
+// logo, bigger success moment, a summary card, a REAL star rating that
+// persists to mission_ratings (0019_mission_ratings.sql) rather than a fake
+// UI-only widget, and clearer next actions than "back to role selection".
+function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: { mission: Mission; volunteerName: string | null; onDone: () => void; onNewRequest: () => void }) {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { t } = useTranslation()
+  const { stageStyle } = useStaggeredReveal(5)
+  const [selectedStars, setSelectedStars] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+
+  const existingRating = useQuery({
+    queryKey: queryKeys.missionRating(mission.request_id),
+    queryFn: () => ratingRepository.getForRequest(mission.request_id),
+    enabled: !!mission.request_id
+  })
+
+  const alreadyRated = (existingRating.data ?? null) !== null
+  const showThanks = alreadyRated || submitted
+  const displayedStars = alreadyRated ? existingRating.data! : selectedStars
+
+  async function submitRating() {
+    if (!mission.helper_id || selectedStars === 0) return
+    setSubmitting(true)
+    try {
+      await ratingRepository.submit(mission.request_id, mission.requester_id, mission.helper_id, selectedStars)
+      setSubmitted(true)
+    } catch {
+      // Best-effort - a failed rating submit shouldn't block the requester
+      // from finishing this screen, there's nothing actionable to retry to.
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function shareApp() {
+    Share.share({ message: t('activeRequest.completion.shareMessage') }).catch(() => {})
+  }
+
+  const serviceKey = mission.request?.service_type === 'locked_car' ? 'lockedCar' : (mission.request?.service_type ?? 'other')
+  const startedAt = mission.accepted_at ?? mission.created_at
+  const durationMs = mission.completed_at ? new Date(mission.completed_at).getTime() - new Date(startedAt).getTime() : null
+
+  return (
+    <SafeAreaView style={[styles.fill, { backgroundColor: theme.colors.background }]}>
+      <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobTop, { backgroundColor: theme.colors.primarySoft }]} />
+      <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobBottom, { backgroundColor: theme.colors.communitySoft }]} />
+      <ScrollView contentContainerStyle={styles.completionScroll} showsVerticalScrollIndicator={false}>
+        <Image source={require('../../../assets/images/icon.png')} style={styles.completionLogo} resizeMode="contain" />
+        <SuccessCheckmark tone="success" />
+        <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('activeRequest.completion.title')}</Animated.Text>
+        <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('activeRequest.subtitleCompleted')}</Animated.Text>
+        <Animated.Text style={[typography.small, styles.centerText, stageStyle(1), { color: theme.colors.textMuted, marginTop: -space.sm }]}>{t('activeRequest.completion.subtitle2')}</Animated.Text>
+
+        <Animated.View style={[stageStyle(2), styles.fullWidth]}>
+          <Card elevation="none">
+            {volunteerName ? <SummaryRow label={t('activeRequest.completion.helperLabel')} value={volunteerName} isRTL={isRTL} /> : null}
+            <SummaryRow label={t('activeRequest.completion.serviceLabel')} value={t(`request.${serviceKey}`)} isRTL={isRTL} />
+            {durationMs !== null ? <SummaryRow label={t('activeRequest.completion.durationLabel')} value={formatElapsed(durationMs, t)} isRTL={isRTL} /> : null}
+            <SummaryRow label={t('activeRequest.completion.requestLabel')} value={`#${mission.id.slice(0, 6).toUpperCase()}`} isRTL={isRTL} last />
+          </Card>
+        </Animated.View>
+
+        <Animated.View style={[stageStyle(3), styles.fullWidth]}>
+          <Card tone="primary" elevation="none">
+            <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('activeRequest.completion.rateTitle')}</Text>
+            {!showThanks ? <Text style={[typography.caption, styles.centerText, { color: theme.colors.textSecondary, marginTop: 2 }]}>{t('activeRequest.completion.rateSubtitle')}</Text> : null}
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map(value => (
+                <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
+                  <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />
+                </Pressable>
+              ))}
+            </View>
+            {showThanks ? (
+              <Text style={[typography.smallMedium, styles.centerText, { color: theme.colors.primary }]}>{t('activeRequest.completion.rateThanks')}</Text>
+            ) : (
+              <Button label={t('activeRequest.completion.rateSubmit')} disabled={selectedStars === 0} loading={submitting} onPress={submitRating} />
+            )}
+          </Card>
+        </Animated.View>
+
+        <Animated.View style={[stageStyle(4), styles.completionActions]}>
+          <Button label={t('activeRequest.completion.backHome')} onPress={onDone} />
+          <Button label={t('activeRequest.completion.newRequest')} variant="outline" onPress={onNewRequest} />
+          <Pressable onPress={shareApp} style={styles.shareLink} accessibilityRole="button" accessibilityLabel={t('activeRequest.completion.shareApp')}>
+            <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'underline' }]}>{t('activeRequest.completion.shareApp')}</Text>
+          </Pressable>
+        </Animated.View>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
@@ -656,6 +755,16 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   center: { alignItems: 'center', justifyContent: 'center' },
   centerText: { textAlign: 'center' },
+  fullWidth: { width: '100%' },
+
+  completionScroll: { padding: space.xxl, paddingBottom: space.xxl, gap: space.md },
+  completionLogo: { width: 56, height: 56, alignSelf: 'center', marginBottom: space.xs },
+  completionBlob: { position: 'absolute', borderRadius: 999, alignSelf: 'center' },
+  completionBlobTop: { width: 260, height: 260, top: -130, opacity: 0.45 },
+  completionBlobBottom: { width: 320, height: 320, bottom: -170, opacity: 0.35 },
+  summaryRow: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: space.sm },
+  starsRow: { flexDirection: 'row', gap: space.sm, justifyContent: 'center', alignItems: 'center', marginVertical: space.xs },
+  shareLink: { alignSelf: 'center', marginTop: space.xs, padding: space.xs },
 
   mapArea: { height: 250 },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },

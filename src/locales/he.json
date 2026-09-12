@@ -244,6 +244,22 @@
       "minutes": "{{count}} דקות",
       "hours": "{{count}} שעות",
       "hoursAndMinutes": "{{hours}} שעות ו-{{minutes}} דקות"
+    },
+    "completion": {
+      "title": "העזרה הושלמה בהצלחה",
+      "subtitle2": "מאחלים לך דרך בטוחה תמיד",
+      "helperLabel": "שם המסייע/ת",
+      "serviceLabel": "סוג השירות",
+      "durationLabel": "משך העזרה",
+      "requestLabel": "מספר הבקשה",
+      "rateTitle": "איך הייתה החוויה שלך?",
+      "rateSubtitle": "המשוב שלך עוזר לנו לתת שירות טוב יותר",
+      "rateSubmit": "שליחת דירוג",
+      "rateThanks": "תודה על הדירוג! ⭐",
+      "backHome": "חזרה לדף הבית",
+      "newRequest": "בקשת עזרה חדשה",
+      "shareApp": "שיתוף האפליקציה",
+      "shareMessage": "תודה שאת/ה חלק מאחוו 🤝 הורד/י את האפליקציה: https://akhoo.vercel.app"
     }
   },
   "chat": {

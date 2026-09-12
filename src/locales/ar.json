@@ -244,6 +244,22 @@
       "minutes": "{{count}} دقيقة",
       "hours": "{{count}} ساعة",
       "hoursAndMinutes": "{{hours}} ساعة و{{minutes}} دقيقة"
+    },
+    "completion": {
+      "title": "تمت المساعدة بنجاح",
+      "subtitle2": "نتمنى لك طريقاً آمناً دائماً",
+      "helperLabel": "اسم المساعد",
+      "serviceLabel": "نوع الخدمة",
+      "durationLabel": "مدة المساعدة",
+      "requestLabel": "رقم الطلب",
+      "rateTitle": "كيف كانت تجربتك؟",
+      "rateSubtitle": "رأيك بساعدنا نقدّم خدمة أفضل دائماً",
+      "rateSubmit": "إرسال التقييم",
+      "rateThanks": "شكراً لتقييمك ⭐",
+      "backHome": "العودة للرئيسية",
+      "newRequest": "طلب مساعدة جديدة",
+      "shareApp": "مشاركة التطبيق",
+      "shareMessage": "شكراً لأنك جزء من أخوو 🤝 حمّل التطبيق: https://akhoo.vercel.app"
     }
   },
   "chat": {

@@ -244,6 +244,22 @@
       "minutes": "{{count}} min",
       "hours": "{{count}} hr",
       "hoursAndMinutes": "{{hours}} hr {{minutes}} min"
+    },
+    "completion": {
+      "title": "Help completed successfully",
+      "subtitle2": "Wishing you a safe road, always",
+      "helperLabel": "Helper name",
+      "serviceLabel": "Service type",
+      "durationLabel": "Time to help",
+      "requestLabel": "Request number",
+      "rateTitle": "How was your experience?",
+      "rateSubtitle": "Your feedback helps us give better service",
+      "rateSubmit": "Submit rating",
+      "rateThanks": "Thanks for rating! ⭐",
+      "backHome": "Back to home",
+      "newRequest": "New help request",
+      "shareApp": "Share the app",
+      "shareMessage": "Thanks for being part of AKHOO 🤝 Get the app: https://akhoo.vercel.app"
     }
   },
   "chat": {
