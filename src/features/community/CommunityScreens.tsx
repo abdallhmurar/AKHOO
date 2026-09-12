@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { businessCategoryIcons } from '../../lib/businessCategories'
 import { telHref, whatsappHref, directionsHref } from '../../lib/contactLinks'
+import { useNavigationApp } from '../../lib/navigationPreference'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../../lib/market'
 import { useMembership, resolveOfferUseAction } from '../../lib/membership'
 import { computeOfferPriceDisplay, formatPrice } from '../../lib/offerPricing'
@@ -173,6 +174,7 @@ export function BusinessDetailScreen() {
   const router = useRouter()
   const { businessId } = useLocalSearchParams<{ businessId: string }>()
   const query = useQuery({ queryKey: ['community', 'business', businessId], queryFn: () => loadBusinessDetail(String(businessId)), enabled: !!businessId })
+  const navigationApp = useNavigationApp()
 
   if (query.isLoading) return <AppScreen header={<ScreenHeader title={t('perks.business.title')} back />}><Skeleton width="100%" height={220} /><Skeleton width="100%" height={140} /></AppScreen>
   if (!query.data) return <AppScreen header={<ScreenHeader title={t('perks.business.title')} back />} contentStyle={styles.content}><EmptyState Icon={MapPin} title={t('perks.business.notFound')} /></AppScreen>
@@ -198,7 +200,7 @@ export function BusinessDetailScreen() {
         <View style={[styles.quickButtons, dirStyles(isRTL).row]}>
           {business.phone ? <Button fullWidth={false} label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
           {business.whatsapp ? <Button fullWidth={false} label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
-          {business.latitude != null && business.longitude != null ? <Button fullWidth={false} label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!))} /> : null}
+          {business.latitude != null && business.longitude != null ? <Button fullWidth={false} label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
         </View>
       </Card>
 
@@ -259,6 +261,7 @@ export function OfferDetailScreen() {
   const { session } = useAuth()
   const { isPlusMember } = useMembership(session!.user.id)
   const query = useQuery({ queryKey: ['community', 'offer', offerId], queryFn: () => loadOfferDetail(String(offerId)), enabled: !!offerId })
+  const navigationApp = useNavigationApp()
   const [membershipOpen, setMembershipOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
 
@@ -300,7 +303,7 @@ export function OfferDetailScreen() {
       <BottomSheet visible={contactOpen} onClose={() => setContactOpen(false)} title={t('perks.offer.contactTitle')} subtitle={t('perks.offer.contactMessage')}>
         {business.phone ? <Button label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
         {business.whatsapp ? <Button label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
-        {business.latitude != null && business.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!))} /> : null}
+        {business.latitude != null && business.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
       </BottomSheet>
     </AppScreen>
   )

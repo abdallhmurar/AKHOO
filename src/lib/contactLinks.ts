@@ -18,6 +18,9 @@ export function whatsappHref(phone: string): string {
   return `https://wa.me/${normalized.replace(/^\+/, '')}`
 }
 
-export function directionsHref(latitude: number, longitude: number): string {
+export type NavigationApp = 'google' | 'waze'
+
+export function directionsHref(latitude: number, longitude: number, app: NavigationApp = 'google'): string {
+  if (app === 'waze') return `https://waze.com/ul?ll=${latitude},${longitude}&navigate=yes`
   return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
 }

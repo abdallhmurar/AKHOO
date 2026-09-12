@@ -5,9 +5,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, BatteryWarning, Clock, GasPump, GpsFix, HandHeart, Lock, MapPin, Star, Tire, Wrench } from 'phosphor-react-native'
 import type { Icon } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
+import { directionsHref } from '../../lib/contactLinks'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../../lib/location'
 import { registerForPushNotificationsAsync } from '../../lib/notifications'
 import { getNotificationsEnabled } from '../../lib/notificationPreference'
+import { useNavigationApp } from '../../lib/navigationPreference'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
@@ -56,6 +58,7 @@ export function HelperHomeScreen() {
   const queryClient = useQueryClient()
   const { session } = useAuth()
   const userId = session!.user.id
+  const navigationApp = useNavigationApp()
 
   const [hydrated, setHydrated] = useState(false)
   const [available, setAvailable] = useState(false)
@@ -262,7 +265,7 @@ export function HelperHomeScreen() {
             {selectedRequest.note ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{selectedRequest.note}</Text> : null}
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} /> : null}
             <View style={[styles.sheetActions, dirStyles(isRTL).row]}>
-              <Pressable onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${selectedRequest.latitude},${selectedRequest.longitude}`)} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
+              <Pressable onPress={() => Linking.openURL(directionsHref(selectedRequest.latitude, selectedRequest.longitude, navigationApp))} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
                 <MapPin size={16} color={theme.colors.primary} />
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('volunteer.openExternal')}</Text>
               </Pressable>

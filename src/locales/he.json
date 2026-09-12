@@ -291,6 +291,7 @@
     "callButton": "התקשר/י אל {{phone}}",
     "chatButton": "צ'אט",
     "openInGoogleMaps": "פתח/י את המיקום במפות גוגל",
+    "openInWaze": "פתח/י את המיקום ב-Waze",
     "onMyWay": "אני בדרך",
     "arrivedButton": "הגעתי",
     "completeButton": "העזרה הושלמה ✓",
@@ -393,6 +394,11 @@
     "memberSince": "חבר/ה מאז {{date}}",
     "viewActivity": "צפייה בפעילות שלי",
     "comingSoon": "בקרוב",
+    "navigationApp": {
+      "title": "אפליקציית ניווט",
+      "google": "Google Maps",
+      "waze": "Waze"
+    },
     "menu": {
       "profile": "פרופיל",
       "notifications": "התראות",

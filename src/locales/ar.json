@@ -291,6 +291,7 @@
     "callButton": "اتصل بـ {{phone}}",
     "chatButton": "المحادثة",
     "openInGoogleMaps": "افتح الموقع بخرائط جوجل",
+    "openInWaze": "افتح الموقع بتطبيق ويز",
     "onMyWay": "أنا في الطريق",
     "arrivedButton": "وصلت للموقع",
     "completeButton": "تمت المساعدة ✓",
@@ -393,6 +394,11 @@
     "memberSince": "عضو منذ {{date}}",
     "viewActivity": "عرض نشاطي",
     "comingSoon": "قريبًا",
+    "navigationApp": {
+      "title": "تطبيق الملاحة",
+      "google": "خرائط جوجل",
+      "waze": "ويز"
+    },
     "menu": {
       "profile": "الملف الشخصي",
       "notifications": "الإشعارات",

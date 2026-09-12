@@ -8,6 +8,7 @@ import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCirc
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
 import { getLastReadAt } from '../../lib/chatReadTracker'
+import { useNavigationApp } from '../../lib/navigationPreference'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -465,6 +466,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
   const { session } = useAuth()
   const other = useOtherParty(mission, false)
   const unreadCount = useUnreadChatCount(other.data ? mission.request_id : undefined, mission.helper_id ?? undefined)
+  const navigationApp = useNavigationApp()
   const [busy, setBusy] = useState(false)
   const [confirmingRelease, setConfirmingRelease] = useState(false)
   const [releaseReason, setReleaseReason] = useState<ReleaseReason | null>(null)
@@ -574,7 +576,11 @@ function HelperMissionView({ mission }: { mission: Mission }) {
 
           {awaitingConfirmation ? null : (
             <>
-              <Button label={t('volunteerJob.openInGoogleMaps')} variant="outline" onPress={() => Linking.openURL(directionsHref(mission.request?.latitude ?? 0, mission.request?.longitude ?? 0))} />
+              <Button
+                label={t(navigationApp === 'waze' ? 'volunteerJob.openInWaze' : 'volunteerJob.openInGoogleMaps')}
+                variant="outline"
+                onPress={() => Linking.openURL(directionsHref(mission.request?.latitude ?? 0, mission.request?.longitude ?? 0, navigationApp))}
+              />
               <Button label={t('volunteerJob.onMyWay')} disabled={mission.status !== 'assigned' || busy} loading={busy && mission.status === 'assigned'} onPress={() => advance('on_the_way')} />
               <Button label={t('volunteerJob.arrivedButton')} variant="community" disabled={mission.status !== 'on_the_way' || busy} loading={busy && mission.status === 'on_the_way'} onPress={() => advance('arrived')} />
               <Button label={t('volunteerJob.completeButton')} variant="community" disabled={mission.status !== 'arrived' || busy} loading={busy && mission.status === 'arrived'} onPress={() => advance('awaiting_confirmation')} />

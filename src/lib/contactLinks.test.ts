@@ -21,4 +21,12 @@ describe('directionsHref', () => {
   it('builds a Google Maps search URL from coordinates', () => {
     expect(directionsHref(31.7683, 35.2137)).toBe('https://www.google.com/maps/search/?api=1&query=31.7683,35.2137')
   })
+
+  it('defaults to Google Maps when no app is given', () => {
+    expect(directionsHref(31.7683, 35.2137, 'google')).toBe('https://www.google.com/maps/search/?api=1&query=31.7683,35.2137')
+  })
+
+  it('builds a Waze navigation URL when waze is selected', () => {
+    expect(directionsHref(31.7683, 35.2137, 'waze')).toBe('https://waze.com/ul?ll=31.7683,35.2137&navigate=yes')
+  })
 })

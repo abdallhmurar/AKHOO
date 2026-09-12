@@ -291,6 +291,7 @@
     "callButton": "Call {{phone}}",
     "chatButton": "Chat",
     "openInGoogleMaps": "Open location in Google Maps",
+    "openInWaze": "Open location in Waze",
     "onMyWay": "I'm on my way",
     "arrivedButton": "I've arrived",
     "completeButton": "Help completed ✓",
@@ -393,6 +394,11 @@
     "memberSince": "Member since {{date}}",
     "viewActivity": "View my activity",
     "comingSoon": "Coming soon",
+    "navigationApp": {
+      "title": "Navigation App",
+      "google": "Google Maps",
+      "waze": "Waze"
+    },
     "menu": {
       "profile": "Profile",
       "notifications": "Notifications",

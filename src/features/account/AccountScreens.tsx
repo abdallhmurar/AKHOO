@@ -3,7 +3,7 @@ import { Alert, Image, Linking, Pressable, StyleSheet, Switch, Text, View } from
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import * as Clipboard from 'expo-clipboard'
-import { ArrowLeft, ArrowRight, Bell, Camera, Check, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Bell, Camera, Check, Compass, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -20,6 +20,7 @@ import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
 import { Button, IconButton, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
+import { NavigationAppPicker } from '../../components/NavigationAppPicker'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 
@@ -123,6 +124,7 @@ export function AccountHomeScreen() {
           trailing={<Switch value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
         <ListRow Icon={Globe} title={t('account.language')} onPress={() => router.push('/(tabs)/account/language')} />
+        <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => router.push('/(tabs)/account/navigation')} />
         <ListRow
           Icon={Moon}
           title={t('account.menu.darkMode')}
@@ -296,6 +298,19 @@ export function AccountLanguageScreen() {
       <ScreenHeader title={t('account.language')} back />
       <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <LanguagePicker />
+      </View>
+    </AppScreen>
+  )
+}
+
+export function AccountNavigationScreen() {
+  const theme = useSanadTheme()
+  const { t } = useTranslation()
+  return (
+    <AppScreen contentStyle={styles.content}>
+      <ScreenHeader title={t('account.navigationApp.title')} back />
+      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <NavigationAppPicker />
       </View>
     </AppScreen>
   )
