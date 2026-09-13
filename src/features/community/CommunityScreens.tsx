@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
-import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
-import { MagnifyingGlass, MapPin, Phone, Star, Storefront, Tag, WhatsappLogo } from 'phosphor-react-native'
+import { ClockCountdown, Coins, Crown, DeviceMobile, Fire, Gift, MapPin, Phone, PlugsConnected, Star, Tag, WhatsappLogo, Wind } from 'phosphor-react-native'
+import type { Icon as PhosphorIcon } from 'phosphor-react-native'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
@@ -12,146 +13,235 @@ import { useNavigationApp } from '../../lib/navigationPreference'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../../lib/market'
 import { useMembership, resolveOfferUseAction } from '../../lib/membership'
 import { computeOfferPriceDisplay, formatPrice } from '../../lib/offerPricing'
+import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { space, useSanadTheme } from '../../lib/theme'
+import { colors, radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
-import type { BusinessPhoto, BusinessRating, Partner, PartnerCategory, PartnerOffer, Review } from '../../types'
+import { rewardRepository } from '../../repositories/rewardRepository'
+import type { BusinessPhoto, BusinessRating, Partner, PartnerOffer, Review } from '../../types'
 import { AppScreen, MapPanel, ScreenHeader, SectionHeading } from '../../components/v2'
-import { BottomSheet, Button, Card, TextField } from '../../components/ui'
-import { BusinessCard } from '../../components/BusinessCard'
-import { CategoryChipsRow } from '../../components/CategoryChipsRow'
+import { BottomSheet, Button, Card, useToast } from '../../components/ui'
 import { EmptyState } from '../../components/EmptyState'
 import { MembershipSheet } from '../../components/MembershipSheet'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { OfferCard } from '../../components/OfferCard'
 import { PlusBadge } from '../../components/PlusBadge'
-import { PlusHeroCard } from '../../components/PlusHeroCard'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
-import { VolunteerPointsCard } from '../../components/VolunteerPointsCard'
 
-type DiscoverData = { businesses: Partner[]; offers: PartnerOffer[]; ratings: Record<string, BusinessRating> }
+const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
+const TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
 
-async function loadDiscoverData(): Promise<DiscoverData> {
-  const { data: businesses, error: businessesError } = await supabase
-    .from('partners').select('*').eq('status', 'verified').eq('is_active', true).eq('market', CURRENT_MARKET_CODE).order('name')
-  if (businessesError) throw businessesError
-  const businessRows = (businesses ?? []) as Partner[]
-  const ids = businessRows.map(b => b.id)
-  const [{ data: offers, error: offersError }, { data: ratingRows }] = await Promise.all([
-    ids.length ? supabase.from('public_offers').select('*').in('partner_id', ids).order('created_at', { ascending: false }) : Promise.resolve({ data: [] as PartnerOffer[], error: null }),
-    ids.length ? supabase.from('business_ratings').select('*').in('business_id', ids) : Promise.resolve({ data: [] as BusinessRating[] })
-  ])
-  if (offersError) throw offersError
-  return { businesses: businessRows, offers: (offers ?? []) as PartnerOffer[], ratings: Object.fromEntries((ratingRows ?? []).map(r => [r.business_id, r as BusinessRating])) }
+// Static preview content for the "this week's offers" section - there is no
+// points-redemption backend yet (no points-cost column, no redemption RPC,
+// no featured-offer flag on public_offers - confirmed absent, not just
+// unwired). The user asked to see the real product-page design before
+// deciding whether to build that backend, so these 3 cards are intentionally
+// fixed placeholder data, not read from partners/public_offers. "Use offer"
+// below only shows a toast, on purpose, until that decision is made.
+type WeeklyOffer = {
+  id: string
+  nameKey: string
+  categoryKey: string
+  Icon: PhosphorIcon
+  tone: 'primary' | 'community' | 'reward'
+  originalPrice: number
+  offerPrice: number
+  pointsCost: number
 }
 
-// Real SANAD Perks - the same discover/business/offer content as the intact
-// src/screens/PerksScreen.tsx, BusinessDetailView.tsx and OfferDetailView.tsx,
-// ported onto AppScreen/ScreenHeader chrome + Expo Router while keeping their
-// already-correct cards (BusinessCard, OfferCard, RatingStars, PlusHeroCard,
-// MembershipSheet). Not ccodex's invented points/rewards marketplace or paid
-// SANAD+ checkout - there is no redemption RPC and no rewards catalog in the
-// real product; "Use offer" only ever opens a contact sheet or, for
-// member-only offers, an honest "not available yet" membership sheet.
+const WEEKLY_OFFERS: WeeklyOffer[] = [
+  { id: 'phone-mount', nameKey: 'perks.weeklyOffers.items.phoneMount.name', categoryKey: 'perks.weeklyOffers.items.phoneMount.category', Icon: DeviceMobile, tone: 'primary', originalPrice: 120, offerPrice: 70, pointsCost: 100 },
+  { id: 'jump-cables', nameKey: 'perks.weeklyOffers.items.jumpCables.name', categoryKey: 'perks.weeklyOffers.items.jumpCables.category', Icon: PlugsConnected, tone: 'community', originalPrice: 120, offerPrice: 70, pointsCost: 70 },
+  { id: 'tire-inflator', nameKey: 'perks.weeklyOffers.items.tireInflator.name', categoryKey: 'perks.weeklyOffers.items.tireInflator.category', Icon: Wind, tone: 'reward', originalPrice: 200, offerPrice: 120, pointsCost: 120 }
+]
+
+// Ticks toward the coming Sunday at local midnight - a real, moving
+// countdown (not a hardcoded "4 days left") even though the offers behind
+// it are still static.
+function useNextSundayCountdown() {
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(interval)
+  }, [])
+  const target = new Date(now)
+  const daysUntilSunday = (7 - target.getDay()) % 7 || 7
+  target.setDate(target.getDate() + daysUntilSunday)
+  target.setHours(0, 0, 0, 0)
+  const diff = Math.max(0, target.getTime() - now)
+  return { days: Math.floor(diff / 86_400_000), hours: Math.floor((diff % 86_400_000) / 3_600_000) }
+}
+
+// Real SANAD Perks - business/offer discovery (search, categories, nearby
+// businesses grid) moved out per redesign request; BusinessDetailScreen and
+// OfferDetailScreen below are untouched and still work for any offer/business
+// reached some other way. The points/level card reuses the same real
+// mechanic as ActivityScreen and VolunteerPointsCard (completed-count
+// thresholds, rewardRepository's summed balance) - not a new one.
 export function CommunityHubScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t } = useTranslation()
-  const router = useRouter()
   const { profile } = useAuth()
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState<PartnerCategory | 'all'>('all')
-  const [membershipOpen, setMembershipOpen] = useState(false)
-  const query = useQuery({ queryKey: ['community', 'discover', CURRENT_MARKET_CODE], queryFn: loadDiscoverData })
-  const data = query.data
+  const toast = useToast()
+  const countdown = useNextSundayCountdown()
 
-  const businessById = useMemo(() => Object.fromEntries((data?.businesses ?? []).map(b => [b.id, b])), [data])
-  const businessHasOffer = useMemo(() => new Set((data?.offers ?? []).map(o => o.partner_id)), [data])
-  const isFiltering = category !== 'all' || search.trim().length > 0
+  const pointsQuery = useQuery({
+    queryKey: profile ? ['community', 'points', profile.id] : ['community', 'points'],
+    queryFn: () => rewardRepository.points(profile!.id),
+    enabled: !!profile
+  })
+  const completedCountQuery = useQuery({
+    queryKey: profile ? ['community', 'completed-count', profile.id] : ['community', 'completed-count'],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: profile!.id })
+      return (data as number | null) ?? 0
+    },
+    enabled: !!profile
+  })
 
-  const filteredBusinesses = useMemo(() => {
-    if (!data) return []
-    const q = search.trim().toLowerCase()
-    return data.businesses.filter(business => {
-      if (category !== 'all' && business.category !== category) return false
-      if (q && !business.name.toLowerCase().includes(q)) return false
-      return true
-    })
-  }, [data, category, search])
+  const balance = pointsQuery.data?.balance ?? 0
+  const completedCount = completedCountQuery.data ?? 0
+  const level = getVolunteerActivityLevel(completedCount)
+  const nextThreshold = TIER_MARKS.find(mark => mark > completedCount) ?? null
+  const progressFraction = Math.min(completedCount, TOP_THRESHOLD) / TOP_THRESHOLD
+  const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
 
-  const filteredOffers = useMemo(() => {
-    if (!data) return []
-    const q = search.trim().toLowerCase()
-    return data.offers.filter(offer => {
-      const business = businessById[offer.partner_id]
-      if (category !== 'all' && business?.category !== category) return false
-      if (q && !offer.title.toLowerCase().includes(q) && !business?.name.toLowerCase().includes(q)) return false
-      return true
-    })
-  }, [data, category, search, businessById])
-
-  function openBusiness(id: string) { router.push({ pathname: '/community/business/[businessId]', params: { businessId: id } }) }
-  function openOffer(id: string) { router.push({ pathname: '/community/offer/[offerId]', params: { offerId: id } }) }
+  function useOffer() {
+    Haptics.selectionAsync().catch(() => {})
+    toast.show(t('perks.weeklyOffers.comingSoon'), 'info')
+  }
 
   return (
-    <AppScreen header={<ScreenHeader title={t('perks.title')} subtitle={t('perks.subtitle')} />} contentStyle={styles.content}>
-      {profile ? <VolunteerPointsCard userId={profile.id} memberSince={profile.created_at} onViewActivity={() => router.push('/(tabs)/activity')} /> : null}
-      <TextField value={search} onChangeText={setSearch} placeholder={t('perks.searchPlaceholder')} />
-      <CategoryChipsRow selected={category} onSelect={category => { Haptics.selectionAsync().catch(() => {}); setCategory(category) }} />
-      <PlusHeroCard onPress={() => setMembershipOpen(true)} />
-
-      {query.isError ? (
-        <View style={styles.center}>
-          <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.errors.loadFailed')}</Text>
-          <Button label={t('common.retry')} variant="outline" onPress={() => query.refetch()} />
+    <AppScreen
+      header={
+        <ScreenHeader
+          title={t('perks.title')}
+          subtitle={t('perks.subtitle')}
+          trailing={
+            <View style={[styles.headerGiftWrap, { backgroundColor: theme.colors.communitySoft }]}>
+              <Gift size={20} color={theme.colors.community} weight="fill" />
+            </View>
+          }
+        />
+      }
+      contentStyle={styles.content}
+    >
+      <View style={[styles.pointsCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <View style={[styles.pointsTopRow, dirStyles(isRTL).row]}>
+          <View style={[styles.pointsColumn, dirStyles(isRTL).row]}>
+            <View style={[styles.pointsIconWrap, { backgroundColor: theme.colors.communitySoft, borderColor: theme.colors.community }]}>
+              <Star size={20} color={theme.colors.community} weight="fill" />
+            </View>
+            <View>
+              <Text style={[typography.h2, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{balance}</Text>
+              <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.pointsCard.balanceLabel')}</Text>
+            </View>
+          </View>
+          <View style={[styles.levelColumn, dirStyles(isRTL).row]}>
+            <View style={{ alignItems: isRTL ? 'flex-start' : 'flex-end' }}>
+              <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'left' : 'right' }]}>{t('perks.pointsCard.levelLabel')}</Text>
+              <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'left' : 'right' }]}>{t(levelLabelKey)}</Text>
+            </View>
+            <View style={[styles.pointsIconWrap, { backgroundColor: theme.colors.rewardSoft, borderColor: theme.colors.reward }]}>
+              <Star size={18} color={theme.colors.reward} weight="fill" />
+            </View>
+          </View>
         </View>
-      ) : !data ? (
-        <>
-          <Skeleton width="100%" height={130} />
-          <Skeleton width="100%" height={80} />
-          <Skeleton width="100%" height={80} />
-        </>
-      ) : isFiltering ? (
-        filteredOffers.length === 0 && filteredBusinesses.length === 0 ? (
-          <EmptyState Icon={MagnifyingGlass} title={t('perks.empty.searchTitle')} message={t('perks.empty.searchMessage')} />
-        ) : (
-          <>
-            {filteredOffers.length > 0 ? (
-              <>
-                <SectionHeading title={t('perks.offersTitle')} />
-                <View style={styles.list}>{filteredOffers.map(offer => <OfferCard key={offer.id} offer={offer} business={businessById[offer.partner_id]} rating={data.ratings[offer.partner_id]} variant="list" onPress={() => openOffer(offer.id)} />)}</View>
-              </>
-            ) : null}
-            {filteredBusinesses.length > 0 ? (
-              <>
-                <SectionHeading title={t('perks.businessesTitle')} />
-                <View style={styles.list}>{filteredBusinesses.map(business => <BusinessCard key={business.id} business={business} rating={data.ratings[business.id]} variant="row" onPress={() => openBusiness(business.id)} />)}</View>
-              </>
-            ) : null}
-          </>
-        )
-      ) : (
-        <>
-          <SectionHeading title={t('perks.offersTitle')} />
-          {data.offers.length === 0 ? (
-            <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
-          ) : (
-            <View style={[styles.rail, dirStyles(isRTL).row]}>{data.offers.map(offer => <OfferCard key={offer.id} offer={offer} business={businessById[offer.partner_id]} rating={data.ratings[offer.partner_id]} onPress={() => openOffer(offer.id)} />)}</View>
-          )}
-          <SectionHeading title={t('perks.businessesTitle')} />
-          {data.businesses.length === 0 ? (
-            <EmptyState Icon={Storefront} title={t('perks.empty.businessesTitle')} message={t('perks.empty.businessesMessage')} />
-          ) : (
-            <View style={[styles.grid, dirStyles(isRTL).row]}>{data.businesses.map(business => <BusinessCard key={business.id} business={business} rating={data.ratings[business.id]} hasOffer={businessHasOffer.has(business.id)} onPress={() => openBusiness(business.id)} />)}</View>
-          )}
-        </>
-      )}
+        <View style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceMuted }]}>
+          <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.community, [isRTL ? 'right' : 'left']: 0 }]} />
+        </View>
+        <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>
+          {nextThreshold !== null ? t('points.nextTier', { remaining: nextThreshold - completedCount }) : t('points.topTier')}
+        </Text>
+      </View>
 
-      <MembershipSheet visible={membershipOpen} onClose={() => setMembershipOpen(false)} />
+      <View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row]}>
+        <Fire size={18} color={theme.colors.emergency} weight="fill" />
+        <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{t('perks.weeklyOffers.title')}</Text>
+      </View>
+      <View style={[styles.weeklyMetaRow, dirStyles(isRTL).row]}>
+        <Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{t('perks.weeklyOffers.subtitle', { count: WEEKLY_OFFERS.length })}</Text>
+        <View style={[styles.countdownPill, dirStyles(isRTL).row, { backgroundColor: theme.colors.emergencySoft }]}>
+          <ClockCountdown size={13} color={theme.colors.emergency} weight="fill" />
+          <Text style={[typography.caption, { color: theme.colors.emergency }]}>{t('perks.weeklyOffers.countdown', { days: countdown.days, hours: countdown.hours })}</Text>
+        </View>
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.offersRail, dirStyles(isRTL).row]}>
+        {WEEKLY_OFFERS.map(offer => <WeeklyOfferCard key={offer.id} offer={offer} onUse={useOffer} />)}
+      </ScrollView>
+
+      <ProMaxBanner />
     </AppScreen>
+  )
+}
+
+function WeeklyOfferCard({ offer, onUse }: { offer: WeeklyOffer; onUse: () => void }) {
+  const theme = useSanadTheme()
+  const typography = useAppTypography()
+  const isRTL = useIsRTL()
+  const { t } = useTranslation()
+  const tint = offer.tone === 'primary' ? theme.colors.primary : offer.tone === 'community' ? theme.colors.community : theme.colors.rewardPressed
+  const softTint = offer.tone === 'primary' ? theme.colors.primarySoft : offer.tone === 'community' ? theme.colors.communitySoft : theme.colors.rewardSoft
+  const savings = offer.originalPrice - offer.offerPrice
+  const Icon = offer.Icon
+  return (
+    <View style={[styles.offerCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <View style={[styles.offerImage, { backgroundColor: softTint }]}>
+        <Icon size={38} color={tint} weight="duotone" />
+        <View style={[styles.exclusiveBadge, dirStyles(isRTL).row, { backgroundColor: colors.ink }]}>
+          <Crown size={10} color={colors.sand} weight="fill" />
+          <Text style={[typography.caption, styles.exclusiveBadgeText]}>{t('perks.weeklyOffers.exclusive')}</Text>
+        </View>
+      </View>
+      <View style={styles.offerBody}>
+        <Text numberOfLines={1} style={[typography.smallMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(offer.nameKey)}</Text>
+        <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t(offer.categoryKey)}</Text>
+        <View style={[styles.priceRow, dirStyles(isRTL).row]}>
+          <Text style={[typography.caption, styles.strikePrice, { color: theme.colors.textMuted }]}>{formatPrice(offer.originalPrice, CURRENT_MARKET.currencySymbol)}</Text>
+          <Text style={[typography.bodyMedium, { color: tint }]}>{formatPrice(offer.offerPrice, CURRENT_MARKET.currencySymbol)}</Text>
+        </View>
+        <View style={[styles.pointsPill, dirStyles(isRTL).row, { backgroundColor: theme.colors.rewardSoft }]}>
+          <Coins size={11} color={theme.colors.rewardPressed} weight="fill" />
+          <Text style={[typography.caption, { color: theme.colors.rewardPressed }]}>{t('perks.weeklyOffers.pointsCost', { points: offer.pointsCost })}</Text>
+        </View>
+        <Text style={[typography.caption, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.weeklyOffers.savings', { amount: formatPrice(savings, CURRENT_MARKET.currencySymbol) })}</Text>
+        <Pressable onPress={onUse} style={[styles.useButton, { backgroundColor: theme.colors.community }]}>
+          <Text style={[typography.smallMedium, { color: theme.colors.onCommunity }]}>{t('perks.weeklyOffers.useOffer')}</Text>
+        </Pressable>
+      </View>
+    </View>
+  )
+}
+
+// Deliberately named differently from the real AKHOO+ (SANAD+) membership
+// tier already wired in lib/membership.ts (which stays untouched and
+// unmarketed here now that PlusHeroCard is off this screen) - this is a
+// second, distinct, not-yet-real tier, so its own name avoids implying two
+// paid tiers are simultaneously live.
+function ProMaxBanner() {
+  const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  return (
+    <View style={styles.proMaxCard}>
+      <View style={[styles.proMaxRow, dirStyles(isRTL).row]}>
+        <View style={styles.proMaxIconWrap}>
+          <Crown size={22} color={colors.sand} weight="fill" />
+        </View>
+        <View style={styles.proMaxTextWrap}>
+          <Text style={[styles.proMaxTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.proMax.title')}</Text>
+          <Text style={[styles.proMaxSubtitle, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={2}>{t('perks.proMax.subtitle')}</Text>
+        </View>
+        <View style={[styles.proMaxComingSoon, dirStyles(isRTL).row]}>
+          <ClockCountdown size={12} color={colors.sand} />
+          <Text style={styles.proMaxComingSoonText}>{t('perks.proMax.comingSoon')}</Text>
+        </View>
+      </View>
+    </View>
   )
 }
 
@@ -335,10 +425,7 @@ function OfferPriceBlock({ price }: { price: ReturnType<typeof computeOfferPrice
 
 const styles = StyleSheet.create({
   content: { gap: space.xl },
-  center: { alignItems: 'center', gap: space.md, paddingVertical: space.xl },
   list: { gap: space.md },
-  rail: { gap: space.md, flexWrap: 'wrap' },
-  grid: { flexWrap: 'wrap', gap: space.md },
   row: { alignItems: 'center', gap: space.sm, justifyContent: 'space-between' },
   quickButtons: { gap: space.sm, flexWrap: 'wrap', marginTop: space.md },
   gallery: { flexDirection: 'row', width: '100%', height: 200, borderRadius: 20, overflow: 'hidden' },
@@ -348,5 +435,38 @@ const styles = StyleSheet.create({
   offerHero: { width: '100%', height: 220, borderRadius: 20 },
   businessRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, borderWidth: 1, borderRadius: 16, padding: space.md },
   businessLogo: { width: 40, height: 40, borderRadius: 10 },
-  priceRow: { alignItems: 'center', gap: space.sm }
+  priceRow: { alignItems: 'center', gap: space.sm },
+
+  headerGiftWrap: { width: 40, height: 40, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+
+  pointsCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.lg, gap: space.sm },
+  pointsTopRow: { alignItems: 'center', justifyContent: 'space-between' },
+  pointsColumn: { alignItems: 'center', gap: space.sm },
+  levelColumn: { alignItems: 'center', gap: space.sm },
+  pointsIconWrap: { width: 40, height: 40, borderRadius: radius.pill, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  progressTrack: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  progressFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 4 },
+
+  weeklyHeaderRow: { alignItems: 'center', gap: space.sm },
+  weeklyMetaRow: { alignItems: 'center', justifyContent: 'space-between' },
+  countdownPill: { alignItems: 'center', gap: 4, borderRadius: radius.pill, paddingVertical: 4, paddingHorizontal: space.sm },
+
+  offersRail: { gap: space.md, paddingBottom: space.xs },
+  offerCard: { width: 152, borderWidth: 1, borderRadius: radius.lg, overflow: 'hidden' },
+  offerImage: { width: '100%', height: 96, alignItems: 'center', justifyContent: 'center' },
+  exclusiveBadge: { position: 'absolute', top: 8, alignItems: 'center', gap: 3, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 7 },
+  exclusiveBadgeText: { color: '#fff', fontSize: 10 },
+  offerBody: { padding: space.sm, gap: 5 },
+  strikePrice: { textDecorationLine: 'line-through' },
+  pointsPill: { alignSelf: 'flex-start', alignItems: 'center', gap: 4, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 8 },
+  useButton: { alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm, paddingVertical: 9, marginTop: 2 },
+
+  proMaxCard: { backgroundColor: colors.ink, borderColor: colors.inkBorder, borderWidth: 1, borderRadius: radius.lg, padding: space.lg },
+  proMaxRow: { alignItems: 'center', gap: space.md },
+  proMaxIconWrap: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.inkElevated, alignItems: 'center', justifyContent: 'center' },
+  proMaxTextWrap: { flex: 1, gap: 2 },
+  proMaxTitle: { color: colors.inkText, fontWeight: '800', fontSize: 16 },
+  proMaxSubtitle: { color: colors.inkMuted, fontSize: 12 },
+  proMaxComingSoon: { alignItems: 'center', gap: 4, backgroundColor: colors.inkElevated, borderRadius: radius.pill, paddingVertical: 6, paddingHorizontal: space.sm },
+  proMaxComingSoonText: { color: colors.sand, fontSize: 11, fontWeight: '700' }
 })

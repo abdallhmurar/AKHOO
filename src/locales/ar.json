@@ -521,8 +521,32 @@
   },
   "perks": {
     "title": "مزايا أخوو",
-    "subtitle": "عروض وخدمات قريبة منك",
+    "subtitle": "عروض حصرية كل أسبوع",
     "searchPlaceholder": "دوّر على عمل تجاري أو عرض",
+    "pointsCard": {
+      "balanceLabel": "رصيدك من النقاط",
+      "levelLabel": "مستواك الحالي"
+    },
+    "weeklyOffers": {
+      "title": "عروض أخوو لهذا الأسبوع",
+      "subtitle": "{{count}} عروض حصرية • تتجدد كل أسبوع",
+      "countdown": "متبقي {{days}} يوم و {{hours}} ساعة",
+      "exclusive": "عرض حصري",
+      "pointsCost": "{{points}} نقطة",
+      "savings": "وفر {{amount}}",
+      "useOffer": "استخدم العرض",
+      "comingSoon": "هاد العرض رح يكون متاح قريباً داخل التطبيق.",
+      "items": {
+        "phoneMount": { "name": "حامل جوال للسيارة", "category": "إكسسوارات سيارات" },
+        "jumpCables": { "name": "كوابل شحن للسيارة", "category": "أدوات السيارات" },
+        "tireInflator": { "name": "منفاخ إطارات محمول", "category": "إكسسوارات سيارات" }
+      }
+    },
+    "proMax": {
+      "title": "أخوو برو ماكس",
+      "subtitle": "مزايا وخصومات إضافية قريباً",
+      "comingSoon": "قريباً"
+    },
     "categoriesTitle": "التصنيفات",
     "categoriesAll": "الكل",
     "categories": {
