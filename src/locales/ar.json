@@ -310,10 +310,13 @@
       }
     },
     "completion": {
-      "title": "تمت المهمة بنجاح",
-      "message": "شكراً لأنك كنت أخوو لحدا اليوم.",
+      "title": "تمت المساعدة بنجاح",
+      "message": "شكراً لأنك كنت أخوو لحدا اليوم 💚",
       "pointsEarned": "+{{points}} نقاط",
-      "backHome": "الرجوع للرئيسية"
+      "balanceLabel": "رصيدك الآن: {{balance}} نقطة",
+      "helpedCount": "ساعدت {{count}} شخصاً حتى الآن",
+      "rateExperience": "قيّم التجربة",
+      "backHome": "العودة للرئيسية"
     }
   },
   "volunteer": {

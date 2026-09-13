@@ -310,9 +310,12 @@
       }
     },
     "completion": {
-      "title": "המשימה הושלמה בהצלחה",
-      "message": "תודה שהיית אחוו למישהו היום.",
+      "title": "העזרה הושלמה בהצלחה",
+      "message": "תודה שהיית אחוו למישהו היום 💚",
       "pointsEarned": "+{{points}} נקודות",
+      "balanceLabel": "היתרה שלך כעת: {{balance}} נקודות",
+      "helpedCount": "עזרת ל-{{count}} אנשים עד כה",
+      "rateExperience": "דירוג החוויה",
       "backHome": "חזרה לדף הבית"
     }
   },

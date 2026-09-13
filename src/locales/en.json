@@ -310,10 +310,13 @@
       }
     },
     "completion": {
-      "title": "Mission completed",
-      "message": "Thank you for being AKHOO for someone today.",
+      "title": "Help completed successfully",
+      "message": "Thank you for being AKHOO for someone today 💚",
       "pointsEarned": "+{{points}} points",
-      "backHome": "Back to Home"
+      "balanceLabel": "Your balance now: {{balance}} points",
+      "helpedCount": "You've helped {{count}} people so far",
+      "rateExperience": "Rate the experience",
+      "backHome": "Back to home"
     }
   },
   "volunteer": {

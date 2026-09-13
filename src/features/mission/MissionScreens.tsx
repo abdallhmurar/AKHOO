@@ -4,7 +4,7 @@ import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAre
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
-import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, Coins, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, UsersThree, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref, telHref } from '../../lib/contactLinks'
 import { getLastReadAt } from '../../lib/chatReadTracker'
@@ -15,7 +15,7 @@ import { translateActionError } from '../../lib/rpcErrors'
 import { supabase } from '../../lib/supabase'
 import { useAndroidBackHandler } from '../../lib/useAndroidBackHandler'
 import { useStaggeredReveal } from '../../lib/useStaggeredReveal'
-import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS } from '../../lib/activityLevel'
+import { getVolunteerActivityLevel, ACTIVITY_LEVEL_COLORS, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import type { ActivityLevel } from '../../lib/activityLevel'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
@@ -25,11 +25,13 @@ import { profileRepository } from '../../repositories/profileRepository'
 import { messageRepository } from '../../repositories/messageRepository'
 import type { ChatMessage } from '../../repositories/messageRepository'
 import { ratingRepository } from '../../repositories/ratingRepository'
+import { rewardRepository } from '../../repositories/rewardRepository'
 import type { Mission, MissionStatus } from '../../repositories/domainTypes'
 import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
 import { AppScreen, MapPanel, MissionTimeline, ScreenHeader } from '../../components/v2'
 import { SanadMap } from '../../components/SanadMap'
+import { ConfettiBurst } from '../../components/ConfettiBurst'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { SuccessCheckmark } from '../../components/SuccessCheckmark'
 import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
@@ -472,22 +474,24 @@ function HelperMissionView({ mission }: { mission: Mission }) {
   const [confirmingRelease, setConfirmingRelease] = useState(false)
   const [releaseReason, setReleaseReason] = useState<ReleaseReason | null>(null)
   const [releasing, setReleasing] = useState(false)
-  const [completionStats, setCompletionStats] = useState<{ points: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null>(null)
+  const [completionStats, setCompletionStats] = useState<{ points: number; balance: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null>(null)
 
   useAndroidBackHandler(() => router.replace('/(tabs)'))
 
   useEffect(() => {
-    if (mission.status !== 'completed' || completionStats) return
+    const helperId = mission.helper_id
+    if (mission.status !== 'completed' || completionStats || !helperId) return
     let cancelled = false
     ;(async () => {
-      const [{ data: pointsRow }, { data: countData }] = await Promise.all([
+      const [{ data: pointsRow }, { data: countData }, { balance }] = await Promise.all([
         supabase.from('volunteer_point_transactions').select('points').eq('request_id', mission.request_id).maybeSingle(),
-        supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: mission.helper_id })
+        supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: helperId }),
+        rewardRepository.points(helperId)
       ])
       if (cancelled) return
       const completedCount = (countData as number | null) ?? 0
       const leveledUpTo = LEVEL_UP_THRESHOLDS.includes(completedCount) ? getVolunteerActivityLevel(completedCount) : null
-      setCompletionStats({ points: (pointsRow as { points: number } | null)?.points ?? 0, completedCount, leveledUpTo })
+      setCompletionStats({ points: (pointsRow as { points: number } | null)?.points ?? 0, balance, completedCount, leveledUpTo })
     })()
     return () => { cancelled = true }
   }, [mission.status, mission.request_id, mission.helper_id, completionStats])
@@ -725,23 +729,50 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
   )
 }
 
-function HelperCompletion({ stats, onDone }: { stats: { points: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null; onDone: () => void }) {
+const HELPER_TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
+const HELPER_TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
+
+function HelperCompletion({ stats, onDone }: { stats: { points: number; balance: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null; onDone: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t } = useTranslation()
   const { stageStyle } = useStaggeredReveal(4)
+  const nextThreshold = stats ? HELPER_TIER_MARKS.find(mark => mark > stats.completedCount) ?? null : null
+  const progressFraction = stats ? Math.min(stats.completedCount, HELPER_TOP_THRESHOLD) / HELPER_TOP_THRESHOLD : 0
   return (
     <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
-      <SuccessCheckmark tone="success" />
+      <ConfettiBurst />
+      <SuccessCheckmark tone="success" size={112} pulse />
       <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.title')}</Animated.Text>
       <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('volunteerJob.completion.message')}</Animated.Text>
       {stats ? (
         <>
           <Animated.View style={[styles.statsCard, stageStyle(2), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-            <Text style={[typography.hero, { color: theme.colors.primary }]}>{t('volunteerJob.completion.pointsEarned', { points: stats.points })}</Text>
-            <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('points.completedCount', { count: stats.completedCount })}</Text>
+            <View style={[styles.pointsRow, dirStyles(isRTL).row]}>
+              <View style={[styles.pointsIconWrap, { backgroundColor: theme.colors.communitySoft }]}>
+                <Coins size={22} color={theme.colors.community} weight="fill" />
+              </View>
+              <View style={styles.pointsTextCol}>
+                <Text style={[typography.h2, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.completion.pointsEarned', { points: stats.points })}</Text>
+                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteerJob.completion.balanceLabel', { balance: stats.balance })}</Text>
+              </View>
+            </View>
+
+            <View style={[styles.statsDivider, { backgroundColor: theme.colors.border }]} />
+
+            <View style={[styles.helpedRow, dirStyles(isRTL).row]}>
+              <UsersThree size={16} color={theme.colors.textSecondary} />
+              <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.helpedCount', { count: stats.completedCount })}</Text>
+            </View>
+            <View style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceMuted }]}>
+              <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.community, [isRTL ? 'right' : 'left']: 0 }]} />
+            </View>
+            <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>
+              {nextThreshold !== null ? t('points.nextTier', { remaining: nextThreshold - stats.completedCount }) : t('points.topTier')}
+            </Text>
           </Animated.View>
+
           <Animated.View style={[stageStyle(3), styles.completionActions]}>
             {stats.leveledUpTo ? (
               <View style={[styles.levelUpBanner, { ...dirStyles(isRTL).row, backgroundColor: theme.colors.primarySoft }]}>
@@ -749,7 +780,8 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; complete
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}</Text>
               </View>
             ) : null}
-            <Button label={t('volunteerJob.completion.backHome')} onPress={onDone} />
+            <Button label={t('volunteerJob.completion.rateExperience')} leading={<Star size={18} color={theme.colors.onPrimary} weight="fill" />} onPress={() => {}} />
+            <Button label={t('volunteerJob.completion.backHome')} variant="outline" onPress={onDone} />
           </Animated.View>
         </>
       ) : (
@@ -818,6 +850,14 @@ const styles = StyleSheet.create({
 
   completionContent: { alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xxl },
   completionActions: { width: '100%', gap: space.md, alignItems: 'stretch' },
-  statsCard: { borderWidth: 1, borderRadius: radius.lg, paddingVertical: space.xl, paddingHorizontal: space.xxl, alignItems: 'center', gap: 6, width: '100%' },
-  levelUpBanner: { alignSelf: 'center', alignItems: 'center', gap: 8, borderRadius: radius.pill, paddingVertical: 10, paddingHorizontal: space.lg }
+  statsCard: { borderWidth: 1, borderRadius: radius.lg, paddingVertical: space.xl, paddingHorizontal: space.xl, alignItems: 'stretch', gap: space.md, width: '100%' },
+  levelUpBanner: { alignSelf: 'center', alignItems: 'center', gap: 8, borderRadius: radius.pill, paddingVertical: 10, paddingHorizontal: space.lg },
+
+  pointsRow: { alignItems: 'center', gap: space.md },
+  pointsIconWrap: { width: 48, height: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  pointsTextCol: { gap: 2 },
+  statsDivider: { height: StyleSheet.hairlineWidth },
+  helpedRow: { alignItems: 'center', gap: 6 },
+  progressTrack: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  progressFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 4 }
 })
