@@ -14,8 +14,8 @@ export function Tabs<T extends string>({ value, options, onChange, label }: { va
       {options.map(option => {
         const selected = option.value === value
         return (
-          <Pressable key={option.value} accessibilityRole="tab" accessibilityState={{ selected }} onPress={() => onChange(option.value)} style={[styles.tab, selected && { backgroundColor: theme.colors.surface }]}>
-            <Text style={[typography.smallMedium, { color: selected ? theme.colors.textPrimary : theme.colors.textMuted }]}>{option.label}</Text>
+          <Pressable key={option.value} accessibilityRole="tab" accessibilityState={{ selected }} onPress={() => onChange(option.value)} style={[styles.tab, selected && { backgroundColor: theme.colors.community }]}>
+            <Text style={[typography.smallMedium, { color: selected ? theme.colors.onCommunity : theme.colors.textMuted }]}>{option.label}</Text>
           </Pressable>
         )
       })}

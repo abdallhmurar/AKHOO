@@ -357,24 +357,39 @@
     }
   },
   "activity": {
-    "title": "היסטוריה",
+    "title": "יומן פעילות",
     "subtitle": "כל הבקשות שלך והמשימות שבהן עזרת.",
     "empty": "אין עדיין פעילות",
     "emptyMessage": "בקשות ששלחת ומשימות שבהן עזרת יופיעו כאן.",
-    "roleRequester": "ביקשת עזרה",
-    "roleVolunteer": "עזרת",
-    "activeNow": "פעיל כעת",
-    "releasedLabel": "לא הושלם",
-    "releasedReason": "הבקשה הוחזרה",
-    "today": "היום",
-    "yesterday": "אתמול",
     "pointsEarned": "+{{points}} נקודות",
     "all": "הכול",
-    "pointsTitle": "נקודות השפעה",
     "filters": {
       "received": "קיבלתי",
       "given": "עזרתי",
       "points": "נקודות"
+    },
+    "typeLabel": {
+      "received": "בקשת עזרה",
+      "given": "עזרת למישהו",
+      "points": "נקודות שהושגו"
+    },
+    "pointsReason": {
+      "completed_verified_mission": "העזרה הושלמה ואומתה"
+    },
+    "stats": {
+      "points": "נקודות",
+      "given": "אנשים שעזרת להם עד כה",
+      "received": "פעמים שקיבלת עזרה"
+    },
+    "duration": {
+      "sheetTitle": "טווח זמן",
+      "last7": "7 הימים האחרונים",
+      "last30": "30 הימים האחרונים",
+      "last90": "3 החודשים האחרונים",
+      "allTime": "כל הזמן"
+    },
+    "levelCard": {
+      "title": "הדרגה הנוכחית שלך"
     },
     "status": {
       "open": "מחפשים מתנדב",
@@ -494,6 +509,7 @@
     "topTier": "הגעת/הגעה לדרגת כוכב הפעילות הגבוהה ביותר"
   },
   "activityLevel": {
+    "none": "אחוו פעיל/ה",
     "bronze": "עוזר/ת ברונזה",
     "silver": "עוזר/ת כסף",
     "gold": "עוזר/ת זהב",

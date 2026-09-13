@@ -357,24 +357,39 @@
     }
   },
   "activity": {
-    "title": "Activity",
+    "title": "Activity Log",
     "subtitle": "All your requests and the missions you've helped with.",
     "empty": "No activity yet",
     "emptyMessage": "Requests you send and missions you help with will show up here.",
-    "roleRequester": "Requested help",
-    "roleVolunteer": "Helped",
-    "activeNow": "Active now",
-    "releasedLabel": "Not completed",
-    "releasedReason": "Request was returned",
-    "today": "Today",
-    "yesterday": "Yesterday",
     "pointsEarned": "+{{points}} points",
     "all": "All",
-    "pointsTitle": "Impact points",
     "filters": {
       "received": "Received",
       "given": "Given",
       "points": "Points"
+    },
+    "typeLabel": {
+      "received": "Help request",
+      "given": "Helped someone",
+      "points": "Points earned"
+    },
+    "pointsReason": {
+      "completed_verified_mission": "Help completed and verified"
+    },
+    "stats": {
+      "points": "points",
+      "given": "people helped so far",
+      "received": "times you got help"
+    },
+    "duration": {
+      "sheetTitle": "Time period",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "last90": "Last 3 months",
+      "allTime": "All time"
+    },
+    "levelCard": {
+      "title": "Your current level"
     },
     "status": {
       "open": "Looking for a volunteer",
@@ -494,6 +509,7 @@
     "topTier": "Top Activity Star tier reached"
   },
   "activityLevel": {
+    "none": "Active AKHOO",
     "bronze": "Bronze Helper",
     "silver": "Silver Helper",
     "gold": "Gold Helper",

@@ -357,24 +357,39 @@
     }
   },
   "activity": {
-    "title": "السجل",
+    "title": "سجل النشاط",
     "subtitle": "كل طلباتك والمهام اللي ساعدت فيها.",
     "empty": "ما في شي بالسجل لسا",
     "emptyMessage": "الطلبات اللي بترسلها والمهام اللي بتساعد فيها بتظهر هون.",
-    "roleRequester": "طلبت مساعدة",
-    "roleVolunteer": "ساعدت",
-    "activeNow": "نشط الآن",
-    "releasedLabel": "لم تكتمل",
-    "releasedReason": "تم إعادة الطلب",
-    "today": "اليوم",
-    "yesterday": "أمس",
     "pointsEarned": "+{{points}} نقاط",
     "all": "الكل",
-    "pointsTitle": "نقاط الأثر",
     "filters": {
       "received": "تلقيت",
       "given": "قدمت",
       "points": "نقاط"
+    },
+    "typeLabel": {
+      "received": "طلب مساعدة",
+      "given": "ساعدت شخصاً",
+      "points": "نقاط مكتسبة"
+    },
+    "pointsReason": {
+      "completed_verified_mission": "إتمام المساعدة وتم التحقق منها"
+    },
+    "stats": {
+      "points": "نقطة",
+      "given": "ساعدت شخصاً حتى الآن",
+      "received": "تلقيت مساعدة"
+    },
+    "duration": {
+      "sheetTitle": "الفترة الزمنية",
+      "last7": "آخر 7 أيام",
+      "last30": "آخر 30 يوم",
+      "last90": "آخر 3 أشهر",
+      "allTime": "كل الوقت"
+    },
+    "levelCard": {
+      "title": "مستواك الحالي"
     },
     "status": {
       "open": "نبحث عن متطوع",
@@ -494,6 +509,7 @@
     "topTier": "وصلت لأعلى مستوى نجمة نشاط"
   },
   "activityLevel": {
+    "none": "أخوو نشيط",
     "bronze": "مساعد برونزي",
     "silver": "مساعد فضي",
     "gold": "مساعد ذهبي",
