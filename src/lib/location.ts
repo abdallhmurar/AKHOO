@@ -15,9 +15,13 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
   // task - it's on a 30s/100m loop, so a dropped update is recoverable on
   // the next tick as long as the task itself keeps running.
   try {
+    // is_available is deliberately left out - it's now fully automatic
+    // (0020_auto_volunteer_availability.sql), driven by whether the user has
+    // an active request of their own. Forcing it true on every location
+    // ping would fight that trigger the moment they request help for
+    // themselves while this background task is still running.
     const { error: upsertError } = await supabase.from('volunteer_profiles').upsert({
       user_id: backgroundUserId,
-      is_available: true,
       latitude: last.coords.latitude,
       longitude: last.coords.longitude,
       updated_at: new Date().toISOString()

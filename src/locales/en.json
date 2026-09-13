@@ -318,29 +318,34 @@
   },
   "volunteer": {
     "title": "I want to help",
-    "subtitle": "Turn on your availability to see nearby requests on the map.",
-    "notAvailableTitle": "You're currently unavailable",
-    "notAvailableText": "Your location is only shared once you turn on availability, and nearby requests appear live on a map.",
-    "howItWorks": {
-      "title": "How helping works",
-      "mapItem": "See real requests nearby on the map",
-      "chooseItem": "Choose who to help — nothing is assigned to you",
-      "starItem": "Confirmed help builds your Activity Star"
-    },
-    "enable": "Turn on availability",
-    "disable": "Turn off",
-    "availableNow": "Available now",
+    "subtitle": "See nearby help requests on the map.",
+    "availableNow": "Available to help",
     "nearbyCount": "{{count}} nearby",
     "emptyBanner": "No nearby requests right now — they'll appear automatically as soon as one opens.",
     "openExternal": "Open externally",
     "accept": "Accept Mission",
     "distanceKm": "{{distance}} km",
     "since": "{{time}} ago",
+    "enabling": "Turning on availability...",
     "sheet": { "newNearby": "New nearby request" },
+    "blocked": {
+      "title": "Unavailable to help right now",
+      "text": "You have an active help request, so no requests will reach you. You'll automatically become available again as soon as your request ends.",
+      "viewRequest": "View my active request"
+    },
+    "closest": {
+      "title": "Closest request to you",
+      "viewAll": "View all",
+      "viewRequest": "View request"
+    },
+    "allNearby": { "title": "All nearby requests" },
+    "urgent": "Urgent",
+    "autoUnavailableNotice": "If you request help for yourself, you'll automatically become unavailable to help until your request ends.",
+    "autoUpdateNotice": "Requests update automatically",
     "errors": {
       "claimedTitle": "Another volunteer got there first",
       "claimedMessage": "This request was just claimed.",
-      "toggleFailedTitle": "Something went wrong",
+      "enableFailedTitle": "We couldn't turn on availability",
       "acceptFailedTitle": "We couldn't accept the request"
     },
     "backgroundNotification": {

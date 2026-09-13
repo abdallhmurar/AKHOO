@@ -318,29 +318,34 @@
   },
   "volunteer": {
     "title": "بدي أساعد",
-    "subtitle": "فعّل توفرّك حتى نشوف الطلبات القريبة من موقعك على الخريطة.",
-    "notAvailableTitle": "أنت غير متاح حالياً",
-    "notAvailableText": "موقعك لا يُرسل إلا عند تفعيل التوفر، وتظهر لك الطلبات القريبة على خريطة مباشرة.",
-    "howItWorks": {
-      "title": "كيف تساعد",
-      "mapItem": "تشوف طلبات حقيقية قريبة منك على الخريطة",
-      "chooseItem": "أنت تختار مين تساعد، ما في طلب يتفرض عليك",
-      "starItem": "المساعدة المؤكدة بتبني نجمة نشاطك"
-    },
-    "enable": "تفعيل التوفر",
-    "disable": "إيقاف",
-    "availableNow": "متاح الآن",
+    "subtitle": "شاهد طلبات المساعدة القريبة منك على الخريطة.",
+    "availableNow": "متاح للمساعدة",
     "nearbyCount": "{{count}} طلب قريب",
     "emptyBanner": "ما في طلبات قريبة هلق — رح تظهر تلقائياً أول ما تنفتح.",
     "openExternal": "فتح خارجي",
     "accept": "استلام المهمة",
     "distanceKm": "{{distance}} كم",
     "since": "منذ {{time}}",
+    "enabling": "عم نفعّل التوفر...",
     "sheet": { "newNearby": "طلب جديد قريب منك" },
+    "blocked": {
+      "title": "غير متاح للمساعدة حالياً",
+      "text": "عندك طلب مساعدة نشط، فما رح توصلك طلبات هلق. رح ترجع متاح تلقائياً فور ما ينتهي طلبك.",
+      "viewRequest": "عرض طلبي النشط"
+    },
+    "closest": {
+      "title": "أقرب طلب مساعدة إليك",
+      "viewAll": "عرض الكل",
+      "viewRequest": "عرض الطلب"
+    },
+    "allNearby": { "title": "كل الطلبات القريبة" },
+    "urgent": "عاجل",
+    "autoUnavailableNotice": "إذا طلبت مساعدة لنفسك بتصير غير متاح للمساعدة تلقائياً لحد ما ينتهي طلبك.",
+    "autoUpdateNotice": "يتم تحديث الطلبات تلقائياً",
     "errors": {
       "claimedTitle": "سبقك متطوع",
       "claimedMessage": "هذا الطلب انأخذ قبل لحظات.",
-      "toggleFailedTitle": "ما زبطت العملية",
+      "enableFailedTitle": "ما قدرنا نفعّل التوفر",
       "acceptFailedTitle": "ما قدرنا نستلم الطلب"
     },
     "backgroundNotification": {

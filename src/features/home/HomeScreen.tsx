@@ -60,7 +60,7 @@ export function HomeScreen() {
           locale={helpCardLocale}
           title={t('home.wantToHelp.title')}
           description={t('home.wantToHelp.text')}
-          onPress={() => (activeKind === 'job' ? resumeActive() : router.push('/helper'))}
+          onPress={() => (activeKind ? resumeActive() : router.push('/helper'))}
         />
         <DiscoverCard
           locale={helpCardLocale}
