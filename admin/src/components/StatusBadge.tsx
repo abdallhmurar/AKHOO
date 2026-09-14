@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/cn'
-import type { RequestStatus, OfferStatus } from '@/types'
+import type { RequestStatus, OfferStatus, RedemptionStatus, ReportStatus, BusinessStatus } from '@/types'
 
 const STATUS_TONE: Record<RequestStatus, string> = {
   open: 'bg-sanad-infoSoft text-sanad-info border-transparent',
@@ -30,6 +30,43 @@ const OFFER_STATUS_TONE: Record<OfferStatus, string> = {
 export function OfferStatusBadge({ status }: { status: OfferStatus }) {
   const { t } = useTranslation()
   return <Badge className={cn(OFFER_STATUS_TONE[status])}>{t(`offers.status.${status}`)}</Badge>
+}
+
+const REDEMPTION_STATUS_TONE: Record<RedemptionStatus, string> = {
+  pending: 'bg-sanad-warningSoft text-sanad-warning border-transparent',
+  redeemed: 'bg-sanad-successSoft text-sanad-success border-transparent',
+  expired: 'bg-secondary text-muted-foreground border-transparent',
+  cancelled: 'bg-secondary text-muted-foreground border-transparent',
+  refunded: 'bg-sanad-dangerSoft text-sanad-danger border-transparent'
+}
+
+export function RedemptionStatusBadge({ status }: { status: RedemptionStatus }) {
+  const { t } = useTranslation()
+  return <Badge className={cn(REDEMPTION_STATUS_TONE[status])}>{t(`redemptions.status.${status}`)}</Badge>
+}
+
+const REPORT_STATUS_TONE: Record<ReportStatus, string> = {
+  open: 'bg-sanad-dangerSoft text-sanad-danger border-transparent',
+  reviewing: 'bg-sanad-warningSoft text-sanad-warning border-transparent',
+  resolved: 'bg-sanad-successSoft text-sanad-success border-transparent',
+  dismissed: 'bg-secondary text-muted-foreground border-transparent'
+}
+
+export function ReportStatusBadge({ status }: { status: ReportStatus }) {
+  const { t } = useTranslation()
+  return <Badge className={cn(REPORT_STATUS_TONE[status])}>{t(`reports.status.${status}`)}</Badge>
+}
+
+const BUSINESS_STATUS_TONE: Record<BusinessStatus, string> = {
+  pending: 'bg-sanad-warningSoft text-sanad-warning border-transparent',
+  verified: 'bg-sanad-successSoft text-sanad-success border-transparent',
+  suspended: 'bg-sanad-dangerSoft text-sanad-danger border-transparent',
+  rejected: 'bg-secondary text-muted-foreground border-transparent'
+}
+
+export function BusinessStatusBadge({ status }: { status: BusinessStatus }) {
+  const { t } = useTranslation()
+  return <Badge className={cn(BUSINESS_STATUS_TONE[status])}>{t(`businesses.status.${status}`)}</Badge>
 }
 
 export function BooleanBadge({ value, trueLabel, falseLabel, invertTone = false }: { value: boolean; trueLabel: string; falseLabel: string; invertTone?: boolean }) {

@@ -130,7 +130,7 @@ export type OfferStatus = 'draft' | 'pending_review' | 'approved' | 'rejected' |
 
 export type Offer = {
   id: string
-  partner_id: string
+  partner_id: string | null
   title: string
   description: string | null
   terms: string | null
@@ -140,6 +140,8 @@ export type Offer = {
   offer_price: number | null
   image_url: string | null
   member_only: boolean
+  points_required: number | null
+  weekly_slot: number | null
   valid_from: string | null
   valid_until: string | null
   status: OfferStatus
@@ -161,6 +163,87 @@ export type BusinessRating = {
   business_id: string
   average_rating: number
   review_count: number
+}
+
+// ── Phase 2-5: Redemptions / Mission Ratings / Reports / Notifications /
+// Content banners ───────────────────────────────────────────────────────
+
+export type RedemptionStatus = 'pending' | 'redeemed' | 'expired' | 'cancelled' | 'refunded'
+
+export type OfferRedemption = {
+  id: string
+  offer_id: string
+  partner_id: string | null
+  user_id: string
+  code: string
+  status: RedemptionStatus
+  points_spent: number
+  created_at: string
+  updated_at: string
+  expires_at: string
+  redeemed_at: string | null
+}
+
+export type MissionRating = {
+  id: string
+  request_id: string
+  requester_id: string
+  helper_id: string
+  stars: number
+  created_at: string
+}
+
+export type ReportTargetType = 'request' | 'message' | 'business' | 'offer' | 'user'
+export type ReportStatus = 'open' | 'reviewing' | 'resolved' | 'dismissed'
+
+export type Report = {
+  id: string
+  reporter_id: string
+  target_type: ReportTargetType
+  target_id: string
+  reason: string
+  details: string | null
+  status: ReportStatus
+  resolution_note: string | null
+  resolved_by: string | null
+  resolved_at: string | null
+  created_at: string
+}
+
+export type MissionMessage = {
+  id: string
+  request_id: string
+  sender_id: string
+  body: string | null
+  media_url: string | null
+  media_type: 'image' | 'video' | null
+  created_at: string
+}
+
+export type NotificationAudience = 'all' | 'volunteers'
+
+export type BroadcastNotification = {
+  id: string
+  title: string
+  body: string
+  target_audience: NotificationAudience
+  sent_count: number
+  created_by: string | null
+  created_at: string
+  sent_at: string | null
+}
+
+export type ContentBannerSlot = 'perks_header' | 'perks_promax'
+export type ContentBannerLanguage = 'ar' | 'he' | 'en'
+
+export type ContentBanner = {
+  id: string
+  slot: ContentBannerSlot
+  language: ContentBannerLanguage
+  image_url: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 export type DashboardMetrics = {

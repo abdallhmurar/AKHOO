@@ -18,6 +18,11 @@ import { OfferPreviewCard } from './OfferPreviewCard'
 
 const DISCOUNT_TYPES: OfferDiscountType[] = ['percentage', 'fixed', 'special_price', 'free_benefit']
 
+// Radix Select reserves the empty string for "no selection" internally, so a
+// real "no partner" choice needs its own sentinel value, translated back to
+// null only when building the RPC payload.
+const NO_BUSINESS_VALUE = '__none__'
+
 function toDateInputValue(iso: string | null) {
   return iso ? iso.slice(0, 10) : ''
 }
@@ -30,7 +35,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
   const upsert = useUpsertOffer()
   const isEdit = !!offer
 
-  const [businessId, setBusinessId] = useState(offer?.partner_id ?? searchParams.get('business') ?? '')
+  const [businessId, setBusinessId] = useState(offer?.partner_id ?? searchParams.get('business') ?? NO_BUSINESS_VALUE)
   const [title, setTitle] = useState(offer?.title ?? '')
   const [description, setDescription] = useState(offer?.description ?? '')
   const [terms, setTerms] = useState(offer?.terms ?? '')
@@ -42,15 +47,16 @@ export function OfferForm({ offer }: { offer?: Offer }) {
   const [validFrom, setValidFrom] = useState(toDateInputValue(offer?.valid_from ?? null))
   const [validUntil, setValidUntil] = useState(toDateInputValue(offer?.valid_until ?? null))
   const [memberOnly, setMemberOnly] = useState(offer?.member_only ?? false)
+  const [pointsRequired, setPointsRequired] = useState(offer?.points_required?.toString() ?? '')
   const [imageUploading, setImageUploading] = useState(false)
 
   const selectedBusinessName = useMemo(() => businessOptions.data?.find(b => b.id === businessId)?.name ?? null, [businessOptions.data, businessId])
 
   async function handleImageChange(file: File | undefined) {
-    if (!file || !businessId) return
+    if (!file) return
     setImageUploading(true)
     try {
-      const url = await uploadBusinessImage(file, businessId, 'offers')
+      const url = await uploadBusinessImage(file, businessId === NO_BUSINESS_VALUE ? 'general' : businessId, 'offers')
       setImageUrl(url)
     } catch (error) {
       if (error instanceof ImageValidationError) toast.error(t(`businesses.form.imageErrors.${error.message}`))
@@ -66,7 +72,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
       const result = await upsert.mutateAsync({
         id: offer?.id ?? null,
         payload: {
-          business_id: businessId,
+          business_id: businessId === NO_BUSINESS_VALUE ? null : businessId,
           title,
           description,
           terms,
@@ -77,7 +83,8 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           image_url: imageUrl,
           valid_from: validFrom ? new Date(validFrom).toISOString() : null,
           valid_until: validUntil ? new Date(validUntil).toISOString() : null,
-          member_only: memberOnly
+          member_only: memberOnly,
+          points_required: pointsRequired ? Number(pointsRequired) : null
         }
       })
       toast.success(t(isEdit ? 'offers.form.savedEdit' : 'offers.form.savedCreate'))
@@ -95,11 +102,12 @@ export function OfferForm({ offer }: { offer?: Offer }) {
             <h2 className="text-sm font-semibold text-foreground">{t('offers.form.sections.general')}</h2>
             <div className="flex flex-col gap-2">
               <Label>{t('offers.form.business')}</Label>
-              <Select value={businessId} onValueChange={setBusinessId} required>
+              <Select value={businessId} onValueChange={setBusinessId}>
                 <SelectTrigger>
                   <SelectValue placeholder={t('offers.form.selectBusiness')} />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value={NO_BUSINESS_VALUE}>{t('offers.form.noBusiness')}</SelectItem>
                   {(businessOptions.data ?? []).map(b => (
                     <SelectItem key={b.id} value={b.id}>
                       {b.name}
@@ -139,7 +147,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
                   {t('offers.form.uploadImage')}
                 </span>
               </Label>
-              <input id="offer-image" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={imageUploading || !businessId} onChange={e => handleImageChange(e.target.files?.[0])} />
+              <input id="offer-image" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={imageUploading} onChange={e => handleImageChange(e.target.files?.[0])} />
             </div>
           </CardContent>
         </Card>
@@ -175,6 +183,11 @@ export function OfferForm({ offer }: { offer?: Offer }) {
                 <Label htmlFor="discountValue">{discountType === 'percentage' ? t('offers.form.discountPercentage') : t('offers.form.discountValue')}</Label>
                 <Input id="discountValue" type="number" min="0" step="0.01" dir="ltr" value={discountValue} onChange={e => setDiscountValue(e.target.value)} disabled={discountType === 'free_benefit'} />
               </div>
+            </div>
+            <div className="flex flex-col gap-2 sm:w-1/3">
+              <Label htmlFor="pointsRequired">{t('offers.form.pointsRequired')}</Label>
+              <Input id="pointsRequired" type="number" min="0" step="1" dir="ltr" value={pointsRequired} onChange={e => setPointsRequired(e.target.value)} />
+              <p className="text-xs text-muted-foreground">{t('offers.form.pointsRequiredHint')}</p>
             </div>
           </CardContent>
         </Card>
@@ -212,7 +225,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             {t('common.cancel')}
           </Button>
-          <Button type="submit" disabled={upsert.isPending || !businessId}>
+          <Button type="submit" disabled={upsert.isPending}>
             {t('common.save')}
           </Button>
         </div>

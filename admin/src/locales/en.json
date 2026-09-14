@@ -26,19 +26,26 @@
     "language": "Language"
   },
   "nav": {
-    "brand": "SANAD",
+    "brand": "AKHOO",
     "console": "Admin Console",
+    "sections": { "overview": "Overview", "community": "Community", "commerce": "Commerce", "safety": "Trust & Safety", "growth": "Growth" },
     "dashboard": "Dashboard",
     "requests": "Requests",
     "users": "Users",
     "points": "Points",
+    "missionRatings": "Mission Ratings",
     "businesses": "Businesses",
     "offers": "Offers",
+    "redemptions": "Redemptions",
     "reviews": "Reviews",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "content": "Content",
+    "proMax": "AKHOO Pro Max",
     "map": "Map"
   },
   "auth": {
-    "loginTitle": "SANAD",
+    "loginTitle": "AKHOO",
     "loginSubtitle": "Admin Console",
     "email": "Email",
     "password": "Password",
@@ -226,6 +233,12 @@
       "locksmith": "Locksmith",
       "other": "Other"
     },
+    "status": {
+      "pending": "Pending review",
+      "verified": "Verified",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
     "table": {
       "name": "Name",
       "category": "Category",
@@ -268,7 +281,11 @@
       "activateConfirmMessage": "It will become visible to SANAD users again.",
       "hideConfirmTitle": "Hide this business?",
       "hideConfirmMessage": "It will no longer be visible to SANAD users, but its data (offers, reviews, history) is preserved.",
-      "noReviews": "No reviews yet."
+      "noReviews": "No reviews yet.",
+      "statusLabel": "Partner status",
+      "statusHint": "Independent from Active/Hidden above - this is the partner's verification lifecycle.",
+      "statusChangeConfirmTitle": "Change partner status?",
+      "statusChangeConfirmMessage": "The business's status will change to \"{{status}}\"."
     }
   },
   "offers": {
@@ -293,7 +310,9 @@
     "table": {
       "title": "Offer",
       "business": "Business",
-      "status": "Status"
+      "status": "Status",
+      "points": "Points",
+      "weekly": "Weekly slot"
     },
     "filters": {
       "searchPlaceholder": "Search by offer title"
@@ -302,6 +321,7 @@
       "sections": { "general": "General", "pricing": "Pricing", "validity": "Validity", "membership": "SANAD+" },
       "business": "Business",
       "selectBusiness": "Select a business",
+      "noBusiness": "No partner (general SANAD offer)",
       "title": "Offer title",
       "description": "Description",
       "terms": "Terms",
@@ -314,6 +334,8 @@
       "previewLabel": "Live preview",
       "memberOnly": "Exclusive to SANAD+ members",
       "memberOnlyHint": "The offer stays visible to everyone - only using it (the \"Use offer\" button) requires an active SANAD+ membership.",
+      "pointsRequired": "Points required",
+      "pointsRequiredHint": "Leave empty if the offer doesn't cost points to use.",
       "savedCreate": "Offer created.",
       "savedEdit": "Offer updated."
     },
@@ -336,7 +358,12 @@
       "pauseConfirmMessage": "It will stop being publicly visible until reactivated.",
       "calculatedDiscount": "Calculated discount",
       "noneForBusiness": "No offers for this business yet.",
-      "memberOnlyBadge": "SANAD+ exclusive"
+      "memberOnlyBadge": "SANAD+ exclusive",
+      "weeklyRotationTitle": "Weekly rotation",
+      "weeklyRotationHint": "Only approved offers can be assigned a weekly slot.",
+      "weeklySlotNone": "Not in weekly rotation",
+      "weeklySlotOption": "Slot {{n}}",
+      "pointsUnit": "points"
     }
   },
   "reviews": {
@@ -384,8 +411,139 @@
       "offerApproved": "approved offer",
       "offerRejected": "rejected offer",
       "offerPaused": "paused offer",
+      "offerWeeklySlotSet": "set offer's weekly slot",
       "reviewHidden": "hid review",
-      "reviewRestored": "restored review"
+      "reviewRestored": "restored review",
+      "businessMarkedPending": "marked business pending",
+      "businessVerified": "verified business",
+      "businessSuspended": "suspended business",
+      "businessRejected": "rejected business",
+      "redemptionRedeemed": "redeemed a code",
+      "redemptionCancelled": "cancelled a redemption",
+      "redemptionRefunded": "refunded a redemption",
+      "reportResolved": "resolved a report",
+      "reportDismissed": "dismissed a report",
+      "broadcastNotificationSent": "sent a broadcast notification",
+      "contentBannerUpdated": "updated a content banner"
     }
+  },
+  "redemptions": {
+    "title": "Redemptions",
+    "subtitle": "Every points-based offer redemption, real-time.",
+    "redeemCard": {
+      "title": "Redeem a code",
+      "subtitle": "Ask the customer for their code and enter it here to mark the offer as used.",
+      "placeholder": "Enter redemption code",
+      "action": "Redeem",
+      "success": "Code redeemed - offer marked as used."
+    },
+    "status": {
+      "pending": "Pending",
+      "redeemed": "Redeemed",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "table": {
+      "code": "Code",
+      "offer": "Offer",
+      "user": "User",
+      "partner": "Partner",
+      "points": "Points",
+      "status": "Status",
+      "expires": "Expires"
+    },
+    "filters": { "searchPlaceholder": "Search by code" },
+    "cancel": "Cancel",
+    "cancelConfirmTitle": "Cancel this redemption?",
+    "cancelConfirmMessage": "The user's points will be returned automatically.",
+    "refund": "Refund",
+    "refundConfirmTitle": "Refund this redemption?",
+    "refundConfirmMessage": "Use this when a redeemed code needs to be reversed after the fact (a partner dispute, a mistaken scan). The user's points will be returned."
+  },
+  "missionRatings": {
+    "title": "Mission Ratings",
+    "subtitle": "Star ratings requesters left for the helper on a completed mission.",
+    "table": {
+      "helper": "Helper",
+      "requester": "Requester",
+      "stars": "Rating",
+      "date": "Date"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "User-submitted reports - resolving one grants temporary, scoped access to review the flagged chat.",
+    "status": {
+      "open": "Open",
+      "reviewing": "Reviewing",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "table": {
+      "reporter": "Reported by",
+      "target": "Target",
+      "reason": "Reason",
+      "status": "Status",
+      "date": "Date"
+    },
+    "targetTypes": {
+      "request": "Request",
+      "message": "Chat message",
+      "business": "Business",
+      "offer": "Offer",
+      "user": "User"
+    },
+    "filters": { "searchPlaceholder": "Search by reason" },
+    "detail": {
+      "reviewing": "Mark as reviewing",
+      "resolve": "Resolve",
+      "dismiss": "Dismiss",
+      "resolveConfirmTitle": "Resolve this report?",
+      "dismissConfirmTitle": "Dismiss this report?",
+      "notePlaceholder": "Resolution note (optional)",
+      "chatTitle": "Flagged conversation",
+      "chatHint": "Visible only while this report is open or under review.",
+      "noMessages": "No messages to show for this report's target."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Send a real push notification to AKHOO users.",
+    "compose": {
+      "title": "New broadcast",
+      "titleField": "Title",
+      "bodyField": "Message",
+      "audience": "Audience",
+      "audienceAll": "Everyone",
+      "audienceVolunteers": "Volunteers only",
+      "send": "Send notification",
+      "sent": "Notification sent."
+    },
+    "table": {
+      "title": "Title",
+      "audience": "Audience",
+      "sentCount": "Delivered to",
+      "date": "Sent"
+    }
+  },
+  "content": {
+    "title": "Content",
+    "subtitle": "Manage the Perks screen's banner images per language, without an app update.",
+    "slots": {
+      "perks_header": "Perks header banner",
+      "perks_promax": "AKHOO Pro Max banner"
+    },
+    "languages": { "ar": "Arabic", "he": "Hebrew", "en": "English" },
+    "upload": "Upload image",
+    "active": "Active",
+    "inactive": "Inactive",
+    "fallbackHint": "When inactive or not set, the app shows its built-in default image instead - never a blank banner.",
+    "saved": "Banner updated."
+  },
+  "proMax": {
+    "title": "AKHOO Pro Max",
+    "comingSoonTitle": "Coming soon",
+    "comingSoonMessage": "AKHOO Pro Max management will land here once the membership tier itself ships. Nothing to configure yet."
   }
 }

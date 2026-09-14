@@ -26,19 +26,26 @@
     "language": "שפה"
   },
   "nav": {
-    "brand": "סָנָד",
+    "brand": "אחוו",
     "console": "מסוף ניהול",
+    "sections": { "overview": "סקירה", "community": "קהילה", "commerce": "מסחר", "safety": "אמון ובטיחות", "growth": "צמיחה" },
     "dashboard": "לוח בקרה",
     "requests": "בקשות",
     "users": "משתמשים",
     "points": "נקודות",
+    "missionRatings": "דירוגי משימות",
     "businesses": "עסקים",
     "offers": "מבצעים",
+    "redemptions": "מימושים",
     "reviews": "ביקורות",
+    "reports": "תלונות",
+    "notifications": "התראות",
+    "content": "תוכן",
+    "proMax": "אחוו פרו מקס",
     "map": "מפה"
   },
   "auth": {
-    "loginTitle": "סָנָד",
+    "loginTitle": "אחוו",
     "loginSubtitle": "מסוף ניהול",
     "email": "אימייל",
     "password": "סיסמה",
@@ -234,6 +241,12 @@
       "active": "פעיל",
       "inactive": "מוסתר"
     },
+    "status": {
+      "pending": "מחכה לבדיקה",
+      "verified": "מאומת",
+      "suspended": "מושהה",
+      "rejected": "נדחה"
+    },
     "filters": {
       "searchPlaceholder": "חיפוש לפי שם",
       "category": "קטגוריה",
@@ -268,7 +281,11 @@
       "activateConfirmMessage": "הוא יוצג שוב למשתמשי סָנָד.",
       "hideConfirmTitle": "להסתיר את העסק?",
       "hideConfirmMessage": "הוא לא יוצג עוד למשתמשי סָנָד, אך הנתונים שלו (מבצעים, ביקורות, היסטוריה) יישמרו.",
-      "noReviews": "אין עדיין ביקורות."
+      "noReviews": "אין עדיין ביקורות.",
+      "statusLabel": "סטטוס השותף",
+      "statusHint": "בלתי תלוי בפעיל/מוסתר לעיל - זהו מחזור אימות השותף.",
+      "statusChangeConfirmTitle": "לשנות את סטטוס השותף?",
+      "statusChangeConfirmMessage": "סטטוס העסק יהפוך ל-\"{{status}}\"."
     }
   },
   "offers": {
@@ -293,7 +310,9 @@
     "table": {
       "title": "מבצע",
       "business": "עסק",
-      "status": "סטטוס"
+      "status": "סטטוס",
+      "points": "נקודות",
+      "weekly": "מיקום שבועי"
     },
     "filters": {
       "searchPlaceholder": "חיפוש לפי כותרת המבצע"
@@ -302,6 +321,7 @@
       "sections": { "general": "כללי", "pricing": "תמחור", "validity": "תוקף", "membership": "SANAD+" },
       "business": "עסק",
       "selectBusiness": "בחר עסק",
+      "noBusiness": "בלי שותף (מבצע כללי של סָנָד)",
       "title": "כותרת המבצע",
       "description": "תיאור",
       "terms": "תנאים",
@@ -314,6 +334,8 @@
       "previewLabel": "תצוגה מקדימה חיה",
       "memberOnly": "בלעדי לחברי SANAD+",
       "memberOnlyHint": "המבצע נשאר גלוי לכולם - רק השימוש בו (כפתור \"השתמש במבצע\") דורש חברות SANAD+ פעילה.",
+      "pointsRequired": "נקודות נדרשות",
+      "pointsRequiredHint": "השאר ריק אם השימוש במבצע אינו עולה נקודות.",
       "savedCreate": "המבצע נוצר.",
       "savedEdit": "המבצע עודכן."
     },
@@ -336,7 +358,12 @@
       "pauseConfirmMessage": "הוא יפסיק להיות מוצג לציבור עד להפעלה מחדש.",
       "calculatedDiscount": "הנחה מחושבת",
       "noneForBusiness": "אין עדיין מבצעים לעסק זה.",
-      "memberOnlyBadge": "בלעדי ל-SANAD+"
+      "memberOnlyBadge": "בלעדי ל-SANAD+",
+      "weeklyRotationTitle": "סבב שבועי",
+      "weeklyRotationHint": "אפשר להקצות מיקום שבועי רק למבצעים מאושרים.",
+      "weeklySlotNone": "לא בסבב השבועי",
+      "weeklySlotOption": "מיקום {{n}}",
+      "pointsUnit": "נקודות"
     }
   },
   "reviews": {
@@ -384,8 +411,139 @@
       "offerApproved": "אישר מבצע",
       "offerRejected": "דחה מבצע",
       "offerPaused": "השהה מבצע",
+      "offerWeeklySlotSet": "קבע מיקום שבועי למבצע",
       "reviewHidden": "הסתיר ביקורת",
-      "reviewRestored": "שחזר ביקורת"
+      "reviewRestored": "שחזר ביקורת",
+      "businessMarkedPending": "החזיר עסק למצב מחכה",
+      "businessVerified": "אימת עסק",
+      "businessSuspended": "השהה עסק",
+      "businessRejected": "דחה עסק",
+      "redemptionRedeemed": "מימש קוד",
+      "redemptionCancelled": "ביטל מימוש",
+      "redemptionRefunded": "החזיר נקודות של מימוש",
+      "reportResolved": "פתר תלונה",
+      "reportDismissed": "סגר תלונה",
+      "broadcastNotificationSent": "שלח התראה כללית",
+      "contentBannerUpdated": "עדכן באנר תוכן"
     }
+  },
+  "redemptions": {
+    "title": "מימושים",
+    "subtitle": "כל מימוש מבצע בנקודות, בזמן אמת.",
+    "redeemCard": {
+      "title": "מימוש קוד",
+      "subtitle": "בקשו מהלקוח את הקוד והזינו אותו כאן כדי לאשר שהמבצע נוצל.",
+      "placeholder": "הזינו קוד מימוש",
+      "action": "מימוש",
+      "success": "הקוד מומש - המבצע סומן כמנוצל."
+    },
+    "status": {
+      "pending": "ממתין",
+      "redeemed": "מומש",
+      "expired": "פג תוקף",
+      "cancelled": "מבוטל",
+      "refunded": "הוחזר"
+    },
+    "table": {
+      "code": "קוד",
+      "offer": "מבצע",
+      "user": "משתמש",
+      "partner": "שותף",
+      "points": "נקודות",
+      "status": "סטטוס",
+      "expires": "תוקף עד"
+    },
+    "filters": { "searchPlaceholder": "חיפוש לפי קוד" },
+    "cancel": "ביטול",
+    "cancelConfirmTitle": "לבטל את המימוש הזה?",
+    "cancelConfirmMessage": "הנקודות של המשתמש יוחזרו אוטומטית.",
+    "refund": "החזר נקודות",
+    "refundConfirmTitle": "להחזיר נקודות על מימוש זה?",
+    "refundConfirmMessage": "השתמשו באפשרות זו כשקוד שמומש צריך להתבטל בדיעבד (מחלוקת עם שותף, סריקה שגויה). נקודות המשתמש יוחזרו."
+  },
+  "missionRatings": {
+    "title": "דירוגי משימות",
+    "subtitle": "דירוגי כוכבים שהמבקשים השאירו לעוזר בסיום משימה.",
+    "table": {
+      "helper": "העוזר",
+      "requester": "המבקש",
+      "stars": "דירוג",
+      "date": "תאריך"
+    }
+  },
+  "reports": {
+    "title": "תלונות",
+    "subtitle": "תלונות שהוגשו על ידי משתמשים - פתרון תלונה מעניק גישה זמנית ומוגבלת לצפייה בשיחה המדוברת.",
+    "status": {
+      "open": "פתוח",
+      "reviewing": "בבדיקה",
+      "resolved": "טופל",
+      "dismissed": "נסגר"
+    },
+    "table": {
+      "reporter": "הוגש על ידי",
+      "target": "מטרה",
+      "reason": "סיבה",
+      "status": "סטטוס",
+      "date": "תאריך"
+    },
+    "targetTypes": {
+      "request": "בקשה",
+      "message": "הודעת צ'אט",
+      "business": "עסק",
+      "offer": "מבצע",
+      "user": "משתמש"
+    },
+    "filters": { "searchPlaceholder": "חיפוש לפי סיבה" },
+    "detail": {
+      "reviewing": "סמן כבבדיקה",
+      "resolve": "טיפול",
+      "dismiss": "סגירה",
+      "resolveConfirmTitle": "לטפל בתלונה זו?",
+      "dismissConfirmTitle": "לסגור תלונה זו?",
+      "notePlaceholder": "הערת סיום (אופציונלי)",
+      "chatTitle": "השיחה המדוברת",
+      "chatHint": "גלוי רק כל עוד התלונה פתוחה או בבדיקה.",
+      "noMessages": "אין הודעות להצגה עבור מטרת התלונה הזו."
+    }
+  },
+  "notifications": {
+    "title": "התראות",
+    "subtitle": "שליחת התראת push אמיתית למשתמשי אחוו.",
+    "compose": {
+      "title": "התראה חדשה",
+      "titleField": "כותרת",
+      "bodyField": "הודעה",
+      "audience": "קהל",
+      "audienceAll": "כולם",
+      "audienceVolunteers": "מתנדבים בלבד",
+      "send": "שליחת ההתראה",
+      "sent": "ההתראה נשלחה."
+    },
+    "table": {
+      "title": "כותרת",
+      "audience": "קהל",
+      "sentCount": "נמסר ל",
+      "date": "נשלח"
+    }
+  },
+  "content": {
+    "title": "תוכן",
+    "subtitle": "ניהול תמונות הבאנר במסך המבצעים לכל שפה, בלי עדכון לאפליקציה.",
+    "slots": {
+      "perks_header": "באנר עליון במסך המבצעים",
+      "perks_promax": "באנר אחוו פרו מקס"
+    },
+    "languages": { "ar": "ערבית", "he": "עברית", "en": "אנגלית" },
+    "upload": "העלאת תמונה",
+    "active": "פעיל",
+    "inactive": "לא פעיל",
+    "fallbackHint": "כשלא פעיל או לא מוגדר, האפליקציה מציגה את תמונת המחדל המובנית שלה - לעולם לא באנר ריק.",
+    "saved": "הבאנר עודכן."
+  },
+  "proMax": {
+    "title": "אחוו פרו מקס",
+    "comingSoonTitle": "בקרוב",
+    "comingSoonMessage": "ניהול אחוו פרו מקס יגיע לכאן ברגע שמסלול החברות עצמו ישוק. אין עדיין מה להגדיר."
   }
 }

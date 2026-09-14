@@ -36,14 +36,14 @@ export function useOffers(page: number, filters: OfferFilters, pageSize = DEFAUL
         return query.range(from, to)
       }, page, pageSize)
 
-      const businessIds = [...new Set(rows.map(r => r.partner_id))]
+      const businessIds = [...new Set(rows.map(r => r.partner_id).filter((id): id is string => id !== null))]
       const namesById = new Map<string, string>()
       if (businessIds.length > 0) {
         const { data: businesses } = await supabase.from('partners').select('id, name').in('id', businessIds)
         for (const b of businesses ?? []) namesById.set(b.id, b.name)
       }
 
-      const enriched: OfferRow[] = rows.map(r => ({ ...r, business_name: namesById.get(r.partner_id) ?? null }))
+      const enriched: OfferRow[] = rows.map(r => ({ ...r, business_name: r.partner_id ? namesById.get(r.partner_id) ?? null : null }))
 
       return { rows: enriched, total }
     }

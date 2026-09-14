@@ -534,6 +534,8 @@
       "countdown": "{{days}}d {{hours}}h left",
       "exclusive": "Exclusive",
       "savings": "Save {{amount}}",
+      "pointsCost": "{{points}} pts",
+      "insufficientPoints": "Not enough points yet",
       "useOffer": "Use offer"
     },
     "categoriesTitle": "Categories",
@@ -592,7 +594,14 @@
       "viewBusiness": "View business",
       "contactTitle": "Contact the business to use this offer",
       "contactMessage": "AKHOO doesn't book the offer for you - reach out to the business directly to use it.",
-      "notFound": "This offer is no longer available."
+      "notFound": "This offer is no longer available.",
+      "insufficientPointsTitle": "Not enough points yet",
+      "insufficientPointsMessage": "This offer needs {{points}} points - you currently have {{balance}}.",
+      "redeemTitle": "Show this to the business",
+      "redeemSubtitle": "Your points have been deducted. Show this code to redeem the offer in person.",
+      "redeemCountdown": "Expires in {{minutes}}:{{seconds}}",
+      "redeemExpired": "This code has expired.",
+      "cancelRedemption": "Cancel and get points back"
     },
     "business": {
       "title": "Business details",

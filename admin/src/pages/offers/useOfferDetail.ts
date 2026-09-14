@@ -11,7 +11,9 @@ export function useOfferDetail(id: string | undefined) {
       if (error) throw error
       const o = offer as Offer
 
-      const { data: business } = await supabase.from('partners').select('*').eq('id', o.partner_id).single()
+      const { data: business } = o.partner_id
+        ? await supabase.from('partners').select('*').eq('id', o.partner_id).single()
+        : { data: null }
 
       const { data: history } = await supabase.from('admin_audit_log').select('*').eq('target_type', 'offer').eq('target_id', o.id).order('created_at', { ascending: false })
 

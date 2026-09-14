@@ -26,19 +26,26 @@
     "language": "اللغة"
   },
   "nav": {
-    "brand": "سَنَد",
+    "brand": "أخوو",
     "console": "لوحة الإدارة",
+    "sections": { "overview": "نظرة عامة", "community": "المجتمع", "commerce": "العروض والمصالح", "safety": "الأمان والثقة", "growth": "النمو" },
     "dashboard": "الرئيسية",
     "requests": "الطلبات",
     "users": "المستخدمون",
     "points": "النقاط",
+    "missionRatings": "تقييمات المهام",
     "businesses": "الأعمال التجارية",
     "offers": "العروض",
+    "redemptions": "الاستبدالات",
     "reviews": "التقييمات",
+    "reports": "التقارير",
+    "notifications": "الإشعارات",
+    "content": "المحتوى",
+    "proMax": "أخوو برو ماكس",
     "map": "الخريطة"
   },
   "auth": {
-    "loginTitle": "سَنَد",
+    "loginTitle": "أخوو",
     "loginSubtitle": "لوحة الإدارة",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
@@ -234,6 +241,12 @@
       "active": "نشط",
       "inactive": "مخفي"
     },
+    "status": {
+      "pending": "بانتظار المراجعة",
+      "verified": "موثّق",
+      "suspended": "معلّق",
+      "rejected": "مرفوض"
+    },
     "filters": {
       "searchPlaceholder": "بحث بالاسم",
       "category": "الفئة",
@@ -268,7 +281,11 @@
       "activateConfirmMessage": "سيصبح ظاهراً لمستخدمي سَنَد من جديد.",
       "hideConfirmTitle": "إخفاء هذا العمل التجاري؟",
       "hideConfirmMessage": "لن يظهر بعدها لمستخدمي سَنَد، لكن بياناته (العروض، التقييمات، السجل) تبقى محفوظة.",
-      "noReviews": "لا توجد تقييمات بعد."
+      "noReviews": "لا توجد تقييمات بعد.",
+      "statusLabel": "حالة الشريك",
+      "statusHint": "مستقلة عن نشط/مخفي أعلاه - هذه دورة حياة توثيق الشريك.",
+      "statusChangeConfirmTitle": "تغيير حالة الشريك؟",
+      "statusChangeConfirmMessage": "ستصبح حالة العمل التجاري \"{{status}}\"."
     }
   },
   "offers": {
@@ -293,7 +310,9 @@
     "table": {
       "title": "العرض",
       "business": "العمل التجاري",
-      "status": "الحالة"
+      "status": "الحالة",
+      "points": "النقاط",
+      "weekly": "الموضع الأسبوعي"
     },
     "filters": {
       "searchPlaceholder": "بحث بعنوان العرض"
@@ -302,6 +321,7 @@
       "sections": { "general": "معلومات عامة", "pricing": "التسعير", "validity": "مدة الصلاحية", "membership": "SANAD+" },
       "business": "العمل التجاري",
       "selectBusiness": "اختر عملاً تجارياً",
+      "noBusiness": "بدون شريك (عرض عام من سَنَد)",
       "title": "عنوان العرض",
       "description": "الوصف",
       "terms": "الشروط",
@@ -314,6 +334,8 @@
       "previewLabel": "معاينة حية",
       "memberOnly": "حصري لأعضاء SANAD+",
       "memberOnlyHint": "يبقى العرض ظاهراً للجميع، بس استخدامه (زر \"استخدام العرض\") بيتطلب عضوية SANAD+ فعالة.",
+      "pointsRequired": "النقاط المطلوبة",
+      "pointsRequiredHint": "اتركه فاضياً إذا كان استخدام العرض لا يكلّف نقاطاً.",
       "savedCreate": "تم إنشاء العرض.",
       "savedEdit": "تم تحديث العرض."
     },
@@ -336,7 +358,12 @@
       "pauseConfirmMessage": "سيتوقف ظهوره للعامة حتى إعادة تفعيله.",
       "calculatedDiscount": "نسبة الخصم المحسوبة",
       "noneForBusiness": "لا توجد عروض لهذا العمل التجاري بعد.",
-      "memberOnlyBadge": "حصري لـ SANAD+"
+      "memberOnlyBadge": "حصري لـ SANAD+",
+      "weeklyRotationTitle": "الترتيب الأسبوعي",
+      "weeklyRotationHint": "يمكن تعيين موضع أسبوعي فقط للعروض المعتمدة.",
+      "weeklySlotNone": "ليس ضمن العروض الأسبوعية",
+      "weeklySlotOption": "الموضع {{n}}",
+      "pointsUnit": "نقطة"
     }
   },
   "reviews": {
@@ -384,8 +411,139 @@
       "offerApproved": "اعتمد عرضاً",
       "offerRejected": "رفض عرضاً",
       "offerPaused": "أوقف عرضاً مؤقتاً",
+      "offerWeeklySlotSet": "حدّد الموضع الأسبوعي لعرض",
       "reviewHidden": "أخفى تقييماً",
-      "reviewRestored": "استعاد تقييماً"
+      "reviewRestored": "استعاد تقييماً",
+      "businessMarkedPending": "أعاد عملاً تجارياً لحالة الانتظار",
+      "businessVerified": "وثّق عملاً تجارياً",
+      "businessSuspended": "علّق عملاً تجارياً",
+      "businessRejected": "رفض عملاً تجارياً",
+      "redemptionRedeemed": "استبدل كوداً",
+      "redemptionCancelled": "ألغى استبدالاً",
+      "redemptionRefunded": "استرجع نقاط استبدال",
+      "reportResolved": "حلّ تقريراً",
+      "reportDismissed": "رفض تقريراً",
+      "broadcastNotificationSent": "أرسل إشعاراً جماعياً",
+      "contentBannerUpdated": "حدّث بانر محتوى"
     }
+  },
+  "redemptions": {
+    "title": "الاستبدالات",
+    "subtitle": "كل استبدال عرض بالنقاط، لحظياً.",
+    "redeemCard": {
+      "title": "استبدال كود",
+      "subtitle": "اطلب من الزبون الكود وأدخله هنا لتأكيد استخدام العرض.",
+      "placeholder": "أدخل كود الاستبدال",
+      "action": "استبدال",
+      "success": "تم استبدال الكود - تم تأكيد استخدام العرض."
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "redeemed": "مُستبدل",
+      "expired": "منتهي",
+      "cancelled": "ملغى",
+      "refunded": "مُرجَع"
+    },
+    "table": {
+      "code": "الكود",
+      "offer": "العرض",
+      "user": "المستخدم",
+      "partner": "الشريك",
+      "points": "النقاط",
+      "status": "الحالة",
+      "expires": "ينتهي"
+    },
+    "filters": { "searchPlaceholder": "بحث بالكود" },
+    "cancel": "إلغاء",
+    "cancelConfirmTitle": "إلغاء هذا الاستبدال؟",
+    "cancelConfirmMessage": "سيتم إرجاع نقاط المستخدم تلقائياً.",
+    "refund": "إرجاع النقاط",
+    "refundConfirmTitle": "إرجاع نقاط هذا الاستبدال؟",
+    "refundConfirmMessage": "استخدم هذا عندما يحتاج كود مُستبدَل للتراجع بعد الاستخدام (نزاع مع الشريك، مسح بالخطأ). سيتم إرجاع نقاط المستخدم."
+  },
+  "missionRatings": {
+    "title": "تقييمات المهام",
+    "subtitle": "تقييمات النجوم التي تركها طالبو المساعدة للمساعد بعد إنجاز المهمة.",
+    "table": {
+      "helper": "المساعد",
+      "requester": "طالب المساعدة",
+      "stars": "التقييم",
+      "date": "التاريخ"
+    }
+  },
+  "reports": {
+    "title": "التقارير",
+    "subtitle": "تقارير قدّمها المستخدمون - حل التقرير يمنح صلاحية مؤقتة ومحدودة لمراجعة المحادثة المرتبطة به.",
+    "status": {
+      "open": "مفتوح",
+      "reviewing": "قيد المراجعة",
+      "resolved": "محلول",
+      "dismissed": "مرفوض"
+    },
+    "table": {
+      "reporter": "قدّمه",
+      "target": "الهدف",
+      "reason": "السبب",
+      "status": "الحالة",
+      "date": "التاريخ"
+    },
+    "targetTypes": {
+      "request": "طلب مساعدة",
+      "message": "رسالة محادثة",
+      "business": "عمل تجاري",
+      "offer": "عرض",
+      "user": "مستخدم"
+    },
+    "filters": { "searchPlaceholder": "بحث بالسبب" },
+    "detail": {
+      "reviewing": "وضع قيد المراجعة",
+      "resolve": "حل",
+      "dismiss": "رفض",
+      "resolveConfirmTitle": "حل هذا التقرير؟",
+      "dismissConfirmTitle": "رفض هذا التقرير؟",
+      "notePlaceholder": "ملاحظة الحل (اختياري)",
+      "chatTitle": "المحادثة المرتبطة",
+      "chatHint": "ظاهرة فقط ما دام هذا التقرير مفتوحاً أو قيد المراجعة.",
+      "noMessages": "لا توجد رسائل لعرضها لهدف هذا التقرير."
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "subtitle": "أرسل إشعار push حقيقي لمستخدمي أخوو.",
+    "compose": {
+      "title": "إشعار جديد",
+      "titleField": "العنوان",
+      "bodyField": "الرسالة",
+      "audience": "الجمهور",
+      "audienceAll": "الجميع",
+      "audienceVolunteers": "المتطوعون فقط",
+      "send": "إرسال الإشعار",
+      "sent": "تم إرسال الإشعار."
+    },
+    "table": {
+      "title": "العنوان",
+      "audience": "الجمهور",
+      "sentCount": "وصل إلى",
+      "date": "تاريخ الإرسال"
+    }
+  },
+  "content": {
+    "title": "المحتوى",
+    "subtitle": "إدارة صور بانر شاشة المزايا لكل لغة، بدون تحديث للتطبيق.",
+    "slots": {
+      "perks_header": "بانر رأس المزايا",
+      "perks_promax": "بانر أخوو برو ماكس"
+    },
+    "languages": { "ar": "العربية", "he": "العبرية", "en": "الإنجليزية" },
+    "upload": "رفع صورة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "fallbackHint": "عندما يكون غير نشط أو غير محدد، يعرض التطبيق صورته الافتراضية المدمجة - أبداً بانر فاضي.",
+    "saved": "تم تحديث البانر."
+  },
+  "proMax": {
+    "title": "أخوو برو ماكس",
+    "comingSoonTitle": "قريباً",
+    "comingSoonMessage": "إدارة أخوو برو ماكس ستكون هنا فور إطلاق باقة العضوية نفسها. لا يوجد شيء لإعداده الآن."
   }
 }

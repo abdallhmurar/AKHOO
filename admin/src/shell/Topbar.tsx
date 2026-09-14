@@ -31,7 +31,7 @@ export function Topbar() {
             one deliberate exception to this app's "no JS-level RTL
             branching" convention (see lib/i18n.ts's header comment). */}
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-          <SheetContent side={isRTL ? 'right' : 'left'} className="w-64 p-0">
+          <SheetContent side={isRTL ? 'right' : 'left'} className="w-64 border-navy-border bg-navy p-0 text-navy-text">
             <SheetTitle className="sr-only">{t('nav.brand')}</SheetTitle>
             <BrandHeader />
             <div onClick={() => setMobileNavOpen(false)}>

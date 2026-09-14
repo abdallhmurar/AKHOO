@@ -2,29 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* HSL triplets converted from ../../src/lib/theme.ts's exact hex palette -
-   see the conversion note in tailwind.config.ts. No dark mode - this app
-   has a single light theme. */
+/* Premium SaaS redesign palette: navy sidebar (applied directly in
+   shell/Sidebar.tsx as a hardcoded surface, same convention a dark nav
+   rail always uses regardless of the app's own accent), teal as the
+   general shadcn `primary` accent (so every existing bg-primary/
+   text-primary usage across every page picks it up for free), white
+   cards, gold reserved for offers/points/levels (see tailwind.config.ts).
+   No dark mode - this app has a single light theme. */
 :root {
-  --background: 42 45% 94%;
-  --foreground: 150 24% 16%;
+  --background: 210 25% 97%;
+  --foreground: 217 33% 14%;
   --card: 0 0% 100%;
-  --card-foreground: 150 24% 16%;
+  --card-foreground: 217 33% 14%;
   --popover: 0 0% 100%;
-  --popover-foreground: 150 24% 16%;
-  --primary: 151 31% 28%;
+  --popover-foreground: 217 33% 14%;
+  --primary: 175 77% 26%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 120 17% 93%;
-  --secondary-foreground: 150 24% 16%;
-  --muted: 43 47% 97%;
-  --muted-foreground: 146 6% 46%;
-  --accent: 41 61% 90%;
-  --accent-foreground: 150 24% 16%;
-  --destructive: 0 62% 61%;
+  --secondary: 175 40% 94%;
+  --secondary-foreground: 217 33% 14%;
+  --muted: 210 20% 95%;
+  --muted-foreground: 215 15% 45%;
+  --accent: 175 40% 92%;
+  --accent-foreground: 217 33% 14%;
+  --destructive: 0 62% 51%;
   --destructive-foreground: 0 0% 100%;
-  --border: 105 7% 89%;
-  --input: 105 7% 89%;
-  --ring: 151 31% 28%;
+  --border: 210 20% 88%;
+  --input: 210 20% 88%;
+  --ring: 175 77% 26%;
   --radius: 0.75rem;
 }
 

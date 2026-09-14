@@ -534,6 +534,8 @@
       "countdown": "متبقي {{days}} يوم و {{hours}} ساعة",
       "exclusive": "عرض حصري",
       "savings": "وفر {{amount}}",
+      "pointsCost": "{{points}} نقطة",
+      "insufficientPoints": "النقاط غير كافية بعد",
       "useOffer": "استخدم العرض"
     },
     "categoriesTitle": "التصنيفات",
@@ -592,7 +594,14 @@
       "viewBusiness": "عرض العمل التجاري",
       "contactTitle": "تواصل مباشرة لاستخدام العرض",
       "contactMessage": "أخوو ما بتحجز العرض تلقائياً - تواصل مع العمل التجاري مباشرة لاستخدامه.",
-      "notFound": "هاد العرض ما عاد متاح."
+      "notFound": "هاد العرض ما عاد متاح.",
+      "insufficientPointsTitle": "النقاط غير كافية بعد",
+      "insufficientPointsMessage": "هذا العرض يحتاج {{points}} نقطة، ومعك حالياً {{balance}}.",
+      "redeemTitle": "أظهر هذا للعمل التجاري",
+      "redeemSubtitle": "تم خصم نقاطك. أظهر هذا الكود لاستخدام العرض في المكان.",
+      "redeemCountdown": "ينتهي بعد {{minutes}}:{{seconds}}",
+      "redeemExpired": "هذا الكود انتهت صلاحيته.",
+      "cancelRedemption": "إلغاء واسترجاع النقاط"
     },
     "business": {
       "title": "تفاصيل المصلحة",

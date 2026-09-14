@@ -22,9 +22,11 @@ export function OffersTable({ rows, isLoading, isError }: { rows: OfferRow[]; is
         </span>
       )
     },
-    { key: 'business', header: t('offers.table.business'), cell: row => row.business_name || t('common.unknown') },
+    { key: 'business', header: t('offers.table.business'), cell: row => row.business_name || t('offers.form.noBusiness') },
+    { key: 'points', header: t('offers.table.points'), cell: row => (row.points_required != null ? <span dir="ltr">{row.points_required}</span> : '—') },
     { key: 'price', header: t('offers.form.sections.pricing'), cell: row => (row.original_price != null && row.offer_price != null ? <span dir="ltr">{row.offer_price} / {row.original_price}</span> : row.discount_type === 'percentage' && row.discount_value ? `${row.discount_value}%` : '—') },
     { key: 'status', header: t('offers.table.status'), cell: row => <OfferStatusBadge status={effectiveOfferStatus(row.status, row.valid_until)} /> },
+    { key: 'weeklySlot', header: t('offers.table.weekly'), cell: row => (row.weekly_slot ? t('offers.detail.weeklySlotOption', { n: row.weekly_slot }) : '—') },
     { key: 'validUntil', header: t('common.dateTo'), cell: row => (row.valid_until ? new Date(row.valid_until).toLocaleDateString(i18n.language, { dateStyle: 'medium' }) : '—') }
   ]
 

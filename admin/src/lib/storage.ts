@@ -28,6 +28,18 @@ export async function uploadBusinessImage(file: File, businessId: string, folder
   return supabase.storage.from('business-photos').getPublicUrl(path).data.publicUrl
 }
 
+// Same validation/shape as uploadBusinessImage, targeting the separate
+// `content` bucket (0023_admin_phase3_5.sql) used for admin-managed content
+// (Perks banners today) rather than anything tied to a specific business.
+export async function uploadContentImage(file: File, folder: string) {
+  validateImageFile(file)
+  const ext = file.name.split('.').pop() ?? 'jpg'
+  const path = `${folder}/${Date.now()}.${ext}`
+  const { error } = await supabase.storage.from('content').upload(path, file, { contentType: file.type })
+  if (error) throw error
+  return supabase.storage.from('content').getPublicUrl(path).data.publicUrl
+}
+
 export async function removeBusinessImage(url: string) {
   const marker = '/business-photos/'
   const idx = url.indexOf(marker)

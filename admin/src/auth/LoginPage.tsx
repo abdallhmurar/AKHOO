@@ -29,7 +29,7 @@ export function LoginPage() {
     <div className="flex min-h-dvh w-full items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm border-border shadow-sm">
         <CardHeader className="items-center gap-1 text-center">
-          <div className="mb-2 flex size-14 items-center justify-center rounded-2xl bg-primary text-2xl font-extrabold text-primary-foreground">س</div>
+          <div className="mb-2 flex size-14 items-center justify-center rounded-2xl bg-navy text-2xl font-extrabold text-navy-text">أ</div>
           <h1 className="text-2xl font-extrabold text-foreground">{t('auth.loginTitle')}</h1>
           <p className="text-sm text-muted-foreground">{t('auth.loginSubtitle')}</p>
         </CardHeader>

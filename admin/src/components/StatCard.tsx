@@ -2,11 +2,11 @@ import type { LucideIcon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function StatCard({ label, value, icon: Icon, isLoading }: { label: string; value: number | string; icon: LucideIcon; isLoading?: boolean }) {
+export function StatCard({ label, value, icon: Icon, isLoading, tone = 'default' }: { label: string; value: number | string; icon: LucideIcon; isLoading?: boolean; tone?: 'default' | 'gold' }) {
   return (
     <Card>
       <CardContent className="flex items-center gap-4 p-4">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+        <div className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${tone === 'gold' ? 'bg-gold-soft text-gold-pressed' : 'bg-secondary text-primary'}`}>
           <Icon className="size-5" />
         </div>
         <div className="min-w-0">

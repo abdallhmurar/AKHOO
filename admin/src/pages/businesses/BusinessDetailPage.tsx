@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { BooleanBadge, OfferStatusBadge } from '@/components/StatusBadge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { BooleanBadge, BusinessStatusBadge, OfferStatusBadge } from '@/components/StatusBadge'
 import { StarRating } from '@/components/StarRating'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { FullPageSpinner } from '@/components/FullPageSpinner'
@@ -16,10 +17,14 @@ import { useIsRTL } from '@/lib/direction'
 import { BUSINESS_CATEGORY_LABEL_KEYS } from '@/lib/categories'
 import { AUDIT_ACTION_LABEL_KEYS } from '@/lib/auditActions'
 import { effectiveOfferStatus } from '@/lib/offerStatus'
+import type { BusinessStatus } from '@/types'
 import { useBusinessDetail } from './useBusinessDetail'
 import { useSetBusinessActive } from './useSetBusinessActive'
+import { useSetBusinessStatus } from './useSetBusinessStatus'
 import { BusinessLocationMap } from './BusinessLocationMap'
 import { BusinessPhotosManager } from './BusinessPhotosManager'
+
+const BUSINESS_STATUSES: BusinessStatus[] = ['pending', 'verified', 'suspended', 'rejected']
 
 export function BusinessDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -29,7 +34,9 @@ export function BusinessDetailPage() {
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const query = useBusinessDetail(id)
   const setActive = useSetBusinessActive()
+  const setStatus = useSetBusinessStatus()
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [pendingStatus, setPendingStatus] = useState<BusinessStatus | null>(null)
 
   if (query.isPending) return <FullPageSpinner />
   if (query.isError || !query.data) return <ErrorState onRetry={() => query.refetch()} />
@@ -72,6 +79,35 @@ export function BusinessDetailPage() {
         confirmLabel={business.is_active ? t('businesses.detail.hide') : t('businesses.detail.activate')}
         destructive={business.is_active}
         onConfirm={() => setActive.mutateAsync({ id: business.id, active: !business.is_active })}
+      />
+
+      <Card>
+        <CardContent className="flex flex-wrap items-center gap-3 p-4">
+          <div className="flex flex-col gap-0.5">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">{t('businesses.detail.statusLabel')}</p>
+            <p className="text-xs text-muted-foreground">{t('businesses.detail.statusHint')}</p>
+          </div>
+          <BusinessStatusBadge status={business.status} />
+          <Select value={business.status} onValueChange={v => setPendingStatus(v as BusinessStatus)} disabled={setStatus.isPending}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {BUSINESS_STATUSES.map(status => (
+                <SelectItem key={status} value={status}>{t(`businesses.status.${status}`)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      <ConfirmDialog
+        open={!!pendingStatus}
+        onOpenChange={open => !open && setPendingStatus(null)}
+        title={t('businesses.detail.statusChangeConfirmTitle')}
+        description={t('businesses.detail.statusChangeConfirmMessage', { status: pendingStatus ? t(`businesses.status.${pendingStatus}`) : '' })}
+        confirmLabel={t('common.confirm')}
+        onConfirm={() => setStatus.mutateAsync({ id: business.id, status: pendingStatus! })}
       />
 
       <Tabs defaultValue="overview">

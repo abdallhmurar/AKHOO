@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Pencil, CheckCircle2, XCircle, PauseCircle, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { OfferStatusBadge } from '@/components/StatusBadge'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { FullPageSpinner } from '@/components/FullPageSpinner'
@@ -13,7 +15,10 @@ import { AUDIT_ACTION_LABEL_KEYS } from '@/lib/auditActions'
 import { effectiveOfferStatus } from '@/lib/offerStatus'
 import { useOfferDetail } from './useOfferDetail'
 import { useSetOfferStatus } from './useSetOfferStatus'
+import { useSetWeeklySlot } from './useSetWeeklySlot'
 import { OfferPreviewCard } from './OfferPreviewCard'
+
+const NO_SLOT_VALUE = '__none__'
 
 type PendingAction = 'approved' | 'rejected' | 'paused' | null
 
@@ -25,6 +30,7 @@ export function OfferDetailPage() {
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const query = useOfferDetail(id)
   const setStatus = useSetOfferStatus()
+  const setWeeklySlot = useSetWeeklySlot()
   const [pendingAction, setPendingAction] = useState<PendingAction>(null)
 
   if (query.isPending) return <FullPageSpinner />
@@ -99,6 +105,35 @@ export function OfferDetailPage() {
           onConfirm={() => setStatus.mutateAsync({ id: offer.id, status: pendingAction })}
         />
       ) : null}
+
+      <Card>
+        <CardContent className="flex flex-wrap items-center gap-3 p-4">
+          <div className="flex flex-col gap-0.5">
+            <Label className="text-xs font-semibold uppercase text-muted-foreground">{t('offers.detail.weeklyRotationTitle')}</Label>
+            <p className="text-xs text-muted-foreground">{t('offers.detail.weeklyRotationHint')}</p>
+          </div>
+          <Select
+            value={offer.weekly_slot ? String(offer.weekly_slot) : NO_SLOT_VALUE}
+            onValueChange={v => setWeeklySlot.mutate({ id: offer.id, slot: v === NO_SLOT_VALUE ? null : (Number(v) as 1 | 2 | 3) })}
+            disabled={setWeeklySlot.isPending || status !== 'approved'}
+          >
+            <SelectTrigger className="w-44">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_SLOT_VALUE}>{t('offers.detail.weeklySlotNone')}</SelectItem>
+              <SelectItem value="1">{t('offers.detail.weeklySlotOption', { n: 1 })}</SelectItem>
+              <SelectItem value="2">{t('offers.detail.weeklySlotOption', { n: 2 })}</SelectItem>
+              <SelectItem value="3">{t('offers.detail.weeklySlotOption', { n: 3 })}</SelectItem>
+            </SelectContent>
+          </Select>
+          {offer.points_required != null ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-foreground" dir="ltr">
+              {offer.points_required} {t('offers.detail.pointsUnit')}
+            </span>
+          ) : null}
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-4">

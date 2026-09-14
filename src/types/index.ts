@@ -115,7 +115,7 @@ export type OfferStatus = 'draft' | 'pending_review' | 'approved' | 'rejected' |
 
 export type PartnerOffer = {
   id: string
-  partner_id: string
+  partner_id: string | null
   title: string
   description: string | null
   discount_type: OfferDiscountType
@@ -124,6 +124,8 @@ export type PartnerOffer = {
   offer_price: number | null
   image_url: string | null
   member_only: boolean
+  points_required: number | null
+  weekly_slot: number | null
   valid_from: string | null
   valid_until: string | null
   terms: string | null
@@ -148,16 +150,18 @@ export type BusinessRating = {
   review_count: number
 }
 
-export type RedemptionStatus = 'active' | 'redeemed' | 'expired' | 'cancelled'
+export type RedemptionStatus = 'pending' | 'redeemed' | 'expired' | 'cancelled' | 'refunded'
 
 export type OfferRedemption = {
   id: string
   offer_id: string
-  partner_id: string
+  partner_id: string | null
   user_id: string
   code: string
   status: RedemptionStatus
+  points_spent: number
   created_at: string
+  updated_at: string
   expires_at: string
   redeemed_at: string | null
 }

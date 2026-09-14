@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Animated, Easing, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import QRCode from 'react-native-qrcode-svg'
 import { CaretLeft, CaretRight, ClockCountdown, Crown, Fire, MapPin, Phone, Star, Tag, WhatsappLogo } from 'phosphor-react-native'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +21,8 @@ import { colors, radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { rewardRepository } from '../../repositories/rewardRepository'
-import type { BusinessPhoto, BusinessRating, Partner, PartnerOffer, Review } from '../../types'
+import { redemptionRepository } from '../../repositories/redemptionRepository'
+import type { BusinessPhoto, BusinessRating, OfferRedemption, Partner, PartnerOffer, Review } from '../../types'
 import { AppScreen, MapPanel, ScreenHeader, SectionHeading } from '../../components/v2'
 import { BottomSheet, Button, Card } from '../../components/ui'
 import { EmptyState } from '../../components/EmptyState'
@@ -69,14 +71,18 @@ type WeeklyOffersData = { offers: PartnerOffer[]; partnersById: Record<string, P
 // public_offers is already server-filtered to approved/valid/active-partner
 // rows (see 0015_businesses_offers_reviews.sql's view definition) - an
 // expired offer simply stops appearing here on its own, no client-side
-// "hide expired" logic needed. Partners are fetched separately (not via a
-// PostgREST embed on the view) for the exact same reason loadBusinessDetail
-// below does it that way.
+// "hide expired" logic needed. `weekly_slot` (0021_weekly_offers.sql) is the
+// admin's curated pick of up to 3 offers - filtering + ordering by it here is
+// what makes this "this week's offers" instead of "every valid offer".
+// Partners are fetched separately (not via a PostgREST embed on the view)
+// for the exact same reason loadBusinessDetail below does it that way, and
+// partner_id can be null (a general, no-partner offer), which is why it's
+// filtered out before the partners lookup rather than passed straight in.
 async function loadWeeklyOffers(): Promise<WeeklyOffersData> {
-  const { data: offers, error } = await supabase.from('public_offers').select('*').order('created_at', { ascending: false })
+  const { data: offers, error } = await supabase.from('public_offers').select('*').not('weekly_slot', 'is', null).order('weekly_slot', { ascending: true })
   if (error) throw error
   const rows = (offers ?? []) as PartnerOffer[]
-  const partnerIds = [...new Set(rows.map(o => o.partner_id))]
+  const partnerIds = [...new Set(rows.map(o => o.partner_id).filter((id): id is string => id !== null))]
   const { data: partners } = partnerIds.length ? await supabase.from('partners').select('*').in('id', partnerIds) : { data: [] as Partner[] }
   return { offers: rows, partnersById: Object.fromEntries((partners ?? []).map(p => [(p as Partner).id, p as Partner])) }
 }
@@ -101,6 +107,22 @@ function useRealOffersCountdown(validUntilList: (string | null)[]) {
   if (upcoming.length === 0) return null
   const diff = Math.min(...upcoming) - now
   return { days: Math.floor(diff / 86_400_000), hours: Math.floor((diff % 86_400_000) / 3_600_000) }
+}
+
+// Real, ticking per-second countdown to a single expiry (a redemption's
+// short-lived window is minutes, not days, so useRealOffersCountdown's
+// per-minute tick above would look frozen). Returns null once passed.
+function useCountdownTo(iso: string | null) {
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    if (!iso) return
+    const interval = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [iso])
+  if (!iso) return null
+  const diff = new Date(iso).getTime() - now
+  if (diff <= 0) return null
+  return { minutes: Math.floor(diff / 60_000), seconds: Math.floor((diff % 60_000) / 1000) }
 }
 
 // Shared driver for every subtle "premium, not game UI" loop in this screen
@@ -161,8 +183,10 @@ function PulsingIcon({ children }: { children: ReactNode }) {
 // reached some other way. Everything on screen now is real: the points/level
 // card reuses the same mechanic as ActivityScreen and VolunteerPointsCard
 // (completed-count thresholds, rewardRepository's summed balance), and the
-// weekly offers list reads public_offers directly - no static/mock content,
-// no points-cost field (none exists on partner_offers yet, so none is shown).
+// weekly offers list reads public_offers directly, filtered to the admin's
+// 3 curated weekly_slot picks - no static/mock content. points_required is
+// shown for display only (see RealOfferCard) - "Use offer" still just opens
+// the offer detail screen, no deduction happens yet.
 export function CommunityHubScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
@@ -259,7 +283,7 @@ export function CommunityHubScreen() {
         ) : offers.length === 0 ? (
           <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
         ) : (
-          offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={partnersById[offer.partner_id]} onUse={() => openOffer(offer.id)} />)
+          offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} balance={balance} onUse={() => openOffer(offer.id)} />)
         )}
       </Animated.View>
 
@@ -270,7 +294,7 @@ export function CommunityHubScreen() {
   )
 }
 
-function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; business?: Partner; onUse: () => void }) {
+function RealOfferCard({ offer, business, balance, onUse }: { offer: PartnerOffer; business?: Partner; balance: number; onUse: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
@@ -279,6 +303,7 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
   const savings = computeSavings(price)
   const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
   const Chevron = isRTL ? CaretLeft : CaretRight
+  const canAfford = offer.points_required == null || balance >= offer.points_required
 
   return (
     <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
@@ -299,6 +324,13 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
           {business ? <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t(`perks.categories.${business.category}`)}</Text> : null}
           <PriceLine price={price} />
           {savings != null ? <Text style={[typography.caption, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.weeklyOffers.savings', { amount: formatPrice(savings, CURRENT_MARKET.currencySymbol) })}</Text> : null}
+          {offer.points_required != null ? (
+            <View style={[styles.pointsCostRow, dirStyles(isRTL).row]}>
+              <Star size={12} color={canAfford ? theme.colors.community : theme.colors.textMuted} weight="fill" />
+              <Text style={[typography.caption, { color: canAfford ? theme.colors.textSecondary : theme.colors.textMuted }]}>{t('perks.weeklyOffers.pointsCost', { points: offer.points_required })}</Text>
+              {!canAfford ? <Text style={[typography.caption, { color: theme.colors.textMuted }]}>· {t('perks.weeklyOffers.insufficientPoints')}</Text> : null}
+            </View>
+          ) : null}
         </View>
         <Chevron size={16} color={theme.colors.textMuted} />
       </Pressable>
@@ -398,6 +430,10 @@ export function BusinessDetailScreen() {
 async function loadOfferDetail(offerId: string) {
   const { data: offer } = await supabase.from('public_offers').select('*').eq('id', offerId).maybeSingle()
   if (!offer) return null
+  // A general (no-partner) offer has no business row to load at all - not an
+  // error case, just nothing to fetch (see 0021_weekly_offers.sql, partner_id
+  // is now genuinely optional).
+  if (!offer.partner_id) return { offer: offer as PartnerOffer, business: null, rating: null }
   const [{ data: business }, { data: rating }] = await Promise.all([
     supabase.from('partners').select('*').eq('id', offer.partner_id).eq('market', CURRENT_MARKET_CODE).maybeSingle(),
     supabase.from('business_ratings').select('*').eq('business_id', offer.partner_id).maybeSingle()
@@ -414,16 +450,57 @@ export function OfferDetailScreen() {
   const router = useRouter()
   const { offerId } = useLocalSearchParams<{ offerId: string }>()
   const { session } = useAuth()
-  const { isPlusMember } = useMembership(session!.user.id)
+  const userId = session!.user.id
+  const { isPlusMember } = useMembership(userId)
+  const queryClient = useQueryClient()
   const query = useQuery({ queryKey: ['community', 'offer', offerId], queryFn: () => loadOfferDetail(String(offerId)), enabled: !!offerId })
+  const balanceQuery = useQuery({ queryKey: ['community', 'points', userId], queryFn: () => rewardRepository.points(userId) })
   const navigationApp = useNavigationApp()
   const [membershipOpen, setMembershipOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
+  const [insufficientOpen, setInsufficientOpen] = useState(false)
+  const [redemption, setRedemption] = useState<OfferRedemption | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const countdown = useCountdownTo(redemption?.status === 'pending' ? redemption.expires_at : null)
 
-  function handleUse() {
+  const usesPoints = (query.data?.offer.points_required ?? 0) > 0
+
+  async function handleUse() {
     if (!query.data) return
     if (resolveOfferUseAction(query.data.offer, isPlusMember) === 'membership-required') { setMembershipOpen(true); return }
-    setContactOpen(true)
+    if (!usesPoints) { setContactOpen(true); return }
+
+    const required = query.data.offer.points_required ?? 0
+    const balance = balanceQuery.data?.balance ?? 0
+    if (balance < required) { setInsufficientOpen(true); return }
+
+    setCreating(true)
+    try {
+      const created = await redemptionRepository.create(query.data.offer.id)
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {})
+      setRedemption(created)
+      queryClient.invalidateQueries({ queryKey: ['community', 'points', userId] })
+    } catch {
+      // redemptionRepository.create already normalizes the error; the app's
+      // global toast host (subscribeToAppErrors) surfaces it.
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  async function handleCancelRedemption() {
+    if (!redemption) return
+    setCancelling(true)
+    try {
+      await redemptionRepository.cancel(redemption.id)
+      setRedemption(null)
+      queryClient.invalidateQueries({ queryKey: ['community', 'points', userId] })
+    } catch {
+      // surfaced via the global toast host, same as handleUse above
+    } finally {
+      setCancelling(false)
+    }
   }
 
   if (query.isLoading) return <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />}><Skeleton width="100%" height={220} /><Skeleton width="100%" height={140} /></AppScreen>
@@ -431,23 +508,32 @@ export function OfferDetailScreen() {
 
   const { offer, business, rating } = query.data
   const price = computeOfferPriceDisplay(offer)
-  const imageUri = offer.image_url ?? business.logo_url ?? null
+  const imageUri = offer.image_url ?? business?.logo_url ?? null
 
   return (
-    <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} />} contentStyle={styles.content}>
+    <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} loading={creating} />} contentStyle={styles.content}>
       {imageUri ? <Image source={{ uri: imageUri }} style={styles.offerHero} resizeMode="cover" /> : <View style={[styles.offerHero, styles.galleryFallback, { backgroundColor: theme.colors.rewardSoft }]} />}
       {offer.member_only ? <PlusBadge size="md" /> : null}
       <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.title}</Text>
 
-      <Pressable onPress={() => router.push({ pathname: '/community/business/[businessId]', params: { businessId: business.id } })} style={[styles.businessRow, { ...dirStyles(isRTL).row, borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
-        {business.logo_url ? <Image source={{ uri: business.logo_url }} style={styles.businessLogo} /> : <View style={[styles.businessLogo, { backgroundColor: theme.colors.primarySoft }]} />}
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{business.name}</Text>
-          <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} size={12} />
-        </View>
-      </Pressable>
+      {business ? (
+        <Pressable onPress={() => router.push({ pathname: '/community/business/[businessId]', params: { businessId: business.id } })} style={[styles.businessRow, { ...dirStyles(isRTL).row, borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
+          {business.logo_url ? <Image source={{ uri: business.logo_url }} style={styles.businessLogo} /> : <View style={[styles.businessLogo, { backgroundColor: theme.colors.primarySoft }]} />}
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{business.name}</Text>
+            <RatingStars rating={rating?.average_rating ?? null} count={rating?.review_count ?? 0} size={12} />
+          </View>
+        </Pressable>
+      ) : null}
 
       <OfferPriceBlock price={price} />
+
+      {usesPoints ? (
+        <View style={[styles.pointsCostRow, dirStyles(isRTL).row, { backgroundColor: theme.colors.communitySoft, borderRadius: radius.md, paddingHorizontal: space.md, paddingVertical: space.sm }]}>
+          <Star size={14} color={theme.colors.community} weight="fill" />
+          <Text style={[typography.smallMedium, { color: theme.colors.community }]}>{t('perks.weeklyOffers.pointsCost', { points: offer.points_required })}</Text>
+        </View>
+      ) : null}
 
       {offer.description ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.description}</Text> : null}
       {offer.terms ? <Card title={t('perks.offer.termsTitle')} elevation="none"><Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.terms}</Text></Card> : null}
@@ -455,10 +541,32 @@ export function OfferDetailScreen() {
 
       <MembershipSheet visible={membershipOpen} onClose={() => setMembershipOpen(false)} offerLocked />
 
+      <BottomSheet visible={insufficientOpen} onClose={() => setInsufficientOpen(false)} title={t('perks.offer.insufficientPointsTitle')} subtitle={t('perks.offer.insufficientPointsMessage', { points: offer.points_required, balance: balanceQuery.data?.balance ?? 0 })} />
+
       <BottomSheet visible={contactOpen} onClose={() => setContactOpen(false)} title={t('perks.offer.contactTitle')} subtitle={t('perks.offer.contactMessage')}>
-        {business.phone ? <Button label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
-        {business.whatsapp ? <Button label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
-        {business.latitude != null && business.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<NavigationAppIcon app={navigationApp} size={18} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
+        {business?.phone ? <Button label={t('perks.business.call')} variant="outline" leading={<Phone size={18} color={theme.colors.primary} />} onPress={() => Linking.openURL(telHref(business.phone!))} /> : null}
+        {business?.whatsapp ? <Button label="WhatsApp" variant="outline" leading={<WhatsappLogo size={18} color={theme.colors.community} />} onPress={() => Linking.openURL(whatsappHref(business.whatsapp!))} /> : null}
+        {business?.latitude != null && business?.longitude != null ? <Button label={t('perks.business.directions')} variant="outline" leading={<NavigationAppIcon app={navigationApp} size={18} />} onPress={() => Linking.openURL(directionsHref(business.latitude!, business.longitude!, navigationApp))} /> : null}
+      </BottomSheet>
+
+      <BottomSheet visible={!!redemption} onClose={() => {}} dismissible={false} title={t('perks.offer.redeemTitle')} subtitle={t('perks.offer.redeemSubtitle')}>
+        {redemption ? (
+          <View style={{ alignItems: 'center', gap: space.md }}>
+            <View style={{ padding: space.md, backgroundColor: '#fff', borderRadius: radius.md }}>
+              <QRCode value={redemption.code} size={180} />
+            </View>
+            <Text style={[typography.smallMedium, { color: theme.colors.textMuted }]} selectable>{redemption.code}</Text>
+            {countdown ? (
+              <View style={[styles.countdownPill, dirStyles(isRTL).row, { backgroundColor: theme.colors.emergencySoft }]}>
+                <ClockCountdown size={13} color={theme.colors.emergency} weight="fill" />
+                <Text style={[typography.caption, { color: theme.colors.emergency }]}>{t('perks.offer.redeemCountdown', { minutes: countdown.minutes, seconds: String(countdown.seconds).padStart(2, '0') })}</Text>
+              </View>
+            ) : (
+              <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('perks.offer.redeemExpired')}</Text>
+            )}
+            <Button label={t('perks.offer.cancelRedemption')} variant="outline" onPress={handleCancelRedemption} loading={cancelling} />
+          </View>
+        ) : null}
       </BottomSheet>
     </AppScreen>
   )
@@ -531,5 +639,6 @@ const styles = StyleSheet.create({
   exclusiveBadge: { position: 'absolute', top: 6, alignItems: 'center', gap: 3, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 6 },
   exclusiveBadgeText: { color: '#fff', fontSize: 9 },
   realOfferBody: { flex: 1, gap: 3 },
+  pointsCostRow: { alignItems: 'center', gap: 4 },
   useButtonFull: { alignItems: 'center', justifyContent: 'center', paddingVertical: 12 }
 })

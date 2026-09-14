@@ -534,6 +534,8 @@
       "countdown": "נותרו {{days}} ימים ו-{{hours}} שעות",
       "exclusive": "בלעדי",
       "savings": "חיסכון של {{amount}}",
+      "pointsCost": "{{points}} נק'",
+      "insufficientPoints": "אין עדיין מספיק נקודות",
       "useOffer": "השתמש/י במבצע"
     },
     "categoriesTitle": "קטגוריות",
@@ -592,7 +594,14 @@
       "viewBusiness": "הצג עסק",
       "contactTitle": "צרו קשר עם העסק כדי להשתמש במבצע",
       "contactMessage": "סָנָד לא מזמינה עבורכם את המבצע - פנו ישירות לעסק כדי להשתמש בו.",
-      "notFound": "מבצע זה כבר לא זמין."
+      "notFound": "מבצע זה כבר לא זמין.",
+      "insufficientPointsTitle": "אין עדיין מספיק נקודות",
+      "insufficientPointsMessage": "המבצע הזה דורש {{points}} נקודות - יש לך כרגע {{balance}}.",
+      "redeemTitle": "הציגו את זה לעסק",
+      "redeemSubtitle": "הנקודות שלך נוצלו. הציגו קוד זה כדי לממש את המבצע במקום.",
+      "redeemCountdown": "בתוקף עוד {{minutes}}:{{seconds}}",
+      "redeemExpired": "תוקף הקוד הזה פג.",
+      "cancelRedemption": "ביטול והחזרת הנקודות"
     },
     "business": {
       "title": "פרטי העסק",

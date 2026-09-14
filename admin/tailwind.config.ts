@@ -26,6 +26,30 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        // Premium SaaS shell palette (redesign round): navy sidebar, teal
+        // general accent (flows through --primary above for every existing
+        // button/link/focus-ring app-wide), gold reserved specifically for
+        // offers/points/levels - matching the mobile app's own reward color
+        // (civicColors.rewardGold in src/lib/theme.ts) rather than inventing
+        // a second, different gold.
+        navy: {
+          DEFAULT: '#0E2238',
+          deep: '#081422',
+          light: '#1B3A5C',
+          border: '#1E3A57',
+          text: '#E8EEF5',
+          textMuted: '#9FB3C8'
+        },
+        teal: {
+          DEFAULT: '#0F766E',
+          soft: '#E6F5F3',
+          pressed: '#0B5C56'
+        },
+        gold: {
+          DEFAULT: '#D99B22',
+          soft: '#FFF3D6',
+          pressed: '#B77D13'
+        },
         sanad: {
           bg: '#F7F3EA',
           surface: '#FFFFFF',

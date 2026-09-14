@@ -17,6 +17,13 @@ import { EditOfferPage } from '@/pages/offers/EditOfferPage'
 import { OfferDetailPage } from '@/pages/offers/OfferDetailPage'
 import { ReviewsPage } from '@/pages/reviews/ReviewsPage'
 import { OperationsMapPage } from '@/pages/map/OperationsMapPage'
+import { RedemptionsPage } from '@/pages/redemptions/RedemptionsPage'
+import { MissionRatingsPage } from '@/pages/missionRatings/MissionRatingsPage'
+import { ReportsPage } from '@/pages/reports/ReportsPage'
+import { ReportDetailPage } from '@/pages/reports/ReportDetailPage'
+import { NotificationsPage } from '@/pages/notifications/NotificationsPage'
+import { ContentPage } from '@/pages/content/ContentPage'
+import { ProMaxPage } from '@/pages/proMax/ProMaxPage'
 
 export default function App() {
   return (
@@ -37,7 +44,14 @@ export default function App() {
           <Route path="offers/new" element={<NewOfferPage />} />
           <Route path="offers/:id/edit" element={<EditOfferPage />} />
           <Route path="offers/:id" element={<OfferDetailPage />} />
+          <Route path="redemptions" element={<RedemptionsPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="mission-ratings" element={<MissionRatingsPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="reports/:id" element={<ReportDetailPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="content" element={<ContentPage />} />
+          <Route path="pro-max" element={<ProMaxPage />} />
           <Route path="map" element={<OperationsMapPage />} />
         </Route>
       </Route>

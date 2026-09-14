@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { Offer, OfferDiscountType } from '@/types'
 
 export type OfferFormPayload = {
-  business_id: string
+  business_id: string | null
   title: string
   description: string
   terms: string
@@ -16,6 +16,7 @@ export type OfferFormPayload = {
   valid_from: string | null
   valid_until: string | null
   member_only: boolean
+  points_required: number | null
 }
 
 export function useUpsertOffer() {
