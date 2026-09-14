@@ -53,7 +53,7 @@ export function OfferCard({
   )
 }
 
-function PriceLine({ price }: { price: OfferPriceDisplay }) {
+export function PriceLine({ price }: { price: OfferPriceDisplay }) {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
   const symbol = CURRENT_MARKET.currencySymbol

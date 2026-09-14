@@ -525,27 +525,16 @@
     "searchPlaceholder": "חיפוש עסק או מבצע",
     "pointsCard": {
       "balanceLabel": "יתרת הנקודות שלך",
-      "levelLabel": "הדרגה הנוכחית שלך"
+      "levelLabel": "הדרגה הנוכחית שלך",
+      "remainingToLevel": "עוד {{remaining}} עזרות ל-{{levelName}}"
     },
     "weeklyOffers": {
       "title": "מבצעי אחוו השבוע",
       "subtitle": "{{count}} מבצעים בלעדיים • מתחדשים כל שבוע",
       "countdown": "נותרו {{days}} ימים ו-{{hours}} שעות",
       "exclusive": "בלעדי",
-      "pointsCost": "{{points}} נקודות",
       "savings": "חיסכון של {{amount}}",
-      "useOffer": "השתמש/י במבצע",
-      "comingSoon": "המבצע הזה יהיה זמין באפליקציה בקרוב.",
-      "items": {
-        "phoneMount": { "name": "מעמד טלפון לרכב", "category": "אביזרי רכב" },
-        "jumpCables": { "name": "כבלי הנעה", "category": "כלי רכב" },
-        "tireInflator": { "name": "מנפח צמיגים נייד", "category": "אביזרי רכב" }
-      }
-    },
-    "proMax": {
-      "title": "אחוו פרו מקס",
-      "subtitle": "הטבות והנחות נוספות בקרוב",
-      "comingSoon": "בקרוב"
+      "useOffer": "השתמש/י במבצע"
     },
     "categoriesTitle": "קטגוריות",
     "categoriesAll": "הכול",

@@ -525,27 +525,16 @@
     "searchPlaceholder": "Search a business or offer",
     "pointsCard": {
       "balanceLabel": "Your points balance",
-      "levelLabel": "Your current level"
+      "levelLabel": "Your current level",
+      "remainingToLevel": "{{remaining}} more helps to reach {{levelName}}"
     },
     "weeklyOffers": {
       "title": "AKHOO offers this week",
       "subtitle": "{{count}} exclusive offers • renewed every week",
       "countdown": "{{days}}d {{hours}}h left",
       "exclusive": "Exclusive",
-      "pointsCost": "{{points}} points",
       "savings": "Save {{amount}}",
-      "useOffer": "Use offer",
-      "comingSoon": "This offer will be available in the app soon.",
-      "items": {
-        "phoneMount": { "name": "Car phone mount", "category": "Car accessories" },
-        "jumpCables": { "name": "Jumper cables", "category": "Car tools" },
-        "tireInflator": { "name": "Portable tire inflator", "category": "Car accessories" }
-      }
-    },
-    "proMax": {
-      "title": "AKHOO Pro Max",
-      "subtitle": "More perks and discounts coming soon",
-      "comingSoon": "Coming soon"
+      "useOffer": "Use offer"
     },
     "categoriesTitle": "Categories",
     "categoriesAll": "All",
