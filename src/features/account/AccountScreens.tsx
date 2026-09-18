@@ -23,6 +23,7 @@ import { LanguagePicker } from '../../components/LanguagePicker'
 import { NavigationAppPicker } from '../../components/NavigationAppPicker'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
+import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const HELP_WHATSAPP_DISPLAY = '0509956046'
@@ -131,6 +132,7 @@ export function AccountHomeScreen() {
           onPress={() => setDark(!isDark)}
           trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
+        <PartnerToolsEntry />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />
         <ListRow Icon={Lifebuoy} title={t('account.menu.help')} onPress={() => router.push('/(tabs)/account/help')} />

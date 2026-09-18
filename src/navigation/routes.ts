@@ -10,9 +10,9 @@ export const communityRoutes = [
   '/community', '/community/business/[businessId]', '/community/offer/[offerId]'
 ] as const
 
-// Account has no sub-routes in the real product - it's one screen, reached
-// only via the (tabs)/account tab (see tabRoutes).
-export const accountRoutes = [] as const
+// Partner Tools performs its own permission check in addition to the root
+// session guard. It is part of Account, not an additional product tab.
+export const accountRoutes = ['/(tabs)/account/partner'] as const
 
 export const protectedRouteFamilies = [requesterRoutes, helperRoutes, communityRoutes, accountRoutes] as const
 

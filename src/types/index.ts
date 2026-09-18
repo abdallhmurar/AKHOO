@@ -75,6 +75,20 @@ export type PartnerCategory = 'battery' | 'tire' | 'maintenance' | 'towing' | 'l
 
 export type PartnerStatus = 'pending' | 'verified' | 'suspended' | 'rejected'
 
+export type PartnerRole = 'owner' | 'staff'
+
+export type PartnerAccess = {
+  id: string
+  user_id: string
+  partner_id: string
+  role: PartnerRole
+  is_active: boolean
+  created_at: string
+  created_by: string | null
+  updated_at: string
+  business_name: string
+}
+
 export type OpeningHours = Partial<Record<'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat', string>>
 
 export type Partner = {

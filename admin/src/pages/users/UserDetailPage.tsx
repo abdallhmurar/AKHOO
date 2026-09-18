@@ -17,6 +17,8 @@ import { AUDIT_ACTION_LABEL_KEYS } from '@/lib/auditActions'
 import { useUserDetail } from './useUserDetail'
 import { useSetUserBanned } from './useSetUserBanned'
 import { useSetVolunteerVerified } from './useSetVolunteerVerified'
+import { PartnerAccessSection } from './PartnerAccessSection'
+import { useUserPartnerAccess } from './usePartnerAccess'
 
 export function UserDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -25,6 +27,7 @@ export function UserDetailPage() {
   const isRTL = useIsRTL()
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const query = useUserDetail(id)
+  const partnerAccess = useUserPartnerAccess(id)
   const banMutation = useSetUserBanned()
   const verifyMutation = useSetVolunteerVerified()
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -52,6 +55,7 @@ export function UserDetailPage() {
           <p className="text-sm text-muted-foreground" dir="ltr">{profile.phone || t('users.table.noPhone')}</p>
         </div>
         <BooleanBadge value={profile.is_banned} trueLabel={t('users.table.banned')} falseLabel={t('users.table.active')} invertTone />
+        {partnerAccess.data?.is_active && <BooleanBadge value trueLabel={t('partnerAccess.badge')} falseLabel="" />}
         <Button variant={profile.is_banned ? 'default' : 'destructive'} size="sm" onClick={() => setConfirmOpen(true)}>
           {profile.is_banned ? t('users.detail.unban') : t('users.detail.ban')}
         </Button>
@@ -87,13 +91,14 @@ export function UserDetailPage() {
           <TabsTrigger value="history">{t('users.detail.tabs.history')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile">
+        <TabsContent value="profile" className="space-y-4">
           <Card>
             <CardContent className="flex flex-col gap-1 p-4">
               <p className="text-xs font-semibold uppercase text-muted-foreground">{t('users.detail.memberSince')}</p>
               <p className="text-sm text-foreground">{new Date(profile.created_at).toLocaleDateString(i18n.language, { dateStyle: 'long' })}</p>
             </CardContent>
           </Card>
+          <PartnerAccessSection userId={profile.id} />
         </TabsContent>
 
         <TabsContent value="requests">

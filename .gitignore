@@ -30,3 +30,6 @@ akhoo-firebase-adminsdk-fbsvc-eea0d25588.json
 # only, must never be committed.
 credentials/
 *.p8
+
+.vercel
+.env.local

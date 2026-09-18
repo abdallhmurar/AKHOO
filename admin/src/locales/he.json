@@ -424,7 +424,10 @@
       "reportResolved": "פתר תלונה",
       "reportDismissed": "סגר תלונה",
       "broadcastNotificationSent": "שלח התראה כללית",
-      "contentBannerUpdated": "עדכן באנר תוכן"
+      "contentBannerUpdated": "עדכן באנר תוכן",
+      "partnerAccessGranted": "הרשאת שותף הוענקה",
+      "partnerAccessUpdated": "הרשאת שותף עודכנה",
+      "partnerAccessRevoked": "הרשאת שותף בוטלה"
     }
   },
   "redemptions": {
@@ -545,5 +548,27 @@
     "title": "אחוו פרו מקס",
     "comingSoonTitle": "בקרוב",
     "comingSoonMessage": "ניהול אחוו פרו מקס יגיע לכאן ברגע שמסלול החברות עצמו ישוק. אין עדיין מה להגדיר."
+  },
+  "partnerAccess": {
+    "title": "הרשאות שותף",
+    "badge": "שותף",
+    "description": "קשרו משתמש זה לעסק. חשבון AKHOO הרגיל שלו נשאר זמין.",
+    "active": "הרשאה פעילה",
+    "inactive": "הרשאה מושבתת",
+    "none": "ללא הרשאת שותף",
+    "business": "עסק",
+    "selectBusiness": "בחרו עסק",
+    "noBusinesses": "הוסיפו עסק לפני הענקת הרשאת שותף.",
+    "role": "תפקיד",
+    "roles": {
+      "owner": "בעלים",
+      "staff": "צוות"
+    },
+    "enable": "הפעלת הרשאת שותף",
+    "grant": "הענקת הרשאה",
+    "revoke": "ביטול הרשאה",
+    "revokeMessage": "כלי השותף לא יהיו זמינים לאחר רענון של המשתמש. הקישור וההיסטוריה יישמרו.",
+    "saved": "הרשאת השותף נשמרה.",
+    "revoked": "הרשאת השותף בוטלה."
   }
 }

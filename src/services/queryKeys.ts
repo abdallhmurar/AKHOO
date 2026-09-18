@@ -1,6 +1,7 @@
 export const queryKeys = {
   auth: ['auth'] as const,
   profile: (userId: string) => ['profile', userId] as const,
+  partnerAccess: (userId: string | null) => ['partner-access', userId] as const,
   activeMission: (userId: string) => ['missions', 'active', userId] as const,
   mission: (missionId: string) => ['missions', 'detail', missionId] as const,
   missionEvents: (missionId: string) => ['missions', missionId, 'events'] as const,

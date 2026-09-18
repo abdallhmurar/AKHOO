@@ -629,5 +629,25 @@
     "perks": "مزايا أخوو",
     "activity": "نشاطي",
     "account": "حسابي"
+  },
+  "partnerTools": {
+    "title": "أدوات الشريك",
+    "refresh": "تحديث الصلاحية",
+    "roleLabel": "الدور: {{role}}",
+    "roles": {
+      "owner": "مالك",
+      "staff": "موظف"
+    },
+    "active": "الصلاحية مفعّلة",
+    "comingSoon": "قريباً",
+    "futureToolMessage": "ستتوفر هذه الأداة في مرحلة لاحقة.",
+    "tools": {
+      "scanner": "ماسح QR",
+      "history": "سجل استخدام العروض",
+      "customers": "العملاء",
+      "offers": "العروض الفعّالة"
+    },
+    "loadErrorTitle": "تعذر التحقق من الصلاحية",
+    "loadErrorMessage": "تحقق من اتصالك وحاول مجدداً للتحقق من صلاحية الشريك."
   }
 }

@@ -424,7 +424,10 @@
       "reportResolved": "resolved a report",
       "reportDismissed": "dismissed a report",
       "broadcastNotificationSent": "sent a broadcast notification",
-      "contentBannerUpdated": "updated a content banner"
+      "contentBannerUpdated": "updated a content banner",
+      "partnerAccessGranted": "Partner access granted",
+      "partnerAccessUpdated": "Partner access updated",
+      "partnerAccessRevoked": "Partner access revoked"
     }
   },
   "redemptions": {
@@ -545,5 +548,27 @@
     "title": "AKHOO Pro Max",
     "comingSoonTitle": "Coming soon",
     "comingSoonMessage": "AKHOO Pro Max management will land here once the membership tier itself ships. Nothing to configure yet."
+  },
+  "partnerAccess": {
+    "title": "Partner access",
+    "badge": "Partner",
+    "description": "Link this user to a business. Their regular AKHOO account stays available.",
+    "active": "Active access",
+    "inactive": "Access disabled",
+    "none": "No Partner access",
+    "business": "Business",
+    "selectBusiness": "Select a business",
+    "noBusinesses": "Add a business before granting Partner access.",
+    "role": "Role",
+    "roles": {
+      "owner": "Owner",
+      "staff": "Staff"
+    },
+    "enable": "Enable Partner access",
+    "grant": "Grant access",
+    "revoke": "Revoke access",
+    "revokeMessage": "Partner Tools will become unavailable after the user refreshes. The relationship and history will be retained.",
+    "saved": "Partner access saved.",
+    "revoked": "Partner access revoked."
   }
 }

@@ -424,7 +424,10 @@
       "reportResolved": "حلّ تقريراً",
       "reportDismissed": "رفض تقريراً",
       "broadcastNotificationSent": "أرسل إشعاراً جماعياً",
-      "contentBannerUpdated": "حدّث بانر محتوى"
+      "contentBannerUpdated": "حدّث بانر محتوى",
+      "partnerAccessGranted": "تم منح صلاحية شريك",
+      "partnerAccessUpdated": "تم تحديث صلاحية شريك",
+      "partnerAccessRevoked": "تم سحب صلاحية شريك"
     }
   },
   "redemptions": {
@@ -545,5 +548,27 @@
     "title": "أخوو برو ماكس",
     "comingSoonTitle": "قريباً",
     "comingSoonMessage": "إدارة أخوو برو ماكس ستكون هنا فور إطلاق باقة العضوية نفسها. لا يوجد شيء لإعداده الآن."
+  },
+  "partnerAccess": {
+    "title": "صلاحيات الشريك",
+    "badge": "شريك",
+    "description": "اربط هذا المستخدم بمحل. يبقى حسابه العادي في أخوو متاحاً.",
+    "active": "الصلاحية مفعّلة",
+    "inactive": "الصلاحية معطّلة",
+    "none": "لا توجد صلاحية شريك",
+    "business": "المحل",
+    "selectBusiness": "اختر المحل",
+    "noBusinesses": "أضف محلاً قبل منح صلاحية الشريك.",
+    "role": "الدور",
+    "roles": {
+      "owner": "مالك",
+      "staff": "موظف"
+    },
+    "enable": "تفعيل صلاحية الشريك",
+    "grant": "منح الصلاحية",
+    "revoke": "سحب الصلاحية",
+    "revokeMessage": "لن تتوفر أدوات الشريك بعد تحديث المستخدم. سيبقى الربط والسجل محفوظين.",
+    "saved": "تم حفظ صلاحية الشريك.",
+    "revoked": "تم سحب صلاحية الشريك."
   }
 }

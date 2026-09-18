@@ -629,5 +629,25 @@
     "perks": "Perks",
     "activity": "Activity",
     "account": "Account"
+  },
+  "partnerTools": {
+    "title": "Partner Tools",
+    "refresh": "Refresh access",
+    "roleLabel": "Role: {{role}}",
+    "roles": {
+      "owner": "Owner",
+      "staff": "Staff"
+    },
+    "active": "Active access",
+    "comingSoon": "Coming soon",
+    "futureToolMessage": "This tool will be available in a later phase.",
+    "tools": {
+      "scanner": "QR Scanner",
+      "history": "Redemptions History",
+      "customers": "Customers",
+      "offers": "Active Offers"
+    },
+    "loadErrorTitle": "Unable to verify access",
+    "loadErrorMessage": "Reconnect and try again to verify your Partner access."
   }
 }

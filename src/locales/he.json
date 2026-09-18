@@ -629,5 +629,25 @@
     "perks": "הטבות",
     "activity": "היסטוריה",
     "account": "חשבון"
+  },
+  "partnerTools": {
+    "title": "כלי השותף",
+    "refresh": "רענון הרשאה",
+    "roleLabel": "תפקיד: {{role}}",
+    "roles": {
+      "owner": "בעלים",
+      "staff": "צוות"
+    },
+    "active": "הרשאה פעילה",
+    "comingSoon": "בקרוב",
+    "futureToolMessage": "כלי זה יהיה זמין בשלב מאוחר יותר.",
+    "tools": {
+      "scanner": "סורק QR",
+      "history": "היסטוריית מימושים",
+      "customers": "לקוחות",
+      "offers": "הטבות פעילות"
+    },
+    "loadErrorTitle": "לא ניתן לאמת הרשאה",
+    "loadErrorMessage": "בדקו את החיבור ונסו שוב כדי לאמת את הרשאת השותף."
   }
 }
