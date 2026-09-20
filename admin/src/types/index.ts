@@ -52,6 +52,15 @@ export type VolunteerPointTransaction = {
   created_at: string
 }
 
+export type PointAdjustment = {
+  id: string
+  user_id: string
+  points: number
+  reason: string
+  created_by: string | null
+  created_at: string
+}
+
 export type HelpRequestRelease = {
   id: string
   request_id: string

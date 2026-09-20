@@ -169,6 +169,7 @@
       "active": "פעיל",
       "noName": "(ללא שם)",
       "noPhone": "אין טלפון",
+      "points": "נקודות",
       "searchPlaceholder": "חיפוש לפי שם או טלפון"
     },
     "detail": {
@@ -179,6 +180,27 @@
         "assists": "סיוע",
         "points": "נקודות",
         "history": "היסטוריית ניהול"
+      },
+      "points": {
+        "balance": "יתרה נוכחית",
+        "earned": "הורווחו ממשימות",
+        "adjustments": "התאמות מנהל",
+        "spent": "נוצלו במבצעים",
+        "adjustTitle": "הוספה או הפחתת נקודות",
+        "add": "הוספה",
+        "remove": "הפחתה",
+        "amount": "מספר נקודות",
+        "reason": "סיבה",
+        "reasonPlaceholder": "למה משנים את היתרה? (חובה)",
+        "removeExceeds": "אי אפשר להפחית יותר מהיתרה הנוכחית ({{balance}}).",
+        "submit": "החלה",
+        "confirmAddTitle": "להוסיף {{points}} נקודות?",
+        "confirmRemoveTitle": "להפחית {{points}} נקודות?",
+        "confirmMessage": "היתרה האמיתית של המשתמש תשתנה מיד, והפעולה תירשם בהיסטוריית הניהול עם הסיבה שכתבת.",
+        "success": "הנקודות עודכנו. יתרה חדשה: {{balance}}.",
+        "history": "היסטוריית נקודות",
+        "empty": "אין עדיין פעילות נקודות.",
+        "kinds": { "mission": "משימה שהושלמה", "adjustmentAdd": "נוספו על ידי מנהל", "adjustmentRemove": "הופחתו על ידי מנהל", "redemption": "מבצע: {{title}}" }
       },
       "memberSince": "חבר מאז",
       "noRequests": "אין עדיין בקשות.",
@@ -472,6 +494,7 @@
       "partnerAccessGranted": "הרשאת שותף הוענקה",
       "partnerAccessUpdated": "הרשאת שותף עודכנה",
       "partnerAccessRevoked": "הרשאת שותף בוטלה",
+      "pointsAdjusted": "עדכן את הנקודות של",
       "messageHidden": "הסתרת הודעה פוגענית"
     }
   },

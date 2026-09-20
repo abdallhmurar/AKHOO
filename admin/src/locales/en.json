@@ -169,6 +169,7 @@
       "active": "Active",
       "noName": "(no name)",
       "noPhone": "No phone",
+      "points": "Points",
       "searchPlaceholder": "Search by name or phone"
     },
     "detail": {
@@ -179,6 +180,27 @@
         "assists": "Assists",
         "points": "Points",
         "history": "Admin history"
+      },
+      "points": {
+        "balance": "Current balance",
+        "earned": "Earned from missions",
+        "adjustments": "Admin adjustments",
+        "spent": "Used on offers",
+        "adjustTitle": "Add or remove points",
+        "add": "Add",
+        "remove": "Remove",
+        "amount": "Number of points",
+        "reason": "Reason",
+        "reasonPlaceholder": "Why are you changing this balance? (required)",
+        "removeExceeds": "You can't remove more than the current balance ({{balance}}).",
+        "submit": "Apply",
+        "confirmAddTitle": "Add {{points}} points?",
+        "confirmRemoveTitle": "Remove {{points}} points?",
+        "confirmMessage": "This changes the user's real balance right away and is recorded in the admin history with your reason.",
+        "success": "Points updated. New balance: {{balance}}.",
+        "history": "Points history",
+        "empty": "No points activity yet.",
+        "kinds": { "mission": "Completed mission", "adjustmentAdd": "Added by admin", "adjustmentRemove": "Removed by admin", "redemption": "Offer: {{title}}" }
       },
       "memberSince": "Member since",
       "noRequests": "No requests yet.",
@@ -472,6 +494,7 @@
       "partnerAccessGranted": "Partner access granted",
       "partnerAccessUpdated": "Partner access updated",
       "partnerAccessRevoked": "Partner access revoked",
+      "pointsAdjusted": "adjusted the points of",
       "messageHidden": "Message hidden"
     }
   },

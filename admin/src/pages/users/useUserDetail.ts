@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import type { Profile, HelpRequest, VolunteerProfile, VolunteerPointTransaction, AdminAuditLog } from '@/types'
+import type { Profile, HelpRequest, VolunteerProfile, AdminAuditLog } from '@/types'
 
 export function useUserDetail(id: string | undefined) {
   return useQuery({
@@ -16,8 +16,6 @@ export function useUserDetail(id: string | undefined) {
 
       const { data: assists } = await supabase.from('help_requests').select('*').eq('volunteer_id', id!).order('created_at', { ascending: false }).limit(50)
 
-      const { data: points } = await supabase.from('volunteer_point_transactions').select('*').eq('volunteer_id', id!).order('created_at', { ascending: false })
-
       const { data: history } = await supabase.from('admin_audit_log').select('*').in('target_type', ['user', 'volunteer']).eq('target_id', id!).order('created_at', { ascending: false })
 
       const completedCount = (assists ?? []).filter(a => a.status === 'completed').length
@@ -27,7 +25,6 @@ export function useUserDetail(id: string | undefined) {
         requests: (requests ?? []) as HelpRequest[],
         volunteerProfile: (volunteerProfile ?? null) as VolunteerProfile | null,
         assists: (assists ?? []) as HelpRequest[],
-        points: (points ?? []) as VolunteerPointTransaction[],
         completedCount,
         history: (history ?? []) as AdminAuditLog[]
       }

@@ -18,6 +18,7 @@ import { useUserDetail } from './useUserDetail'
 import { useSetUserBanned } from './useSetUserBanned'
 import { useSetVolunteerVerified } from './useSetVolunteerVerified'
 import { PartnerAccessSection } from './PartnerAccessSection'
+import { UserPointsSection } from './UserPointsSection'
 import { useUserPartnerAccess } from './usePartnerAccess'
 
 export function UserDetailPage() {
@@ -36,9 +37,8 @@ export function UserDetailPage() {
   if (query.isPending) return <FullPageSpinner />
   if (query.isError || !query.data) return <ErrorState onRetry={() => query.refetch()} />
 
-  const { profile, requests, volunteerProfile, assists, points, completedCount, history } = query.data
+  const { profile, requests, volunteerProfile, assists, completedCount, history } = query.data
   const initial = (profile.full_name?.trim()?.[0] ?? '?').toUpperCase()
-  const totalPoints = points.reduce((sum, p) => sum + p.points, 0)
 
   return (
     <div className="flex flex-col gap-4">
@@ -172,21 +172,7 @@ export function UserDetailPage() {
         </TabsContent>
 
         <TabsContent value="points">
-          {points.length === 0 ? (
-            <EmptyState message={t('users.detail.assists.noPoints')} />
-          ) : (
-            <>
-              <p className="mb-2 text-sm font-semibold text-foreground">{totalPoints} {t('points.title')}</p>
-              <ul className="flex flex-col gap-2 text-sm">
-                {points.map(p => (
-                  <li key={p.id} className="flex items-center justify-between border-b border-border py-2 last:border-0">
-                    <span className="text-foreground">+{p.points}</span>
-                    <span className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString(i18n.language, { dateStyle: 'medium' })}</span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
+          <UserPointsSection userId={profile.id} />
         </TabsContent>
 
         <TabsContent value="history">

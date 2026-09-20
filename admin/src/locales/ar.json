@@ -169,6 +169,7 @@
       "active": "نشط",
       "noName": "(بدون اسم)",
       "noPhone": "بدون رقم",
+      "points": "النقاط",
       "searchPlaceholder": "بحث بالاسم أو رقم الهاتف"
     },
     "detail": {
@@ -179,6 +180,27 @@
         "assists": "المساعدات",
         "points": "النقاط",
         "history": "السجل الإداري"
+      },
+      "points": {
+        "balance": "الرصيد الحالي",
+        "earned": "مكتسبة من المهام",
+        "adjustments": "تعديلات الأدمن",
+        "spent": "مستخدمة في العروض",
+        "adjustTitle": "إضافة أو خصم نقاط",
+        "add": "إضافة",
+        "remove": "خصم",
+        "amount": "عدد النقاط",
+        "reason": "السبب",
+        "reasonPlaceholder": "ليش بدك تعدّل الرصيد؟ (إلزامي)",
+        "removeExceeds": "ما بتقدر تخصم أكتر من الرصيد الحالي ({{balance}}).",
+        "submit": "تطبيق",
+        "confirmAddTitle": "إضافة {{points}} نقطة؟",
+        "confirmRemoveTitle": "خصم {{points}} نقطة؟",
+        "confirmMessage": "رح يتغيّر رصيد المستخدم الفعلي فوراً، وبينسجّل بسجل الأدمن مع السبب اللي كتبته.",
+        "success": "تم تحديث النقاط. الرصيد الجديد: {{balance}}.",
+        "history": "سجل النقاط",
+        "empty": "ما في نشاط نقاط بعد.",
+        "kinds": { "mission": "مهمة مكتملة", "adjustmentAdd": "أضافها الأدمن", "adjustmentRemove": "خصمها الأدمن", "redemption": "عرض: {{title}}" }
       },
       "memberSince": "عضو منذ",
       "noRequests": "لا توجد طلبات بعد.",
@@ -472,6 +494,7 @@
       "partnerAccessGranted": "تم منح صلاحية شريك",
       "partnerAccessUpdated": "تم تحديث صلاحية شريك",
       "partnerAccessRevoked": "تم سحب صلاحية شريك",
+      "pointsAdjusted": "عدّل نقاط",
       "messageHidden": "إخفاء رسالة مسيئة"
     }
   },
