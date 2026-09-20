@@ -57,11 +57,11 @@ export const authRepository = {
    * resolves it only through this promise's result; it never reaches the
    * app's normal `Linking` 'url' event, so nothing else will ever see it.
    */
-  async signInWithOAuth(provider: OAuthProvider): Promise<string | null> {
+  async signInWithOAuth(provider: OAuthProvider, returnPath = '/'): Promise<string | null> {
     if (Platform.OS === 'web') {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: window.location.origin }
+        options: { redirectTo: `${window.location.origin}${returnPath}` }
       })
       throwIfError(error, { domain: 'auth', operation: `oauth-${provider}` })
       return null
@@ -90,7 +90,7 @@ export const authRepository = {
     throwIfError(error, { domain: 'auth', operation: 'resend-verification' })
   },
 
-  async requestPasswordReset(email: string, redirectTo = 'akhoo://reset-password') {
+  async requestPasswordReset(email: string, redirectTo = Platform.OS === 'web' ? `${window.location.origin}/reset-password` : 'akhoo://reset-password') {
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo })
     throwIfError(error, { domain: 'auth', operation: 'request-password-reset' })
   },
@@ -136,16 +136,21 @@ export const authRepository = {
    * cascades or nulls out through FK constraints already in the schema, so
    * nothing else needs to run here.
    */
-  async deleteAccount(password: string): Promise<void> {
+  async deleteAccount(password?: string): Promise<void> {
     const { data: userData, error: userError } = await supabase.auth.getUser()
     throwIfError(userError, { domain: 'auth', operation: 'delete-account' })
     const email = userData.user?.email
     if (!email) throw normalizeAppError('Could not verify your account.', { domain: 'auth', operation: 'delete-account' })
 
-    const { error: reauthError } = await supabase.auth.signInWithPassword({ email, password })
-    throwIfError(reauthError, { domain: 'auth', operation: 'delete-account-reauth' })
+    if (password) {
+      const { error: reauthError } = await supabase.auth.signInWithPassword({ email, password })
+      throwIfError(reauthError, { domain: 'auth', operation: 'delete-account-reauth' })
+    }
 
-    const { error: fnError } = await supabase.functions.invoke('delete-account')
+    const { error: fnError } = await supabase.functions.invoke('delete-account', { body: { confirm: true } })
+    if (fnError?.context instanceof Response && fnError.context.status === 403) {
+      throw normalizeAppError('Recent sign-in required', { domain: 'auth', operation: 'delete-account-reauth' })
+    }
     throwIfError(fnError, { domain: 'auth', operation: 'delete-account' })
   },
 

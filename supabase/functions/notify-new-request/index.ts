@@ -1,4 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { sendPushMessages } from '../_shared/push.ts'
+import { readAll } from '../_shared/pagination.ts'
 
 function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const toRad = (value: number) => (value * Math.PI) / 180
@@ -32,23 +34,23 @@ Deno.serve(async req => {
 
   const { data: request } = await supabase
     .from('help_requests')
-    .select('id, requester_id, service_type, latitude, longitude')
+    .select('id, requester_id, service_type, latitude, longitude, status')
     .eq('id', request_id)
     .single()
 
-  if (!request) return new Response('ok: request not found')
+  if (!request || request.status !== 'open') return new Response('ok: request not found')
 
   // Mirrors the 20-minute staleness bound the RLS "request read relevant"
   // policy already applies (0007_volunteer_staleness.sql) - without it a
   // volunteer whose app was killed/uninstalled without ever toggling
   // availability off stays "available" forever and keeps getting a push
   // attempted against a token that will never be delivered.
-  const { data: volunteers } = await supabase
+  const volunteers = await readAll<{ user_id: string; latitude: number | null; longitude: number | null }>((from, to) => supabase
     .from('volunteer_profiles')
-    .select('user_id, latitude, longitude, push_token')
+    .select('user_id, latitude, longitude')
     .eq('is_available', true)
-    .not('push_token', 'is', null)
     .gt('updated_at', new Date(Date.now() - 20 * 60 * 1000).toISOString())
+    .order('user_id').range(from, to))
 
   // This function always returns 200/"ok" once it runs at all (webhook auth
   // succeeded, the trigger fired) regardless of whether any candidate was
@@ -63,40 +65,13 @@ Deno.serve(async req => {
   })
   console.log(`[notify-new-request] request ${request_id}: ${candidateCount} available+tokened+fresh volunteer(s), ${nearby.length} within 20km after excluding the requester`)
 
-  const messages = nearby.map(v => ({
-    to: v.push_token,
-    title: 'طلب مساعدة قريب منك 🆘',
-    body: `في حدا قريب محتاج مساعدة: ${serviceLabels[request.service_type] ?? 'مساعدة'}`,
-    sound: 'default'
-  }))
-
-  let pushResult = 'no candidates'
-  if (messages.length > 0) {
-    try {
-      const response = await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(messages)
-      })
-      const responseBody = await response.text()
-      if (!response.ok) {
-        console.error('[notify-new-request] Expo push API returned', response.status, responseBody)
-        pushResult = `expo api error ${response.status}: ${responseBody.slice(0, 300)}`
-      } else {
-        console.log(`[notify-new-request] Expo push API accepted ${messages.length} message(s):`, responseBody)
-        // Truncated, not the full Expo response - just enough to see
-        // "ok"/"error" per-ticket without the response body growing
-        // unbounded for a large recipient batch.
-        pushResult = `sent to ${messages.length}: ${responseBody.slice(0, 300)}`
-      }
-    } catch (err) {
-      console.error('[notify-new-request] push send failed:', err)
-      pushResult = `push send threw: ${err instanceof Error ? err.message : String(err)}`
-    }
-  }
-
-  // The response body itself carries the outcome (not just Edge Function
-  // logs) so it's queryable straight from net._http_response via SQL -
-  // no dashboard/CLI log access needed to see what a real invocation did.
-  return new Response(JSON.stringify({ candidateCount, nearbyCount: nearby.length, pushResult }))
+  const devices = await readAll<{ token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: nearby.map(v => v.user_id), p_peer_id: request.requester_id }).order('token').range(from, to))
+  const results = await sendPushMessages((devices ?? []).map((device: { token: string }) => ({
+    to: device.token, title: 'طلب مساعدة قريب منك',
+    body: serviceLabels[request.service_type] ?? 'مساعدة', sound: 'default',
+    data: { requestId: request.id }
+  })))
+  const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
+  if (invalid.length) await supabase.from('push_devices').delete().in('token', invalid)
+  return new Response(JSON.stringify({ candidateCount, nearbyCount: nearby.length, acceptedCount: results.filter(r => r.status === 'sent').length, failedCount: results.filter(r => r.status !== 'sent').length }))
 })

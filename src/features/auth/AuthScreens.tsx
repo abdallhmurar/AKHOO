@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import * as ImagePicker from 'expo-image-picker'
-import { AppleLogo, ArrowLeft, ArrowRight, Camera, CheckCircle, ShieldCheck } from 'phosphor-react-native'
+import { AppleLogo, ArrowLeft, ArrowRight, CheckCircle, ShieldCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { normalizePhone } from '../../lib/phone'
@@ -10,13 +9,11 @@ import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { authRepository, type OAuthProvider } from '../../repositories/authRepository'
-import { profileRepository } from '../../repositories/profileRepository'
 import { localizeAppError, type ErrorTranslator } from '../../services/errors'
 import { AppScreen } from '../../components/v2'
 import { Button, GoogleLogoColored, IconButton, TextField } from '../../components/ui'
 import { PasswordStrength } from '../../components/PasswordStrength'
 
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // Login/signup are usually pushed from Welcome, so router.back() is enough -
@@ -188,7 +185,6 @@ export function SignupScreen() {
   const { signUp } = useAuth()
   const typography = useAppTypography()
   const tr = useErrorTranslator()
-  const [avatarUri, setAvatarUri] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -213,26 +209,8 @@ export function SignupScreen() {
     }
   }
 
-  async function pickAvatar() {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (permission.status !== 'granted') {
-      Alert.alert(t('auth.signup.permissionPhotos.title'), t('auth.signup.permissionPhotos.message'))
-      return
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6, allowsEditing: true, aspect: [1, 1] })
-    if (result.canceled || !result.assets[0]) return
-    const asset = result.assets[0]
-    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
-      Alert.alert(t('common.error'), t('account.errors.imageTooLarge'))
-      return
-    }
-    setAvatarUri(asset.uri)
-    setErrors(e => ({ ...e, photo: undefined }))
-  }
-
   async function submit() {
     const next: typeof errors = {}
-    if (!avatarUri) next.photo = t('auth.signup.errors.photoRequired')
     if (!name.trim()) next.name = t('auth.signup.errors.nameRequired')
     const normalizedPhone = phone.trim() ? normalizePhone(phone.trim()) : null
     if (!phone.trim()) next.phone = t('auth.signup.errors.phoneRequired')
@@ -242,12 +220,11 @@ export function SignupScreen() {
     if (password.length < 6) next.password = t('auth.signup.errors.passwordTooShort')
     else if (confirmPassword !== password) next.confirmPassword = t('auth.signup.errors.passwordMismatch')
     setErrors(next)
-    if (Object.keys(next).length > 0 || !normalizedPhone || !avatarUri) return
+    if (Object.keys(next).length > 0 || !normalizedPhone) return
     setLoading(true)
     try {
       const result = await signUp({ email: email.trim(), password, fullName: name.trim(), phone: normalizedPhone })
       if (result.session) {
-        try { await profileRepository.uploadAvatar(result.session.user.id, avatarUri) } catch { /* account creation already succeeded; avatar can be added later from Account */ }
         router.replace('/(tabs)')
       } else {
         setCreated(true)
@@ -274,20 +251,7 @@ export function SignupScreen() {
 
   return (
     <AuthFrame title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')} onBack={() => backToWelcome(router)}>
-      <View style={styles.avatarWrap}>
-        <Pressable onPress={pickAvatar} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: errors.photo ? theme.colors.danger : theme.colors.border }]}>
-          {avatarUri ? (
-            <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
-          ) : (
-            <Camera size={26} color={theme.colors.textMuted} weight="light" />
-          )}
-          <View style={[styles.avatarEditBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.background }]}>
-            <Camera size={13} color={theme.colors.onPrimary} weight="fill" />
-          </View>
-        </Pressable>
-        <Text style={[typography.small, styles.avatarHint, { color: theme.colors.textMuted }]}>{t('auth.signup.avatarHint')}</Text>
-        {errors.photo ? <Text style={[typography.small, { color: theme.colors.danger }]}>{errors.photo}</Text> : null}
-      </View>
+      <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('auth.signup.photoLater')}</Text>
       <TextField label={t('auth.signup.nameLabel')} placeholder={t('auth.signup.namePlaceholder')} value={name} onChangeText={value => { setName(value); setErrors(e => ({ ...e, name: undefined })) }} error={errors.name} />
       <TextField label={t('auth.signup.phoneLabel')} placeholder={t('auth.signup.phonePlaceholder')} value={phone} onChangeText={value => { setPhone(value); setErrors(e => ({ ...e, phone: value.trim() && !normalizePhone(value.trim()) ? t('auth.signup.errors.phoneInvalid') : undefined })) }} error={errors.phone} keyboardType="phone-pad" />
       <TextField label={t('auth.signup.emailLabel')} placeholder={t('auth.signup.emailPlaceholder')} value={email} onChangeText={value => { setEmail(value); setErrors(e => ({ ...e, email: value.trim() && !EMAIL_REGEX.test(value.trim()) ? t('auth.signup.errors.emailInvalid') : undefined })) }} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
@@ -295,6 +259,9 @@ export function SignupScreen() {
       <PasswordStrength password={password} />
       <TextField label={t('auth.signup.confirmPasswordLabel')} value={confirmPassword} onChangeText={value => { setConfirmPassword(value); setErrors(e => ({ ...e, confirmPassword: value && value !== password ? t('auth.signup.errors.passwordMismatch') : undefined })) }} error={errors.confirmPassword} secureTextEntry secureToggle />
       <FormError message={errors.form} />
+      <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('auth.signup.legal')}</Text>
+      <FooterLink prompt="" label={t('account.menu.privacyPolicy')} onPress={() => router.push('/privacy-policy')} />
+      <FooterLink prompt="" label={t('account.menu.termsOfUse')} onPress={() => router.push('/terms')} />
       <Button label={t('auth.signup.submit')} loading={loading} onPress={submit} />
       <OAuthButtons />
       <FooterLink prompt={t('auth.signup.haveAccount')} label={t('auth.signup.loginLink')} onPress={() => router.replace('/login')} />

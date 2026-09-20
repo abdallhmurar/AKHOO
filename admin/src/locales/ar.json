@@ -28,7 +28,13 @@
   "nav": {
     "brand": "أخوو",
     "console": "لوحة الإدارة",
-    "sections": { "overview": "نظرة عامة", "community": "المجتمع", "commerce": "العروض والمصالح", "safety": "الأمان والثقة", "growth": "النمو" },
+    "sections": {
+      "overview": "نظرة عامة",
+      "community": "المجتمع",
+      "commerce": "العروض والمصالح",
+      "safety": "الأمان والثقة",
+      "growth": "النمو"
+    },
     "dashboard": "الرئيسية",
     "requests": "الطلبات",
     "users": "المستخدمون",
@@ -105,7 +111,12 @@
     },
     "detail": {
       "title": "الطلب",
-      "tabs": { "overview": "نظرة عامة", "timeline": "المسار الزمني", "map": "الخريطة", "history": "السجل" },
+      "tabs": {
+        "overview": "نظرة عامة",
+        "timeline": "المسار الزمني",
+        "map": "الخريطة",
+        "history": "السجل"
+      },
       "requester": "صاحب الطلب",
       "volunteer": "المتطوع",
       "note": "ملاحظة",
@@ -162,7 +173,13 @@
     },
     "detail": {
       "title": "المستخدم",
-      "tabs": { "profile": "الملف الشخصي", "requests": "الطلبات", "assists": "المساعدات", "points": "النقاط", "history": "السجل الإداري" },
+      "tabs": {
+        "profile": "الملف الشخصي",
+        "requests": "الطلبات",
+        "assists": "المساعدات",
+        "points": "النقاط",
+        "history": "السجل الإداري"
+      },
       "memberSince": "عضو منذ",
       "noRequests": "لا توجد طلبات بعد.",
       "notAVolunteer": "هذا المستخدم لم يساعد أحداً بعد.",
@@ -254,7 +271,12 @@
       "allStatuses": "الكل"
     },
     "form": {
-      "sections": { "general": "معلومات عامة", "contact": "التواصل", "location": "الموقع", "hours": "ساعات العمل" },
+      "sections": {
+        "general": "معلومات عامة",
+        "contact": "التواصل",
+        "location": "الموقع",
+        "hours": "ساعات العمل"
+      },
       "name": "اسم العمل التجاري",
       "category": "الفئة",
       "description": "الوصف",
@@ -268,13 +290,30 @@
       "addPhoto": "إضافة صورة",
       "mapHint": "اضغط على الخريطة لتحديد موقع العمل التجاري، أو اسحب العلامة.",
       "hoursPlaceholder": "مثال: 9:00-18:00 أو مغلق",
-      "days": { "sun": "أحد", "mon": "إثنين", "tue": "ثلاثاء", "wed": "أربعاء", "thu": "خميس", "fri": "جمعة", "sat": "سبت" },
-      "imageErrors": { "invalidType": "يُسمح فقط بصور JPEG أو PNG أو WebP.", "tooLarge": "يجب أن تكون الصورة أقل من 5 ميغابايت." },
+      "days": {
+        "sun": "أحد",
+        "mon": "إثنين",
+        "tue": "ثلاثاء",
+        "wed": "أربعاء",
+        "thu": "خميس",
+        "fri": "جمعة",
+        "sat": "سبت"
+      },
+      "imageErrors": {
+        "invalidType": "يُسمح فقط بصور JPEG أو PNG أو WebP.",
+        "tooLarge": "يجب أن تكون الصورة أقل من 5 ميغابايت."
+      },
       "savedCreate": "تم إنشاء العمل التجاري.",
       "savedEdit": "تم تحديث العمل التجاري."
     },
     "detail": {
-      "tabs": { "overview": "نظرة عامة", "photos": "الصور", "offers": "العروض", "reviews": "التقييمات", "history": "السجل الإداري" },
+      "tabs": {
+        "overview": "نظرة عامة",
+        "photos": "الصور",
+        "offers": "العروض",
+        "reviews": "التقييمات",
+        "history": "السجل الإداري"
+      },
       "activate": "تفعيل",
       "hide": "إخفاء",
       "activateConfirmTitle": "تفعيل هذا العمل التجاري؟",
@@ -318,7 +357,12 @@
       "searchPlaceholder": "بحث بعنوان العرض"
     },
     "form": {
-      "sections": { "general": "معلومات عامة", "pricing": "التسعير", "validity": "مدة الصلاحية", "membership": "SANAD+" },
+      "sections": {
+        "general": "معلومات عامة",
+        "pricing": "التسعير",
+        "validity": "مدة الصلاحية",
+        "membership": "SANAD+"
+      },
       "business": "العمل التجاري",
       "selectBusiness": "اختر عملاً تجارياً",
       "noBusiness": "بدون شريك (عرض عام من سَنَد)",
@@ -427,7 +471,8 @@
       "contentBannerUpdated": "حدّث بانر محتوى",
       "partnerAccessGranted": "تم منح صلاحية شريك",
       "partnerAccessUpdated": "تم تحديث صلاحية شريك",
-      "partnerAccessRevoked": "تم سحب صلاحية شريك"
+      "partnerAccessRevoked": "تم سحب صلاحية شريك",
+      "messageHidden": "إخفاء رسالة مسيئة"
     }
   },
   "redemptions": {
@@ -456,7 +501,9 @@
       "status": "الحالة",
       "expires": "ينتهي"
     },
-    "filters": { "searchPlaceholder": "بحث بالكود" },
+    "filters": {
+      "searchPlaceholder": "بحث بالكود"
+    },
     "cancel": "إلغاء",
     "cancelConfirmTitle": "إلغاء هذا الاستبدال؟",
     "cancelConfirmMessage": "سيتم إرجاع نقاط المستخدم تلقائياً.",
@@ -497,7 +544,9 @@
       "offer": "عرض",
       "user": "مستخدم"
     },
-    "filters": { "searchPlaceholder": "بحث بالسبب" },
+    "filters": {
+      "searchPlaceholder": "بحث بالسبب"
+    },
     "detail": {
       "reviewing": "وضع قيد المراجعة",
       "resolve": "حل",
@@ -507,7 +556,11 @@
       "notePlaceholder": "ملاحظة الحل (اختياري)",
       "chatTitle": "المحادثة المرتبطة",
       "chatHint": "ظاهرة فقط ما دام هذا التقرير مفتوحاً أو قيد المراجعة.",
-      "noMessages": "لا توجد رسائل لعرضها لهدف هذا التقرير."
+      "noMessages": "لا توجد رسائل لعرضها لهدف هذا التقرير.",
+      "attachment": "مرفق البلاغ",
+      "hideMessage": "إخفاء الرسالة",
+      "hideHint": "ستختفي الرسالة عن المشاركين وتبقى متاحة للمراجعة أثناء معالجة البلاغ.",
+      "hidden": "أُخفيت عن المشاركين"
     }
   },
   "notifications": {
@@ -528,6 +581,16 @@
       "audience": "الجمهور",
       "sentCount": "وصل إلى",
       "date": "تاريخ الإرسال"
+    },
+    "delivery": {
+      "status": "حالة الإرسال",
+      "queued": "بانتظار الإرسال",
+      "sending": "جارٍ الإرسال",
+      "partial": "إرسال جزئي",
+      "failed": "غير مكتمل",
+      "sent": "قُبل لدى مزوّد الإشعارات",
+      "retry": "إعادة محاولة الإرسال",
+      "incomplete": "حُفظ الإشعار لكن الإرسال لم يكتمل. راجع السجل؛ المحاولات ذات النتيجة غير المعروفة لا تُكرر تلقائياً."
     }
   },
   "content": {
@@ -537,7 +600,11 @@
       "perks_header": "بانر رأس المزايا",
       "perks_promax": "بانر أخوو برو ماكس"
     },
-    "languages": { "ar": "العربية", "he": "العبرية", "en": "الإنجليزية" },
+    "languages": {
+      "ar": "العربية",
+      "he": "العبرية",
+      "en": "الإنجليزية"
+    },
     "upload": "رفع صورة",
     "active": "نشط",
     "inactive": "غير نشط",

@@ -28,6 +28,7 @@ import { AppErrorBoundary } from './AppErrorBoundary'
 import { ConnectivityBanner, ErrorToastBridge } from './SystemFeedback'
 import { LaunchScreen } from './LaunchScreen'
 import { ThemeModeProvider } from './ThemeModeProvider'
+import { DiagnosticsBridge } from './DiagnosticsBridge'
 
 export function AppProviders({ children }: PropsWithChildren) {
   const [fontsLoaded] = useFonts({
@@ -46,7 +47,7 @@ export function AppProviders({ children }: PropsWithChildren) {
                   <AuthProvider>
                     <MissionProvider>
                       <BottomSheetModalProvider>
-                        <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /></ToastProvider>
+                        <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /><DiagnosticsBridge /></ToastProvider>
                       </BottomSheetModalProvider>
                     </MissionProvider>
                   </AuthProvider>

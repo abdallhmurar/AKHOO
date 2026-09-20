@@ -12,7 +12,7 @@ import type { Column } from '@/components/DataTable'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
 import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
-import { useSendNotification } from './useSendNotification'
+import { useRetryNotification, useSendNotification } from './useSendNotification'
 
 function ComposeCard() {
   const { t } = useTranslation()
@@ -24,8 +24,9 @@ function ComposeCard() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     try {
-      await send.mutateAsync({ title, body, audience })
-      toast.success(t('notifications.compose.sent'))
+      const result = await send.mutateAsync({ title, body, audience })
+      if (result.deliveryComplete) toast.success(t('notifications.compose.sent'))
+      else toast.warning(t('notifications.delivery.incomplete'))
       setTitle('')
       setBody('')
     } catch {
@@ -84,11 +85,16 @@ export function NotificationsPage() {
   const { t, i18n } = useTranslation()
   const [page, setPage] = useState(0)
   const query = useNotifications(page)
+  const retry = useRetryNotification()
 
   const columns: Column<BroadcastNotification>[] = [
     { key: 'title', header: t('notifications.table.title'), cell: row => row.title },
     { key: 'audience', header: t('notifications.table.audience'), cell: row => (row.target_audience === 'all' ? t('notifications.compose.audienceAll') : t('notifications.compose.audienceVolunteers')) },
     { key: 'sentCount', header: t('notifications.table.sentCount'), cell: row => row.sent_count },
+    { key: 'status', header: t('notifications.delivery.status'), cell: row => t(`notifications.delivery.${row.delivery_status}`) },
+    { key: 'retry', header: '', cell: row => !row.sent_at && row.delivery_status !== 'sending' ? <Button size="sm" variant="outline" disabled={retry.isPending} onClick={() => {
+      retry.mutate(row.id, { onSuccess: result => result.complete ? toast.success(t('notifications.compose.sent')) : toast.warning(t('notifications.delivery.incomplete')), onError: () => toast.error(t('notifications.delivery.incomplete')) })
+    }}>{t('notifications.delivery.retry')}</Button> : null },
     { key: 'date', header: t('notifications.table.date'), cell: row => (row.sent_at ? new Date(row.sent_at).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }) : '—') }
   ]
 

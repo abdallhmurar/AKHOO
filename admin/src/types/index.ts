@@ -211,6 +211,7 @@ export type Report = {
 }
 
 export type MissionMessage = {
+  is_hidden: boolean
   id: string
   request_id: string
   sender_id: string
@@ -223,6 +224,7 @@ export type MissionMessage = {
 export type NotificationAudience = 'all' | 'volunteers'
 
 export type BroadcastNotification = {
+  delivery_status: 'queued' | 'sending' | 'partial' | 'failed' | 'sent'
   id: string
   title: string
   body: string

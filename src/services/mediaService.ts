@@ -21,9 +21,9 @@ export const mediaService = {
     try {
       const response = await fetch(input.uri)
       if (!response.ok) throw new Error(`Unable to read selected media (${response.status})`)
-      const blob = await response.blob()
-      const { error } = await supabase.storage.from(input.bucket).upload(input.path, blob, {
-        contentType: input.contentType ?? blob.type ?? 'application/octet-stream',
+      const bytes = await response.arrayBuffer()
+      const { error } = await supabase.storage.from(input.bucket).upload(input.path, bytes, {
+        contentType: input.contentType ?? response.headers.get('content-type') ?? 'application/octet-stream',
         upsert: input.upsert ?? false
       })
       throwIfError(error, { domain: 'media', operation: 'upload' })

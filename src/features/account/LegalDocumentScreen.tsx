@@ -1,6 +1,6 @@
 import { Linking, StyleSheet, Text, View } from 'react-native'
 import { Phone, WhatsappLogo } from 'phosphor-react-native'
-import { dirStyles, useIsRTL } from '../../lib/direction'
+import { dirStyles } from '../../lib/direction'
 import { space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { AppScreen, ScreenHeader } from '../../components/v2'
@@ -13,7 +13,8 @@ import { LEGAL_CONTACT, LEGAL_LAST_UPDATED, type LegalBlock } from './legalConte
 export function LegalDocumentScreen({ title, brand, blocks }: { title: string; brand: string; blocks: LegalBlock[] }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
-  const isRTL = useIsRTL()
+  // These approved documents are Arabic even when the app chrome is English.
+  const isRTL = true
   const align: 'right' | 'left' = isRTL ? 'right' : 'left'
 
   return (

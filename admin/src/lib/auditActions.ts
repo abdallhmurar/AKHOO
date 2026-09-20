@@ -3,6 +3,7 @@
 // extended by 0015_businesses_offers_reviews.sql).
 
 export type AuditAction =
+  | 'message_hidden'
   | 'user_banned'
   | 'user_unbanned'
   | 'volunteer_verified'
@@ -38,6 +39,7 @@ export type AuditAction =
 export type AuditTargetType = 'user' | 'volunteer' | 'request' | 'business' | 'offer' | 'review' | 'redemption' | 'report' | 'notification' | 'content_banner'
 
 export const AUDIT_ACTION_LABEL_KEYS: Record<AuditAction, string> = {
+  message_hidden: 'audit.actions.messageHidden',
   user_banned: 'audit.actions.userBanned',
   user_unbanned: 'audit.actions.userUnbanned',
   volunteer_verified: 'audit.actions.volunteerVerified',

@@ -6,6 +6,7 @@ import { Button } from '../components/ui'
 import { civicColors, palette, radius, space } from '../lib/theme'
 import { i18next } from '../lib/i18n'
 import { getFontFamily } from '../lib/typography'
+import { reportAppError } from '../services/errors'
 
 type State = { error: Error | null }
 
@@ -13,6 +14,7 @@ export class AppErrorBoundary extends Component<PropsWithChildren, State> {
   state: State = { error: null }
   static getDerivedStateFromError(error: Error): State { return { error } }
   componentDidCatch(error: Error, info: ErrorInfo) {
+    reportAppError(error, { domain: 'render', operation: 'error-boundary' })
     if (__DEV__) console.error('[AKHOO boundary]', error.message, info.componentStack)
   }
   render(): ReactNode {

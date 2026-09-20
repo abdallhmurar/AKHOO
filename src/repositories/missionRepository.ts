@@ -1,28 +1,10 @@
-import type { RealtimeChannel } from '@supabase/supabase-js'
+import { realtimeSubscription } from '../lib/realtimeSubscription'
 import { supabase } from '../lib/supabase'
 import { isMissingDatabaseObject, normalizeAppError, throwIfError } from '../services/errors'
 import type { HelpRequest } from '../types'
 import type { Mission, MissionStatus } from './domainTypes'
 
-// supabase-js reuses one channel object per topic name (SupabaseClient
-// caches by topic), so calling `.channel(topic).on(...)` again for a topic
-// that's already joined/joining throws ("cannot add postgres_changes
-// callbacks... after subscribe()") instead of creating an independent
-// second subscription - confirmed live when MissionProvider's app-wide
-// mission subscription and a screen-level one raced for the same topic.
-// Guarding here (rather than in every caller) makes the primitive safe for
-// more than one subscriber, and for React StrictMode's mount/cleanup/
-// remount, whose synchronous re-invoke can beat the async removeChannel()
-// from the first cleanup.
-function subscribeOnce(topic: string, bind: (channel: RealtimeChannel) => RealtimeChannel) {
-  const realtimeTopic = `realtime:${topic}`
-  const existing = supabase.getChannels().find(channel => channel.topic === realtimeTopic)
-  if (existing && (existing.state === 'joined' || existing.state === 'joining')) {
-    return () => {}
-  }
-  const channel = bind(supabase.channel(topic)).subscribe()
-  return () => { void supabase.removeChannel(channel) }
-}
+
 
 const ACTIVE_MISSION_STATUSES: MissionStatus[] = ['matching', 'assigned', 'on_the_way', 'arrived', 'in_progress', 'awaiting_confirmation']
 const ACTIVE_LEGACY_STATUSES = ['open', 'accepted', 'on_the_way', 'arrived', 'awaiting_confirmation']
@@ -130,14 +112,14 @@ export const missionRepository = {
     throwIfError(result.error, { domain: 'missions', operation: 'cancel' })
   },
 
-  subscribe(missionId: string, listener: () => void) {
-    return subscribeOnce(`mission:${missionId}`, channel => channel
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'missions', filter: `id=eq.${missionId}` }, listener)
+  subscribe(missionId: string, listener: () => void, source: Mission['source'] = 'legacy') {
+    return realtimeSubscription(`mission:${missionId}`, channel => channel
+      .on('postgres_changes', { event: '*', schema: 'public', table: source === 'v2' ? 'missions' : 'help_requests', filter: `id=eq.${missionId}` }, listener)
     )
   },
 
   subscribeToOpenRequests(listener: () => void) {
-    return subscribeOnce('v2-open-requests', channel => channel
+    return realtimeSubscription('v2-open-requests', channel => channel
       .on('postgres_changes', { event: '*', schema: 'public', table: 'help_requests' }, listener)
     )
   }

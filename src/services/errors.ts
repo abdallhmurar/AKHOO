@@ -128,6 +128,7 @@ export type ErrorTranslator = (ar: string, he: string, en: string) => string
 /** Safe, user-facing copy for transport errors in all launch languages. */
 export function localizeAppError(error: unknown, tr: ErrorTranslator) {
   const normalized = normalizeAppError(error)
+  if (normalized.message === 'Recent sign-in required') return tr('سجّل الدخول مجدداً لتأكيد هويتك، ثم أعد طلب حذف الحساب.', 'יש להתחבר מחדש כדי לאמת את הזהות ואז לבקש שוב את מחיקת החשבון.', 'Sign in again to verify your identity, then request account deletion again.')
   switch (normalized.code) {
     case 'auth': return tr('تعذر التحقق من الحساب. راجع بياناتك وحاول مجدداً.', 'לא ניתן לאמת את החשבון. בדקו את הפרטים ונסו שוב.', 'We could not verify the account. Check your details and try again.')
     case 'forbidden': return tr('لا تملك صلاحية تنفيذ هذا الإجراء.', 'אין הרשאה לבצע פעולה זו.', 'You do not have permission to do that.')

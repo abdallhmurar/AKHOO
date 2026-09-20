@@ -1,4 +1,7 @@
-import { Stack } from 'expo-router'
+import { Stack, useRouter } from 'expo-router'
+import { useEffect } from 'react'
+import { subscribeToNotificationNavigation } from '../src/lib/notifications'
+import { notificationRoute } from '../src/lib/notificationRoute'
 import { AppProviders, LaunchScreen, useAuth, useLanguageDirection } from '../src/providers'
 
 export const unstable_settings = { initialRouteName: 'index' }
@@ -6,6 +9,15 @@ export const unstable_settings = { initialRouteName: 'index' }
 function RootNavigator() {
   const { session, loading, isRestricted } = useAuth()
   const { ready, isRTL } = useLanguageDirection()
+  const router = useRouter()
+  const userId = session?.user.id
+  useEffect(() => {
+    if (!ready || loading || !userId || isRestricted) return
+    return subscribeToNotificationNavigation(data => {
+      const route = notificationRoute(data)
+      if (route) router.push(route)
+    })
+  }, [ready, loading, userId, isRestricted, router])
   if (!ready || loading) return <LaunchScreen />
   const allowed = !!session && !isRestricted
   return (

@@ -1,13 +1,15 @@
 import * as Location from 'expo-location'
 import * as TaskManager from 'expo-task-manager'
 import { supabase } from './supabase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'react-native'
 
 const BACKGROUND_LOCATION_TASK = 'sanad-background-location'
 
-let backgroundUserId: string | null = null
+const BACKGROUND_USER_KEY = 'akhoo_background_location_user'
 
 TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
-  if (error || !data || !backgroundUserId) return
+  if (error || !data) return
   const { locations } = data as { locations: Location.LocationObject[] }
   const last = locations[locations.length - 1]
   if (!last) return
@@ -15,6 +17,9 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
   // task - it's on a 30s/100m loop, so a dropped update is recoverable on
   // the next tick as long as the task itself keeps running.
   try {
+    const backgroundUserId = await AsyncStorage.getItem(BACKGROUND_USER_KEY)
+    const { data: auth } = await supabase.auth.getSession()
+    if (!backgroundUserId || auth.session?.user.id !== backgroundUserId) return
     // is_available is deliberately left out - it's now fully automatic
     // (0020_auto_volunteer_availability.sql), driven by whether the user has
     // an active request of their own. Forcing it true on every location
@@ -33,9 +38,10 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
 })
 
 export async function startBackgroundLocationUpdates(userId: string, notification: { title: string; body: string }) {
-  backgroundUserId = userId
+  if (Platform.OS === 'web') return false
   const permission = await Location.requestBackgroundPermissionsAsync()
   if (permission.status !== 'granted') return false
+  await AsyncStorage.setItem(BACKGROUND_USER_KEY, userId)
 
   const alreadyStarted = await Location.hasStartedLocationUpdatesAsync(BACKGROUND_LOCATION_TASK).catch(() => false)
   if (alreadyStarted) return true
@@ -54,7 +60,8 @@ export async function startBackgroundLocationUpdates(userId: string, notificatio
 }
 
 export async function stopBackgroundLocationUpdates() {
-  backgroundUserId = null
+  await AsyncStorage.removeItem(BACKGROUND_USER_KEY)
+  if (Platform.OS === 'web') return
   const alreadyStarted = await Location.hasStartedLocationUpdatesAsync(BACKGROUND_LOCATION_TASK).catch(() => false)
   if (alreadyStarted) {
     await Location.stopLocationUpdatesAsync(BACKGROUND_LOCATION_TASK)

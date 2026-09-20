@@ -26,7 +26,8 @@
       "notYourMission": "This mission isn't yours.",
       "cannotRelease": "This mission can't be released from its current state.",
       "alreadyReleased": "You already released this request, so you can't accept it again."
-    }
+    },
+    "search": "Search"
   },
   "welcome": {
     "createAccount": "Create Account",
@@ -88,7 +89,9 @@
         "resend": "Didn't get it? Resend",
         "resendSent": "A new confirmation email was sent.",
         "goToLogin": "Log in now"
-      }
+      },
+      "photoLater": "Add your photo from Account after confirming your email and signing in.",
+      "legal": "By creating an account you agree to the terms of use and acknowledge the privacy policy."
     },
     "forgot": {
       "title": "Forgot Password?",
@@ -139,11 +142,23 @@
     "resumeRequest": "You have an active help request — continue it",
     "resumeJob": "You have an active mission — continue it",
     "liveNow": "Live now",
-    "title": { "main": "What do you want", "accent": "to do?" },
+    "title": {
+      "main": "What do you want",
+      "accent": "to do?"
+    },
     "subtitle": "Choose your role for now.",
-    "discoverPerks": { "title": "Businesses & offers nearby", "text": "Trusted local shops and real deals near you" },
-    "needHelp": { "title": "I need help", "text": "I have a problem and need help nearby." },
-    "wantToHelp": { "title": "I want to help", "text": "I'm available to help someone nearby." },
+    "discoverPerks": {
+      "title": "Businesses & offers nearby",
+      "text": "Trusted local shops and real deals near you"
+    },
+    "needHelp": {
+      "title": "I need help",
+      "text": "I have a problem and need help nearby."
+    },
+    "wantToHelp": {
+      "title": "I want to help",
+      "text": "I'm available to help someone nearby."
+    },
     "adminLink": "Admin Panel",
     "notice": "First release: requests are matched directly with someone nearby, no call center."
   },
@@ -154,7 +169,11 @@
     "lockedCar": "Locked Car",
     "other": "Something Else",
     "step": {
-      "type": { "title": "How can we help you?", "subtitle": "Choose the problem you're facing.", "short": "Problem" },
+      "type": {
+        "title": "How can we help you?",
+        "subtitle": "Choose the problem you're facing.",
+        "short": "Problem"
+      },
       "details": {
         "title": "Details",
         "subtitle": "Help us understand the problem better",
@@ -164,7 +183,10 @@
         "addPhotoTitle": "Add a photo of the problem",
         "addPhotoSubtitle": "Optional, but helps the helper understand the situation faster"
       },
-      "location": { "title": "Set Your Location", "subtitle": "Your current location helps the helper reach you quickly" }
+      "location": {
+        "title": "Set Your Location",
+        "subtitle": "Your current location helps the helper reach you quickly"
+      }
     },
     "location": {
       "selectedLabel": "Selected Location",
@@ -216,10 +238,22 @@
       "notice": "You'll be notified as soon as the request is accepted"
     },
     "timeline": {
-      "problemType": { "title": "Problem Type", "subtitle": "Problem type has been set" },
-      "details": { "title": "Details", "subtitle": "Problem details have been added" },
-      "location": { "title": "Location", "subtitle": "Your location has been set on the map" },
-      "findingHelper": { "title": "Finding a Helper", "subtitle": "We're searching for the closest helper for you" }
+      "problemType": {
+        "title": "Problem Type",
+        "subtitle": "Problem type has been set"
+      },
+      "details": {
+        "title": "Details",
+        "subtitle": "Problem details have been added"
+      },
+      "location": {
+        "title": "Location",
+        "subtitle": "Your location has been set on the map"
+      },
+      "findingHelper": {
+        "title": "Finding a Helper",
+        "subtitle": "We're searching for the closest helper for you"
+      }
     },
     "updateStatus": "Update Status",
     "releasedNotice": {
@@ -271,7 +305,21 @@
       "video": "Video"
     },
     "attachError": "We couldn't upload the file. Try again.",
-    "sendError": "We couldn't send the message. Try again."
+    "sendError": "We couldn't send the message. Try again.",
+    "send": "Send",
+    "safety": {
+      "title": "Safety and reporting",
+      "hint": "Submit a report so our team can review this conversation. For immediate danger, contact emergency services.",
+      "reason": "Report reason",
+      "details": "Additional details (optional)",
+      "report": "Submit report",
+      "reportSent": "Your report was sent to the team",
+      "block": "Block user",
+      "unblock": "Remove my block",
+      "blockHint": "Blocking stops messages and future matching between you. It does not cancel the current mission; contact support if needed.",
+      "blocked": "Messaging is blocked. Removing your block does not remove a block set by the other person.",
+      "error": "The action failed. Please try again."
+    }
   },
   "volunteerJob": {
     "status": {
@@ -330,7 +378,9 @@
     "distanceKm": "{{distance}} km",
     "since": "{{time}} ago",
     "enabling": "Turning on availability...",
-    "sheet": { "newNearby": "New nearby request" },
+    "sheet": {
+      "newNearby": "New nearby request"
+    },
     "blocked": {
       "title": "Unavailable to help right now",
       "text": "You have an active help request, so no requests will reach you. You'll automatically become available again as soon as your request ends.",
@@ -341,7 +391,9 @@
       "viewAll": "View all",
       "viewRequest": "View request"
     },
-    "allNearby": { "title": "All nearby requests" },
+    "allNearby": {
+      "title": "All nearby requests"
+    },
     "urgent": "Urgent",
     "autoUnavailableNotice": "If you request help for yourself, you'll automatically become unavailable to help until your request ends.",
     "autoUpdateNotice": "Requests update automatically",
@@ -464,7 +516,9 @@
         "phrase": "أريد حذف حسابي",
         "phraseLabel": "Type the phrase above",
         "passwordLabel": "Current Password",
-        "deleteButton": "Permanently Delete My Account"
+        "deleteButton": "Permanently Delete My Account",
+        "reauthenticate": "Verify identity by signing in",
+        "reauthenticateHint": "Sign in to the same account again, then confirm account deletion within ten minutes."
       }
     },
     "help": {
@@ -478,7 +532,11 @@
   "admin": {
     "title": "Admin Panel",
     "subtitle": "Manage requests, users and volunteers.",
-    "tabs": { "requests": "Requests", "users": "Users", "volunteers": "Volunteer Verification" },
+    "tabs": {
+      "requests": "Requests",
+      "users": "Users",
+      "volunteers": "Volunteer Verification"
+    },
     "loading": "Loading...",
     "requesterLabel": "Requester: {{id}}",
     "volunteerLabel": "Volunteer: {{id}}",
@@ -556,7 +614,9 @@
     "offersTitle": "Current offers",
     "businessesTitle": "Nearby businesses",
     "seeAll": "See all",
-    "rating": { "new": "New" },
+    "rating": {
+      "new": "New"
+    },
     "plusBadge": "PLUS",
     "hero": {
       "title": "AKHOO+",
@@ -611,7 +671,15 @@
       "whatsapp": "WhatsApp",
       "directions": "Directions",
       "hoursTitle": "Opening hours",
-      "days": { "sun": "Sun", "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat" },
+      "days": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
       "serviceAreaTitle": "Service area",
       "offersTitle": "Current offers",
       "noOffers": "No offers for this business right now.",

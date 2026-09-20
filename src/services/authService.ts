@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { stopBackgroundLocationUpdates } from '../lib/location'
 import { authRepository } from '../repositories/authRepository'
 import { normalizeAppError } from './errors'
+import { unregisterCurrentDevice } from './pushRegistration'
 
 export type AuthLinkResult = {
   handled: boolean
@@ -59,6 +60,7 @@ export async function getInitialAuthLink() {
 
 /** Stop OS location work before invalidating the user's auth session. */
 export async function signOutSafely() {
+  await unregisterCurrentDevice()
   try {
     await stopBackgroundLocationUpdates()
   } finally {
@@ -72,7 +74,7 @@ export async function signOutSafely() {
  * session the same way signOutSafely does. Only reaches the sign-out step
  * if the deletion itself actually succeeded.
  */
-export async function deleteAccountSafely(password: string) {
+export async function deleteAccountSafely(password?: string) {
   await authRepository.deleteAccount(password)
   await stopBackgroundLocationUpdates().catch(() => {})
   await authRepository.signOut()

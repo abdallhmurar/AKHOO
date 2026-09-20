@@ -1,4 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { sendPushMessages } from '../_shared/push.ts'
+import { readAll } from '../_shared/pagination.ts'
 
 Deno.serve(async req => {
   const secret = req.headers.get('x-webhook-secret')
@@ -28,46 +30,13 @@ Deno.serve(async req => {
   const recipientId = message.sender_id === request.requester_id ? request.volunteer_id : request.requester_id
   if (!recipientId) return new Response('ok: no matched recipient yet')
 
-  const [{ data: sender }, { data: recipient }] = await Promise.all([
-    supabase.from('profiles').select('full_name').eq('id', message.sender_id).single(),
-    supabase.from('profiles').select('push_token').eq('id', recipientId).single()
-  ])
-
-  if (!recipient?.push_token) {
-    return new Response(JSON.stringify({ recipientId, pushResult: 'recipient has no push token' }))
-  }
-
-  const body = message.media_type === 'image'
-    ? 'أرسل لك صورة 📷'
-    : message.media_type === 'video'
-      ? 'أرسل لك فيديو 🎥'
-      : (message.body ?? 'رسالة جديدة')
-
-  let pushResult = 'not sent'
-  try {
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify([{
-        to: recipient.push_token,
-        title: `${sender?.full_name || 'رسالة جديدة'} 💬`,
-        body,
-        sound: 'default',
-        data: { requestId: message.request_id, missionChat: true }
-      }])
-    })
-    const responseText = await response.text()
-    if (!response.ok) {
-      console.error('[notify-new-message] Expo push API returned', response.status, responseText)
-      pushResult = `expo api error ${response.status}: ${responseText.slice(0, 300)}`
-    } else {
-      console.log('[notify-new-message] Expo push API accepted:', responseText)
-      pushResult = `sent: ${responseText.slice(0, 300)}`
-    }
-  } catch (err) {
-    console.error('[notify-new-message] push send failed:', err)
-    pushResult = `push send threw: ${err instanceof Error ? err.message : String(err)}`
-  }
-
-  return new Response(JSON.stringify({ recipientId, pushResult }))
+  const devices = await readAll<{ token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: [recipientId], p_peer_id: message.sender_id }).order('token').range(from, to))
+  // Keep message text and identities off the lock screen.
+  const results = await sendPushMessages((devices ?? []).map((device: { token: string }) => ({
+    to: device.token, title: 'AKHOO', body: 'رسالة جديدة في محادثة المهمة', sound: 'default',
+    data: { requestId: message.request_id, missionChat: true }
+  })))
+  const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
+  if (invalid.length) await supabase.from('push_devices').delete().in('token', invalid)
+  return new Response(JSON.stringify({ acceptedCount: results.filter(r => r.status === 'sent').length }))
 })

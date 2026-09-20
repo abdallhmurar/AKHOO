@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 // touch a native bridge that isn't there.
 vi.mock('expo-location', () => ({ Accuracy: { Balanced: 3 } }))
 vi.mock('expo-task-manager', () => ({ defineTask: () => {} }))
+vi.mock('@react-native-async-storage/async-storage', () => ({ default: {} }))
 vi.mock('./supabase', () => ({ supabase: { from: () => ({ select: () => ({ eq: () => Promise.resolve({ data: [] }) }) }) } }))
 
 const { distanceKm, isWithinAnyZone } = await import('./location')

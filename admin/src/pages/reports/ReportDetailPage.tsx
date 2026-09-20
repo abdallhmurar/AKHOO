@@ -13,6 +13,8 @@ import { useIsRTL } from '@/lib/direction'
 import { AUDIT_ACTION_LABEL_KEYS } from '@/lib/auditActions'
 import { useReportDetail } from './useReportDetail'
 import { useResolveReport } from './useResolveReport'
+import { supabase } from '@/lib/supabase'
+import { useQueryClient } from '@tanstack/react-query'
 
 type PendingAction = 'reviewing' | 'resolved' | 'dismissed' | null
 
@@ -26,6 +28,8 @@ export function ReportDetailPage() {
   const resolve = useResolveReport()
   const [pendingAction, setPendingAction] = useState<PendingAction>(null)
   const [note, setNote] = useState('')
+  const [messageToHide, setMessageToHide] = useState<string | null>(null)
+  const client = useQueryClient()
 
   if (query.isPending) return <FullPageSpinner />
   if (query.isError || !query.data) return <ErrorState onRetry={() => query.refetch()} />
@@ -83,6 +87,12 @@ export function ReportDetailPage() {
           />
         </ConfirmDialog>
       ) : null}
+      <ConfirmDialog open={!!messageToHide} onOpenChange={open => !open && setMessageToHide(null)} title={t('reports.detail.hideMessage')} description={t('reports.detail.hideHint')} confirmLabel={t('reports.detail.hideMessage')} destructive onConfirm={async () => {
+        const { error } = await supabase.rpc('admin_hide_message', { p_id: messageToHide })
+        if (error) throw error
+        await client.invalidateQueries({ queryKey: ['report', id] })
+        await client.invalidateQueries({ queryKey: ['audit-log'] })
+      }} />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-4">
@@ -120,6 +130,9 @@ export function ReportDetailPage() {
                 <ul className="flex flex-col gap-2">
                   {messages.map(m => (
                     <li key={m.id} className="rounded-md border border-border p-2 text-sm">
+                      {m.is_hidden ? <p>{t('reports.detail.hidden')}</p> : <Button size="sm" variant="outline" onClick={() => setMessageToHide(m.id)}>{t('reports.detail.hideMessage')}</Button>}
+                      {m.media_url && m.media_type === 'image' ? <img src={m.media_url} alt={t('reports.detail.attachment')} className="max-h-64 rounded object-contain" /> : null}
+                      {m.media_url && m.media_type === 'video' ? <video src={m.media_url} controls aria-label={t('reports.detail.attachment')} className="max-h-64 rounded" /> : null}
                       <p className="text-foreground">{m.body || (m.media_type === 'image' ? '📷' : m.media_type === 'video' ? '🎥' : '')}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' })}</p>
                     </li>

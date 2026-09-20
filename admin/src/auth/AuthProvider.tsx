@@ -5,23 +5,41 @@ import { supabase } from '@/lib/supabase'
 import { useIsAdminQuery } from './useIsAdminQuery'
 import { AuthContext } from './AuthContext'
 import type { AuthState } from './AuthContext'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   // undefined = initial getSession() still in flight, null = confirmed logged out
   const [session, setSession] = useState<Session | null | undefined>(undefined)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    let active = true
+    let authEventReceived = false
+    let currentUser: string | null = null
+    const applySession = (next: Session | null) => {
+      if (!active) return
+      if (currentUser !== (next?.user.id ?? null)) {
+        queryClient.clear()
+        currentUser = next?.user.id ?? null
+      }
+      setSession(next)
+    }
+    supabase.auth.getSession().then(({ data }) => {
+      if (!authEventReceived) applySession(data.session)
+    }).catch(() => { if (!authEventReceived) applySession(null) })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession)
+      authEventReceived = true
+      applySession(nextSession)
     })
-    return () => listener.subscription.unsubscribe()
-  }, [])
+    return () => { active = false; listener.subscription.unsubscribe() }
+  }, [queryClient])
 
-  const isAdminQuery = useIsAdminQuery(!!session)
+  const isAdminQuery = useIsAdminQuery(session?.user.id ?? null)
 
   function signOut() {
-    supabase.auth.signOut()
+    queryClient.clear()
+    setSession(null)
+    void supabase.auth.signOut({ scope: 'local' })
   }
 
   let state: AuthState

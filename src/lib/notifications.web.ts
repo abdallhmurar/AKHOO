@@ -4,3 +4,6 @@
 export async function registerForPushNotificationsAsync(): Promise<string | null> {
   return null
 }
+export function subscribeToNotificationNavigation(_listener: (data: Record<string, unknown>) => void) {
+  return () => {}
+}

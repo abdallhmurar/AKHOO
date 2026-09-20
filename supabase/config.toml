@@ -1,0 +1,16 @@
+project_id = "akhoo"
+
+# Authentication is verified inside these handlers. This also lets OPTIONS
+# reach the CORS handler when using current publishable/asymmetric keys.
+[functions.delete-account]
+verify_jwt = false
+[functions.send-broadcast-notification]
+verify_jwt = false
+[functions.geocode]
+verify_jwt = false
+
+# Database webhooks authenticate with x-webhook-secret, never a client key.
+[functions.notify-new-request]
+verify_jwt = false
+[functions.notify-new-message]
+verify_jwt = false

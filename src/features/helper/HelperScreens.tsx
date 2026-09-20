@@ -6,8 +6,7 @@ import { ArrowClockwise, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, 
 import { useTranslation } from 'react-i18next'
 import { directionsHref } from '../../lib/contactLinks'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../../lib/location'
-import { registerForPushNotificationsAsync } from '../../lib/notifications'
-import { getNotificationsEnabled } from '../../lib/notificationPreference'
+import { syncPushRegistration } from '../../services/pushRegistration'
 import { useNavigationApp } from '../../lib/navigationPreference'
 import { formatElapsed } from '../../lib/time'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -108,14 +107,12 @@ export function HelperHomeScreen() {
     setEnableError(false)
     try {
       const position = await getCurrentCoords()
-      const notificationsEnabled = await getNotificationsEnabled()
-      const pushToken = notificationsEnabled ? await registerForPushNotificationsAsync().catch(() => null) : null
-      const { error } = await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, pushToken))
+      void syncPushRegistration(userId).catch(() => {})
+      const { error } = await supabase.from('volunteer_profiles').upsert(buildAvailableUpsertPayload(userId, position, null))
       if (error) throw error
       setCoords(position)
       setAvailable(true)
       await loadRequests(position)
-      await startBackgroundLocationUpdates(userId, { title: t('volunteer.backgroundNotification.title'), body: t('volunteer.backgroundNotification.body') }).catch(() => {})
     } catch (cause: any) {
       setEnableError(true)
       toast.show(translateActionError(t, cause), 'error')
@@ -140,6 +137,11 @@ export function HelperHomeScreen() {
       void enable()
     }
   }, [hydrated, blockedByOwnRequest, available, enabling, enableError, enable])
+
+  useEffect(() => {
+    if (!available || blockedByOwnRequest) return
+    void startBackgroundLocationUpdates(userId, { title: t('volunteer.backgroundNotification.title'), body: t('volunteer.backgroundNotification.body') }).catch(() => {})
+  }, [available, blockedByOwnRequest, userId, t])
 
   useEffect(() => {
     if (!available || !coords) return

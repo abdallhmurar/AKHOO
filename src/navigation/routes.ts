@@ -1,4 +1,4 @@
-export const publicRoutes = ['/welcome', '/login', '/signup', '/forgot-password', '/reset-password', '/restricted'] as const
+export const publicRoutes = ['/welcome', '/login', '/signup', '/forgot-password', '/reset-password', '/restricted', '/privacy-policy', '/terms'] as const
 
 export const tabRoutes = ['/(tabs)', '/(tabs)/community', '/(tabs)/activity', '/(tabs)/account'] as const
 

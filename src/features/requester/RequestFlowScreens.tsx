@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
@@ -122,6 +122,9 @@ export function RequestFlowScreen() {
   const [pickerQuery, setPickerQuery] = useState('')
   const [pickerResults, setPickerResults] = useState<GeocodeResult[]>([])
   const [pickerSearching, setPickerSearching] = useState(false)
+  const [pickerSearched, setPickerSearched] = useState(false)
+  const pickerVersion = useRef(0)
+  const pinVersion = useRef(0)
 
   const stepIndex = STEPS.indexOf(step)
   const activeCoords = manualLocation ?? coords
@@ -142,20 +145,16 @@ export function RequestFlowScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCoords?.latitude, activeCoords?.longitude, manualLocation?.address])
 
-  useEffect(() => {
-    if (!manualLocationOpen) return
-    const query = pickerQuery.trim()
-    if (query.length < 3) { setPickerResults([]); return }
-    const controller = new AbortController()
-    const timeout = setTimeout(() => {
-      setPickerSearching(true)
-      searchAddress(query, controller.signal)
-        .then(setPickerResults)
-        .catch(() => {})
-        .finally(() => setPickerSearching(false))
-    }, 500)
-    return () => { clearTimeout(timeout); controller.abort() }
-  }, [pickerQuery, manualLocationOpen])
+  async function searchPicker() {
+    if (pickerSearching || pickerQuery.trim().length < 3) return
+    setPickerSearching(true)
+    const version = ++pickerVersion.current
+    setLocationError(null)
+    setPickerSearched(true)
+    try { const results = await searchAddress(pickerQuery); if (version === pickerVersion.current) setPickerResults(results) }
+    catch { setLocationError(t('request.errors.locationFailed')) }
+    finally { setPickerSearching(false) }
+  }
 
   async function fetchLocation() {
     setLocating(true)
@@ -171,6 +170,10 @@ export function RequestFlowScreen() {
   }
 
   function openManualLocationPicker() {
+    pickerVersion.current++
+    pinVersion.current++
+    setPickerSearched(false)
+    setLocationError(null)
     const seed = manualLocation ?? activeCoords ?? MAP_FALLBACK_CENTER
     setPickerPoint(seed)
     setPickerAddress(manualLocation?.address ?? locationAddress)
@@ -180,15 +183,21 @@ export function RequestFlowScreen() {
   }
 
   async function handlePickerMapPress(point: { latitude: number; longitude: number }) {
+    const version = ++pinVersion.current
     setPickerPoint(point)
     setPickerAddress(null)
     setPickerResolvingAddress(true)
     const address = await reverseGeocode(point.latitude, point.longitude)
+    if (version !== pinVersion.current) return
     setPickerAddress(address)
     setPickerResolvingAddress(false)
   }
 
   function selectSearchResult(result: GeocodeResult) {
+    pinVersion.current++
+    pickerVersion.current++
+    setPickerResolvingAddress(false)
+    setPickerSearched(false)
     setPickerPoint({ latitude: result.latitude, longitude: result.longitude })
     setPickerAddress(result.label)
     setPickerQuery(result.label)
@@ -249,9 +258,9 @@ export function RequestFlowScreen() {
       let photoUrl: string | null = null
       if (photoUri) {
         const response = await fetch(photoUri)
-        const blob = await response.blob()
+        const bytes = await response.arrayBuffer()
         const path = `${userId}/${Date.now()}.jpg`
-        const { error: uploadError } = await supabase.storage.from('request-photos').upload(path, blob, { contentType: 'image/jpeg' })
+        const { error: uploadError } = await supabase.storage.from('request-photos').upload(path, bytes, { contentType: 'image/jpeg' })
         if (uploadError) throw uploadError
         photoUrl = supabase.storage.from('request-photos').getPublicUrl(path).data.publicUrl
       }
@@ -310,10 +319,12 @@ export function RequestFlowScreen() {
       >
         <TextField
           value={pickerQuery}
-          onChangeText={setPickerQuery}
+          onChangeText={value => { pickerVersion.current++; setPickerQuery(value); setPickerSearched(false); setPickerResults([]) }}
           placeholder={t('request.location.searchPlaceholder')}
-          autoFocus
+          onSubmitEditing={() => void searchPicker()}
         />
+        <Button label={t('common.search')} loading={pickerSearching} disabled={pickerQuery.trim().length < 3} onPress={searchPicker} />
+        {locationError ? <Text style={[typography.small, { color: theme.colors.danger }]}>{locationError}</Text> : null}
         {pickerSearching ? (
           <ActivityIndicator color={theme.colors.primary} />
         ) : pickerResults.length > 0 ? (
@@ -329,7 +340,7 @@ export function RequestFlowScreen() {
               </Pressable>
             ))}
           </View>
-        ) : pickerQuery.trim().length >= 3 ? (
+        ) : pickerSearched && !locationError ? (
           <Text style={[typography.small, { color: theme.colors.textMuted, textAlign: 'center' }]}>{t('request.location.noResults')}</Text>
         ) : null}
 

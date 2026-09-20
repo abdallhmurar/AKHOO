@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Alert, Image, Linking, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Alert, Image, Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import * as Clipboard from 'expo-clipboard'
@@ -17,7 +17,9 @@ import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth, useThemeMode } from '../../providers'
 import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
-import { Button, IconButton, TextField } from '../../components/ui'
+import { Button, IconButton, TextField, useToast } from '../../components/ui'
+import { syncPushRegistration } from '../../services/pushRegistration'
+import { profileRepository } from '../../repositories/profileRepository'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
 import { NavigationAppPicker } from '../../components/NavigationAppPicker'
@@ -47,14 +49,24 @@ export function AccountHomeScreen() {
 
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [notificationsEnabled, setNotificationsEnabledState] = useState(true)
+  const [notificationsSaving, setNotificationsSaving] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     getNotificationsEnabled().then(setNotificationsEnabledState)
   }, [])
 
   async function toggleNotifications(value: boolean) {
-    setNotificationsEnabledState(value)
-    await setNotificationsEnabled(value)
+    if (notificationsSaving || !session) return
+    setNotificationsSaving(true)
+    try {
+      await setNotificationsEnabled(value)
+      await syncPushRegistration(session.user.id)
+      setNotificationsEnabledState(value)
+    } catch (cause) {
+      await setNotificationsEnabled(notificationsEnabled)
+      toast.show(translateActionError(t, cause instanceof Error ? cause : null), 'error')
+    } finally { setNotificationsSaving(false) }
   }
 
   async function pickAvatar() {
@@ -73,14 +85,7 @@ export function AccountHomeScreen() {
     }
     setAvatarUploading(true)
     try {
-      const response = await fetch(asset.uri)
-      const blob = await response.blob()
-      const path = `${profile.id}/avatar.jpg`
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'image/jpeg', upsert: true })
-      if (uploadError) throw uploadError
-      const avatarUrl = `${supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl}?t=${Date.now()}`
-      const { error } = await supabase.from('profiles').update({ avatar_url: avatarUrl }).eq('id', profile.id)
-      if (error) throw error
+      await profileRepository.uploadAvatar(profile.id, asset.uri)
       await refreshProfile()
     } catch (cause: any) {
       Alert.alert(t('common.error'), translateActionError(t, cause))
@@ -90,9 +95,11 @@ export function AccountHomeScreen() {
   }
 
   async function logout() {
-    await stopBackgroundLocationUpdates()
-    await signOut()
-    router.replace('/login')
+    try {
+      await stopBackgroundLocationUpdates()
+      await signOut()
+      router.replace('/login')
+    } catch (cause) { toast.show(translateActionError(t, cause instanceof Error ? cause : null), 'error') }
   }
 
   if (!profile) return null
@@ -118,12 +125,12 @@ export function AccountHomeScreen() {
 
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} />
-        <ListRow
+        {Platform.OS !== 'web' ? <ListRow
           Icon={Bell}
           title={t('account.menu.notifications')}
           onPress={() => toggleNotifications(!notificationsEnabled)}
-          trailing={<Switch value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
-        />
+          trailing={<Switch disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
+        /> : null}
         <ListRow Icon={Globe} title={t('account.language')} onPress={() => router.push('/(tabs)/account/language')} />
         <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => router.push('/(tabs)/account/navigation')} />
         <ListRow
@@ -253,6 +260,8 @@ export function AccountDeleteConfirmScreen() {
   const isRTL = useIsRTL()
   const { t, i18n } = useTranslation()
   const router = useRouter()
+  const { session, signInWithOAuth } = useAuth()
+  const oauthProvider = session?.user.app_metadata.provider === 'google' ? 'google' : session?.user.app_metadata.provider === 'apple' ? 'apple' : null
 
   const [phrase, setPhrase] = useState('')
   const [password, setPassword] = useState('')
@@ -260,7 +269,17 @@ export function AccountDeleteConfirmScreen() {
   const [error, setError] = useState<string | null>(null)
 
   const requiredPhrase = t('account.delete.confirm.phrase')
-  const canDelete = phrase.trim() === requiredPhrase && password.length > 0
+  const canDelete = phrase.trim() === requiredPhrase && (!!oauthProvider || password.length > 0)
+  useEffect(() => { setPhrase(''); setPassword('') }, [session?.user.id])
+
+  async function reauthenticate() {
+    if (!oauthProvider) return
+    setDeleting(true)
+    setError(null)
+    try { await signInWithOAuth(oauthProvider, '/account/delete-confirm') }
+    catch { setError(t('account.delete.confirm.reauthenticateHint')) }
+    finally { setDeleting(false) }
+  }
 
   async function handleDelete() {
     if (!canDelete) return
@@ -271,7 +290,7 @@ export function AccountDeleteConfirmScreen() {
       router.replace('/login')
     } catch (cause) {
       const tr: ErrorTranslator = (ar, he, en) => (i18n.language === 'en' ? en : i18n.language === 'he' ? he : ar)
-      setError(localizeAppError(cause, tr))
+      setError(cause instanceof Error && cause.message === 'Recent sign-in required' ? t('account.delete.confirm.reauthenticateHint') : localizeAppError(cause, tr))
     } finally {
       setDeleting(false)
     }
@@ -284,7 +303,7 @@ export function AccountDeleteConfirmScreen() {
         <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('account.delete.confirm.instruction')}</Text>
         <Text style={[typography.h3, { color: theme.colors.danger, textAlign: isRTL ? 'right' : 'left' }]}>{requiredPhrase}</Text>
         <TextField label={t('account.delete.confirm.phraseLabel')} value={phrase} onChangeText={value => { setPhrase(value); setError(null) }} />
-        <TextField label={t('account.delete.confirm.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setError(null) }} secureTextEntry secureToggle />
+        {oauthProvider ? <><Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('account.delete.confirm.reauthenticateHint')}</Text><Button variant="outline" label={t('account.delete.confirm.reauthenticate')} loading={deleting} onPress={reauthenticate} /></> : <TextField label={t('account.delete.confirm.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setError(null) }} secureTextEntry secureToggle />}
         {error ? <Text style={[typography.small, { color: theme.colors.danger }]}>{error}</Text> : null}
         <Button label={t('account.delete.confirm.deleteButton')} variant="danger" disabled={!canDelete} loading={deleting} onPress={handleDelete} />
       </View>

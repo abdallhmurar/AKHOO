@@ -1,81 +1,63 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { json, preflight } from '../_shared/http.ts'
+import { sendPushBatch } from '../_shared/push.ts'
+import { readAll } from '../_shared/pagination.ts'
 
-// Unlike notify-new-message/notify-new-request (DB-webhook triggered, so
-// they authenticate with a shared x-webhook-secret), this function is
-// called directly by an admin's own browser session via
-// supabase.functions.invoke - so it verifies the caller's real JWT is a
-// real admin, the same way every admin RPC's own is_admin() check does,
-// rather than trusting a header. broadcast_notifications itself has no
-// client insert policy (only admin_create_broadcast_notification writes
-// it), so by the time this runs, notification_id is already known-legit -
-// this check exists so a non-admin holding a valid session token can't
-// invoke the function directly and cause a send.
 Deno.serve(async req => {
-  const authHeader = req.headers.get('Authorization')
-  if (!authHeader) return new Response('Unauthorized', { status: 401 })
-
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
-  const asCaller = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } })
-
-  const { data: isAdmin } = await asCaller.rpc('is_admin')
-  if (!isAdmin) return new Response('Unauthorized', { status: 401 })
-
-  const { notification_id } = await req.json()
-  if (!notification_id) return new Response('missing notification_id', { status: 400 })
-
-  const supabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
-
-  const { data: notification } = await supabase
-    .from('broadcast_notifications')
-    .select('id, title, body, target_audience, sent_at')
-    .eq('id', notification_id)
-    .single()
-  if (!notification) return new Response('ok: notification not found')
-  if (notification.sent_at) return new Response(JSON.stringify({ sentCount: 0, note: 'already sent' }))
-
-  let recipients: { push_token: string }[] = []
-  if (notification.target_audience === 'volunteers') {
-    const { data } = await supabase.from('volunteer_profiles').select('push_token').not('push_token', 'is', null)
-    recipients = (data ?? []) as { push_token: string }[]
-  } else {
-    const { data } = await supabase.from('profiles').select('push_token').not('push_token', 'is', null)
-    recipients = (data ?? []) as { push_token: string }[]
-  }
-
-  const tokens = [...new Set(recipients.map(r => r.push_token).filter(Boolean))]
-
-  let sentCount = 0
-  const errors: string[] = []
-  // Expo's push API accepts up to 100 messages per request.
-  for (let i = 0; i < tokens.length; i += 100) {
-    const batch = tokens.slice(i, i + 100).map(token => ({
-      to: token,
-      title: notification.title,
-      body: notification.body,
-      sound: 'default',
-      data: { broadcastNotificationId: notification.id }
-    }))
+  const early = preflight(req)
+  if (early) return early
+  try {
+    const authorization = req.headers.get('Authorization')
+    if (!authorization) return json({ error: 'Unauthorized' }, 401)
+    const caller = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+      global: { headers: { Authorization: authorization } }
+    })
+    const { data: isAdmin, error: authError } = await caller.rpc('is_admin')
+    if (authError || !isAdmin) return json({ error: 'Unauthorized' }, 403)
+    const input = await req.json().catch(() => null)
+    if (typeof input?.notification_id !== 'string') return json({ error: 'Missing notification_id' }, 400)
+    const id = input.notification_id
+    const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+    const { data: notification, error: readError } = await db.from('broadcast_notifications')
+      .select('id,title,body,target_audience,sent_at,sent_count').eq('id', id).single()
+    if (readError || !notification) return json({ error: 'Notification not found' }, 404)
+    if (notification.sent_at) return json({ sentCount: notification.sent_count, complete: true })
+    const { data: claimed, error: claimError } = await db.rpc('claim_broadcast_send', { p_id: id })
+    if (claimError) throw claimError
+    if (!claimed) return json({ error: 'Notification is already being sent' }, 409)
     try {
-      const response = await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(batch)
-      })
-      const text = await response.text()
-      if (!response.ok) {
-        console.error('[send-broadcast-notification] Expo push API returned', response.status, text)
-        errors.push(`batch ${i}: ${response.status}`)
-      } else {
-        sentCount += batch.length
+      const recipients = await readAll<{ token: string }>((from, to) => db.rpc('get_push_recipients', { p_volunteers_only: notification.target_audience === 'volunteers' }).order('token').range(from, to))
+      const previous = await readAll<{ token: string; status: string; error: string | null }>((from, to) => db.from('broadcast_push_results').select('token,status,error').eq('notification_id', id).order('token').range(from, to))
+      const skip = new Set((previous ?? []).filter(r => r.status !== 'failed' || r.error === 'DeviceNotRegistered').map(r => r.token))
+      const tokens = [...new Set<string>((recipients ?? []).map((r: { token: string }) => r.token))].filter(t => !skip.has(t))
+      for (let offset = 0; offset < tokens.length; offset += 100) {
+        const batch = tokens.slice(offset, offset + 100)
+        // Persist intent before contacting Expo, so a crash never silently
+        // retries a batch whose delivery status cannot be established.
+        const { error: intentError } = await db.from('broadcast_push_results').upsert(batch.map(token => ({ notification_id: id, token, status: 'sending', updated_at: new Date().toISOString() })))
+        if (intentError) throw intentError
+        const results = await sendPushBatch(batch.map(to => ({ to, title: notification.title, body: notification.body, sound: 'default', data: { broadcastNotificationId: id } })))
+        const { error: resultError } = await db.from('broadcast_push_results').upsert(results.map(r => ({ notification_id: id, ...r, updated_at: new Date().toISOString() })))
+        if (resultError) throw resultError
+        const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
+        if (invalid.length) await db.from('push_devices').delete().in('token', invalid)
       }
-    } catch (err) {
-      console.error('[send-broadcast-notification] push send failed:', err)
-      errors.push(`batch ${i}: ${err instanceof Error ? err.message : String(err)}`)
+      const outcomes = await readAll<{ status: string; error: string | null }>((from, to) => db.from('broadcast_push_results').select('status,error').eq('notification_id', id).order('token').range(from, to))
+      const sentCount = (outcomes ?? []).filter(r => r.status === 'sent').length
+      const unresolvedCount = (outcomes ?? []).filter(r => r.status !== 'sent' && r.error !== 'DeviceNotRegistered').length
+      const complete = unresolvedCount === 0
+      const { error: updateError } = await db.from('broadcast_notifications').update({
+        sent_count: sentCount, sent_at: complete ? new Date().toISOString() : null,
+        delivery_status: complete ? 'sent' : sentCount ? 'partial' : 'failed', sending_started_at: null
+      }).eq('id', id)
+      if (updateError) throw updateError
+      return json({ sentCount, unresolvedCount, complete })
+    } catch (error) {
+      await db.from('broadcast_notifications').update({ delivery_status: 'failed', sending_started_at: null }).eq('id', id)
+      throw error
     }
+  } catch {
+    console.error('[send-broadcast-notification] delivery did not finish')
+    return json({ error: 'Notification delivery did not finish; inspect status before retrying.' }, 500)
   }
-
-  await supabase.from('broadcast_notifications').update({ sent_count: sentCount, sent_at: new Date().toISOString() }).eq('id', notification.id)
-
-  return new Response(JSON.stringify({ sentCount, totalTokens: tokens.length, errors }))
 })

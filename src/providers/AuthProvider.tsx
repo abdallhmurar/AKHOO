@@ -6,8 +6,8 @@ import { authRepository, type OAuthProvider, type SignUpInput } from '../reposit
 import { profileRepository } from '../repositories/profileRepository'
 import { consumeAuthLink, signOutSafely } from '../services/authService'
 import { normalizeAppError, reportAppError, type AppError } from '../services/errors'
-import { getNotificationsEnabled } from '../lib/notificationPreference'
-import { registerForPushNotificationsAsync } from '../lib/notifications'
+import { syncPushRegistration } from '../services/pushRegistration'
+import { useQueryClient } from '@tanstack/react-query'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
 
@@ -37,7 +37,7 @@ type AuthContextValue = {
   isRestricted: boolean
   signIn: (email: string, password: string) => Promise<void>
   signUp: (input: SignUpInput) => ReturnType<typeof authRepository.signUp>
-  signInWithOAuth: (provider: OAuthProvider) => Promise<void>
+  signInWithOAuth: (provider: OAuthProvider, returnPath?: string) => Promise<void>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -50,11 +50,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [status, setStatus] = useState<AuthStatus>('restoring')
   const [error, setError] = useState<AppError | null>(null)
   const mounted = useRef(true)
+  const identity = useRef<string | null>(null)
+  const queryClient = useQueryClient()
 
   const loadProfile = useCallback(async (userId: string) => {
     try {
       const next = await profileRepository.get(userId)
-      if (!mounted.current) return
+      if (!mounted.current || identity.current !== userId) return
       setProfile(next)
       setStatus(next?.is_banned ? 'restricted' : 'signed-in')
       setError(null)
@@ -63,13 +65,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       // volunteer - see 0018_chat_push_notifications.sql). Never blocks
       // sign-in on a permission prompt or a slow/failed token fetch.
       if (next && !next.is_banned) {
-        getNotificationsEnabled()
-          .then(enabled => enabled ? registerForPushNotificationsAsync() : null)
-          .then(token => { if (token) return profileRepository.savePushToken(userId, token) })
-          .catch(() => {})
+        void syncPushRegistration(userId).catch(() => {})
       }
     } catch (cause) {
-      if (!mounted.current) return
+      if (!mounted.current || identity.current !== userId) return
       setError(normalizeAppError(cause, { domain: 'auth', operation: 'load-profile' }))
       setStatus('signed-in')
     }
@@ -78,17 +77,29 @@ export function AuthProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     mounted.current = true
     let authLinksActive = true
+    let authEventReceived = false
+    const applyIdentity = (next: Session | null) => {
+      const nextId = next?.user.id ?? null
+      if (identity.current !== nextId) {
+        queryClient.clear()
+        setProfile(null)
+        setStatus(nextId ? 'restoring' : 'signed-out')
+      }
+      identity.current = nextId
+      setSession(next)
+    }
     const restore = async () => {
       try {
         const initialUrl = capturedWebUrl ?? await Linking.getInitialURL()
         if (initialUrl) await consumeAuthLink(initialUrl)
         const restored = await authRepository.getSession()
-        if (!mounted.current) return
-        setSession(restored)
+        if (!mounted.current || !authLinksActive) return
+        if (authEventReceived) return
+        applyIdentity(restored)
         if (restored) await loadProfile(restored.user.id)
         else setStatus('signed-out')
       } catch (cause) {
-        if (!mounted.current) return
+        if (!mounted.current || !authLinksActive || authEventReceived) return
         // Surfaced as a toast (not just kept in context state, which nothing
         // reads) so a failed auth-link exchange - e.g. an OAuth or
         // password-reset redirect - is visible instead of silently dropping
@@ -100,10 +111,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
     void restore()
     const unsubscribeAuth = authRepository.subscribe((_event, next) => {
       if (!mounted.current) return
-      setSession(next)
+      authEventReceived = true
+      applyIdentity(next)
       const nextUser = next?.user.id ?? null
       if (nextUser) {
-        void loadProfile(nextUser)
+        // Supabase warns against awaiting auth work within this callback.
+        // Schedule profile/push work outside its internal auth lock.
+        setTimeout(() => { if (mounted.current && identity.current === nextUser) void loadProfile(nextUser) }, 0)
       } else {
         setProfile(null)
         setStatus('signed-out')
@@ -126,7 +140,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       unsubscribeAuth()
       linkSubscription?.remove()
     }
-  }, [loadProfile])
+  }, [loadProfile, queryClient])
 
   const signIn = useCallback(async (email: string, password: string) => {
     setError(null)
@@ -138,10 +152,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     try { return await authRepository.signUp(input) } catch (cause) { const next = normalizeAppError(cause, { domain: 'auth', operation: 'sign-up' }); setError(next); throw next }
   }, [])
 
-  const signInWithOAuth = useCallback(async (provider: OAuthProvider) => {
+  const signInWithOAuth = useCallback(async (provider: OAuthProvider, returnPath?: string) => {
     setError(null)
     try {
-      const callbackUrl = await authRepository.signInWithOAuth(provider)
+      const callbackUrl = await authRepository.signInWithOAuth(provider, returnPath)
       if (callbackUrl) await consumeAuthLink(callbackUrl)
     } catch (cause) {
       const next = normalizeAppError(cause, { domain: 'auth', operation: `oauth-${provider}` }); setError(next); throw next

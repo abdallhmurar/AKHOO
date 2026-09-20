@@ -2,15 +2,28 @@ import { Platform } from 'react-native'
 import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
+import { getNotificationsEnabled } from './notificationPreference'
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false
-  })
+  handleNotification: async () => {
+    const enabled = await getNotificationsEnabled().catch(() => false)
+    return { shouldShowBanner: enabled, shouldShowList: enabled, shouldPlaySound: enabled, shouldSetBadge: false }
+  }
 })
+
+export function subscribeToNotificationNavigation(listener: (data: Record<string, unknown>) => void) {
+  let active = true
+  let lastId: string | undefined
+  const accept = (response: Notifications.NotificationResponse | null) => {
+    if (!active || !response || response.notification.request.identifier === lastId) return
+    lastId = response.notification.request.identifier
+    listener(response.notification.request.content.data ?? {})
+    void Notifications.clearLastNotificationResponseAsync().catch(() => {})
+  }
+  const subscription = Notifications.addNotificationResponseReceivedListener(accept)
+  void Notifications.getLastNotificationResponseAsync().then(accept).catch(() => {})
+  return () => { active = false; subscription.remove() }
+}
 
 // The caller (VolunteerScreen's toggleAvailability) deliberately never lets
 // a push-registration failure block turning availability on - that's

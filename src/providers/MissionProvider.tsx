@@ -33,8 +33,8 @@ export function MissionProvider({ children }: PropsWithChildren) {
     return missionRepository.subscribe(missionId, () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.activeMission(userId) })
       void queryClient.invalidateQueries({ queryKey: queryKeys.mission(missionId) })
-    })
-  }, [query.data?.id, userId, queryClient])
+    }, query.data?.source)
+  }, [query.data?.id, query.data?.source, userId, queryClient])
 
   const value = useMemo<MissionContextValue>(() => ({
     activeMission: query.data ?? null,

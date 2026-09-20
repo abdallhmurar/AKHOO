@@ -33,6 +33,14 @@ export function useReportDetail(id: string | undefined) {
         }
       }
 
+      messages = messages.map(m => ({ ...m, media_url: m.media_url?.replace(/^https?:\/\/[^/]+\/storage\/v1\/object\/public\/mission-chat\//, '') ?? null }))
+      const paths = messages.flatMap(m => m.media_url ? [m.media_url] : [])
+      if (paths.length) {
+        const { data: signed, error: mediaError } = await supabase.storage.from('mission-chat').createSignedUrls(paths, 900)
+        if (mediaError) throw mediaError
+        const urls = new Map(signed.map(item => [item.path, item.signedUrl]))
+        messages = messages.map(m => ({ ...m, media_url: m.media_url ? urls.get(m.media_url) ?? null : null }))
+      }
       return {
         report: r,
         reporterName: (reporter?.full_name as string | undefined) ?? null,

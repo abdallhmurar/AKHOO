@@ -17,7 +17,8 @@ import { profileRepository } from '../../repositories/profileRepository'
 import { messageRepository } from '../../repositories/messageRepository'
 import type { ChatMessage } from '../../repositories/messageRepository'
 import { queryKeys } from '../../services/queryKeys'
-import { Avatar, IconButton } from '../../components/ui'
+import { Avatar, Button, IconButton, useToast } from '../../components/ui'
+import { ChatSafety, useChatBlocked } from './ChatSafety'
 
 function useMissionDetail(missionId: string) {
   return useQuery({ queryKey: queryKeys.mission(missionId), queryFn: () => missionRepository.get(missionId), enabled: !!missionId })
@@ -37,9 +38,11 @@ export function MissionChatScreen() {
   const { missionId } = useLocalSearchParams<{ missionId: string }>()
   const { session } = useAuth()
   const queryClient = useQueryClient()
+  const toast = useToast()
   const mission = useMissionDetail(String(missionId))
   const row = mission.data
   const otherId = row ? (row.requester_id === session?.user.id ? row.helper_id : row.requester_id) : null
+  const blocked = useChatBlocked(session?.user.id, otherId)
   const other = useQuery({ queryKey: otherId ? queryKeys.profile(otherId) : ['participant'], queryFn: () => profileRepository.get(otherId!), enabled: !!otherId })
 
   const [text, setText] = useState('')
@@ -52,7 +55,8 @@ export function MissionChatScreen() {
   const messagesQuery = useQuery({
     queryKey: row ? queryKeys.missionMessages(row.request_id) : ['messages'],
     queryFn: () => messageRepository.list(row!.request_id),
-    enabled: !!row?.request_id
+    enabled: !!row?.request_id,
+    refetchInterval: 60_000
   })
 
   // Marks the request as read up to "now" whenever this screen has it open
@@ -64,22 +68,21 @@ export function MissionChatScreen() {
 
   useEffect(() => {
     if (!row?.request_id) return
-    return messageRepository.subscribe(row.request_id, message => {
-      queryClient.setQueryData<ChatMessage[]>(queryKeys.missionMessages(row.request_id), current =>
-        current?.some(existing => existing.id === message.id) ? current : [...(current ?? []), message]
-      )
+    return messageRepository.subscribe(row.request_id, () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.missionMessages(row.request_id) })
     })
   }, [row?.request_id, queryClient])
 
   async function send() {
     const body = text.trim()
-    if (!body || !row?.request_id || !session) return
-    setText('')
+    if (!body || !row?.request_id || !session || sending || blocked.data || blocked.isPending || blocked.isError) return
     setSending(true)
     try {
       await messageRepository.sendText(row.request_id, session.user.id, body)
+      setText(current => current.trim() === body ? '' : current)
+      await queryClient.invalidateQueries({ queryKey: queryKeys.missionMessages(row.request_id) })
     } catch (cause: any) {
-      Alert.alert(t('common.error'), translateActionError(t, cause))
+      toast.show(translateActionError(t, cause), 'error')
     } finally {
       setSending(false)
     }
@@ -98,9 +101,10 @@ export function MissionChatScreen() {
     const mediaType: 'image' | 'video' = asset.type === 'video' ? 'video' : 'image'
     setUploading(true)
     try {
-      await messageRepository.sendMedia(row.request_id, session.user.id, asset.uri, mediaType)
+      await messageRepository.sendMedia(row.request_id, session.user.id, asset.uri, mediaType, asset.mimeType)
+      await queryClient.invalidateQueries({ queryKey: queryKeys.missionMessages(row.request_id) })
     } catch (cause: any) {
-      Alert.alert(t('common.error'), translateActionError(t, cause))
+      toast.show(translateActionError(t, cause), 'error')
     } finally {
       setUploading(false)
     }
@@ -138,6 +142,7 @@ export function MissionChatScreen() {
             <Text numberOfLines={1} style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{other.data?.full_name || t('activeRequest.defaultVolunteerName')}</Text>
           </View>
           <Avatar name={other.data?.full_name || 'AKHOO'} uri={other.data?.avatar_url} size={36} tone="community" />
+          {row && session && otherId ? <ChatSafety requestId={row.request_id} userId={session.user.id} otherId={otherId} /> : null}
         </View>
 
         <FlatList
@@ -150,12 +155,15 @@ export function MissionChatScreen() {
           ListEmptyComponent={
             messagesQuery.isLoading
               ? <ActivityIndicator color={theme.colors.primary} />
-              : <Text style={[typography.small, styles.centerText, { color: theme.colors.textMuted }]}>{t('chat.empty')}</Text>
+              : messagesQuery.isError
+                ? <Button label={t('common.retry')} onPress={() => void messagesQuery.refetch()} />
+                : <Text style={[typography.small, styles.centerText, { color: theme.colors.textMuted }]}>{t('chat.empty')}</Text>
           }
         />
 
+        {blocked.data ? <Text style={[typography.small, { color: theme.colors.textSecondary, padding: space.md }]}>{t('chat.safety.blocked')}</Text> : null}
         <View style={[styles.inputRow, dirStyles(isRTL).row, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
-          <Pressable onPress={pickMedia} disabled={uploading} style={styles.attachButton} accessibilityRole="button" accessibilityLabel={t('chat.capability.photos')}>
+          <Pressable onPress={pickMedia} disabled={uploading || blocked.data || blocked.isPending || blocked.isError} style={styles.attachButton} accessibilityRole="button" accessibilityLabel={t('chat.capability.photos')}>
             {uploading ? <ActivityIndicator size="small" color={theme.colors.primary} /> : <Camera size={22} color={theme.colors.primary} />}
           </Pressable>
           <TextInput
@@ -164,9 +172,11 @@ export function MissionChatScreen() {
             placeholder={t('chat.placeholder')}
             placeholderTextColor={theme.colors.textMuted}
             multiline
+            editable={!blocked.data && !blocked.isPending && !blocked.isError}
+            maxLength={4000}
             style={[styles.textInput, typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left', writingDirection: isRTL ? 'rtl' : 'ltr' }]}
           />
-          <Pressable onPress={send} disabled={!text.trim() || sending} style={[styles.sendButton, { backgroundColor: text.trim() ? theme.colors.primary : theme.colors.disabledBackground }]} accessibilityRole="button" accessibilityLabel={t('common.next')}>
+          <Pressable onPress={send} disabled={!text.trim() || sending || blocked.data || blocked.isPending || blocked.isError} style={[styles.sendButton, { backgroundColor: text.trim() ? theme.colors.primary : theme.colors.disabledBackground }]} accessibilityRole="button" accessibilityLabel={t('chat.send')}>
             {sending ? <ActivityIndicator size="small" color={theme.colors.onPrimary} /> : <PaperPlaneTilt size={18} color={theme.colors.onPrimary} weight="fill" style={isRTL ? styles.sendIconRTL : undefined} />}
           </Pressable>
         </View>
