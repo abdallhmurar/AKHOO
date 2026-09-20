@@ -4,9 +4,6 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { colors } from '@/lib/theme'
 import { MAP_STYLE_URL } from '@/lib/mapProvider'
 
-// Vite bundles maplibre-gl's worker natively (unlike Metro, which needs the
-// setWorkerUrl workaround documented in the mobile app's SanadMap.web.tsx) -
-// no equivalent hack needed here.
 export function RequestMap({ latitude, longitude }: { latitude: number; longitude: number }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
