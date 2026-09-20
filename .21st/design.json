@@ -58,6 +58,12 @@
   },
   "decisions": [
     {
+      "name": "Perks coupon tab icon",
+      "status": "approved",
+      "reason": "User selected the blue discount coupon with a percent symbol to replace the people icon in the Perks tab",
+      "source": "assets/images/perks-coupon-icon.png"
+    },
+    {
       "name": "SANAD V2 Civic Signal",
       "status": "approved",
       "reason": "Calm civic infrastructure with decisive signal hierarchy and human community warmth",
