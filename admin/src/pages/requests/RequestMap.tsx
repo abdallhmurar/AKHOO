@@ -15,7 +15,7 @@ export function RequestMap({ latitude, longitude }: { latitude: number; longitud
       center: [longitude, latitude],
       zoom: 14
     })
-    new Marker({ color: colors.sand }).setLngLat([longitude, latitude]).addTo(map)
+    new Marker({ color: colors.info }).setLngLat([longitude, latitude]).addTo(map)
     return () => map.remove()
   }, [latitude, longitude])
 

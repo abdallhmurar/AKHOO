@@ -7,6 +7,7 @@ import { ClipboardList, Store } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { colors } from '@/lib/theme'
 import { MAP_STYLE_URL } from '@/lib/mapProvider'
+import { createBusinessMarker, BUSINESS_POPUP_OPTIONS } from '@/lib/mapMarkers'
 import { useMapRequests, useMapBusinesses } from './useMapData'
 
 const CENTER: [number, number] = [35.2137, 31.7683]
@@ -54,11 +55,12 @@ export function OperationsMapPage() {
       if (showBusinesses) {
         for (const business of businessesQuery.data ?? []) {
           if (business.latitude == null || business.longitude == null) continue
-          const popup = new Popup({ offset: 12 }).setHTML(`<div style="font-family:inherit">${business.name}</div>`)
-          const marker = new Marker({ color: colors.sand })
-            .setLngLat([business.longitude, business.latitude])
+          const label = document.createElement('div')
+          label.style.fontFamily = 'inherit'
+          label.textContent = business.name
+          const popup = new Popup(BUSINESS_POPUP_OPTIONS).setDOMContent(label)
+          const marker = createBusinessMarker(map!, [business.longitude, business.latitude], { logoUrl: business.logo_url, name: business.name })
             .setPopup(popup)
-            .addTo(map!)
           marker.getElement().style.cursor = 'pointer'
           marker.getElement().addEventListener('click', () => navigate(`/businesses/${business.id}`))
           markersRef.current.push(marker)

@@ -171,7 +171,7 @@ export function BusinessDetailPage() {
             </Card>
           ) : null}
 
-          {business.latitude != null && business.longitude != null ? <BusinessLocationMap latitude={business.latitude} longitude={business.longitude} logoUrl={business.logo_url} /> : null}
+          {business.latitude != null && business.longitude != null ? <BusinessLocationMap latitude={business.latitude} longitude={business.longitude} logoUrl={business.logo_url} name={business.name} /> : null}
         </TabsContent>
 
         <TabsContent value="photos">
