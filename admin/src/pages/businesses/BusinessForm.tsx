@@ -178,7 +178,7 @@ export function BusinessForm({ business }: { business?: Business }) {
             </div>
           </div>
           <p className="text-xs text-muted-foreground">{t('businesses.form.mapHint')}</p>
-          <BusinessLocationMap latitude={lat} longitude={lng} editable onChange={(newLat, newLng) => { setLat(newLat); setLng(newLng) }} />
+          <BusinessLocationMap latitude={lat} longitude={lng} logoUrl={logoUrl} editable onChange={(newLat, newLng) => { setLat(newLat); setLng(newLng) }} />
           {lat != null && lng != null ? (
             <p className="text-xs text-muted-foreground" dir="ltr">
               {lat.toFixed(5)}, {lng.toFixed(5)}
