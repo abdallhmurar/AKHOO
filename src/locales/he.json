@@ -717,5 +717,16 @@
     },
     "loadErrorTitle": "לא ניתן לאמת הרשאה",
     "loadErrorMessage": "בדקו את החיבור ונסו שוב כדי לאמת את הרשאת השותף."
+  },
+  "announcements": {
+    "title": "התראות",
+    "bellLabel": "התראות",
+    "bellLabelUnread": "התראות, {{count}} חדשות",
+    "viewNow": "צפה עכשיו",
+    "later": "אחר כך",
+    "close": "סגירה",
+    "newBadge": "חדש",
+    "emptyTitle": "אין עדיין התראות",
+    "emptyMessage": "חדשות ומבצעים מאחוו יופיעו כאן."
   }
 }

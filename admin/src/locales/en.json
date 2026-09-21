@@ -597,12 +597,22 @@
       "audienceAll": "Everyone",
       "audienceVolunteers": "Volunteers only",
       "send": "Send notification",
-      "sent": "Notification sent."
+      "sent": "Notification sent.",
+      "images": "Poster images (optional)",
+      "imagesHint": "Up to {{max}} images. Users see them with the message, inside the app, as soon as they open it.",
+      "addImages": "Add",
+      "removeImage": "Remove image",
+      "maxImages": "You can add up to 5 images.",
+      "uploading": "Uploading images…",
+      "previewTitle": "How it will look in the app",
+      "previewHint": "Shown as a popup the first time a user opens the app, and from the bell at the top of the home screen (it keeps shaking until it is read)."
     },
+    "preview": { "titlePlaceholder": "Notification title", "bodyPlaceholder": "Your message appears here.", "viewNow": "View now", "later": "Later" },
     "table": {
       "title": "Title",
       "audience": "Audience",
       "sentCount": "Delivered to",
+      "images": "Images",
       "date": "Sent"
     },
     "delivery": {

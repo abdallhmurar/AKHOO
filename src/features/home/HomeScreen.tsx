@@ -6,6 +6,7 @@ import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useMission } from '../../providers'
 import { AppScreen } from '../../components/v2'
+import { AnnouncementBell } from '../announcements/AnnouncementBell'
 import { Card, StatusBadge, Surface } from '../../components/ui'
 import HelpCardLottie from '../../components/help-card/HelpCardLottie'
 import WantToHelpCard from '../../components/want-to-help-card/WantToHelpCard'
@@ -35,6 +36,11 @@ export function HomeScreen() {
 
   return (
     <AppScreen contentStyle={styles.content}>
+      <View style={[styles.topBar, dirStyles(isRTL).row]}>
+        <View style={styles.topBarSpacer} />
+        <AnnouncementBell />
+      </View>
+
       {activeKind ? (
         <Card tone="primary" bordered={false} elevation="soft" onPress={resumeActive} style={styles.resumeCard}>
           <View style={[styles.resumeTop, dirStyles(isRTL).row]}>
@@ -79,6 +85,8 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingTop: space.lg, gap: space.lg },
+  topBar: { alignItems: 'center', marginBottom: -space.sm },
+  topBarSpacer: { flex: 1 },
   resumeCard: { gap: space.sm },
   resumeTop: { alignItems: 'center' },
   heroCopy: { alignItems: 'center', marginTop: space.xs },

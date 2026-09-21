@@ -239,6 +239,8 @@ export type BroadcastNotification = {
   body: string
   target_audience: NotificationAudience
   sent_count: number
+  image_urls: string[]
+  show_in_app: boolean
   created_by: string | null
   created_at: string
   sent_at: string | null

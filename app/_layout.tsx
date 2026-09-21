@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { subscribeToNotificationNavigation } from '../src/lib/notifications'
 import { notificationRoute } from '../src/lib/notificationRoute'
 import { AppProviders, LaunchScreen, useAuth, useLanguageDirection } from '../src/providers'
+import { AnnouncementHost } from '../src/features/announcements/AnnouncementHost'
 
 export const unstable_settings = { initialRouteName: 'index' }
 
@@ -21,6 +22,7 @@ function RootNavigator() {
   if (!ready || loading) return <LaunchScreen />
   const allowed = !!session && !isRestricted
   return (
+    <>
     <Stack screenOptions={{ headerShown: false, animation: isRTL ? 'slide_from_left' : 'slide_from_right' }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="(auth)" />
@@ -31,8 +33,11 @@ function RootNavigator() {
         <Stack.Screen name="(helper)" />
         <Stack.Screen name="mission" />
         <Stack.Screen name="community" />
+        <Stack.Screen name="announcements" />
       </Stack.Protected>
     </Stack>
+    {allowed ? <AnnouncementHost /> : null}
+    </>
   )
 }
 

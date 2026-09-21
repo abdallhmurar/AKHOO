@@ -717,5 +717,16 @@
     },
     "loadErrorTitle": "تعذر التحقق من الصلاحية",
     "loadErrorMessage": "تحقق من اتصالك وحاول مجدداً للتحقق من صلاحية الشريك."
+  },
+  "announcements": {
+    "title": "الإشعارات",
+    "bellLabel": "الإشعارات",
+    "bellLabelUnread": "الإشعارات، {{count}} جديد",
+    "viewNow": "عرض الآن",
+    "later": "لاحقاً",
+    "close": "إغلاق",
+    "newBadge": "جديد",
+    "emptyTitle": "ما في إشعارات بعد",
+    "emptyMessage": "أخبار وعروض أخوو رح تظهر هون."
   }
 }

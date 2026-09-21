@@ -179,3 +179,16 @@ export type OfferRedemption = {
   expires_at: string
   redeemed_at: string | null
 }
+
+// An admin broadcast shown inside the app (0033_in_app_announcements.sql):
+// popup on first open, bell until read. popup_shown_at / read_at are this
+// user's own state, null until they happen.
+export type Announcement = {
+  id: string
+  title: string
+  body: string
+  image_urls: string[]
+  created_at: string
+  popup_shown_at: string | null
+  read_at: string | null
+}

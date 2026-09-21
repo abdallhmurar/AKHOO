@@ -1,4 +1,5 @@
 export * from './activityRepository'
+export * from './announcementRepository'
 export * from './authRepository'
 export * from './communityRepository'
 export * from './domainTypes'

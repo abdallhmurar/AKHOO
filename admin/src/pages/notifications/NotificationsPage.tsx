@@ -1,7 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Bell } from 'lucide-react'
+import { Bell, ImagePlus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -10,9 +10,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DataTable, TablePagination } from '@/components/DataTable'
 import type { Column } from '@/components/DataTable'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
+import { ImageValidationError, uploadContentImage, validateImageFile } from '@/lib/storage'
 import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
 import { useRetryNotification, useSendNotification } from './useSendNotification'
+import { AnnouncementPreview } from './AnnouncementPreview'
+
+const MAX_IMAGES = 5
+
+type ImageDraft = { id: string; file: File; preview: string }
 
 function ComposeCard() {
   const { t } = useTranslation()
@@ -20,13 +26,63 @@ function ComposeCard() {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [audience, setAudience] = useState<NotificationAudience>('all')
+  const [images, setImages] = useState<ImageDraft[]>([])
+  const [uploading, setUploading] = useState(false)
+  const fileInput = useRef<HTMLInputElement>(null)
+  const imagesRef = useRef(images)
+  imagesRef.current = images
+
+  // Object URLs are only for the local preview; release them on unmount.
+  useEffect(() => () => imagesRef.current.forEach(image => URL.revokeObjectURL(image.preview)), [])
+
+  function addFiles(files: FileList | null) {
+    if (!files || files.length === 0) return
+    const room = MAX_IMAGES - images.length
+    if (files.length > room) toast.error(t('notifications.compose.maxImages'))
+    const accepted: ImageDraft[] = []
+    for (const file of Array.from(files).slice(0, Math.max(room, 0))) {
+      try {
+        validateImageFile(file)
+        accepted.push({ id: crypto.randomUUID(), file, preview: URL.createObjectURL(file) })
+      } catch (error) {
+        if (error instanceof ImageValidationError) toast.error(`${file.name}: ${t(`businesses.form.imageErrors.${error.message}`)}`)
+      }
+    }
+    setImages(current => [...current, ...accepted])
+    if (fileInput.current) fileInput.current.value = ''
+  }
+
+  function removeImage(id: string) {
+    setImages(current => {
+      const removed = current.find(image => image.id === id)
+      if (removed) URL.revokeObjectURL(removed.preview)
+      return current.filter(image => image.id !== id)
+    })
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
+
+    // Upload first: if any image fails nothing has been created or sent yet.
+    let imageUrls: string[] = []
+    if (images.length > 0) {
+      setUploading(true)
+      try {
+        imageUrls = await Promise.all(images.map(image => uploadContentImage(image.file, 'announcements', { optimize: true })))
+      } catch (error) {
+        toast.error((error as Error).message)
+        return
+      } finally {
+        setUploading(false)
+      }
+    }
+
     try {
-      const result = await send.mutateAsync({ title, body, audience })
+      const result = await send.mutateAsync({ title, body, audience, imageUrls })
       if (result.deliveryComplete) toast.success(t('notifications.compose.sent'))
       else toast.warning(t('notifications.delivery.incomplete'))
+      images.forEach(image => URL.revokeObjectURL(image.preview))
+      setImages([])
       setTitle('')
       setBody('')
     } catch {
@@ -34,48 +90,89 @@ function ComposeCard() {
     }
   }
 
+  const busy = uploading || send.isPending
+
   return (
     <Card>
-      <CardContent className="flex flex-col gap-3 p-4">
-        <div className="flex items-center gap-2">
-          <Bell className="size-4 text-teal" />
-          <h2 className="text-sm font-semibold text-foreground">{t('notifications.compose.title')}</h2>
+      <CardContent className="grid grid-cols-1 gap-6 p-4 lg:grid-cols-[1fr_22rem]">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Bell className="size-4 text-teal" />
+            <h2 className="text-sm font-semibold text-foreground">{t('notifications.compose.title')}</h2>
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="notif-title">{t('notifications.compose.titleField')}</Label>
+              <Input id="notif-title" required value={title} onChange={e => setTitle(e.target.value)} maxLength={80} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="notif-body">{t('notifications.compose.bodyField')}</Label>
+              <textarea
+                id="notif-body"
+                required
+                value={body}
+                onChange={e => setBody(e.target.value)}
+                rows={3}
+                maxLength={200}
+                className="rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label>{t('notifications.compose.images')}</Label>
+              <p className="text-xs text-muted-foreground">{t('notifications.compose.imagesHint', { max: MAX_IMAGES })}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                {images.map(image => (
+                  <div key={image.id} className="relative size-20 overflow-hidden rounded-lg border border-border bg-secondary">
+                    <img src={image.preview} alt="" className="size-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(image.id)}
+                      disabled={busy}
+                      aria-label={t('notifications.compose.removeImage')}
+                      className="absolute end-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/65 text-white hover:bg-black"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </div>
+                ))}
+                {images.length < MAX_IMAGES ? (
+                  <>
+                    <Button type="button" variant="outline" className="h-20 w-20 flex-col gap-1 border-dashed text-xs" disabled={busy} onClick={() => fileInput.current?.click()}>
+                      <ImagePlus className="size-5" />
+                      {t('notifications.compose.addImages')}
+                    </Button>
+                    <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
+                  </>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:w-64">
+              <Label>{t('notifications.compose.audience')}</Label>
+              <Select value={audience} onValueChange={v => setAudience(v as NotificationAudience)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('notifications.compose.audienceAll')}</SelectItem>
+                  <SelectItem value="volunteers">{t('notifications.compose.audienceVolunteers')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Button type="submit" disabled={busy || !title.trim() || !body.trim()}>
+                {uploading ? t('notifications.compose.uploading') : t('notifications.compose.send')}
+              </Button>
+            </div>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="notif-title">{t('notifications.compose.titleField')}</Label>
-            <Input id="notif-title" required value={title} onChange={e => setTitle(e.target.value)} maxLength={80} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="notif-body">{t('notifications.compose.bodyField')}</Label>
-            <textarea
-              id="notif-body"
-              required
-              value={body}
-              onChange={e => setBody(e.target.value)}
-              rows={3}
-              maxLength={200}
-              className="rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            />
-          </div>
-          <div className="flex flex-col gap-2 sm:w-64">
-            <Label>{t('notifications.compose.audience')}</Label>
-            <Select value={audience} onValueChange={v => setAudience(v as NotificationAudience)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('notifications.compose.audienceAll')}</SelectItem>
-                <SelectItem value="volunteers">{t('notifications.compose.audienceVolunteers')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Button type="submit" disabled={send.isPending || !title.trim() || !body.trim()}>
-              {t('notifications.compose.send')}
-            </Button>
-          </div>
-        </form>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold uppercase text-muted-foreground">{t('notifications.compose.previewTitle')}</p>
+          <AnnouncementPreview title={title} body={body} images={images.map(image => image.preview)} />
+          <p className="text-xs text-muted-foreground">{t('notifications.compose.previewHint')}</p>
+        </div>
       </CardContent>
     </Card>
   )
@@ -89,6 +186,21 @@ export function NotificationsPage() {
 
   const columns: Column<BroadcastNotification>[] = [
     { key: 'title', header: t('notifications.table.title'), cell: row => row.title },
+    {
+      key: 'images',
+      header: t('notifications.table.images'),
+      cell: row =>
+        row.image_urls?.length ? (
+          <div className="flex items-center gap-1">
+            {row.image_urls.slice(0, 3).map(url => (
+              <img key={url} src={url} alt="" className="size-9 rounded-md border border-border object-cover" />
+            ))}
+            {row.image_urls.length > 3 ? <span className="text-xs text-muted-foreground" dir="ltr">+{row.image_urls.length - 3}</span> : null}
+          </div>
+        ) : (
+          '—'
+        )
+    },
     { key: 'audience', header: t('notifications.table.audience'), cell: row => (row.target_audience === 'all' ? t('notifications.compose.audienceAll') : t('notifications.compose.audienceVolunteers')) },
     { key: 'sentCount', header: t('notifications.table.sentCount'), cell: row => row.sent_count },
     { key: 'status', header: t('notifications.delivery.status'), cell: row => t(`notifications.delivery.${row.delivery_status}`) },
