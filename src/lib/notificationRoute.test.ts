@@ -10,6 +10,10 @@ describe('push navigation', () => {
     expect(notificationRoute({ broadcastNotificationId: '00000000-0000-0000-0000-000000000002' })).toBe('/announcements')
     expect(notificationRoute({ broadcastNotificationId: '../account' })).toBeNull()
   })
+  it('opens the support chat for a support reply', () => {
+    expect(notificationRoute({ supportConversationId: '00000000-0000-0000-0000-000000000003' })).toBe('/support-chat')
+    expect(notificationRoute({ supportConversationId: '../account' })).toBeNull()
+  })
   it('ignores untrusted links and invalid request identifiers', () => {
     expect(notificationRoute({ url: 'https://example.com' })).toBeNull()
     expect(notificationRoute({ requestId: '../account/delete-confirm', missionChat: true })).toBeNull()

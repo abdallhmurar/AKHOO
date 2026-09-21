@@ -48,7 +48,8 @@
     "notifications": "התראות",
     "content": "תוכן",
     "proMax": "אחוו פרו מקס",
-    "map": "מפה"
+    "map": "מפה",
+    "support": "תיבת תמיכה"
   },
   "auth": {
     "loginTitle": "אחוו",
@@ -495,6 +496,8 @@
       "partnerAccessUpdated": "הרשאת שותף עודכנה",
       "partnerAccessRevoked": "הרשאת שותף בוטלה",
       "pointsAdjusted": "עדכן את הנקודות של",
+      "supportReplied": "השיב בשיחת תמיכה עם",
+      "supportStatusChanged": "שינה את סטטוס שיחת התמיכה עם",
       "messageHidden": "הסתרת הודעה פוגענית"
     }
   },
@@ -674,5 +677,47 @@
     "revokeMessage": "כלי השותף לא יהיו זמינים לאחר רענון של המשתמש. הקישור וההיסטוריה יישמרו.",
     "saved": "הרשאת השותף נשמרה.",
     "revoked": "הרשאת השותף בוטלה."
+  },
+  "support": {
+    "title": "תיבת תמיכה",
+    "subtitle": "שיחות של משתמשים עם צוות אחוו. עונים כאן.",
+    "search": "חיפוש לפי שם…",
+    "filters": { "all": "הכול", "open": "ממתין לתשובה שלך", "waiting_user": "ממתין למשתמש", "resolved": "טופל" },
+    "status": { "open": "ממתין לתשובה שלך", "waiting_user": "ממתין למשתמש", "resolved": "טופל" },
+    "emptyList": "אין עדיין שיחות. כשמשתמש יכתוב מהאפליקציה הוא יופיע כאן.",
+    "emptyFiltered": "אין שיחות תואמות.",
+    "selectPrompt": "בחרו שיחה כדי לקרוא ולענות.",
+    "photo": "תמונה",
+    "you": "אחוו",
+    "back": "חזרה לשיחות",
+    "markResolved": "סמן כטופל",
+    "reopen": "פתיחה מחדש",
+    "reply": {
+      "placeholder": "כתבו תשובה…",
+      "send": "שליחה",
+      "sending": "שולח…",
+      "attach": "צירוף תמונה",
+      "removeImage": "הסרת התמונה",
+      "hint": "Enter לשליחה · Shift+Enter לשורה חדשה. התשובה מגיעה למשתמש כהתראה בטלפון."
+    },
+    "customer": {
+      "title": "פרטי הלקוח",
+      "noName": "ללא שם",
+      "volunteer": "מתנדב",
+      "verifiedVolunteer": "מתנדב מאומת",
+      "points": "יתרת נקודות",
+      "joined": "תאריך הצטרפות",
+      "requests": "בקשות",
+      "missionsCompleted": "משימות שהושלמו",
+      "openProfile": "פתיחת עמוד המשתמש",
+      "unavailable": "לא ניתן לטעון את פרטי הלקוח."
+    },
+    "notes": {
+      "title": "הערות פנימיות",
+      "hint": "רק מנהלים רואים אותן, המשתמש אף פעם לא.",
+      "placeholder": "הוסיפו הערה על הלקוח…",
+      "add": "הוספת הערה",
+      "empty": "אין עדיין הערות."
+    }
   }
 }

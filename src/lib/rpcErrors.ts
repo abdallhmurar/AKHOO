@@ -18,7 +18,8 @@ const KNOWN_MESSAGES: Record<string, string> = {
   LOCATION_PERMISSION_DENIED: 'common.rpcErrors.locationDenied',
   'Not your mission': 'common.rpcErrors.notYourMission',
   'Mission cannot be released from its current state': 'common.rpcErrors.cannotRelease',
-  'You already released this mission': 'common.rpcErrors.alreadyReleased'
+  'You already released this mission': 'common.rpcErrors.alreadyReleased',
+  'Too many messages. Please wait a moment and try again.': 'common.rpcErrors.tooManyMessages'
 }
 
 export function translateActionError(t: TFunction, error: { message?: string; code?: string } | null | undefined): string {

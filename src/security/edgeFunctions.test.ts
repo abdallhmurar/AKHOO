@@ -23,7 +23,7 @@ describe('push body trimming', () => {
   })
 })
 describe('browser Edge access', () => {
-  it.each(['delete-account','send-broadcast-notification','geocode','notify-new-message','notify-new-request'])('%s rejects unauthenticated POST before accessing services', async name => {
+  it.each(['delete-account','send-broadcast-notification','geocode','notify-new-message','notify-new-request','notify-support-reply'])('%s rejects unauthenticated POST before accessing services', async name => {
     const client = vi.fn(() => { throw new Error('Must not access database') })
     const response = await loadEdgeFunction(name, client)(new Request('https://test.invalid', { method: 'POST', body: '{}' }))
     expect(response.status).toBe(401)

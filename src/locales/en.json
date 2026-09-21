@@ -25,7 +25,8 @@
       "alreadyHaveActiveRequest": "You already have an active help request.",
       "notYourMission": "This mission isn't yours.",
       "cannotRelease": "This mission can't be released from its current state.",
-      "alreadyReleased": "You already released this request, so you can't accept it again."
+      "alreadyReleased": "You already released this request, so you can't accept it again.",
+      "tooManyMessages": "You've sent a lot of messages in a short time. Wait a moment and try again."
     },
     "search": "Search"
   },
@@ -522,7 +523,11 @@
       }
     },
     "help": {
-      "subtitle": "Contact us directly via WhatsApp",
+      "subtitle": "Contact us directly",
+      "chatCardTitle": "Chat with AKHOO",
+      "chatCardDescription": "Write to us right in the app and the support team will reply here.",
+      "chatOpenButton": "Start a chat",
+      "chatOpenButtonUnread": "You have a new reply",
       "cardTitle": "WhatsApp Support",
       "cardDescription": "Contact us directly for questions and assistance",
       "openButton": "Open WhatsApp",
@@ -728,5 +733,19 @@
     "newBadge": "New",
     "emptyTitle": "No notifications yet",
     "emptyMessage": "News and offers from AKHOO will show up here."
+  },
+  "support": {
+    "title": "Support",
+    "teamName": "AKHOO team",
+    "teamStatus": "We'll reply as soon as we can",
+    "welcomeTitle": "How can we help?",
+    "welcomeBody": "Write your question or problem and the AKHOO team will reply right here. You can send photos too.",
+    "placeholder": "Write a message...",
+    "send": "Send",
+    "attachPhoto": "Attach a photo",
+    "photo": "Photo",
+    "sendError": "We couldn't send the message. Try again.",
+    "loadError": "We couldn't load the conversation.",
+    "resolvedNotice": "The AKHOO team closed this conversation. Write a new message if you need anything else."
   }
 }

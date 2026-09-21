@@ -275,3 +275,38 @@ export type DashboardMetrics = {
   total_confirmed_assists: number
   total_points_awarded: number
 }
+
+// Support chat (migration 0035). `open` = the user wrote last and needs a
+// reply, `waiting_user` = an admin replied, `resolved` = an admin closed it.
+export type SupportStatus = 'open' | 'waiting_user' | 'resolved'
+
+export type SupportConversation = {
+  id: string
+  user_id: string
+  status: SupportStatus
+  created_at: string
+  last_message_at: string
+  last_message_preview: string | null
+  last_sender: 'user' | 'admin'
+  last_admin_message_at: string | null
+  user_last_read_at: string | null
+}
+
+export type SupportMessage = {
+  id: string
+  conversation_id: string
+  sender_id: string | null
+  from_admin: boolean
+  body: string | null
+  media_path: string | null
+  media_type: 'image' | null
+  created_at: string
+}
+
+export type SupportNote = {
+  id: string
+  conversation_id: string
+  admin_id: string | null
+  body: string
+  created_at: string
+}

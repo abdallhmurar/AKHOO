@@ -75,6 +75,24 @@ export async function uploadContentImage(file: File, folder: string, options: { 
   return supabase.storage.from('content').getPublicUrl(path).data.publicUrl
 }
 
+// Support chat images live in the private `support-chat` bucket (0035), under
+// <user_id>/ - the conversation's user, so that user can read what an admin
+// sends them. Returns the object path (never a URL: the bucket is private and
+// the inbox reads it back through signed URLs).
+const SUPPORT_EXTENSIONS: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
+
+export async function uploadSupportImage(file: File, userId: string) {
+  validateImageFile(file)
+  const path = `${userId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${SUPPORT_EXTENSIONS[file.type]}`
+  const { error } = await supabase.storage.from('support-chat').upload(path, file, { contentType: file.type })
+  if (error) throw error
+  return path
+}
+
+export async function removeSupportImage(path: string) {
+  await supabase.storage.from('support-chat').remove([path])
+}
+
 export async function removeBusinessImage(url: string) {
   const marker = '/business-photos/'
   const idx = url.indexOf(marker)

@@ -1,8 +1,9 @@
 import {
   LayoutDashboard, ClipboardList, Users, Award, Store, Tag, Star, Map,
-  Medal, Ticket, Flag, Bell, Image, Crown
+  Medal, Ticket, Flag, Bell, Image, Crown, MessagesSquare
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useSupportOpenCount, useSupportRealtime } from '@/pages/support/useSupport'
 import { NavItem } from './NavItem'
 
 function SectionLabel({ children }: { children: string }) {
@@ -11,11 +12,16 @@ function SectionLabel({ children }: { children: string }) {
 
 export function SidebarNav() {
   const { t } = useTranslation()
+  // Rendered twice (desktop aside + the mobile sheet) but only one is ever
+  // mounted at a time; the count is what tells the admin someone is waiting.
+  const openSupport = useSupportOpenCount().data ?? 0
+  useSupportRealtime()
   return (
     <nav className="flex flex-col gap-1 p-3">
       <SectionLabel>{t('nav.sections.overview')}</SectionLabel>
       <NavItem to="/" icon={LayoutDashboard} label={t('nav.dashboard')} />
       <NavItem to="/map" icon={Map} label={t('nav.map')} />
+      <NavItem to="/support" icon={MessagesSquare} label={t('nav.support')} badge={openSupport > 0 ? String(openSupport) : undefined} />
 
       <SectionLabel>{t('nav.sections.community')}</SectionLabel>
       <NavItem to="/requests" icon={ClipboardList} label={t('nav.requests')} />

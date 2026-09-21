@@ -48,7 +48,8 @@
     "notifications": "Notifications",
     "content": "Content",
     "proMax": "AKHOO Pro Max",
-    "map": "Map"
+    "map": "Map",
+    "support": "Support inbox"
   },
   "auth": {
     "loginTitle": "AKHOO",
@@ -495,6 +496,8 @@
       "partnerAccessUpdated": "Partner access updated",
       "partnerAccessRevoked": "Partner access revoked",
       "pointsAdjusted": "adjusted the points of",
+      "supportReplied": "replied in a support chat with",
+      "supportStatusChanged": "changed the support chat status of",
       "messageHidden": "Message hidden"
     }
   },
@@ -674,5 +677,47 @@
     "revokeMessage": "Partner Tools will become unavailable after the user refreshes. The relationship and history will be retained.",
     "saved": "Partner access saved.",
     "revoked": "Partner access revoked."
+  },
+  "support": {
+    "title": "Support inbox",
+    "subtitle": "Conversations between users and the AKHOO team. You answer them from here.",
+    "search": "Search by name…",
+    "filters": { "all": "All", "open": "Needs reply", "waiting_user": "Waiting for user", "resolved": "Resolved" },
+    "status": { "open": "Needs reply", "waiting_user": "Waiting for user", "resolved": "Resolved" },
+    "emptyList": "No conversations yet. When a user writes from the app, it will show up here.",
+    "emptyFiltered": "No conversations match.",
+    "selectPrompt": "Select a conversation to read and reply.",
+    "photo": "Photo",
+    "you": "AKHOO",
+    "back": "Back to conversations",
+    "markResolved": "Mark resolved",
+    "reopen": "Reopen",
+    "reply": {
+      "placeholder": "Write a reply…",
+      "send": "Send",
+      "sending": "Sending…",
+      "attach": "Attach an image",
+      "removeImage": "Remove image",
+      "hint": "Enter to send · Shift+Enter for a new line. The user gets your reply as a notification on their phone."
+    },
+    "customer": {
+      "title": "Customer info",
+      "noName": "No name",
+      "volunteer": "Volunteer",
+      "verifiedVolunteer": "Verified volunteer",
+      "points": "Points balance",
+      "joined": "Joined",
+      "requests": "Requests",
+      "missionsCompleted": "Missions completed",
+      "openProfile": "Open user page",
+      "unavailable": "Couldn't load this customer's details."
+    },
+    "notes": {
+      "title": "Internal notes",
+      "hint": "Only admins see these. The user never does.",
+      "placeholder": "Add a note about this customer…",
+      "add": "Add note",
+      "empty": "No notes yet."
+    }
   }
 }

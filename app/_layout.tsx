@@ -34,6 +34,7 @@ function RootNavigator() {
         <Stack.Screen name="mission" />
         <Stack.Screen name="community" />
         <Stack.Screen name="announcements" />
+        <Stack.Screen name="support-chat" />
       </Stack.Protected>
     </Stack>
     {allowed ? <AnnouncementHost /> : null}

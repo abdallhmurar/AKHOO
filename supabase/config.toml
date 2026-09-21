@@ -14,3 +14,5 @@ verify_jwt = false
 verify_jwt = false
 [functions.notify-new-message]
 verify_jwt = false
+[functions.notify-support-reply]
+verify_jwt = false

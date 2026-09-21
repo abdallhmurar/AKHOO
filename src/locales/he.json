@@ -25,7 +25,8 @@
       "alreadyHaveActiveRequest": "כבר יש לך בקשת עזרה פעילה.",
       "notYourMission": "המשימה הזו אינה שלך.",
       "cannotRelease": "לא ניתן לשחרר את המשימה במצבה הנוכחי.",
-      "alreadyReleased": "כבר שחררת בקשה זו, ולכן לא ניתן לקבל אותה שוב."
+      "alreadyReleased": "כבר שחררת בקשה זו, ולכן לא ניתן לקבל אותה שוב.",
+      "tooManyMessages": "נשלחו הרבה הודעות בזמן קצר. המתינו מעט ונסו שוב."
     },
     "search": "חיפוש"
   },
@@ -522,7 +523,11 @@
       }
     },
     "help": {
-      "subtitle": "צור איתנו קשר ישירות דרך WhatsApp",
+      "subtitle": "צור איתנו קשר ישירות",
+      "chatCardTitle": "שיחה עם אחוו",
+      "chatCardDescription": "כתבו לנו ישירות מהאפליקציה וצוות התמיכה יענה כאן.",
+      "chatOpenButton": "התחלת שיחה",
+      "chatOpenButtonUnread": "יש לך תשובה חדשה",
       "cardTitle": "תמיכה ב-WhatsApp",
       "cardDescription": "לשאלות ולעזרה ניתן לפנות אלינו ישירות",
       "openButton": "פתיחת WhatsApp",
@@ -728,5 +733,19 @@
     "newBadge": "חדש",
     "emptyTitle": "אין עדיין התראות",
     "emptyMessage": "חדשות ומבצעים מאחוו יופיעו כאן."
+  },
+  "support": {
+    "title": "תמיכה",
+    "teamName": "צוות אחוו",
+    "teamStatus": "נחזור אליכם בהקדם",
+    "welcomeTitle": "איך אפשר לעזור?",
+    "welcomeBody": "כתבו לנו את השאלה או הבעיה וצוות אחוו יענה כאן. אפשר לשלוח גם תמונות.",
+    "placeholder": "כתבו הודעה...",
+    "send": "שליחה",
+    "attachPhoto": "צירוף תמונה",
+    "photo": "תמונה",
+    "sendError": "לא הצלחנו לשלוח את ההודעה. נסו שוב.",
+    "loadError": "לא הצלחנו לטעון את השיחה.",
+    "resolvedNotice": "צוות אחוו סגר את השיחה. כתבו הודעה חדשה אם צריך משהו נוסף."
   }
 }

@@ -36,6 +36,8 @@ export type AuditAction =
   | 'partner_access_updated'
   | 'partner_access_revoked'
   | 'points_adjusted'
+  | 'support_replied'
+  | 'support_status_changed'
 
 export type AuditTargetType = 'user' | 'volunteer' | 'request' | 'business' | 'offer' | 'review' | 'redemption' | 'report' | 'notification' | 'content_banner'
 
@@ -72,5 +74,7 @@ export const AUDIT_ACTION_LABEL_KEYS: Record<AuditAction, string> = {
   partner_access_granted: 'audit.actions.partnerAccessGranted',
   partner_access_updated: 'audit.actions.partnerAccessUpdated',
   partner_access_revoked: 'audit.actions.partnerAccessRevoked',
-  points_adjusted: 'audit.actions.pointsAdjusted'
+  points_adjusted: 'audit.actions.pointsAdjusted',
+  support_replied: 'audit.actions.supportReplied',
+  support_status_changed: 'audit.actions.supportStatusChanged'
 }

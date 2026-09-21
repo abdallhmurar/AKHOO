@@ -193,3 +193,25 @@ export type Announcement = {
   popup_shown_at: string | null
   read_at: string | null
 }
+
+// In-app support chat (migration 0035): one continuous conversation per user
+// with the AKHOO support team. media_url is a short-lived signed URL the
+// repository fills in from media_path (the bucket is private).
+export type SupportConversation = {
+  id: string
+  user_id: string
+  status: 'open' | 'waiting_user' | 'resolved'
+  last_admin_message_at: string | null
+  user_last_read_at: string | null
+}
+
+export type SupportMessage = {
+  id: string
+  conversation_id: string
+  from_admin: boolean
+  body: string | null
+  media_path: string | null
+  media_type: 'image' | null
+  media_url: string | null
+  created_at: string
+}

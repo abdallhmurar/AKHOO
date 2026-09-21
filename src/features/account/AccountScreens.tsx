@@ -3,7 +3,7 @@ import { Alert, Image, Linking, Platform, Pressable, StyleSheet, Switch, Text, V
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import * as Clipboard from 'expo-clipboard'
-import { ArrowLeft, ArrowRight, Bell, Camera, Check, Compass, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Bell, CaretLeft, CaretRight, ChatCircleDots, Camera, Check, Compass, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -26,6 +26,7 @@ import { NavigationAppPicker } from '../../components/NavigationAppPicker'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
+import { useSupportConversation } from '../support/useSupport'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const HELP_WHATSAPP_DISPLAY = '0509956046'
@@ -46,6 +47,8 @@ export function AccountHomeScreen() {
   const router = useRouter()
   const { profile, session, refreshProfile, signOut } = useAuth()
   const { isDark, setDark } = useThemeMode()
+  const { hasUnread: hasSupportReply } = useSupportConversation()
+  const MenuArrow = isRTL ? CaretLeft : CaretRight
 
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [notificationsEnabled, setNotificationsEnabledState] = useState(true)
@@ -142,7 +145,17 @@ export function AccountHomeScreen() {
         <PartnerToolsEntry />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />
-        <ListRow Icon={Lifebuoy} title={t('account.menu.help')} onPress={() => router.push('/(tabs)/account/help')} />
+        <ListRow
+          Icon={Lifebuoy}
+          title={t('account.menu.help')}
+          onPress={() => router.push('/(tabs)/account/help')}
+          trailing={
+            <View style={[styles.trailingRow, dirStyles(isRTL).row]}>
+              {hasSupportReply ? <View accessibilityLabel={t('account.help.chatOpenButtonUnread')} style={[styles.unreadDot, { backgroundColor: theme.colors.emergency }]} /> : null}
+              <MenuArrow size={17} color={theme.colors.textMuted} />
+            </View>
+          }
+        />
       </View>
 
       <Pressable onPress={logout} style={[styles.logoutRow, dirStyles(isRTL).row]}>
@@ -368,6 +381,7 @@ export function AccountHelpScreen() {
   const router = useRouter()
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const [copied, setCopied] = useState(false)
+  const { hasUnread: hasSupportReply } = useSupportConversation()
 
   async function copyNumber() {
     await Clipboard.setStringAsync(HELP_WHATSAPP_DISPLAY)
@@ -393,6 +407,19 @@ export function AccountHelpScreen() {
       </View>
 
       <View style={styles.helpCardWrap}>
+        <View style={[styles.helpCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+          <View style={[styles.helpIconCircle, { backgroundColor: theme.colors.primarySoft }]}>
+            <ChatCircleDots size={42} color={theme.colors.primary} weight="fill" />
+            {hasSupportReply ? <View style={[styles.helpIconDot, { backgroundColor: theme.colors.emergency, borderColor: theme.colors.surface }]} /> : null}
+          </View>
+          <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('account.help.chatCardTitle')}</Text>
+          <Text style={[typography.body, styles.helpCardDescription, { color: theme.colors.textSecondary }]}>{t('account.help.chatCardDescription')}</Text>
+          <Button
+            label={hasSupportReply ? t('account.help.chatOpenButtonUnread') : t('account.help.chatOpenButton')}
+            onPress={() => router.push('/support-chat')}
+          />
+        </View>
+
         <View style={[styles.helpCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           <View style={[styles.helpIconCircle, { backgroundColor: theme.colors.communitySoft }]}>
             <WhatsappLogo size={42} color={theme.colors.community} weight="fill" />
@@ -438,7 +465,10 @@ const styles = StyleSheet.create({
   brandLogo: { width: 36, height: 36 },
   brandPlaceholder: { width: 42 },
   helpTitleBlock: { gap: 4, marginTop: space.md },
-  helpCardWrap: { flex: 1, justifyContent: 'center' },
+  helpCardWrap: { flex: 1, justifyContent: 'center', gap: space.lg },
+  helpIconDot: { position: 'absolute', top: 4, right: 4, width: 18, height: 18, borderRadius: 9, borderWidth: 3 },
+  trailingRow: { alignItems: 'center', gap: space.sm },
+  unreadDot: { width: 10, height: 10, borderRadius: 5 },
   helpCard: { borderRadius: 24, borderWidth: 1, padding: space.xl, gap: space.md, alignItems: 'center', ...shadow.soft },
   helpIconCircle: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center' },
   helpCardDescription: { textAlign: 'center' },
