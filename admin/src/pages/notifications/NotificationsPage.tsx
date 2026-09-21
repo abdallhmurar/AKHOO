@@ -17,6 +17,8 @@ import { useRetryNotification, useSendNotification } from './useSendNotification
 import { AnnouncementPreview } from './AnnouncementPreview'
 
 const MAX_IMAGES = 5
+// Mirrors truncateForPush in supabase/functions/_shared/push.ts: past this a phone notification is cut.
+const PUSH_PREVIEW_CHARS = 160
 
 type ImageDraft = { id: string; file: File; preview: string }
 
@@ -25,6 +27,7 @@ function ComposeCard() {
   const send = useSendNotification()
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [details, setDetails] = useState('')
   const [audience, setAudience] = useState<NotificationAudience>('all')
   const [images, setImages] = useState<ImageDraft[]>([])
   const [uploading, setUploading] = useState(false)
@@ -78,13 +81,14 @@ function ComposeCard() {
     }
 
     try {
-      const result = await send.mutateAsync({ title, body, audience, imageUrls })
+      const result = await send.mutateAsync({ title, body, details, audience, imageUrls })
       if (result.deliveryComplete) toast.success(t('notifications.compose.sent'))
       else toast.warning(t('notifications.delivery.incomplete'))
       images.forEach(image => URL.revokeObjectURL(image.preview))
       setImages([])
       setTitle('')
       setBody('')
+      setDetails('')
     } catch {
       // useSendNotification's onError already toasts the message
     }
@@ -113,9 +117,22 @@ function ComposeCard() {
                 value={body}
                 onChange={e => setBody(e.target.value)}
                 rows={3}
-                maxLength={200}
                 className="rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />
+              <p className={`text-xs ${Array.from(body).length > PUSH_PREVIEW_CHARS ? 'text-sanad-warning' : 'text-muted-foreground'}`}>
+                {Array.from(body).length > PUSH_PREVIEW_CHARS ? t('notifications.compose.bodyHintLong', { max: PUSH_PREVIEW_CHARS }) : t('notifications.compose.bodyHint', { max: PUSH_PREVIEW_CHARS })}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="notif-details">{t('notifications.compose.detailsField')}</Label>
+              <textarea
+                id="notif-details"
+                value={details}
+                onChange={e => setDetails(e.target.value)}
+                rows={6}
+                className="rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+              <p className="text-xs text-muted-foreground">{t('notifications.compose.detailsHint')}</p>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -170,7 +187,7 @@ function ComposeCard() {
 
         <div className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase text-muted-foreground">{t('notifications.compose.previewTitle')}</p>
-          <AnnouncementPreview title={title} body={body} images={images.map(image => image.preview)} />
+          <AnnouncementPreview title={title} body={body} details={details} images={images.map(image => image.preview)} />
           <p className="text-xs text-muted-foreground">{t('notifications.compose.previewHint')}</p>
         </div>
       </CardContent>

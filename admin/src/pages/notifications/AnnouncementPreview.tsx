@@ -7,13 +7,14 @@ import { useIsRTL } from '@/lib/direction'
 // message, then "View now" / "Later". It renders the same fields the admin is
 // typing, so what they see here is what users get. Colors are the app's
 // (emergency coral for the primary action), not the admin panel's teal.
-export function AnnouncementPreview({ title, body, images }: { title: string; body: string; images: string[] }) {
+export function AnnouncementPreview({ title, body, details, images }: { title: string; body: string; details: string; images: string[] }) {
   const { t } = useTranslation()
   const isRTL = useIsRTL()
   const Chevron = isRTL ? ChevronLeft : ChevronRight
 
   return (
-    <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-white shadow-xl">
+    <div className="mx-auto flex w-full max-w-sm flex-col gap-3">
+    <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-xl">
       {images.length > 0 ? (
         <div className="relative flex h-48 items-center justify-center bg-secondary">
           <img src={images[0]} alt="" className="size-full object-contain" />
@@ -36,7 +37,7 @@ export function AnnouncementPreview({ title, body, images }: { title: string; bo
           <X className="mt-1 size-5 shrink-0 text-muted-foreground" />
         </div>
 
-        <p className="whitespace-pre-line break-words text-sm leading-relaxed text-muted-foreground">{body || t('notifications.preview.bodyPlaceholder')}</p>
+        <p className="line-clamp-6 whitespace-pre-line break-words text-sm leading-relaxed text-muted-foreground">{body || t('notifications.preview.bodyPlaceholder')}</p>
 
         <div className="mt-1 flex gap-3">
           <span className="flex h-11 flex-1 items-center justify-center gap-1 rounded-2xl bg-sanad-danger text-sm font-bold text-white">
@@ -46,6 +47,14 @@ export function AnnouncementPreview({ title, body, images }: { title: string; bo
           <span className="flex h-11 flex-1 items-center justify-center rounded-2xl bg-secondary text-sm font-bold text-foreground">{t('notifications.preview.later')}</span>
         </div>
       </div>
+    </div>
+
+    {details.trim() ? (
+      <div className="rounded-2xl border border-dashed border-border bg-white p-4">
+        <p className="mb-2 text-[11px] font-bold uppercase text-muted-foreground">{t('notifications.preview.detailsLabel')}</p>
+        <p className="max-h-48 overflow-y-auto whitespace-pre-line break-words text-sm leading-relaxed text-foreground">{details}</p>
+      </div>
+    ) : null}
     </div>
   )
 }

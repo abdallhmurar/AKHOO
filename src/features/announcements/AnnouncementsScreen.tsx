@@ -32,6 +32,11 @@ function AnnouncementCard({ announcement, isNew }: { announcement: Announcement;
       </View>
       <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{announcement.title}</Text>
       <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign }]}>{announcement.body}</Text>
+      {announcement.details ? (
+        <View style={[styles.details, { borderColor: theme.colors.border }]}>
+          <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign }]}>{announcement.details}</Text>
+        </View>
+      ) : null}
     </View>
   )
 }
@@ -71,5 +76,6 @@ const styles = StyleSheet.create({
   content: { gap: space.lg },
   card: { borderWidth: 1, borderRadius: radius.xl, padding: space.lg, gap: space.md },
   meta: { alignItems: 'center', justifyContent: 'space-between', gap: space.md },
+  details: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: space.md },
   newBadge: { paddingHorizontal: space.md, paddingVertical: 3, borderRadius: radius.pill }
 })

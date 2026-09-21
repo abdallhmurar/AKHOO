@@ -592,7 +592,7 @@
     "compose": {
       "title": "New broadcast",
       "titleField": "Title",
-      "bodyField": "Message",
+      "bodyField": "Message (shown in the notification)",
       "audience": "Audience",
       "audienceAll": "Everyone",
       "audienceVolunteers": "Volunteers only",
@@ -605,9 +605,13 @@
       "maxImages": "You can add up to 5 images.",
       "uploading": "Uploading images…",
       "previewTitle": "How it will look in the app",
-      "previewHint": "Shown as a popup the first time a user opens the app, and from the bell at the top of the home screen (it keeps shaking until it is read)."
+      "previewHint": "Shown as a popup the first time a user opens the app, and from the bell at the top of the home screen (it keeps shaking until it is read).",
+      "bodyHint": "Shown in the phone notification (about {{max}} characters fit there) and at the top of the popup. No limit.",
+      "bodyHintLong": "Longer than {{max}} characters: the phone notification will be shortened, but the full message still appears inside the app.",
+      "detailsField": "Full explanation (optional)",
+      "detailsHint": "Shown inside the app when the user taps “View now”. No length limit; line breaks are kept."
     },
-    "preview": { "titlePlaceholder": "Notification title", "bodyPlaceholder": "Your message appears here.", "viewNow": "View now", "later": "Later" },
+    "preview": { "titlePlaceholder": "Notification title", "bodyPlaceholder": "Your message appears here.", "viewNow": "View now", "later": "Later", "detailsLabel": "After tapping “View now”" },
     "table": {
       "title": "Title",
       "audience": "Audience",

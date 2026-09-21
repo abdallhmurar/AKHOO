@@ -7,8 +7,8 @@ export function useSendNotification() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ title, body, audience, imageUrls }: { title: string; body: string; audience: NotificationAudience; imageUrls: string[] }) => {
-      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls })
+    mutationFn: async ({ title, body, details, audience, imageUrls }: { title: string; body: string; details: string; audience: NotificationAudience; imageUrls: string[] }) => {
+      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls, p_details: details.trim() || null })
       if (error) throw error
 
       const { data: delivery, error: sendError } = await supabase.functions.invoke('send-broadcast-notification', { body: { notification_id: notification.id } })

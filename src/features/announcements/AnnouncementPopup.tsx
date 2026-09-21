@@ -74,7 +74,8 @@ export function AnnouncementPopup({ announcement, onViewNow, onLater }: { announ
               <IconButton label={t('announcements.close')} size={38} icon={<X size={18} color={theme.colors.textSecondary} />} onPress={onLater} style={styles.close} />
             </View>
 
-            <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign }]}>{announcement.body}</Text>
+            {/* Clamped so the buttons are always reachable; the full text is on the announcements screen. */}
+            <Text numberOfLines={6} style={[typography.body, { color: theme.colors.textSecondary, textAlign }]}>{announcement.body}</Text>
 
             <View style={[styles.actions, dirStyles(isRTL).row]}>
               <Button label={t('announcements.viewNow')} variant="emergency" fullWidth={false} style={styles.action} trailing={<Chevron size={16} weight="bold" color={theme.colors.onEmergency} />} onPress={onViewNow} />

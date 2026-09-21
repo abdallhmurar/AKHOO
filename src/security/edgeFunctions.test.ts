@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { loadEdgeFunction } from '../../test/edgeFunction'
 import { hasRecentAuthentication } from '../../supabase/functions/_shared/http'
-import { sendPushMessages } from '../../supabase/functions/_shared/push'
+import { sendPushMessages, truncateForPush } from '../../supabase/functions/_shared/push'
 
 function token(timestamp: number, method = 'oauth') {
   return `header.${Buffer.from(JSON.stringify({ iat: Date.now() / 1000, amr: [{ timestamp, method }] })).toString('base64url')}.signature`
@@ -9,6 +9,19 @@ function token(timestamp: number, method = 'oauth') {
 function request(body: unknown = { confirm: true }, timestamp = Date.now() / 1000) {
   return new Request('https://test.invalid/delete-account', { method: 'POST', headers: { Authorization: `Bearer ${token(timestamp)}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 }
+describe('push body trimming', () => {
+  it('leaves short messages alone and collapses whitespace', () => {
+    expect(truncateForPush('  hello \n world ')).toBe('hello world')
+  })
+  it('trims long messages to the limit with an ellipsis, without splitting characters', () => {
+    const long = 'مرحبا 👋 '.repeat(100)
+    const out = truncateForPush(long)
+    expect(Array.from(out)).toHaveLength(160)
+    expect(out.endsWith('…')).toBe(true)
+    // no lone (cut) surrogate half at the end
+    expect(out.charCodeAt(out.length - 2) >= 0xd800 && out.charCodeAt(out.length - 2) <= 0xdbff).toBe(false)
+  })
+})
 describe('browser Edge access', () => {
   it.each(['delete-account','send-broadcast-notification','geocode','notify-new-message','notify-new-request'])('%s rejects unauthenticated POST before accessing services', async name => {
     const client = vi.fn(() => { throw new Error('Must not access database') })

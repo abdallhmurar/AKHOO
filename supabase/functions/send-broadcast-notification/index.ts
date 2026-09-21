@@ -1,6 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { json, preflight } from '../_shared/http.ts'
-import { sendPushBatch } from '../_shared/push.ts'
+import { sendPushBatch, truncateForPush } from '../_shared/push.ts'
 import { readAll } from '../_shared/pagination.ts'
 
 Deno.serve(async req => {
@@ -36,7 +36,7 @@ Deno.serve(async req => {
         // retries a batch whose delivery status cannot be established.
         const { error: intentError } = await db.from('broadcast_push_results').upsert(batch.map(token => ({ notification_id: id, token, status: 'sending', updated_at: new Date().toISOString() })))
         if (intentError) throw intentError
-        const results = await sendPushBatch(batch.map(to => ({ to, title: notification.title, body: notification.body, sound: 'default', data: { broadcastNotificationId: id } })))
+        const results = await sendPushBatch(batch.map(to => ({ to, title: notification.title, body: truncateForPush(notification.body), sound: 'default', data: { broadcastNotificationId: id } })))
         const { error: resultError } = await db.from('broadcast_push_results').upsert(results.map(r => ({ notification_id: id, ...r, updated_at: new Date().toISOString() })))
         if (resultError) throw resultError
         const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)

@@ -187,6 +187,7 @@ export type Announcement = {
   id: string
   title: string
   body: string
+  details: string | null
   image_urls: string[]
   created_at: string
   popup_shown_at: string | null
