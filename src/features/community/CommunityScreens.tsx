@@ -45,12 +45,6 @@ function headerImageFor(language: string) {
   if (language === 'he') return require('../../../assets/images/perks-header-he.png')
   return require('../../../assets/images/perks-header-ar.png')
 }
-function proMaxImageFor(language: string) {
-  if (language === 'en') return require('../../../assets/images/perks-promax-en.png')
-  if (language === 'he') return require('../../../assets/images/perks-promax-he.png')
-  return require('../../../assets/images/perks-promax-ar.png')
-}
-
 const BANNER_ASPECT_RATIO = 724 / 2172
 
 // react-native-web doesn't reliably size an Image from a plain `aspectRatio`
@@ -194,7 +188,7 @@ export function CommunityHubScreen() {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const { profile } = useAuth()
-  const { stageStyle } = useStaggeredReveal(4)
+  const { stageStyle } = useStaggeredReveal(3)
 
   const pointsQuery = useQuery({
     queryKey: profile ? ['community', 'points', profile.id] : ['community', 'points'],
@@ -285,10 +279,6 @@ export function CommunityHubScreen() {
         ) : (
           offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} balance={balance} onUse={() => openOffer(offer.id)} />)
         )}
-      </Animated.View>
-
-      <Animated.View style={stageStyle(3)}>
-        <BannerImage source={proMaxImageFor(i18n.language)} label={t('perks.proMax.title')} />
       </Animated.View>
     </AppScreen>
   )
