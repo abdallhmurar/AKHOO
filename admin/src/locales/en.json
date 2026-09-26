@@ -491,6 +491,7 @@
       "reportResolved": "resolved a report",
       "reportDismissed": "dismissed a report",
       "broadcastNotificationSent": "sent a broadcast notification",
+      "broadcastNotificationDeleted": "deleted a broadcast notification",
       "contentBannerUpdated": "updated a content banner",
       "partnerAccessGranted": "Partner access granted",
       "partnerAccessUpdated": "Partner access updated",
@@ -612,7 +613,9 @@
       "bodyHint": "Shown in the phone notification (about {{max}} characters fit there) and at the top of the popup. No limit.",
       "bodyHintLong": "Longer than {{max}} characters: the phone notification will be shortened, but the full message still appears inside the app.",
       "detailsField": "Full explanation (optional)",
-      "detailsHint": "Shown inside the app when the user taps “View now”. No length limit; line breaks are kept."
+      "detailsHint": "Shown inside the app when the user taps “View now”. No length limit; line breaks are kept.",
+      "duration": "How long it stays visible (days)",
+      "durationHint": "After this many days, the notification disappears from inside the app automatically (1 to 90 days). Doesn't affect the phone push, which is delivered once at send time."
     },
     "preview": { "titlePlaceholder": "Notification title", "bodyPlaceholder": "Your message appears here.", "viewNow": "View now", "later": "Later", "detailsLabel": "After tapping “View now”" },
     "table": {
@@ -620,7 +623,21 @@
       "audience": "Audience",
       "sentCount": "Delivered to",
       "images": "Images",
-      "date": "Sent"
+      "date": "Sent",
+      "expires": "Expires",
+      "expiresLegacy": "30 days (default)",
+      "actions": ""
+    },
+    "actions": {
+      "delete": "Delete",
+      "deleteConfirmTitle": "Delete this notification?",
+      "deleteConfirmMessage": "The notification will be permanently deleted, and will disappear immediately for every user who hasn't opened it yet. This can't be undone.",
+      "deleted": "Notification deleted.",
+      "deleteAll": "Delete all notifications",
+      "deleteAllConfirmTitle": "Delete all notifications?",
+      "deleteAllConfirmMessage": "All {{count}} notifications will be permanently deleted and will disappear immediately for every user. The send history stays in the audit log. This can't be undone.",
+      "deletedAll": "Deleted {{count}} notifications.",
+      "empty": "No notifications to delete."
     },
     "delivery": {
       "status": "Delivery status",

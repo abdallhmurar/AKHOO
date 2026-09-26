@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Bell, ImagePlus, X } from 'lucide-react'
+import { Bell, ImagePlus, Trash2, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -9,14 +9,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DataTable, TablePagination } from '@/components/DataTable'
 import type { Column } from '@/components/DataTable'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
 import { ImageValidationError, uploadContentImage, validateImageFile } from '@/lib/storage'
 import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
-import { useRetryNotification, useSendNotification } from './useSendNotification'
+import { useDeleteAllNotifications, useDeleteNotification, useRetryNotification, useSendNotification } from './useSendNotification'
 import { AnnouncementPreview } from './AnnouncementPreview'
 
 const MAX_IMAGES = 5
+const MIN_DURATION_DAYS = 1
+const MAX_DURATION_DAYS = 90
+const DEFAULT_DURATION_DAYS = 7
 // Mirrors truncateForPush in supabase/functions/_shared/push.ts: past this a phone notification is cut.
 const PUSH_PREVIEW_CHARS = 160
 
@@ -28,6 +32,7 @@ function ComposeCard() {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [details, setDetails] = useState('')
+  const [durationDays, setDurationDays] = useState(String(DEFAULT_DURATION_DAYS))
   const [audience, setAudience] = useState<NotificationAudience>('all')
   const [images, setImages] = useState<ImageDraft[]>([])
   const [uploading, setUploading] = useState(false)
@@ -63,8 +68,12 @@ function ComposeCard() {
     })
   }
 
+  const parsedDuration = Number(durationDays)
+  const durationValid = Number.isInteger(parsedDuration) && parsedDuration >= MIN_DURATION_DAYS && parsedDuration <= MAX_DURATION_DAYS
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
+    if (!durationValid) return
 
     // Upload first: if any image fails nothing has been created or sent yet.
     let imageUrls: string[] = []
@@ -81,7 +90,7 @@ function ComposeCard() {
     }
 
     try {
-      const result = await send.mutateAsync({ title, body, details, audience, imageUrls })
+      const result = await send.mutateAsync({ title, body, details, audience, imageUrls, durationDays: parsedDuration })
       if (result.deliveryComplete) toast.success(t('notifications.compose.sent'))
       else toast.warning(t('notifications.delivery.incomplete'))
       images.forEach(image => URL.revokeObjectURL(image.preview))
@@ -89,6 +98,7 @@ function ComposeCard() {
       setTitle('')
       setBody('')
       setDetails('')
+      setDurationDays(String(DEFAULT_DURATION_DAYS))
     } catch {
       // useSendNotification's onError already toasts the message
     }
@@ -165,20 +175,27 @@ function ComposeCard() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 sm:w-64">
-              <Label>{t('notifications.compose.audience')}</Label>
-              <Select value={audience} onValueChange={v => setAudience(v as NotificationAudience)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('notifications.compose.audienceAll')}</SelectItem>
-                  <SelectItem value="volunteers">{t('notifications.compose.audienceVolunteers')}</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex flex-col gap-2 sm:w-64">
+                <Label>{t('notifications.compose.audience')}</Label>
+                <Select value={audience} onValueChange={v => setAudience(v as NotificationAudience)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('notifications.compose.audienceAll')}</SelectItem>
+                    <SelectItem value="volunteers">{t('notifications.compose.audienceVolunteers')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-2 sm:w-48">
+                <Label htmlFor="notif-duration">{t('notifications.compose.duration')}</Label>
+                <Input id="notif-duration" type="number" min={MIN_DURATION_DAYS} max={MAX_DURATION_DAYS} value={durationDays} onChange={e => setDurationDays(e.target.value)} />
+              </div>
             </div>
+            <p className="text-xs text-muted-foreground">{t('notifications.compose.durationHint')}</p>
             <div>
-              <Button type="submit" disabled={busy || !title.trim() || !body.trim()}>
+              <Button type="submit" disabled={busy || !title.trim() || !body.trim() || !durationValid}>
                 {uploading ? t('notifications.compose.uploading') : t('notifications.compose.send')}
               </Button>
             </div>
@@ -200,6 +217,12 @@ export function NotificationsPage() {
   const [page, setPage] = useState(0)
   const query = useNotifications(page)
   const retry = useRetryNotification()
+  const deleteOne = useDeleteNotification()
+  const deleteAll = useDeleteAllNotifications()
+  const [rowToDelete, setRowToDelete] = useState<BroadcastNotification | null>(null)
+  const [deleteAllOpen, setDeleteAllOpen] = useState(false)
+
+  const total = query.data?.total ?? 0
 
   const columns: Column<BroadcastNotification>[] = [
     { key: 'title', header: t('notifications.table.title'), cell: row => row.title },
@@ -224,7 +247,21 @@ export function NotificationsPage() {
     { key: 'retry', header: '', cell: row => !row.sent_at && row.delivery_status !== 'sending' ? <Button size="sm" variant="outline" disabled={retry.isPending} onClick={() => {
       retry.mutate(row.id, { onSuccess: result => result.complete ? toast.success(t('notifications.compose.sent')) : toast.warning(t('notifications.delivery.incomplete')), onError: () => toast.error(t('notifications.delivery.incomplete')) })
     }}>{t('notifications.delivery.retry')}</Button> : null },
-    { key: 'date', header: t('notifications.table.date'), cell: row => (row.sent_at ? new Date(row.sent_at).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }) : '—') }
+    { key: 'date', header: t('notifications.table.date'), cell: row => (row.sent_at ? new Date(row.sent_at).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }) : '—') },
+    {
+      key: 'expires',
+      header: t('notifications.table.expires'),
+      cell: row => (row.expires_at ? new Date(row.expires_at).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }) : t('notifications.table.expiresLegacy'))
+    },
+    {
+      key: 'actions',
+      header: t('notifications.table.actions'),
+      cell: row => (
+        <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setRowToDelete(row)} aria-label={t('notifications.actions.delete')}>
+          <Trash2 className="size-4" />
+        </Button>
+      )
+    }
   ]
 
   return (
@@ -234,8 +271,48 @@ export function NotificationsPage() {
         <p className="text-sm text-muted-foreground">{t('notifications.subtitle')}</p>
       </div>
       <ComposeCard />
+      <div className="flex items-center justify-end">
+        <Button
+          size="sm"
+          variant="outline"
+          className="text-destructive hover:text-destructive"
+          disabled={total === 0}
+          onClick={() => (total === 0 ? toast.error(t('notifications.actions.empty')) : setDeleteAllOpen(true))}
+        >
+          <Trash2 className="size-4" />
+          {t('notifications.actions.deleteAll')}
+        </Button>
+      </div>
       <DataTable columns={columns} rows={query.data?.rows ?? []} isLoading={query.isPending} isError={query.isError} getRowId={row => row.id} />
-      <TablePagination page={page} pageSize={DEFAULT_PAGE_SIZE} total={query.data?.total ?? 0} onPageChange={setPage} />
+      <TablePagination page={page} pageSize={DEFAULT_PAGE_SIZE} total={total} onPageChange={setPage} />
+
+      <ConfirmDialog
+        open={!!rowToDelete}
+        onOpenChange={open => { if (!open) setRowToDelete(null) }}
+        title={t('notifications.actions.deleteConfirmTitle')}
+        description={t('notifications.actions.deleteConfirmMessage')}
+        confirmLabel={t('notifications.actions.delete')}
+        destructive
+        onConfirm={async () => {
+          if (!rowToDelete) return
+          await deleteOne.mutateAsync(rowToDelete.id)
+          toast.success(t('notifications.actions.deleted'))
+        }}
+      />
+
+      <ConfirmDialog
+        open={deleteAllOpen}
+        onOpenChange={setDeleteAllOpen}
+        title={t('notifications.actions.deleteAllConfirmTitle')}
+        description={t('notifications.actions.deleteAllConfirmMessage', { count: total })}
+        confirmLabel={t('notifications.actions.deleteAll')}
+        destructive
+        onConfirm={async () => {
+          const count = await deleteAll.mutateAsync()
+          setPage(0)
+          toast.success(t('notifications.actions.deletedAll', { count }))
+        }}
+      />
     </div>
   )
 }

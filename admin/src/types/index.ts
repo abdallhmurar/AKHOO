@@ -245,6 +245,7 @@ export type BroadcastNotification = {
   created_by: string | null
   created_at: string
   sent_at: string | null
+  expires_at: string | null
 }
 
 export type ContentBannerSlot = 'perks_header' | 'perks_promax'

@@ -7,8 +7,8 @@ export function useSendNotification() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ title, body, details, audience, imageUrls }: { title: string; body: string; details: string; audience: NotificationAudience; imageUrls: string[] }) => {
-      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls, p_details: details.trim() || null })
+    mutationFn: async ({ title, body, details, audience, imageUrls, durationDays }: { title: string; body: string; details: string; audience: NotificationAudience; imageUrls: string[]; durationDays: number }) => {
+      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls, p_details: details.trim() || null, p_duration_days: durationDays })
       if (error) throw error
 
       const { data: delivery, error: sendError } = await supabase.functions.invoke('send-broadcast-notification', { body: { notification_id: notification.id } })
@@ -35,5 +35,40 @@ export function useRetryNotification() {
       return data as { complete: boolean }
     },
     onSettled: () => { void queryClient.invalidateQueries({ queryKey: ['notifications'] }) }
+  })
+}
+
+export function useDeleteNotification() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('admin_delete_broadcast_notification', { p_id: id })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
+      queryClient.invalidateQueries({ queryKey: ['audit-log'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    }
+  })
+}
+
+export function useDeleteAllNotifications() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('admin_delete_all_broadcast_notifications')
+      if (error) throw error
+      return data as number
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
+      queryClient.invalidateQueries({ queryKey: ['audit-log'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    }
   })
 }

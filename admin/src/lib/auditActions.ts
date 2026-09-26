@@ -31,6 +31,7 @@ export type AuditAction =
   | 'report_resolved'
   | 'report_dismissed'
   | 'broadcast_notification_sent'
+  | 'broadcast_notification_deleted'
   | 'content_banner_updated'
   | 'partner_access_granted'
   | 'partner_access_updated'
@@ -70,6 +71,7 @@ export const AUDIT_ACTION_LABEL_KEYS: Record<AuditAction, string> = {
   report_resolved: 'audit.actions.reportResolved',
   report_dismissed: 'audit.actions.reportDismissed',
   broadcast_notification_sent: 'audit.actions.broadcastNotificationSent',
+  broadcast_notification_deleted: 'audit.actions.broadcastNotificationDeleted',
   content_banner_updated: 'audit.actions.contentBannerUpdated',
   partner_access_granted: 'audit.actions.partnerAccessGranted',
   partner_access_updated: 'audit.actions.partnerAccessUpdated',
