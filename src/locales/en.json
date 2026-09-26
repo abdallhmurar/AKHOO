@@ -161,7 +161,7 @@
       "text": "I'm available to help someone nearby."
     },
     "adminLink": "Admin Panel",
-    "notice": "First release: requests are matched directly with someone nearby, no call center."
+    "notice": "Your request goes straight to someone nearby who can help."
   },
   "request": {
     "battery": "Battery",
