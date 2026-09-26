@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowClockwise, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Info, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Info, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref } from '../../lib/contactLinks'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../../lib/location'
@@ -52,6 +52,7 @@ export function HelperHomeScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const { t } = useTranslation()
   const router = useRouter()
   const toast = useToast()
@@ -249,15 +250,17 @@ export function HelperHomeScreen() {
   return (
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
-        {/* The logo stays physically on the left and the status pill on the
-            right regardless of language - a fixed brand layout, not a
-            reading-direction row. Web's ambient dir="rtl" already mirrors a
-            plain row for free, so it has to be explicitly counter-mirrored
-            back with row-reverse; native never mirrors on its own. */}
+        {/* The brand group (back button + logo) stays physically on the left
+            and the status pill on the right regardless of language - a fixed
+            brand layout, not a reading-direction row. Web's ambient
+            dir="rtl" already mirrors a plain row for free, so it has to be
+            explicitly counter-mirrored back with row-reverse; native never
+            mirrors on its own. */}
         <View style={[styles.headerTopRow, { flexDirection: isRTL && Platform.OS === 'web' ? 'row-reverse' : 'row' }]}>
-          <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('common.back')}>
+          <View style={[styles.brandGroup, { flexDirection: isRTL && Platform.OS === 'web' ? 'row-reverse' : 'row' }]}>
+            <IconButton label={t('common.back')} size={38} icon={<BackIcon size={18} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
             <Image source={require('../../../assets/images/icon.png')} style={styles.logo} resizeMode="contain" />
-          </Pressable>
+          </View>
           <StatusBadge tone="success" dot label={t('volunteer.availableNow')} />
         </View>
         <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.title')}</Text>
@@ -419,6 +422,7 @@ const styles = StyleSheet.create({
 
   header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm, gap: 2 },
   headerTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.sm },
+  brandGroup: { alignItems: 'center', gap: space.sm },
   logo: { width: 32, height: 32 },
 
   mapCard: { flex: 1, marginHorizontal: space.lg, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden', position: 'relative' },
