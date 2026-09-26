@@ -522,6 +522,9 @@
         "reauthenticateHint": "Sign in to the same account again, then confirm account deletion within ten minutes."
       }
     },
+    "legal": {
+      "lastUpdated": "Last updated"
+    },
     "help": {
       "subtitle": "Contact us directly",
       "chatCardTitle": "Chat with AKHOO",

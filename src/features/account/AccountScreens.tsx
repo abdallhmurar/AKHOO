@@ -366,11 +366,13 @@ export function AccountPrivacyScreen() {
 }
 
 export function AccountPrivacyPolicyScreen() {
-  return <LegalDocumentScreen title="سياسة الخصوصية" brand="أخوو | AKHOO" blocks={privacyPolicyBlocks} />
+  const { t } = useTranslation()
+  return <LegalDocumentScreen title={t('account.menu.privacyPolicy')} brand="أخوو | AKHOO" blocks={privacyPolicyBlocks} />
 }
 
 export function AccountTermsScreen() {
-  return <LegalDocumentScreen title="شروط الاستخدام" brand="أخوو | AKHOO" blocks={termsOfUseBlocks} />
+  const { t } = useTranslation()
+  return <LegalDocumentScreen title={t('account.menu.termsOfUse')} brand="أخوو | AKHOO" blocks={termsOfUseBlocks} />
 }
 
 export function AccountHelpScreen() {

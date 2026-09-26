@@ -522,6 +522,9 @@
         "reauthenticateHint": "התחברו שוב לאותו חשבון ואשרו את המחיקה תוך עשר דקות."
       }
     },
+    "legal": {
+      "lastUpdated": "עדכון אחרון"
+    },
     "help": {
       "subtitle": "צור איתנו קשר ישירות",
       "chatCardTitle": "שיחה עם אחוו",
