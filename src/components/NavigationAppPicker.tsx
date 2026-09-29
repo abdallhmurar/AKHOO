@@ -16,7 +16,7 @@ const options: { code: NavigationApp; labelKey: string }[] = [
 export function NavigationAppPicker() {
   const { t } = useTranslation()
   const dir = dirStyles(useIsRTL())
-  const [selected, setSelected] = useState<NavigationApp>('google')
+  const [selected, setSelected] = useState<NavigationApp>('waze')
 
   useEffect(() => {
     getNavigationApp().then(setSelected)
