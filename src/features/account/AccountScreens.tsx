@@ -22,7 +22,10 @@ import { syncPushRegistration } from '../../services/pushRegistration'
 import { profileRepository } from '../../repositories/profileRepository'
 import { PasswordStrength } from '../../components/PasswordStrength'
 import { LanguagePicker } from '../../components/LanguagePicker'
-import { NavigationAppPicker } from '../../components/NavigationAppPicker'
+import { ChoiceModal } from '../../components/ChoiceModal'
+import { NavigationAppIcon } from '../../components/NavigationAppIcon'
+import { getNavigationApp, setNavigationApp } from '../../lib/navigationPreference'
+import type { NavigationApp } from '../../lib/contactLinks'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
@@ -53,11 +56,19 @@ export function AccountHomeScreen() {
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [notificationsEnabled, setNotificationsEnabledState] = useState(true)
   const [notificationsSaving, setNotificationsSaving] = useState(false)
+  const [navigationApp, setNavigationAppState] = useState<NavigationApp>('waze')
+  const [navigationModalOpen, setNavigationModalOpen] = useState(false)
   const toast = useToast()
 
   useEffect(() => {
     getNotificationsEnabled().then(setNotificationsEnabledState)
+    getNavigationApp().then(setNavigationAppState)
   }, [])
+
+  async function chooseNavigationApp(app: NavigationApp) {
+    setNavigationAppState(app)
+    await setNavigationApp(app)
+  }
 
   async function toggleNotifications(value: boolean) {
     if (notificationsSaving || !session) return
@@ -135,7 +146,7 @@ export function AccountHomeScreen() {
           trailing={<Switch disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         /> : null}
         <ListRow Icon={Globe} title={t('account.language')} onPress={() => router.push('/(tabs)/account/language')} />
-        <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => router.push('/(tabs)/account/navigation')} />
+        <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => setNavigationModalOpen(true)} />
         <ListRow
           Icon={Moon}
           title={t('account.menu.darkMode')}
@@ -162,6 +173,18 @@ export function AccountHomeScreen() {
         <SignOut size={18} color={theme.colors.danger} />
         <Text style={[typography.bodyMedium, { color: theme.colors.danger }]}>{t('account.logout')}</Text>
       </Pressable>
+
+      <ChoiceModal
+        visible={navigationModalOpen}
+        onClose={() => setNavigationModalOpen(false)}
+        title={t('account.navigationApp.title')}
+        value={navigationApp}
+        onSelect={chooseNavigationApp}
+        options={[
+          { value: 'waze', label: t('account.navigationApp.waze'), icon: <NavigationAppIcon app="waze" size={22} /> },
+          { value: 'google', label: t('account.navigationApp.google'), icon: <NavigationAppIcon app="google" size={22} /> }
+        ]}
+      />
     </AppScreen>
   )
 }
@@ -332,19 +355,6 @@ export function AccountLanguageScreen() {
       <ScreenHeader title={t('account.language')} back />
       <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <LanguagePicker />
-      </View>
-    </AppScreen>
-  )
-}
-
-export function AccountNavigationScreen() {
-  const theme = useSanadTheme()
-  const { t } = useTranslation()
-  return (
-    <AppScreen contentStyle={styles.content}>
-      <ScreenHeader title={t('account.navigationApp.title')} back />
-      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <NavigationAppPicker />
       </View>
     </AppScreen>
   )
