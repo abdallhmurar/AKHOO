@@ -698,7 +698,16 @@
     "errors": {
       "loadFailed": "לא ניתן היה לטעון, נסו שוב.",
       "offline": "אין חיבור לאינטרנט."
-    }
+    },
+    "hubSubtitle": "מבצעים והטבות בשבילך",
+    "pointsUnit": "נקודות",
+    "helpProgress": "{{count}} / {{target}} עזרות",
+    "weeklyHeading": "מבצעי השבוע",
+    "availableOffers": "{{count}} מבצעים זמינים",
+    "noPoints": "ללא נקודות",
+    "offerDetails": "פרטי ההטבה",
+    "offerDetailsFor": "פרטי ההטבה: {{title}}",
+    "retry": "הטעינה נכשלה, נסו שוב"
   },
   "navigation": {
     "home": "בית",

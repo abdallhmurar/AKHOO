@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
-import { Animated, Easing, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import QRCode from 'react-native-qrcode-svg'
-import { CaretLeft, CaretRight, ClockCountdown, Crown, Fire, MapPin, Phone, Star, Tag, WhatsappLogo } from 'phosphor-react-native'
+import { ClockCountdown, MapPin, Phone, Star, Tag, Ticket, WhatsappLogo } from 'phosphor-react-native'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
@@ -17,7 +16,7 @@ import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '.
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import { useStaggeredReveal } from '../../lib/useStaggeredReveal'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { colors, radius, shadow, space, useSanadTheme } from '../../lib/theme'
+import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { rewardRepository } from '../../repositories/rewardRepository'
@@ -28,37 +27,15 @@ import { BottomSheet, Button, Card } from '../../components/ui'
 import { EmptyState } from '../../components/EmptyState'
 import { MembershipSheet } from '../../components/MembershipSheet'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
-import { OfferCard, PriceLine } from '../../components/OfferCard'
+import { OfferCard } from '../../components/OfferCard'
 import { PlusBadge } from '../../components/PlusBadge'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
+import { HelperMedal } from '../../components/HelperMedal'
 
 const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
 const TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
 const TIER_KEYS = ['bronze', 'silver', 'gold', 'green'] as const
-
-// Real per-language banner assets (from the user's own reference images,
-// see assets/images/perks-*.png) - not recreated from scratch, and not
-// mirrored by RTL/LTR since each is already laid out for its language.
-function headerImageFor(language: string) {
-  if (language === 'en') return require('../../../assets/images/perks-header-en.png')
-  if (language === 'he') return require('../../../assets/images/perks-header-he.png')
-  return require('../../../assets/images/perks-header-ar.png')
-}
-const BANNER_ASPECT_RATIO = 724 / 2172
-
-// react-native-web doesn't reliably size an Image from a plain `aspectRatio`
-// style (confirmed live - it kept the source PNG's raw 724px height at any
-// width instead of scaling it down), so the height is computed explicitly
-// from the wrapper's real measured width instead of trusted to CSS.
-function BannerImage({ source, label }: { source: ReturnType<typeof headerImageFor>; label: string }) {
-  const [width, setWidth] = useState(0)
-  return (
-    <View onLayout={event => setWidth(event.nativeEvent.layout.width)}>
-      {width > 0 ? <Image source={source} style={{ width, height: width * BANNER_ASPECT_RATIO }} resizeMode="contain" accessibilityLabel={label} /> : null}
-    </View>
-  )
-}
 
 type WeeklyOffersData = { offers: PartnerOffer[]; partnersById: Record<string, Partner> }
 
@@ -77,7 +54,8 @@ async function loadWeeklyOffers(): Promise<WeeklyOffersData> {
   if (error) throw error
   const rows = (offers ?? []) as PartnerOffer[]
   const partnerIds = [...new Set(rows.map(o => o.partner_id).filter((id): id is string => id !== null))]
-  const { data: partners } = partnerIds.length ? await supabase.from('partners').select('*').in('id', partnerIds) : { data: [] as Partner[] }
+  const { data: partners, error: partnersError } = partnerIds.length ? await supabase.from('partners').select('*').in('id', partnerIds) : { data: [] as Partner[], error: null }
+  if (partnersError) throw partnersError
   return { offers: rows, partnersById: Object.fromEntries((partners ?? []).map(p => [(p as Partner).id, p as Partner])) }
 }
 
@@ -88,24 +66,7 @@ function computeSavings(price: OfferPriceDisplay): number | null {
   return diff > 0 ? diff : null
 }
 
-// Real, ticking countdown to the soonest valid_until among the offers
-// actually on screen - never a fixed "5 days left". Returns null (hiding
-// the pill entirely) when none of them carry a real expiry.
-function useRealOffersCountdown(validUntilList: (string | null)[]) {
-  const [now, setNow] = useState(Date.now())
-  useEffect(() => {
-    const interval = setInterval(() => setNow(Date.now()), 60_000)
-    return () => clearInterval(interval)
-  }, [])
-  const upcoming = validUntilList.filter((iso): iso is string => !!iso).map(iso => new Date(iso).getTime()).filter(ts => ts > now)
-  if (upcoming.length === 0) return null
-  const diff = Math.min(...upcoming) - now
-  return { days: Math.floor(diff / 86_400_000), hours: Math.floor((diff % 86_400_000) / 3_600_000) }
-}
-
-// Real, ticking per-second countdown to a single expiry (a redemption's
-// short-lived window is minutes, not days, so useRealOffersCountdown's
-// per-minute tick above would look frozen). Returns null once passed.
+// Redemption windows are short-lived, so refresh the countdown every second.
 function useCountdownTo(iso: string | null) {
   const [now, setNow] = useState(Date.now())
   useEffect(() => {
@@ -119,73 +80,11 @@ function useCountdownTo(iso: string | null) {
   return { minutes: Math.floor(diff / 60_000), seconds: Math.floor((diff % 60_000) / 1000) }
 }
 
-// Shared driver for every subtle "premium, not game UI" loop in this screen
-// (level badge glow, points bob, countdown clock pulse) - one Animated.Value
-// per caller, same easing/rhythm everywhere rather than four bespoke ones.
-function usePulseValue(duration = 1400) {
-  const value = useRef(new Animated.Value(0)).current
-  useEffect(() => {
-    const loop = Animated.loop(Animated.sequence([
-      Animated.timing(value, { toValue: 1, duration, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-      Animated.timing(value, { toValue: 0, duration, easing: Easing.inOut(Easing.ease), useNativeDriver: true })
-    ]))
-    loop.start()
-    return () => loop.stop()
-  }, [value, duration])
-  return value
-}
-
-function LevelBadge() {
-  const pulse = usePulseValue(1600)
-  const glowOpacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.2, 0.5] })
-  const glowScale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.15] })
-  return (
-    <View style={styles.levelBadgeWrap}>
-      <Animated.View style={[styles.levelBadgeGlow, { opacity: glowOpacity, transform: [{ scale: glowScale }] }]} />
-      <View style={[styles.levelBadgeCore, shadow.soft]}>
-        <View style={styles.levelBadgeHighlight} />
-        <Star size={26} color="#8A5A16" weight="fill" />
-      </View>
-      <View style={[styles.sparkle, styles.sparkleA]} />
-      <View style={[styles.sparkle, styles.sparkleB]} />
-    </View>
-  )
-}
-
-function PointsBadge() {
-  const theme = useSanadTheme()
-  const bob = usePulseValue(1200)
-  const translateY = bob.interpolate({ inputRange: [0, 1], outputRange: [0, -3] })
-  return (
-    <Animated.View style={{ transform: [{ translateY }] }}>
-      <View style={[styles.pointsBadge, { backgroundColor: theme.colors.communitySoft }]}>
-        <Star size={16} color={theme.colors.community} weight="fill" />
-      </View>
-    </Animated.View>
-  )
-}
-
-function PulsingIcon({ children }: { children: ReactNode }) {
-  const pulse = usePulseValue(900)
-  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.18] })
-  return <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>
-}
-
-// Real SANAD Perks - business/offer discovery (search, categories, nearby
-// businesses grid) moved out per redesign request; BusinessDetailScreen and
-// OfferDetailScreen below are untouched and still work for any offer/business
-// reached some other way. Everything on screen now is real: the points/level
-// card reuses the same mechanic as ActivityScreen and VolunteerPointsCard
-// (completed-count thresholds, rewardRepository's summed balance), and the
-// weekly offers list reads public_offers directly, filtered to the admin's
-// 3 curated weekly_slot picks - no static/mock content. points_required is
-// shown for display only (see RealOfferCard) - "Use offer" still just opens
-// the offer detail screen, no deduction happens yet.
 export function CommunityHubScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const router = useRouter()
   const { profile } = useAuth()
   const { stageStyle } = useStaggeredReveal(3)
@@ -198,7 +97,8 @@ export function CommunityHubScreen() {
   const completedCountQuery = useQuery({
     queryKey: profile ? ['community', 'completed-count', profile.id] : ['community', 'completed-count'],
     queryFn: async () => {
-      const { data } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: profile!.id })
+      const { data, error } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: profile!.id })
+      if (error) throw error
       return (data as number | null) ?? 0
     },
     enabled: !!profile
@@ -211,12 +111,12 @@ export function CommunityHubScreen() {
   const nextThresholdIndex = TIER_MARKS.findIndex(mark => mark > completedCount)
   const nextThreshold = nextThresholdIndex === -1 ? null : (TIER_MARKS[nextThresholdIndex] ?? null)
   const nextLevelKey = nextThresholdIndex === -1 ? null : (TIER_KEYS[nextThresholdIndex] ?? null)
-  const progressFraction = Math.min(completedCount, TOP_THRESHOLD) / TOP_THRESHOLD
+  const progressFraction = Math.min(completedCount / (nextThreshold ?? TOP_THRESHOLD), 1)
   const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
 
   const offers = offersQuery.data?.offers ?? []
   const partnersById = offersQuery.data?.partnersById ?? {}
-  const countdown = useRealOffersCountdown(offers.map(o => o.valid_until))
+  const statsReady = pointsQuery.isSuccess && completedCountQuery.isSuccess
 
   function openOffer(id: string) {
     Haptics.selectionAsync().catch(() => {})
@@ -224,67 +124,57 @@ export function CommunityHubScreen() {
   }
 
   return (
-    <AppScreen contentStyle={styles.content}>
-      <BannerImage source={headerImageFor(i18n.language)} label={t('perks.title')} />
+    <AppScreen contentStyle={styles.hubContent}>
+      <View style={[styles.hubHeader, dirStyles(isRTL).row]}>
+        <View style={styles.headerCopy}>
+          <Text accessibilityRole="header" style={[typography.h1, styles.hubTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.title')}</Text>
+          <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.hubSubtitle')}</Text>
+        </View>
+        <Image source={require('../../../assets/images/perks-coupon-icon.png')} style={styles.headerCoupon} resizeMode="cover" accessible={false} />
+      </View>
 
       <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <View style={[styles.pointsTopRow, dirStyles(isRTL).row]}>
-          <View style={[styles.levelGroup, dirStyles(isRTL).row]}>
-            <LevelBadge />
-            <View>
-              <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.pointsCard.levelLabel')}</Text>
-              <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
+        {!statsReady ? (
+          pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
+        ) : <>
+          <View style={[styles.pointsTopRow, dirStyles(isRTL).row]}>
+            <View style={[styles.levelGroup, dirStyles(isRTL).row]}>
+              <HelperMedal level={level} size={42} />
+              <View style={styles.levelCopy}>
+                <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
+                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                  {nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')}
+                </Text>
+              </View>
+            </View>
+            <View style={[styles.balanceBlock, { borderColor: theme.colors.border, borderStartWidth: isRTL ? 0 : 1, borderEndWidth: isRTL ? 1 : 0 }]}>
+              <Text style={[typography.h1, styles.balanceValue, { color: theme.colors.textPrimary }]}>{balance}</Text>
+              <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.pointsUnit')}</Text>
             </View>
           </View>
-          <View style={{ alignItems: isRTL ? 'flex-start' : 'flex-end' }}>
-            <View style={[styles.balanceRow, dirStyles(isRTL).row]}>
-              <Text style={[typography.h1, { color: theme.colors.textPrimary }]}>{balance}</Text>
-              <PointsBadge />
-            </View>
-            <Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{t('perks.pointsCard.balanceLabel')}</Text>
+          <View accessibilityRole="progressbar" accessibilityLabel={t('perks.pointsCard.levelLabel')} accessibilityValue={{ min: 0, max: nextThreshold ?? TOP_THRESHOLD, now: Math.min(completedCount, nextThreshold ?? TOP_THRESHOLD) }} style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceStrong }]}>
+            <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.primary, [isRTL ? 'right' : 'left']: 0 }]} />
           </View>
-        </View>
-        <View style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceMuted }]}>
-          <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.community, [isRTL ? 'right' : 'left']: 0 }]} />
-        </View>
-        <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>
-          {nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')}
-        </Text>
+          <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: completedCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
+        </>}
       </Animated.View>
 
-      <Animated.View style={[styles.weeklyHeaderCard, stageStyle(1), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row]}>
-          <Fire size={18} color={theme.colors.emergency} weight="fill" />
-          <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{t('perks.weeklyOffers.title')}</Text>
-        </View>
-        <View style={[styles.weeklyMetaRow, dirStyles(isRTL).row]}>
-          <Text style={[typography.caption, { color: theme.colors.textSecondary }]}>{t('perks.weeklyOffers.subtitle', { count: offers.length })}</Text>
-          {countdown ? (
-            <View style={[styles.countdownPill, dirStyles(isRTL).row, { backgroundColor: theme.colors.emergencySoft }]}>
-              <PulsingIcon><ClockCountdown size={13} color={theme.colors.emergency} weight="fill" /></PulsingIcon>
-              <Text style={[typography.caption, { color: theme.colors.emergency }]}>{t('perks.weeklyOffers.countdown', { days: countdown.days, hours: countdown.hours })}</Text>
-            </View>
-          ) : null}
-        </View>
+      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, stageStyle(1)]}>
+        <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
+        {offersQuery.isSuccess ? <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.availableOffers', { count: offers.length })}</Text> : null}
       </Animated.View>
-
       <Animated.View style={[styles.offersList, stageStyle(2)]}>
-        {offersQuery.isLoading ? (
-          <>
-            <Skeleton width="100%" height={140} />
-            <Skeleton width="100%" height={140} />
-          </>
+        {offersQuery.isLoading ? <><Skeleton width="100%" height={190} /><Skeleton width="100%" height={190} /></> : offersQuery.isError ? (
+          <Button label={t('perks.retry')} variant="outline" onPress={() => { void offersQuery.refetch() }} />
         ) : offers.length === 0 ? (
           <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
-        ) : (
-          offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} balance={balance} onUse={() => openOffer(offer.id)} />)
-        )}
+        ) : offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} onUse={() => openOffer(offer.id)} />)}
       </Animated.View>
     </AppScreen>
   )
 }
 
-function RealOfferCard({ offer, business, balance, onUse }: { offer: PartnerOffer; business?: Partner; balance: number; onUse: () => void }) {
+function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; business?: Partner; onUse: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
@@ -292,41 +182,36 @@ function RealOfferCard({ offer, business, balance, onUse }: { offer: PartnerOffe
   const price = computeOfferPriceDisplay(offer)
   const savings = computeSavings(price)
   const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
-  const Chevron = isRTL ? CaretLeft : CaretRight
-  const canAfford = offer.points_required == null || balance >= offer.points_required
-
+  const imageUri = offer.image_url ?? business?.logo_url
+  const textAlign = isRTL ? 'right' : 'left'
   return (
     <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-      <Pressable onPress={onUse} style={[styles.realOfferTopRow, dirStyles(isRTL).row]}>
-        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.communitySoft }]}>
-          {offer.image_url ? (
-            <Image source={{ uri: offer.image_url }} style={styles.realOfferImage} resizeMode="cover" />
-          ) : (
-            <CategoryIcon size={30} color={theme.colors.community} weight="duotone" />
-          )}
-          <View style={[styles.exclusiveBadge, dirStyles(isRTL).row, { backgroundColor: colors.ink }]}>
-            <Crown size={10} color={colors.sand} weight="fill" />
-            <Text style={[typography.caption, styles.exclusiveBadgeText]}>{t('perks.weeklyOffers.exclusive')}</Text>
-          </View>
+      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row]}>
+        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }]}>
+          {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="cover" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
         </View>
         <View style={styles.realOfferBody}>
-          <Text numberOfLines={2} style={[typography.smallMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.title}</Text>
-          {business ? <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t(`perks.categories.${business.category}`)}</Text> : null}
-          <PriceLine price={price} />
-          {savings != null ? <Text style={[typography.caption, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.weeklyOffers.savings', { amount: formatPrice(savings, CURRENT_MARKET.currencySymbol) })}</Text> : null}
-          {offer.points_required != null ? (
-            <View style={[styles.pointsCostRow, dirStyles(isRTL).row]}>
-              <Star size={12} color={canAfford ? theme.colors.community : theme.colors.textMuted} weight="fill" />
-              <Text style={[typography.caption, { color: canAfford ? theme.colors.textSecondary : theme.colors.textMuted }]}>{t('perks.weeklyOffers.pointsCost', { points: offer.points_required })}</Text>
-              {!canAfford ? <Text style={[typography.caption, { color: theme.colors.textMuted }]}>· {t('perks.weeklyOffers.insufficientPoints')}</Text> : null}
+          <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
+          {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
+          {offer.member_only ? <PlusBadge size="sm" /> : null}
+          {price.kind === 'free_benefit' ? <Text style={[typography.bodyMedium, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft, textAlign }]}>{t('perks.offer.free')}</Text> : (
+            <View style={[styles.hubPriceRow, dirStyles(isRTL).row]}>
+              {price.offerPrice != null ? <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{formatPrice(price.offerPrice, CURRENT_MARKET.currencySymbol)}</Text> : null}
+              {price.originalPrice != null ? <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'line-through' }]}>{formatPrice(price.originalPrice, CURRENT_MARKET.currencySymbol)}</Text> : null}
+              {savings != null ? <Text style={[typography.caption, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft }]}>{t('perks.weeklyOffers.savings', { amount: formatPrice(savings, CURRENT_MARKET.currencySymbol) })}</Text> : price.kind === 'percentage' ? <Text style={[typography.smallMedium, { color: theme.colors.community }]}>-{price.percent}%</Text> : price.kind === 'fixed' ? <Text style={[typography.smallMedium, { color: theme.colors.community }]}>-{formatPrice(price.amountOff, CURRENT_MARKET.currencySymbol)}</Text> : null}
             </View>
-          ) : null}
+          )}
         </View>
-        <Chevron size={16} color={theme.colors.textMuted} />
-      </Pressable>
-      <Pressable onPress={onUse} style={[styles.useButtonFull, { backgroundColor: theme.colors.community }]}>
-        <Text style={[typography.smallMedium, { color: theme.colors.onCommunity }]}>{t('perks.weeklyOffers.useOffer')}</Text>
-      </Pressable>
+      </View>
+      <View style={[styles.offerFooter, dirStyles(isRTL).row, { borderColor: theme.colors.border }]}>
+        <View style={[styles.offerCost, dirStyles(isRTL).row]}>
+          <Ticket size={21} color={theme.colors.textMuted} weight="fill" />
+          <Text style={[typography.smallMedium, { color: theme.colors.textSecondary, flexShrink: 1 }]}>{(offer.points_required ?? 0) > 0 ? t('perks.weeklyOffers.pointsCost', { points: offer.points_required }) : t('perks.noPoints')}</Text>
+        </View>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} style={({ pressed }) => [styles.detailsButton, { backgroundColor: pressed ? theme.colors.primaryPressed : theme.colors.primary }]}>
+          <Text style={[typography.smallMedium, { color: theme.colors.onPrimary, textAlign: 'center' }]}>{t('perks.offerDetails')}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }
@@ -600,35 +485,31 @@ const styles = StyleSheet.create({
   priceRow: { alignItems: 'center', gap: space.sm },
 
 
-  pointsCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.lg, gap: space.sm },
-  pointsTopRow: { alignItems: 'center', justifyContent: 'space-between' },
-  levelGroup: { alignItems: 'center', gap: space.sm },
-  balanceRow: { alignItems: 'center', gap: 6 },
-  progressTrack: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  hubContent: { gap: space.lg, paddingHorizontal: space.lg },
+  hubHeader: { alignItems: 'center', justifyContent: 'space-between', gap: space.md },
+  headerCopy: { flex: 1, gap: 2 },
+  hubTitle: { fontSize: 30, lineHeight: 44 },
+  headerCoupon: { width: 70, height: 50 },
+  pointsCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.md, gap: space.sm },
+  pointsTopRow: { alignItems: 'center', gap: space.sm },
+  levelGroup: { flex: 1, alignItems: 'center', gap: space.sm },
+  levelCopy: { flex: 1, gap: 4 },
+  balanceBlock: { alignItems: 'center', paddingHorizontal: space.md, minWidth: 76 },
+  balanceValue: { fontSize: 32, lineHeight: 40 },
+  progressTrack: { height: 7, borderRadius: 4, overflow: 'hidden', marginTop: 4 },
   progressFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 4 },
-
-  levelBadgeWrap: { width: 64, height: 64, alignItems: 'center', justifyContent: 'center' },
-  levelBadgeGlow: { position: 'absolute', width: 64, height: 64, borderRadius: 32, backgroundColor: '#F6C453' },
-  levelBadgeCore: { width: 54, height: 54, borderRadius: 27, backgroundColor: '#FBD877', alignItems: 'center', justifyContent: 'center' },
-  levelBadgeHighlight: { position: 'absolute', width: 22, height: 22, borderRadius: 11, top: 5, left: 8, backgroundColor: 'rgba(255,255,255,0.45)' },
-  sparkle: { position: 'absolute', width: 10, height: 2, borderRadius: 1, backgroundColor: '#5FE0C0' },
-  sparkleA: { top: 2, left: -4, transform: [{ rotate: '-35deg' }] },
-  sparkleB: { top: 16, left: -10, transform: [{ rotate: '-35deg' }] },
-  pointsBadge: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-
-  weeklyHeaderCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.lg, gap: space.sm },
-  weeklyHeaderRow: { alignItems: 'center', gap: space.sm },
-  weeklyMetaRow: { alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: space.sm },
+  weeklyHeaderRow: { alignItems: 'center', justifyContent: 'space-between', gap: space.sm, flexWrap: 'wrap', marginTop: space.sm },
   countdownPill: { alignItems: 'center', gap: 4, borderRadius: radius.pill, paddingVertical: 4, paddingHorizontal: space.sm },
-
   offersList: { gap: space.md },
-  realOfferCard: { borderWidth: 1, borderRadius: radius.lg, overflow: 'hidden' },
-  realOfferTopRow: { alignItems: 'center', gap: space.md, padding: space.md },
-  realOfferImageWrap: { width: 76, height: 76, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  realOfferImage: { width: '100%', height: '100%' },
-  exclusiveBadge: { position: 'absolute', top: 6, alignItems: 'center', gap: 3, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 6 },
-  exclusiveBadgeText: { color: '#fff', fontSize: 9 },
-  realOfferBody: { flex: 1, gap: 3 },
+  realOfferCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.sm },
+  realOfferTopRow: { alignItems: 'stretch', gap: space.sm },
+  realOfferImageWrap: { width: '39%', minHeight: 108, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  realOfferImage: { position: 'absolute', width: '100%', height: '100%' },
+  realOfferBody: { flex: 1, gap: 4, paddingVertical: 4 },
+  hubPriceRow: { alignItems: 'center', flexWrap: 'wrap', gap: space.sm, marginTop: space.sm },
+  savingsBadge: { borderRadius: 6, paddingHorizontal: space.sm, paddingVertical: 4, overflow: 'hidden' },
   pointsCostRow: { alignItems: 'center', gap: 4 },
-  useButtonFull: { alignItems: 'center', justifyContent: 'center', paddingVertical: 12 }
+  offerFooter: { borderTopWidth: StyleSheet.hairlineWidth, marginTop: space.sm, paddingTop: space.sm, alignItems: 'center', gap: space.sm },
+  offerCost: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  detailsButton: { minHeight: 44, width: '40%', justifyContent: 'center', alignItems: 'center', borderRadius: radius.md, paddingHorizontal: space.sm, paddingVertical: space.sm }
 })

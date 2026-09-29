@@ -9,10 +9,20 @@
     ]
   },
   "sources": {
-    "tokens": ["src/lib/theme.ts", "src/lib/typography.ts"],
-    "components": ["src/components/ui", "src/components/v2"],
-    "assets": ["assets"],
-    "instructions": [".21st/DESIGN.md"]
+    "tokens": [
+      "src/lib/theme.ts",
+      "src/lib/typography.ts"
+    ],
+    "components": [
+      "src/components/ui",
+      "src/components/v2"
+    ],
+    "assets": [
+      "assets"
+    ],
+    "instructions": [
+      ".21st/DESIGN.md"
+    ]
   },
   "design": {
     "colorMode": "light-first semantic system with dark-safe component tones",
@@ -29,16 +39,47 @@
       "he": "Noto Sans Hebrew",
       "en": "Inter"
     },
-    "spacing": { "scale": [4, 8, 12, 16, 24, 32, 40, 48] },
-    "radius": { "control": 12, "card": 18, "sheet": 28, "pill": 999 },
-    "shadows": { "rule": "Use shadows only for floating navigation, modals, sheets, and map controls" },
-    "motion": { "rule": "Calm, functional, reduced-motion aware" },
+    "spacing": {
+      "scale": [
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        40,
+        48
+      ]
+    },
+    "radius": {
+      "control": 12,
+      "card": 18,
+      "sheet": 28,
+      "pill": 999
+    },
+    "shadows": {
+      "rule": "Use shadows only for floating navigation, modals, sheets, and map controls"
+    },
+    "motion": {
+      "rule": "Calm, functional, reduced-motion aware"
+    },
     "density": "comfortable mobile"
   },
   "components": {
-    "installed": ["components/ui", "components/v2"],
-    "preferredPrimitives": ["accessible React Native primitives", "map-first mission sheet", "four-tab navigation"],
-    "patterns": ["equal need-help and can-help actions", "signal-led status hierarchy", "immutable mission timeline"]
+    "installed": [
+      "components/ui",
+      "components/v2"
+    ],
+    "preferredPrimitives": [
+      "accessible React Native primitives",
+      "map-first mission sheet",
+      "four-tab navigation"
+    ],
+    "patterns": [
+      "equal need-help and can-help actions",
+      "signal-led status hierarchy",
+      "immutable mission timeline"
+    ]
   },
   "constraints": {
     "must": [
@@ -57,6 +98,12 @@
     ]
   },
   "decisions": [
+    {
+      "name": "Perks compact rewards and offers",
+      "status": "approved",
+      "reason": "User approved the generated mobile reference: coupon heading, compact earned-level medal, large offer photos, savings and blue detail buttons. Preserve live offers and derive medals/progress from completed helps, not spendable points.",
+      "source": "src/features/community/CommunityScreens.tsx"
+    },
     {
       "name": "Perks coupon tab icon",
       "status": "approved",

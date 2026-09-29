@@ -698,7 +698,16 @@
     "errors": {
       "loadFailed": "Couldn't load this, try again.",
       "offline": "No internet connection."
-    }
+    },
+    "hubSubtitle": "Offers and rewards for you",
+    "pointsUnit": "points",
+    "helpProgress": "{{count}} / {{target}} helps",
+    "weeklyHeading": "This week’s offers",
+    "availableOffers": "{{count}} available offers",
+    "noPoints": "No points needed",
+    "offerDetails": "Offer details",
+    "offerDetailsFor": "Offer details: {{title}}",
+    "retry": "Could not load. Try again"
   },
   "navigation": {
     "home": "Home",

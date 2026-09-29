@@ -698,7 +698,16 @@
     "errors": {
       "loadFailed": "تعذّر تحميل البيانات، جرب كمان مرة.",
       "offline": "ما في اتصال بالإنترنت."
-    }
+    },
+    "hubSubtitle": "عروض ومكافآت إلك",
+    "pointsUnit": "نقطة",
+    "helpProgress": "{{count}} / {{target}} مساعدة",
+    "weeklyHeading": "عروض هذا الأسبوع",
+    "availableOffers": "{{count}} عروض متاحة",
+    "noPoints": "بدون نقاط",
+    "offerDetails": "تفاصيل العرض",
+    "offerDetailsFor": "تفاصيل العرض: {{title}}",
+    "retry": "تعذّر التحميل، حاول مرة ثانية"
   },
   "navigation": {
     "home": "الرئيسية",
