@@ -452,7 +452,10 @@
       "awaiting_confirmation": "ממתין לאישור",
       "completed": "הושלם",
       "cancelled": "בוטל"
-    }
+    },
+    "hubSubtitle": "כל העזרות והבקשות שלך במקום אחד",
+    "helpUnit": "עזרות",
+    "givenShort": "אנשים שעזרת להם"
   },
   "account": {
     "title": "החשבון שלי",

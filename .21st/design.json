@@ -99,6 +99,12 @@
   },
   "decisions": [
     {
+      "name": "Activity matches Perks",
+      "status": "approved",
+      "reason": "User selected the activity mockup with a blue history heading, earned medal, lifetime summary, blue pill filters and white status rows. Reuse the Perks medal and authoritative lifetime count.",
+      "source": "src/features/activity/ActivityScreen.tsx"
+    },
+    {
       "name": "Perks compact rewards and offers",
       "status": "approved",
       "reason": "User approved the generated mobile reference: coupon heading, compact earned-level medal, large offer photos, savings and blue detail buttons. Preserve live offers and derive medals/progress from completed helps, not spendable points.",

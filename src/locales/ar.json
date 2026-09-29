@@ -452,7 +452,10 @@
       "awaiting_confirmation": "بانتظار التأكيد",
       "completed": "تمت المساعدة",
       "cancelled": "ملغي"
-    }
+    },
+    "hubSubtitle": "كل مساعداتك وطلباتك بمكان واحد",
+    "helpUnit": "مساعدة",
+    "givenShort": "ساعدت شخصاً"
   },
   "account": {
     "title": "حسابي",

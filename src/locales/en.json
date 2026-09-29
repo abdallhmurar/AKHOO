@@ -452,7 +452,10 @@
       "awaiting_confirmation": "Awaiting confirmation",
       "completed": "Completed",
       "cancelled": "Cancelled"
-    }
+    },
+    "hubSubtitle": "All your help and requests in one place",
+    "helpUnit": "helps",
+    "givenShort": "People helped"
   },
   "account": {
     "title": "My Account",

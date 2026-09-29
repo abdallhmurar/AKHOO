@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
-import { BatteryWarning, CalendarBlank, CaretDown, CaretLeft, CaretRight, ClipboardText, Clock, GasPump, Handshake, Lock, MapPin, Star, Tire, Trophy, UsersThree, Wrench } from 'phosphor-react-native'
+import { BatteryWarning, CalendarBlank, CaretDown, CaretLeft, CaretRight, ClipboardText, ClockCounterClockwise, GasPump, Handshake, Lock, Star, Tire, Trophy, UsersThree, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
@@ -12,8 +12,12 @@ import { useAuth } from '../../providers'
 import { activityRepository, type ActivityEntry } from '../../repositories/activityRepository'
 import { queryKeys } from '../../services/queryKeys'
 import type { ServiceType } from '../../types'
-import { AppScreen, ScreenHeader } from '../../components/v2'
-import { BottomSheet, EmptyState, Skeleton, StatusBadge, Tabs } from '../../components/ui'
+import { AppScreen } from '../../components/v2'
+import { BottomSheet, Button, EmptyState, Skeleton, StatusBadge, Tabs } from '../../components/ui'
+
+import { HelperMedal } from '../../components/HelperMedal'
+import { supabase } from '../../lib/supabase'
+import { rewardRepository } from '../../repositories/rewardRepository'
 
 type Filter = 'all' | 'given' | 'received' | 'points'
 type Duration = 7 | 30 | 90 | 'all'
@@ -61,58 +65,80 @@ export function ActivityScreen() {
     [query.data, filter, cutoff]
   )
 
-  // The three stat cards and the level are lifetime totals - not scoped to
-  // the duration pill, which only trims which list rows show below.
-  const givenCount = query.data?.filter(item => item.type === 'given' && item.status === 'completed').length ?? 0
-  const receivedCount = query.data?.filter(item => item.type === 'received' && item.status === 'completed').length ?? 0
-  const totalPoints = query.data?.filter(item => item.type === 'points').reduce((total, item) => total + (item.points ?? 0), 0) ?? 0
-
+  // Reuse the same lifetime count and spendable balance as the Perks screen.
+  // The activity feed is capped at 50 requests, so it cannot determine a tier.
+  const completedQuery = useQuery({
+    queryKey: ['community', 'completed-count', session?.user.id],
+    enabled: !!session,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: session!.user.id })
+      if (error) throw error
+      return (data as number | null) ?? 0
+    }
+  })
+  const pointsQuery = useQuery({ queryKey: ['community', 'points', session?.user.id], enabled: !!session, queryFn: () => rewardRepository.points(session!.user.id) })
+  const receivedQuery = useQuery({
+    queryKey: ['activity', 'received-count', session?.user.id], enabled: !!session,
+    queryFn: async () => {
+      const { count, error } = await supabase.from('help_requests').select('id', { count: 'exact', head: true }).eq('requester_id', session!.user.id).eq('status', 'completed')
+      if (error) throw error
+      return count ?? 0
+    }
+  })
+  const givenCount = completedQuery.data ?? 0
   const level = getVolunteerActivityLevel(givenCount)
   const nextThreshold = TIER_MARKS.find(mark => mark > givenCount) ?? null
-  const progressFraction = Math.min(givenCount, TOP_THRESHOLD) / TOP_THRESHOLD
+  const nextLevel = nextThreshold === null ? null : getVolunteerActivityLevel(nextThreshold)
+  const progressFraction = Math.min(givenCount / (nextThreshold ?? TOP_THRESHOLD), 1)
   const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
+  const statsReady = completedQuery.isSuccess && receivedQuery.isSuccess && pointsQuery.isSuccess
+  const statsError = completedQuery.isError || receivedQuery.isError || pointsQuery.isError
 
   const selectedDuration = DURATION_OPTIONS.find(option => option.value === duration)!
 
   return (
     <AppScreen contentStyle={styles.content}>
-      <ScreenHeader
-        title={t('activity.title')}
-        subtitle={t('activity.subtitle')}
-        trailing={
-          <Pressable onPress={() => setDurationOpen(true)} style={[styles.durationPill, dirStyles(isRTL).row, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border }]}>
-            <CalendarBlank size={14} color={theme.colors.textSecondary} />
-            <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textSecondary }]}>{t(selectedDuration.labelKey)}</Text>
-            <CaretDown size={12} color={theme.colors.textMuted} />
-          </Pressable>
-        }
-      />
-
-      <View style={[styles.levelCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <View style={[styles.levelTop, dirStyles(isRTL).row]}>
-          <View style={[styles.levelIconWrap, { backgroundColor: theme.colors.rewardSoft }]}>
-            <Star size={20} color={theme.colors.reward} weight="fill" />
-          </View>
-          <View style={styles.levelTextCol}>
-            <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('activity.levelCard.title')}</Text>
-            <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
-          </View>
+      <View style={[styles.header, dirStyles(isRTL).row]}>
+        <View style={styles.headerCopy}>
+          <Text accessibilityRole="header" style={[typography.h1, styles.title, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('activity.title')}</Text>
+          <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('activity.hubSubtitle')}</Text>
         </View>
-        <View style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceMuted }]}>
-          <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.community, [isRTL ? 'right' : 'left']: 0 }]} />
-        </View>
-        <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>
-          {nextThreshold !== null ? t('points.nextTier', { remaining: nextThreshold - givenCount }) : t('points.topTier')}
-        </Text>
+        <View style={[styles.historyIcon, { backgroundColor: theme.colors.primarySoft }]}><ClockCounterClockwise size={50} color={theme.colors.primary} weight="bold" /></View>
       </View>
+      <Pressable accessibilityRole="button" accessibilityLabel={t('activity.duration.sheetTitle')} accessibilityState={{ expanded: durationOpen }} onPress={() => setDurationOpen(true)} style={[styles.durationPill, dirStyles(isRTL).row, { alignSelf: isRTL ? 'flex-start' : 'flex-end', backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <CalendarBlank size={18} color={theme.colors.textSecondary} />
+        <Text style={[typography.smallMedium, { color: theme.colors.textSecondary }]}>{t(selectedDuration.labelKey)}</Text>
+        <CaretDown size={16} color={theme.colors.textMuted} />
+      </Pressable>
 
-      <View style={[styles.stats, dirStyles(isRTL).row]}>
-        <Stat Icon={UsersThree} value={receivedCount} label={t('activity.stats.received')} tone="primary" />
-        <Stat Icon={Handshake} value={givenCount} label={t('activity.stats.given')} tone="community" />
-        <Stat Icon={Star} value={totalPoints} label={t('activity.stats.points')} tone="reward" />
-      </View>
+      {!statsReady ? statsError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void completedQuery.refetch(); void receivedQuery.refetch(); void pointsQuery.refetch() }} /> : <Skeleton height={210} /> : <>
+        <View style={[styles.levelCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+          <View style={[styles.levelTop, dirStyles(isRTL).row]}>
+            <HelperMedal level={level} size={44} />
+            <View style={styles.levelTextCol}>
+              <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
+              <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{nextThreshold !== null && nextLevel ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - givenCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevel]) }) : t('points.topTier')}</Text>
+            </View>
+            <View style={styles.helpCount}>
+              <Text style={[typography.h1, styles.helpValue, { color: theme.colors.textPrimary }]}>{givenCount}</Text>
+              <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('activity.helpUnit')}</Text>
+            </View>
+          </View>
+          <View accessibilityRole="progressbar" accessibilityLabel={t('activity.levelCard.title')} accessibilityValue={{ min: 0, max: nextThreshold ?? TOP_THRESHOLD, now: Math.min(givenCount, nextThreshold ?? TOP_THRESHOLD) }} style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceStrong }]}>
+            <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.primary, [isRTL ? 'right' : 'left']: 0 }]} />
+          </View>
+          <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: givenCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
+        </View>
+        <View style={[styles.stats, dirStyles(isRTL).row]}>
+          <Stat Icon={UsersThree} value={receivedQuery.data ?? 0} label={t('activity.stats.received')} tone="primary" />
+          <Stat Icon={Handshake} value={givenCount} label={t('activity.givenShort')} tone="community" />
+          <Stat Icon={Star} value={pointsQuery.data?.balance ?? 0} label={t('activity.stats.points')} tone="reward" />
+        </View>
+      </>}
 
       <Tabs
+        appearance="pill"
+        label={t('activity.title')}
         value={filter}
         options={[
           { value: 'all', label: t('activity.all') },
@@ -124,7 +150,8 @@ export function ActivityScreen() {
       />
 
       {query.isLoading ? <><Skeleton height={96} /><Skeleton height={96} /></> : null}
-      {!query.isLoading && !entries.length ? <EmptyState title={t('activity.empty')} message={t('activity.emptyMessage')} /> : null}
+      {query.isError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void query.refetch() }} /> : null}
+      {query.isSuccess && !entries.length ? <EmptyState title={t('activity.empty')} message={t('activity.emptyMessage')} /> : null}
 
       <View style={styles.list}>
         {entries.map(entry => (
@@ -136,7 +163,7 @@ export function ActivityScreen() {
         {DURATION_OPTIONS.map(option => {
           const active = option.value === duration
           return (
-            <Pressable key={option.value} onPress={() => { setDuration(option.value); setDurationOpen(false) }} style={[styles.durationOption, { borderColor: theme.colors.border }]}>
+            <Pressable key={option.value} accessibilityRole="radio" accessibilityState={{ checked: active }} onPress={() => { setDuration(option.value); setDurationOpen(false) }} style={[styles.durationOption, { borderColor: theme.colors.border }]}>
               <Text style={[typography.bodyMedium, { color: active ? theme.colors.primary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(option.labelKey)}</Text>
             </Pressable>
           )
@@ -149,12 +176,12 @@ export function ActivityScreen() {
 function Stat({ Icon, value, label, tone }: { Icon: typeof Star; value: number; label: string; tone: 'primary' | 'community' | 'reward' }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
+  const isRTL = useIsRTL()
   const fills = { primary: theme.colors.primarySoft, community: theme.colors.communitySoft, reward: theme.colors.rewardSoft }
   const inks = { primary: theme.colors.primary, community: theme.colors.community, reward: theme.colors.rewardPressed }
   return (
     <View style={[styles.stat, { backgroundColor: fills[tone] }]}>
-      <Icon size={18} color={inks[tone]} weight="fill" />
-      <Text style={[typography.numeric, styles.statValue, { color: inks[tone] }]}>{value}</Text>
+      <View style={[styles.statTop, dirStyles(isRTL).row]}><Text style={[typography.numeric, styles.statValue, { color: inks[tone] }]}>{value}</Text><Icon size={28} color={inks[tone]} weight="fill" /></View>
       <Text numberOfLines={2} style={[typography.caption, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{label}</Text>
     </View>
   )
@@ -171,7 +198,7 @@ function ActivityCard({ entry, onPress }: { entry: ActivityEntry; onPress?: () =
   const color = tone === 'primary' ? theme.colors.primary : tone === 'community' ? theme.colors.community : theme.colors.rewardPressed
   const softColor = tone === 'primary' ? theme.colors.primarySoft : tone === 'community' ? theme.colors.communitySoft : theme.colors.rewardSoft
   const Icon = entry.type === 'received' ? ClipboardText : entry.type === 'given' ? Handshake : Trophy
-  const ServiceIcon = entry.serviceType ? SERVICE_ICONS[entry.serviceType] : null
+  const ServiceIcon = entry.type === 'received' && entry.serviceType ? SERVICE_ICONS[entry.serviceType] : null
 
   const subtitle = entry.type === 'points'
     ? (entry.pointsReason ? t(`activity.pointsReason.${entry.pointsReason}`) : '')
@@ -184,70 +211,50 @@ function ActivityCard({ entry, onPress }: { entry: ActivityEntry; onPress?: () =
   const timeLabel = occurred.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })
 
   return (
-    <Pressable disabled={!onPress} onPress={onPress} style={[styles.card, dirStyles(isRTL).row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-      {onPress ? <Chevron size={16} color={theme.colors.textMuted} /> : <View style={styles.chevronPlaceholder} />}
+    <Pressable accessibilityRole={onPress ? 'button' : undefined} disabled={!onPress} onPress={onPress} style={({ pressed }) => [styles.card, dirStyles(isRTL).row, { backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface, borderColor: theme.colors.border }]}>
       <View style={[styles.cardIconWrap, { backgroundColor: softColor }]}>
-        {ServiceIcon ? <ServiceIcon size={20} color={color} weight="duotone" /> : <Icon size={20} color={color} weight="duotone" />}
+        {ServiceIcon ? <ServiceIcon size={26} color={color} weight="duotone" /> : <Icon size={26} color={color} weight="duotone" />}
       </View>
       <View style={styles.cardBody}>
-        <View style={[styles.cardTopRow, dirStyles(isRTL).row]}>
-          <Text numberOfLines={1} style={[typography.bodyMedium, styles.cardTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`activity.typeLabel.${entry.type}`)}</Text>
-          {entry.points ? (
-            <View style={[styles.pointsBadge, dirStyles(isRTL).row, { backgroundColor: theme.colors.rewardSoft }]}>
-              <Star size={11} color={theme.colors.rewardPressed} weight="fill" />
-              <Text style={[typography.smallMedium, { color: theme.colors.rewardPressed }]}>{t('activity.pointsEarned', { points: entry.points })}</Text>
-            </View>
-          ) : (
-            <StatusBadge label={t(`activity.status.${entry.status}`, { defaultValue: entry.status.replaceAll('_', ' ') })} tone={entry.status === 'completed' ? 'success' : 'info'} />
-          )}
-        </View>
-        {subtitle ? <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{subtitle}</Text> : null}
+        <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`activity.typeLabel.${entry.type}`)}</Text>
+        {subtitle ? <Text numberOfLines={2} style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{subtitle}</Text> : null}
         <View style={[styles.cardMetaRow, dirStyles(isRTL).row]}>
-          <View style={[styles.metaItem, dirStyles(isRTL).row]}>
-            <CalendarBlank size={12} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{dateLabel}</Text>
-          </View>
-          <View style={[styles.metaItem, dirStyles(isRTL).row]}>
-            <Clock size={12} color={theme.colors.textMuted} />
-            <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{timeLabel}</Text>
-          </View>
-          {entry.locationLabel ? (
-            <View style={[styles.metaItem, dirStyles(isRTL).row]}>
-              <MapPin size={12} color={theme.colors.textMuted} />
-              <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textMuted }]}>{entry.locationLabel}</Text>
-            </View>
-          ) : null}
+          <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{dateLabel}</Text>
+          <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{timeLabel}</Text>
+          {entry.locationLabel ? <Text numberOfLines={1} style={[typography.caption, { color: theme.colors.textMuted, flexShrink: 1 }]}>{entry.locationLabel}</Text> : null}
         </View>
       </View>
+      <View style={styles.statusColumn}>
+        {entry.type === 'points' ? <StatusBadge label={t('activity.pointsEarned', { points: entry.points ?? 0 })} tone="reward" /> : <StatusBadge label={t(`activity.status.${entry.status}`, { defaultValue: entry.status.replaceAll('_', ' ') })} tone={entry.status === 'completed' ? 'success' : entry.status === 'cancelled' || entry.status === 'expired' ? 'neutral' : 'info'} />}
+      </View>
+      {onPress ? <Chevron size={18} color={theme.colors.textMuted} /> : null}
     </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
-  content: { paddingTop: 0, gap: space.lg },
-
-  durationPill: { alignItems: 'center', gap: 6, borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, paddingVertical: 8, paddingHorizontal: space.md },
-
-  levelCard: { borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: space.lg, gap: space.sm },
+  content: { paddingTop: space.lg, paddingHorizontal: space.lg, gap: space.md },
+  header: { alignItems: 'center', gap: space.md },
+  headerCopy: { flex: 1, gap: 4 },
+  title: { fontSize: 30, lineHeight: 44 },
+  historyIcon: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  durationPill: { minHeight: 44, alignItems: 'center', gap: space.sm, borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, paddingVertical: 8, paddingHorizontal: space.md },
+  levelCard: { borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: space.md, gap: space.sm },
   levelTop: { alignItems: 'center', gap: space.sm },
-  levelIconWrap: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
-  levelTextCol: { flex: 1, gap: 2 },
-  progressTrack: { height: 8, borderRadius: 4, overflow: 'hidden' },
-  progressFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 4 },
-
+  levelTextCol: { flex: 1, gap: 4 },
+  helpCount: { alignItems: 'center', minWidth: 52 },
+  helpValue: { fontSize: 32, lineHeight: 40 },
+  progressTrack: { height: 10, borderRadius: 5, overflow: 'hidden', marginTop: space.sm },
+  progressFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 5 },
   stats: { gap: space.sm },
-  stat: { flex: 1, minHeight: 100, borderRadius: radius.lg, padding: space.md, justifyContent: 'center', alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 24 },
-
+  stat: { flex: 1, minHeight: 94, borderRadius: radius.lg, padding: space.sm, justifyContent: 'center', alignItems: 'center', gap: 6 },
+  statTop: { alignItems: 'center', justifyContent: 'center', gap: space.sm, flexWrap: 'wrap' },
+  statValue: { fontSize: 25 },
   list: { gap: space.md },
-  card: { alignItems: 'center', gap: space.sm, borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: space.md },
-  chevronPlaceholder: { width: 16 },
-  cardIconWrap: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  card: { minHeight: 102, alignItems: 'center', gap: space.sm, borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: space.md },
+  cardIconWrap: { width: 44, height: 50, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   cardBody: { flex: 1, gap: 4 },
-  cardTopRow: { alignItems: 'center', gap: space.sm },
-  cardTitle: { flex: 1 },
-  pointsBadge: { alignItems: 'center', gap: 4, borderRadius: radius.pill, paddingVertical: 4, paddingHorizontal: space.sm },
-  cardMetaRow: { alignItems: 'center', gap: space.md, flexWrap: 'wrap', marginTop: 2 },
-  metaItem: { alignItems: 'center', gap: 4 },
-  durationOption: { paddingVertical: space.md, borderBottomWidth: StyleSheet.hairlineWidth }
+  statusColumn: { maxWidth: '30%', flexShrink: 1 },
+  cardMetaRow: { alignItems: 'center', gap: space.sm, flexWrap: 'wrap', marginTop: 2 },
+  durationOption: { minHeight: 44, paddingVertical: space.md, borderBottomWidth: StyleSheet.hairlineWidth }
 })
