@@ -99,6 +99,12 @@
   },
   "decisions": [
     {
+      "name": "Illustrated roadside selection",
+      "status": "approved",
+      "reason": "Use the original flat blue sedan illustrations in white selectable cards with a blue radio state. Render service text in Arabic, Hebrew and English independently of the artwork. Selection waits for Next.",
+      "source": "src/features/requester/RequestFlowScreens.tsx"
+    },
+    {
       "name": "Activity matches Perks",
       "status": "approved",
       "reason": "User selected the activity mockup with a blue history heading, earned medal, lifetime summary, blue pill filters and white status rows. Reuse the Perks medal and authoritative lifetime count.",

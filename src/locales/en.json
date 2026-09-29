@@ -171,8 +171,8 @@
     "other": "Something Else",
     "step": {
       "type": {
-        "title": "How can we help you?",
-        "subtitle": "Choose the problem you're facing.",
+        "title": "What’s the problem?",
+        "subtitle": "Choose the kind of help you need",
         "short": "Problem"
       },
       "details": {
@@ -216,6 +216,24 @@
     "pilotZone": {
       "title": "Outside the Pilot Area",
       "message": "AKHOO is currently available within the Jerusalem pilot area."
+    },
+    "serviceCards": {
+      "battery": {
+        "title": "Jump-start",
+        "description": "Help starting your car when the battery is low"
+      },
+      "fuel": {
+        "title": "Fuel",
+        "description": "Help when you run out of fuel on the road"
+      },
+      "other": {
+        "title": "Something else",
+        "description": "Any other problem on the road"
+      },
+      "tire": {
+        "title": "Flat tire",
+        "description": "Help changing a tire or dealing with a puncture"
+      }
     }
   },
   "activeRequest": {

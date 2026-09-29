@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, ArrowRight, BatteryWarning, CheckCircle, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CheckCircle, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -23,48 +23,25 @@ import type { ServiceType } from '../../types'
 
 type Locale = 'ar' | 'he' | 'en'
 
-// Every service now has its own title/description baked into the image per
-// language (a wide illustrated banner, not just an icon), so each needs its
-// own per-locale require map. Metro needs static string literals to resolve
-// requires, same reason WelcomeScreen/LaunchScreen require each language's
-// video separately.
-const SERVICES: { key: ServiceType; byLocale: Record<Locale, number> }[] = [
-  {
-    key: 'battery',
-    byLocale: {
-      ar: require('../../../assets/images/service-battery-ar.png'),
-      he: require('../../../assets/images/service-battery-he.png'),
-      en: require('../../../assets/images/service-battery-en.png')
-    }
-  },
-  {
-    key: 'fuel',
-    byLocale: {
-      ar: require('../../../assets/images/service-fuel-ar.png'),
-      he: require('../../../assets/images/service-fuel-he.png'),
-      en: require('../../../assets/images/service-fuel-en.png')
-    }
-  },
-  {
-    key: 'other',
-    byLocale: {
-      ar: require('../../../assets/images/service-other-ar.png'),
-      he: require('../../../assets/images/service-other-he.png'),
-      en: require('../../../assets/images/service-other-en.png')
-    }
-  },
-  {
-    key: 'tire',
-    byLocale: {
-      ar: require('../../../assets/images/service-tire-ar.png'),
-      he: require('../../../assets/images/service-tire-he.png'),
-      en: require('../../../assets/images/service-tire-en.png')
-    }
-  }
-]
+// Show only the illustration region of the original artwork. Text is rendered
+// by the app, so all languages share the same art without embedded Arabic.
+const SERVICES = [
+  { key: 'battery', source: require('../../../assets/images/service-battery-ar.png'), crop: { x: 0, y: 0, width: 540, height: 289, sourceWidth: 900, sourceHeight: 289 } },
+  { key: 'fuel', source: require('../../../assets/images/service-fuel-ar.png'), crop: { x: 24, y: 65, width: 530, height: 265, sourceWidth: 900, sourceHeight: 390 } },
+  { key: 'other', source: require('../../../assets/images/service-other-ar.png'), crop: { x: 24, y: 65, width: 530, height: 265, sourceWidth: 900, sourceHeight: 390 } },
+  { key: 'tire', source: require('../../../assets/images/service-tire-ar.png'), crop: { x: 0, y: 0, width: 580, height: 309, sourceWidth: 900, sourceHeight: 309 } }
+] as const
+
+function ServiceIllustration({ item }: { item: typeof SERVICES[number] }) {
+  const [width, setWidth] = useState(0)
+  const scale = width / item.crop.width
+  return <View accessible={false} onLayout={event => setWidth(event.nativeEvent.layout.width)} style={{ width: '100%', height: width * item.crop.height / item.crop.width, overflow: 'hidden', direction: 'ltr' }}>
+    {width > 0 ? <Image accessible={false} source={item.source} resizeMode="stretch" style={{ position: 'absolute', left: -item.crop.x * scale, top: -item.crop.y * scale, width: item.crop.sourceWidth * scale, height: item.crop.sourceHeight * scale }} /> : null}
+  </View>
+}
 
 // Small icon + label shown in the details step's "selected problem" summary
-// card - distinct from the big per-locale banners used for selection itself.
+// card, separate from the illustrated selection cards.
 const SERVICE_SUMMARY: Partial<Record<ServiceType, { labelKey: string; Icon: typeof Tire }>> = {
   battery: { labelKey: 'request.battery', Icon: BatteryWarning },
   fuel: { labelKey: 'request.fuel', Icon: GasPump },
@@ -233,7 +210,6 @@ export function RequestFlowScreen() {
 
   function selectService(key: ServiceType) {
     setService(key)
-    setTimeout(() => goToStep('details'), 180)
   }
 
   function next() {
@@ -281,15 +257,16 @@ export function RequestFlowScreen() {
     }
   }
 
-  function renderServiceBanner(item: { key: ServiceType; byLocale: Record<Locale, number> }) {
+  function renderServiceBanner(item: typeof SERVICES[number]) {
     const selected = service === item.key
     return (
-      <Pressable
-        key={item.key}
-        onPress={() => selectService(item.key)}
-        style={[styles.serviceBanner, { borderColor: selected ? theme.colors.primary : theme.colors.border, borderWidth: selected ? 2 : 1 }]}
-      >
-        <Image source={item.byLocale[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+      <Pressable key={item.key} accessibilityRole="radio" accessibilityState={{ checked: selected }} accessibilityLabel={t(`request.serviceCards.${item.key}.title`)} accessibilityHint={t(`request.serviceCards.${item.key}.description`)} onPress={() => selectService(item.key)} style={({ pressed }) => [styles.serviceBanner, dirStyles(isRTL).row, { backgroundColor: selected || pressed ? theme.colors.primarySoft : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border }]}>
+        <View style={[styles.serviceRadio, { borderColor: selected ? theme.colors.primary : theme.colors.borderStrong, backgroundColor: selected ? theme.colors.primary : theme.colors.surface }]}>{selected ? <CheckCircle size={24} color={theme.colors.onPrimary} weight="bold" /> : null}</View>
+        <View style={styles.serviceCopy}>
+          <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`request.serviceCards.${item.key}.title`)}</Text>
+          <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`request.serviceCards.${item.key}.description`)}</Text>
+        </View>
+        <View style={styles.serviceArt}><ServiceIllustration item={item} /></View>
       </Pressable>
     )
   }
@@ -361,13 +338,20 @@ export function RequestFlowScreen() {
       footer={step === 'location'
         ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!activeCoords || outsideZone} />
         : step === 'details'
-          ? <Button label={t('common.next')} trailing={<ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />
-          : <Button label={t('common.next')} onPress={next} />}
+          ? <Button label={t('common.next')} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />
+          : <Button label={t('common.next')} disabled={!service} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />}
+      contentStyle={step === 'type' ? styles.typeContent : undefined}
     >
       {step === 'type' ? (
         <>
-          <Text style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
-          <View style={styles.list}>
+          <View style={[styles.typeHeader, dirStyles(isRTL).row]}>
+            <View style={styles.typeCopy}>
+              <Text accessibilityRole="header" style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.title')}</Text>
+              <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
+            </View>
+            <View style={styles.headerArt}><ServiceIllustration item={SERVICES[0]} /></View>
+          </View>
+          <View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
             {SERVICES.map(item => renderServiceBanner(item))}
           </View>
         </>
@@ -488,9 +472,16 @@ export function RequestFlowScreen() {
 }
 
 const styles = StyleSheet.create({
-  typeHeading: { marginBottom: space.xs },
-  list: { gap: space.sm },
-  serviceBanner: { borderRadius: radius.lg, overflow: 'hidden' },
+  typeContent: { paddingHorizontal: space.lg, gap: space.lg },
+  typeHeader: { alignItems: 'center', gap: space.sm },
+  typeCopy: { flex: 1, gap: space.sm },
+  typeHeading: { fontSize: 25, lineHeight: 36 },
+  headerArt: { width: '27%', overflow: 'hidden', borderRadius: radius.md },
+  list: { gap: space.md },
+  serviceBanner: { minHeight: 120, borderRadius: radius.lg, borderWidth: 1.5, alignItems: 'center', gap: space.sm, padding: space.sm, overflow: 'hidden' },
+  serviceRadio: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  serviceCopy: { flex: 1, gap: space.sm },
+  serviceArt: { width: '43%', overflow: 'hidden', borderRadius: radius.md },
   serviceBannerImage: { width: '100%', height: 120 },
   detailsGroup: { gap: space.lg },
   detailsBadgeWrap: { alignItems: 'center' },
