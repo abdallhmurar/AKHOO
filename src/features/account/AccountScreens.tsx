@@ -21,11 +21,11 @@ import { Button, IconButton, TextField, useToast } from '../../components/ui'
 import { syncPushRegistration } from '../../services/pushRegistration'
 import { profileRepository } from '../../repositories/profileRepository'
 import { PasswordStrength } from '../../components/PasswordStrength'
-import { LanguagePicker } from '../../components/LanguagePicker'
 import { ChoiceModal } from '../../components/ChoiceModal'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { getNavigationApp, setNavigationApp } from '../../lib/navigationPreference'
 import type { NavigationApp } from '../../lib/contactLinks'
+import { setAppLanguage, type AppLanguage } from '../../lib/i18n'
 import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
@@ -39,19 +39,21 @@ const HELP_WHATSAPP_HREF = 'https://wa.me/972509956046'
 // business logic (profile update, password change, real points card, logout
 // that stops background location) onto ccodex's Civic Signal components.
 // Restructured into a menu-list home (AccountHomeScreen) with the
-// personal-info/password form moved to its own AccountProfileScreen, and
-// the language switcher to AccountLanguageScreen - Billing/Privacy/Help
+// personal-info/password form moved to its own AccountProfileScreen; the
+// language and navigation-app choices are each a quick ChoiceModal opened
+// right from their row, not a pushed screen - Billing/Privacy/Help
 // have no real screens behind them yet, so they're inert placeholders.
 export function AccountHomeScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const { profile, session, refreshProfile, signOut } = useAuth()
   const { isDark, setDark } = useThemeMode()
   const { hasUnread: hasSupportReply } = useSupportConversation()
   const MenuArrow = isRTL ? CaretLeft : CaretRight
+  const [languageModalOpen, setLanguageModalOpen] = useState(false)
 
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [notificationsEnabled, setNotificationsEnabledState] = useState(true)
@@ -145,7 +147,7 @@ export function AccountHomeScreen() {
           onPress={() => toggleNotifications(!notificationsEnabled)}
           trailing={<Switch disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         /> : null}
-        <ListRow Icon={Globe} title={t('account.language')} onPress={() => router.push('/(tabs)/account/language')} />
+        <ListRow Icon={Globe} title={t('account.language')} onPress={() => setLanguageModalOpen(true)} />
         <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => setNavigationModalOpen(true)} />
         <ListRow
           Icon={Moon}
@@ -183,6 +185,19 @@ export function AccountHomeScreen() {
         options={[
           { value: 'waze', label: t('account.navigationApp.waze'), icon: <NavigationAppIcon app="waze" size={22} /> },
           { value: 'google', label: t('account.navigationApp.google'), icon: <NavigationAppIcon app="google" size={22} /> }
+        ]}
+      />
+
+      <ChoiceModal
+        visible={languageModalOpen}
+        onClose={() => setLanguageModalOpen(false)}
+        title={t('account.language')}
+        value={i18n.language as AppLanguage}
+        onSelect={(language: AppLanguage) => { void setAppLanguage(language) }}
+        options={[
+          { value: 'ar', label: 'العربية', icon: <Globe size={20} color={theme.colors.textMuted} /> },
+          { value: 'he', label: 'עברית', icon: <Globe size={20} color={theme.colors.textMuted} /> },
+          { value: 'en', label: 'English', icon: <Globe size={20} color={theme.colors.textMuted} /> }
         ]}
       />
     </AppScreen>
@@ -342,19 +357,6 @@ export function AccountDeleteConfirmScreen() {
         {oauthProvider ? <><Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('account.delete.confirm.reauthenticateHint')}</Text><Button variant="outline" label={t('account.delete.confirm.reauthenticate')} loading={deleting} onPress={reauthenticate} /></> : <TextField label={t('account.delete.confirm.passwordLabel')} value={password} onChangeText={value => { setPassword(value); setError(null) }} secureTextEntry secureToggle />}
         {error ? <Text style={[typography.small, { color: theme.colors.danger }]}>{error}</Text> : null}
         <Button label={t('account.delete.confirm.deleteButton')} variant="danger" disabled={!canDelete} loading={deleting} onPress={handleDelete} />
-      </View>
-    </AppScreen>
-  )
-}
-
-export function AccountLanguageScreen() {
-  const theme = useSanadTheme()
-  const { t } = useTranslation()
-  return (
-    <AppScreen contentStyle={styles.content}>
-      <ScreenHeader title={t('account.language')} back />
-      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <LanguagePicker />
       </View>
     </AppScreen>
   )
