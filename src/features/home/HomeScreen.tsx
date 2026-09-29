@@ -72,7 +72,7 @@ export function HomeScreen() {
           locale={helpCardLocale}
           title={t('home.discoverPerks.title')}
           description={t('home.discoverPerks.text')}
-          onPress={() => router.push('/community')}
+          onPress={() => router.push('/(tabs)/community')}
         />
       </View>
 
