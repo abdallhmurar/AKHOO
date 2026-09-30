@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import * as StoreReview from 'expo-store-review'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
 import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, Coins, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, UsersThree, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
@@ -740,6 +741,22 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; balance:
   const { stageStyle } = useStaggeredReveal(4)
   const nextThreshold = stats ? HELPER_TIER_MARKS.find(mark => mark > stats.completedCount) ?? null : null
   const progressFraction = stats ? Math.min(stats.completedCount, HELPER_TOP_THRESHOLD) / HELPER_TOP_THRESHOLD : 0
+
+  // Native App Store/Play Store rating prompt, right after a good deed - the
+  // standard moment to ask. Fire-and-forget like Apple's own guidelines
+  // expect: the OS can silently skip showing it (rate limits, or - on iOS -
+  // a TestFlight build, where it never appears at all), and there is no
+  // reliable way to know whether it actually showed, so this never reports
+  // success/failure back to the user, matching submitRating()'s own
+  // best-effort convention just above.
+  async function rateApp() {
+    try {
+      if (await StoreReview.hasAction()) await StoreReview.requestReview()
+    } catch {
+      // best-effort
+    }
+  }
+
   return (
     <SafeAreaView style={[styles.fill, styles.completionContent, { backgroundColor: theme.colors.background }]}>
       <ConfettiBurst />
@@ -780,7 +797,7 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; balance:
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}</Text>
               </View>
             ) : null}
-            <Button label={t('volunteerJob.completion.rateExperience')} leading={<Star size={18} color={theme.colors.onPrimary} weight="fill" />} onPress={() => {}} />
+            <Button label={t('volunteerJob.completion.rateExperience')} leading={<Star size={18} color={theme.colors.onPrimary} weight="fill" />} onPress={rateApp} />
             <Button label={t('volunteerJob.completion.backHome')} variant="outline" onPress={onDone} />
           </Animated.View>
         </>
