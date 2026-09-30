@@ -425,6 +425,16 @@
     "backgroundNotification": {
       "title": "AKHOO - You're available as a volunteer",
       "body": "Your location updates so you can see nearby help requests, even while the app is in the background."
+    },
+    "emptyState": {
+      "title": "No nearby requests right now",
+      "message": "Stay available. New requests will appear here automatically."
+    },
+    "shortUnavailableNotice": "Requesting help pauses your availability until your request ends.",
+    "mapControls": {
+      "locate": "Center map on my location",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
     }
   },
   "activity": {

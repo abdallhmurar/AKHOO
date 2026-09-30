@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Info, Lock, MapPin, Tire, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Info, Lock, MapPin, Minus, Plus, Tire, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { directionsHref } from '../../lib/contactLinks'
 import { getCurrentCoords, startBackgroundLocationUpdates, stopBackgroundLocationUpdates } from '../../lib/location'
@@ -52,6 +52,7 @@ export function HelperHomeScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
+  const { height: windowHeight } = useWindowDimensions()
   const BackIcon = isRTL ? ArrowRight : ArrowLeft
   const { t } = useTranslation()
   const router = useRouter()
@@ -68,6 +69,8 @@ export function HelperHomeScreen() {
   const [enabling, setEnabling] = useState(false)
   const [enableError, setEnableError] = useState(false)
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null)
+  const [requestsLoaded, setRequestsLoaded] = useState(false)
+  const [requestsError, setRequestsError] = useState(false)
   const [requests, setRequests] = useState<NearbyRequest[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [listOpen, setListOpen] = useState(false)
@@ -82,7 +85,11 @@ export function HelperHomeScreen() {
     if (!at) return
     try {
       setRequests(await requestRepository.listNearby(userId, at))
+      setRequestsError(false)
+      setRequestsLoaded(true)
     } catch (cause: any) {
+      setRequestsError(true)
+      setRequestsLoaded(true)
       toast.show(translateActionError(t, cause), 'error')
     }
   }, [coords, userId, t, toast])
@@ -249,6 +256,7 @@ export function HelperHomeScreen() {
 
   return (
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.colors.background }]}>
+      <ScrollView contentContainerStyle={styles.pageContent} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         {/* The brand group (back button + logo) stays physically on the left
             and the status pill on the right regardless of language - a fixed
@@ -258,22 +266,27 @@ export function HelperHomeScreen() {
             mirrors on its own. */}
         <View style={[styles.headerTopRow, { flexDirection: isRTL && Platform.OS === 'web' ? 'row-reverse' : 'row' }]}>
           <View style={[styles.brandGroup, { flexDirection: isRTL && Platform.OS === 'web' ? 'row-reverse' : 'row' }]}>
-            <IconButton label={t('common.back')} size={38} icon={<BackIcon size={18} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
+            <IconButton label={t('common.back')} size={44} icon={<BackIcon size={21} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
             <Image source={require('../../../assets/images/icon.png')} style={styles.logo} resizeMode="contain" />
           </View>
           <StatusBadge tone="success" dot label={t('volunteer.availableNow')} />
         </View>
-        <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.title')}</Text>
+        <Text accessibilityRole="header" style={[typography.h1, styles.pageTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.title')}</Text>
         <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.subtitle')}</Text>
       </View>
 
-      <View style={[styles.mapCard, { borderColor: theme.colors.border }]}>
+      <View style={[styles.mapCard, { height: Math.max(300, Math.min(620, windowHeight * 0.52)), borderColor: theme.colors.border }]}>
         {coords ? (
           <>
             <SanadMap ref={mapRef} latitude={coords.latitude} longitude={coords.longitude} zoom={13} interactive markers={requestMarkers} selectedId={selectedId} onMarkerPress={setSelectedId} style={styles.mapFill} />
+            <View style={[styles.zoomControls, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, [isRTL ? 'left' : 'right']: space.md }]}>
+              <IconButton size={44} label={t('volunteer.mapControls.zoomIn')} icon={<Plus size={22} color={theme.colors.textPrimary} />} onPress={() => mapRef.current?.zoomBy(1)} />
+              <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: theme.colors.border }} />
+              <IconButton size={44} label={t('volunteer.mapControls.zoomOut')} icon={<Minus size={22} color={theme.colors.textPrimary} />} onPress={() => mapRef.current?.zoomBy(-1)} />
+            </View>
             <IconButton
-              label={t('volunteer.title')}
-              size={40}
+              label={t('volunteer.mapControls.locate')}
+              size={48}
               style={{ ...styles.locateButton, [isRTL ? 'left' : 'right']: space.md }}
               icon={<GpsFix size={18} color={theme.colors.primary} />}
               onPress={() => mapRef.current?.recenter(coords.latitude, coords.longitude, 13)}
@@ -282,24 +295,31 @@ export function HelperHomeScreen() {
         ) : null}
       </View>
 
-      <Surface elevation="floating" style={styles.bottomPanel}>
+      <Surface elevation="none" style={styles.bottomPanel}>
         <View style={[styles.bottomHeaderRow, dirStyles(isRTL).row]}>
-          <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{t('volunteer.closest.title')}</Text>
-          <Pressable onPress={() => setListOpen(true)} style={[styles.viewAllButton, dirStyles(isRTL).row]}>
+          <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.closest.title')}</Text>
+          <Pressable accessibilityRole="button" onPress={() => setListOpen(true)} style={[styles.viewAllButton, dirStyles(isRTL).row]}>
             <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('volunteer.closest.viewAll')}</Text>
             <CaretIcon size={14} color={theme.colors.primary} />
           </Pressable>
         </View>
 
-        {closest ? (
+        {requestsError ? <Button label={t('perks.retry')} variant="outline" onPress={() => void loadRequests()} /> : !requestsLoaded ? <ActivityIndicator accessibilityLabel={t('common.loading')} color={theme.colors.primary} /> : closest ? (
           <ClosestRequestCard request={closest} now={now} onView={() => setSelectedId(closest.id)} />
         ) : (
-          <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: 'center', paddingVertical: space.md }]}>{t('volunteer.emptyBanner')}</Text>
+          <View style={styles.emptyState}>
+            <View accessible={false} style={[styles.emptyIllustration, { backgroundColor: theme.colors.primarySoft }]}>
+              <View style={[styles.emptyRipple, { borderColor: theme.colors.primary }]} />
+              <MapPin size={48} color={theme.colors.primary} weight="fill" />
+            </View>
+            <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('volunteer.emptyState.title')}</Text>
+            <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('volunteer.emptyState.message')}</Text>
+          </View>
         )}
 
         <View style={[styles.noticeRow, dirStyles(isRTL).row, { backgroundColor: theme.colors.infoSoft }]}>
           <Info size={14} color={theme.colors.info} />
-          <Text style={[typography.caption, { color: theme.colors.info, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.autoUnavailableNotice')}</Text>
+          <Text style={[typography.caption, { color: theme.colors.info, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.shortUnavailableNotice')}</Text>
         </View>
 
         <View style={[styles.footerRow, dirStyles(isRTL).row]}>
@@ -307,8 +327,10 @@ export function HelperHomeScreen() {
           <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('volunteer.autoUpdateNotice')}</Text>
         </View>
       </Surface>
+      </ScrollView>
 
       <BottomSheet visible={listOpen} onClose={() => setListOpen(false)} title={t('volunteer.allNearby.title')}>
+        {requests.length === 0 ? <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t(requestsError ? 'perks.retry' : 'volunteer.emptyState.title')}</Text> : null}
         {requests.map(request => (
           <NearbyRequestListRow key={request.id} request={request} onPress={() => { setListOpen(false); setSelectedId(request.id) }} />
         ))}
@@ -420,18 +442,24 @@ const styles = StyleSheet.create({
   content: { gap: space.xl },
   enablingWrap: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
 
-  header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm, gap: 2 },
+  pageContent: { width: '100%', maxWidth: 620, alignSelf: 'center', paddingBottom: space.lg },
+  pageTitle: { fontSize: 30, lineHeight: 44 },
+  header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.lg, gap: 6 },
   headerTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.sm },
   brandGroup: { alignItems: 'center', gap: space.sm },
-  logo: { width: 32, height: 32 },
+  logo: { width: 40, height: 40 },
 
-  mapCard: { flex: 1, marginHorizontal: space.lg, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden', position: 'relative' },
+  mapCard: { marginHorizontal: space.lg, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden', position: 'relative' },
   mapFill: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
+  zoomControls: { position: 'absolute', top: space.md, borderRadius: radius.md, borderWidth: 1, overflow: 'hidden' },
   locateButton: { position: 'absolute', bottom: space.md },
 
   bottomPanel: { margin: space.lg, marginTop: space.md, gap: space.md, borderRadius: radius.lg },
-  bottomHeaderRow: { alignItems: 'center', justifyContent: 'space-between' },
-  viewAllButton: { alignItems: 'center', gap: 2 },
+  bottomHeaderRow: { alignItems: 'center', justifyContent: 'space-between', gap: space.md },
+  viewAllButton: { alignItems: 'center', gap: 2, minHeight: 44 },
+  emptyState: { alignItems: 'center', gap: space.sm, paddingVertical: space.md },
+  emptyIllustration: { width: 88, height: 70, borderRadius: 44, alignItems: 'center', justifyContent: 'center' },
+  emptyRipple: { position: 'absolute', bottom: 6, width: 52, height: 18, borderRadius: 26, borderWidth: 2, opacity: 0.25 },
 
   closestCard: { gap: space.md },
   closestTopRow: { alignItems: 'center', justifyContent: 'space-between' },

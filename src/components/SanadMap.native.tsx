@@ -1,7 +1,7 @@
 import { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { ActivityIndicator, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import { Camera, Map, Marker } from '@maplibre/maplibre-react-native'
-import type { CameraRef } from '@maplibre/maplibre-react-native'
+import type { CameraRef, MapRef } from '@maplibre/maplibre-react-native'
 import { useTranslation } from 'react-i18next'
 import { colors, palette, radius } from '../lib/theme'
 import { MAP_DEFAULT_ZOOM, MAP_FALLBACK_CENTER, MAP_FIT_BOUNDS_MAX_ZOOM, estimateZoomForSpan, MAP_STYLE_URL } from '../lib/mapProvider'
@@ -43,6 +43,7 @@ export function SanadMap({
   const resolved = resolveCoords(latitude, longitude)
   const center: [number, number] = [resolved.longitude, resolved.latitude]
   const cameraRef = useRef<CameraRef>(null)
+  const nativeMapRef = useRef<MapRef>(null)
   const [styleLoaded, setStyleLoaded] = useState(false)
   const mounted = useRef(false)
 
@@ -63,6 +64,11 @@ export function SanadMap({
   }, [resolved.latitude, resolved.longitude])
 
   useImperativeHandle(ref, () => ({
+    zoomBy(delta) {
+      void nativeMapRef.current?.getZoom().then(current => {
+        cameraRef.current?.zoomTo(Math.max(1, Math.min(20, current + delta)), { duration: 250 })
+      }).catch(() => {})
+    },
     recenter(lat, lng, targetZoom) {
       cameraRef.current?.easeTo({ center: [lng, lat], zoom: targetZoom ?? zoom, duration: 600 })
     },
@@ -84,6 +90,7 @@ export function SanadMap({
   return (
     <View style={[styles.wrap, { height }, style]}>
       <Map
+        ref={nativeMapRef}
         mapStyle={MAP_STYLE_URL}
         style={styles.map}
         dragPan={interactive}

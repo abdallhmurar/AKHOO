@@ -99,6 +99,12 @@
   },
   "decisions": [
     {
+      "name": "Helper map and nearby requests",
+      "status": "approved",
+      "reason": "Match the approved map mockup with larger heading, responsive real map, zoom controls and an illustrated empty state. Localize Arabic, Hebrew and English and distinguish loading failure from no nearby requests.",
+      "source": "src/features/helper/HelperScreens.tsx"
+    },
+    {
       "name": "Illustrated roadside selection",
       "status": "approved",
       "reason": "Use the original flat blue sedan illustrations in white selectable cards with a blue radio state. Render service text in Arabic, Hebrew and English independently of the artwork. Selection waits for Next.",

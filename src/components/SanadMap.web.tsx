@@ -165,6 +165,10 @@ export function SanadMap({
   }, [markers, selectedId])
 
   useImperativeHandle(ref, () => ({
+    zoomBy(delta) {
+      const map = mapRef.current
+      if (map) map.zoomTo(Math.max(1, Math.min(20, map.getZoom() + delta)), { duration: 250 })
+    },
     recenter(lat, lng, targetZoom) {
       mapRef.current?.easeTo({ center: [lng, lat], zoom: targetZoom ?? mapRef.current.getZoom(), duration: 600 })
     },
