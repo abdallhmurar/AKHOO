@@ -1,3 +1,4 @@
+import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useEffect, useState } from 'react'
 import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
@@ -117,6 +118,7 @@ export function CommunityHubScreen() {
   const offers = offersQuery.data?.offers ?? []
   const partnersById = offersQuery.data?.partnersById ?? {}
   const statsReady = pointsQuery.isSuccess && completedCountQuery.isSuccess
+  useGuidePage('perks', statsReady && offersQuery.isSuccess)
 
   function openOffer(id: string) {
     Haptics.selectionAsync().catch(() => {})
@@ -133,7 +135,7 @@ export function CommunityHubScreen() {
         <Image source={require('../../../assets/images/perks-coupon-icon.png')} style={styles.headerCoupon} resizeMode="cover" accessible={false} />
       </View>
 
-      <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <GuideTarget id="perks.points"><Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         {!statsReady ? (
           pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
         ) : <>
@@ -157,19 +159,19 @@ export function CommunityHubScreen() {
           </View>
           <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: completedCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
         </>}
-      </Animated.View>
+      </Animated.View></GuideTarget>
 
       <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, stageStyle(1)]}>
         <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
         {offersQuery.isSuccess ? <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.availableOffers', { count: offers.length })}</Text> : null}
       </Animated.View>
-      <Animated.View style={[styles.offersList, stageStyle(2)]}>
+      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, stageStyle(2)]}>
         {offersQuery.isLoading ? <><Skeleton width="100%" height={190} /><Skeleton width="100%" height={190} /></> : offersQuery.isError ? (
           <Button label={t('perks.retry')} variant="outline" onPress={() => { void offersQuery.refetch() }} />
         ) : offers.length === 0 ? (
           <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
         ) : offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} onUse={() => openOffer(offer.id)} />)}
-      </Animated.View>
+      </Animated.View></GuideTarget>
     </AppScreen>
   )
 }

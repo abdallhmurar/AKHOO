@@ -1,3 +1,4 @@
+import { GuideTarget } from '../features/guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { LayoutChangeEvent } from 'react-native'
@@ -48,7 +49,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
   })
 
   return (
-    <View style={[styles.wrap, { backgroundColor: theme.colors.background, paddingBottom: Math.max(insets.bottom, space.sm) }]}>
+    <GuideTarget id="navigation"><View style={[styles.wrap, { backgroundColor: theme.colors.background, paddingBottom: Math.max(insets.bottom, space.sm) }]}>
       <View
         style={[styles.pill, dir.row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }, shadow.floating]}
         onLayout={onRowLayout}
@@ -103,7 +104,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
           )
         })}
       </View>
-    </View>
+    </View></GuideTarget>
   )
 }
 

@@ -1,3 +1,4 @@
+import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +28,7 @@ export function HomeScreen() {
   const router = useRouter()
   const { activeMission, isRequester } = useMission()
 
+  useGuidePage('home')
   const activeKind: 'request' | 'job' | null = !activeMission ? null : isRequester ? 'request' : 'job'
 
   function resumeActive() {
@@ -58,22 +60,22 @@ export function HomeScreen() {
       </View>
 
       <View style={styles.stack}>
-        <HelpCardLottie
+        <GuideTarget id="home.request"><HelpCardLottie
           locale={helpCardLocale}
           onPress={() => (activeKind === 'request' ? resumeActive() : router.push('/requester'))}
-        />
-        <WantToHelpCard
+        /></GuideTarget>
+        <GuideTarget id="home.help"><WantToHelpCard
           locale={helpCardLocale}
           title={t('home.wantToHelp.title')}
           description={t('home.wantToHelp.text')}
           onPress={() => (activeKind ? resumeActive() : router.push('/helper'))}
-        />
-        <DiscoverCard
+        /></GuideTarget>
+        <GuideTarget id="home.perks"><DiscoverCard
           locale={helpCardLocale}
           title={t('home.discoverPerks.title')}
           description={t('home.discoverPerks.text')}
           onPress={() => router.push('/(tabs)/community')}
-        />
+        /></GuideTarget>
       </View>
 
       <Surface tone="muted" bordered={false} padding="lg" style={styles.notice}>

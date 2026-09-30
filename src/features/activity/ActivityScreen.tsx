@@ -1,3 +1,4 @@
+import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
@@ -94,6 +95,7 @@ export function ActivityScreen() {
   const statsReady = completedQuery.isSuccess && receivedQuery.isSuccess && pointsQuery.isSuccess
   const statsError = completedQuery.isError || receivedQuery.isError || pointsQuery.isError
 
+  useGuidePage('activity', statsReady && query.isSuccess && !durationOpen)
   const selectedDuration = DURATION_OPTIONS.find(option => option.value === duration)!
 
   return (
@@ -129,14 +131,14 @@ export function ActivityScreen() {
           </View>
           <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: givenCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
         </View>
-        <View style={[styles.stats, dirStyles(isRTL).row]}>
+        <GuideTarget id="activity.stats"><View style={[styles.stats, dirStyles(isRTL).row]}>
           <Stat Icon={UsersThree} value={receivedQuery.data ?? 0} label={t('activity.stats.received')} tone="primary" />
           <Stat Icon={Handshake} value={givenCount} label={t('activity.givenShort')} tone="community" />
           <Stat Icon={Star} value={pointsQuery.data?.balance ?? 0} label={t('activity.stats.points')} tone="reward" />
-        </View>
+        </View></GuideTarget>
       </>}
 
-      <Tabs
+      <GuideTarget id="activity.filters"><Tabs
         appearance="pill"
         label={t('activity.title')}
         value={filter}
@@ -147,17 +149,17 @@ export function ActivityScreen() {
           { value: 'points', label: t('activity.filters.points') }
         ]}
         onChange={setFilter}
-      />
+      /></GuideTarget>
 
       {query.isLoading ? <><Skeleton height={96} /><Skeleton height={96} /></> : null}
       {query.isError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void query.refetch() }} /> : null}
       {query.isSuccess && !entries.length ? <EmptyState title={t('activity.empty')} message={t('activity.emptyMessage')} /> : null}
 
-      <View style={styles.list}>
+      <GuideTarget id="activity.history"><View style={styles.list}>
         {entries.map(entry => (
           <ActivityCard key={entry.id} entry={entry} onPress={entry.missionId ? () => router.push({ pathname: '/mission/[missionId]', params: { missionId: entry.missionId! } }) : undefined} />
         ))}
-      </View>
+      </View></GuideTarget>
 
       <BottomSheet visible={durationOpen} onClose={() => setDurationOpen(false)} title={t('activity.duration.sheetTitle')}>
         {DURATION_OPTIONS.map(option => {

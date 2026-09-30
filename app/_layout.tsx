@@ -1,3 +1,4 @@
+import { GuideProvider } from '../src/features/guide/GuideProvider'
 import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { subscribeToNotificationNavigation } from '../src/lib/notifications'
@@ -43,5 +44,5 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  return <AppProviders><RootNavigator /></AppProviders>
+  return <AppProviders><GuideProvider><RootNavigator /></GuideProvider></AppProviders>
 }

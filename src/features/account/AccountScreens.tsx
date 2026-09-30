@@ -1,3 +1,5 @@
+import { GuideTarget, useGuidePage, useGuide } from '../guide/GuideProvider'
+import { useGuideCopy } from '../guide/guideCopy'
 import { useEffect, useState } from 'react'
 import { Alert, Image, Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
@@ -52,6 +54,9 @@ export function AccountHomeScreen() {
   const { profile, session, refreshProfile, signOut } = useAuth()
   const { isDark, setDark } = useThemeMode()
   const { hasUnread: hasSupportReply } = useSupportConversation()
+  const guide = useGuide()
+  const guideCopy = useGuideCopy()
+  const [guideStarting, setGuideStarting] = useState(false)
   const MenuArrow = isRTL ? CaretLeft : CaretRight
   const [languageModalOpen, setLanguageModalOpen] = useState(false)
 
@@ -60,6 +65,7 @@ export function AccountHomeScreen() {
   const [notificationsSaving, setNotificationsSaving] = useState(false)
   const [navigationApp, setNavigationAppState] = useState<NavigationApp>('waze')
   const [navigationModalOpen, setNavigationModalOpen] = useState(false)
+  useGuidePage('account', !!profile && !languageModalOpen && !navigationModalOpen)
   const toast = useToast()
 
   useEffect(() => {
@@ -140,14 +146,14 @@ export function AccountHomeScreen() {
       </View>
 
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} />
+        <GuideTarget id="account.profile"><ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} /></GuideTarget>
         {Platform.OS !== 'web' ? <ListRow
           Icon={Bell}
           title={t('account.menu.notifications')}
           onPress={() => toggleNotifications(!notificationsEnabled)}
           trailing={<Switch disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         /> : null}
-        <ListRow Icon={Globe} title={t('account.language')} onPress={() => setLanguageModalOpen(true)} />
+        <GuideTarget id="account.settings"><ListRow Icon={Globe} title={t('account.language')} onPress={() => setLanguageModalOpen(true)} /></GuideTarget>
         <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => setNavigationModalOpen(true)} />
         <ListRow
           Icon={Moon}
@@ -155,6 +161,11 @@ export function AccountHomeScreen() {
           onPress={() => setDark(!isDark)}
           trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
+        <GuideTarget id="account.guide"><ListRow Icon={Lifebuoy} title={guideCopy.restart} onPress={async () => {
+          if (guideStarting) return
+          setGuideStarting(true)
+          try { await guide?.restart(); router.replace('/(tabs)') } catch { toast.show(guideCopy.error, 'error') } finally { setGuideStarting(false) }
+        }} /></GuideTarget>
         <PartnerToolsEntry />
         <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />

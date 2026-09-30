@@ -1,5 +1,6 @@
+import { GuideScrollView, GuideTarget } from '../../features/guide/GuideProvider'
 import type { PropsWithChildren, ReactNode } from 'react'
-import { Platform, ScrollView, StyleSheet, View } from 'react-native'
+import { Platform, StyleSheet, View } from 'react-native'
 import type { ScrollViewProps, ViewStyle } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -12,11 +13,12 @@ type AppScreenProps = PropsWithChildren<{
   background?: string
   contentStyle?: ViewStyle
   scrollProps?: ScrollViewProps
+  guideFooterId?: string
   unsafeTop?: boolean
   unsafeBottom?: boolean
 }>
 
-export function AppScreen({ children, scroll = true, header, footer, background, contentStyle, scrollProps, unsafeTop = false, unsafeBottom = false }: AppScreenProps) {
+export function AppScreen({ children, scroll = true, header, footer, background, contentStyle, scrollProps, guideFooterId, unsafeTop = false, unsafeBottom = false }: AppScreenProps) {
   const theme = useSanadTheme()
   const insets = useSafeAreaInsets()
   const top = unsafeTop ? 0 : insets.top
@@ -27,11 +29,11 @@ export function AppScreen({ children, scroll = true, header, footer, background,
       <StatusBar style={theme.isDark ? 'light' : 'dark'} />
       {header}
       {scroll ? (
-        <ScrollView {...scrollProps} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.scroll, { paddingBottom: bottom + (footer ? 104 : space.xxl) }, scrollProps?.contentContainerStyle]} showsVerticalScrollIndicator={false}>
+        <GuideScrollView {...scrollProps} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.scroll, { paddingBottom: bottom + (footer ? 104 : space.xxl) }, scrollProps?.contentContainerStyle]} showsVerticalScrollIndicator={false}>
           <View style={styles.webFrame}>{content}</View>
-        </ScrollView>
+        </GuideScrollView>
       ) : <View style={[styles.flexContent, { paddingBottom: bottom }]}><View style={styles.webFrame}>{content}</View></View>}
-      {footer ? <View style={[styles.footer, { paddingBottom: Math.max(bottom, space.md), backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>{footer}</View> : null}
+      {footer ? <View style={[styles.footer, { paddingBottom: Math.max(bottom, space.md), backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]} >{guideFooterId ? <GuideTarget id={guideFooterId}>{footer}</GuideTarget> : footer}</View> : null}
     </View>
   )
 }

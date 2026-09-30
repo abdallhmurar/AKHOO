@@ -1,3 +1,4 @@
+import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
@@ -106,6 +107,7 @@ export function RequestFlowScreen() {
   const stepIndex = STEPS.indexOf(step)
   const activeCoords = manualLocation ?? coords
   const outsideZone = !!activeCoords && pilotZones.length > 0 && !isWithinAnyZone(activeCoords.latitude, activeCoords.longitude, pilotZones)
+  useGuidePage(step === 'type' ? 'request' : step, !manualLocationOpen && (step !== 'location' || (!locating && !!activeCoords && !outsideZone && !locationError)))
   const selectedSummary = service ? SERVICE_SUMMARY[service] : undefined
 
   useEffect(() => { getActivePilotZones().then(setPilotZones).catch(() => {}) }, [])
@@ -340,6 +342,7 @@ export function RequestFlowScreen() {
         : step === 'details'
           ? <Button label={t('common.next')} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />
           : <Button label={t('common.next')} disabled={!service} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />}
+      guideFooterId="request.next"
       contentStyle={step === 'type' ? styles.typeContent : undefined}
     >
       {step === 'type' ? (
@@ -351,9 +354,9 @@ export function RequestFlowScreen() {
             </View>
             <View style={styles.headerArt}><ServiceIllustration item={SERVICES[0]} /></View>
           </View>
-          <View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
+          <GuideTarget id="request.services"><View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
             {SERVICES.map(item => renderServiceBanner(item))}
-          </View>
+          </View></GuideTarget>
         </>
       ) : null}
 
@@ -385,16 +388,16 @@ export function RequestFlowScreen() {
             </View>
           ) : null}
 
-          <View style={[styles.noteCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+          <GuideTarget id="details.note"><View style={[styles.noteCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
             <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
               <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.noteLabel')}</Text>
               <Pencil size={16} color={theme.colors.textMuted} />
             </View>
             <TextArea value={note} onChangeText={setNote} placeholder={t('request.notePlaceholder')} maxLength={500} />
             <Text style={[typography.caption, styles.charCounter, { color: theme.colors.textMuted, alignSelf: isRTL ? 'flex-start' : 'flex-end' }]}>{note.length}/500</Text>
-          </View>
+          </View></GuideTarget>
 
-          <Pressable onPress={pickPhoto} style={[styles.photoPicker, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
+          <GuideTarget id="details.photo"><Pressable onPress={pickPhoto} style={[styles.photoPicker, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
             {photoUri ? <Image source={{ uri: photoUri }} style={styles.photoPreview} /> : (
               <View style={styles.photoPlaceholder}>
                 <View style={styles.photoIconWrap}>
@@ -407,7 +410,7 @@ export function RequestFlowScreen() {
                 <Text style={[typography.small, styles.photoSubtitle, { color: theme.colors.textMuted }]}>{t('request.step.details.addPhotoSubtitle')}</Text>
               </View>
             )}
-          </Pressable>
+          </Pressable></GuideTarget>
         </View>
       ) : null}
 
@@ -457,10 +460,10 @@ export function RequestFlowScreen() {
                 <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.location.privacyNote')}</Text>
               </View>
 
-              <View style={[styles.locationActionsRow, dirStyles(isRTL).row]}>
+              <GuideTarget id="location.position"><View style={[styles.locationActionsRow, dirStyles(isRTL).row]}>
                 <Button label={t('request.refreshLocation')} variant="outline" leading={<ArrowClockwise size={16} color={theme.colors.primary} />} onPress={fetchLocation} style={styles.locationActionButton} />
                 <Button label={t('request.location.addManualButton')} variant="outline" leading={<MapPin size={16} color={theme.colors.primary} />} onPress={openManualLocationPicker} style={styles.locationActionButton} />
-              </View>
+              </View></GuideTarget>
             </>
           ) : null}
 

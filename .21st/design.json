@@ -99,6 +99,12 @@
   },
   "decisions": [
     {
+      "name": "First-account contextual guide",
+      "status": "approved",
+      "reason": "Spotlight coachmarks start on Home for new accounts only; contextual tours, account-scoped progress and replay from Account in Arabic, Hebrew and English.",
+      "source": "src/features/guide/GuideProvider.tsx"
+    },
+    {
       "name": "Helper map and nearby requests",
       "status": "approved",
       "reason": "Match the approved map mockup with larger heading, responsive real map, zoom controls and an illustrated empty state. Localize Arabic, Hebrew and English and distinguish loading failure from no nearby requests.",

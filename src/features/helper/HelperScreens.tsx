@@ -1,5 +1,6 @@
+import { GuideTarget, useGuidePage, GuideScrollView } from '../guide/GuideProvider'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Info, Lock, MapPin, Minus, Plus, Tire, Wrench } from 'phosphor-react-native'
@@ -76,6 +77,7 @@ export function HelperHomeScreen() {
   const [listOpen, setListOpen] = useState(false)
   const [accepting, setAccepting] = useState(false)
   const [now, setNow] = useState(Date.now())
+  useGuidePage('helper', hydrated && available && !blockedByOwnRequest && !listOpen && !selectedId)
   const mapRef = useRef<SanadMapRef>(null)
 
   useAndroidBackHandler(() => router.back())
@@ -256,7 +258,7 @@ export function HelperHomeScreen() {
 
   return (
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.colors.background }]}>
-      <ScrollView contentContainerStyle={styles.pageContent} showsVerticalScrollIndicator={false}>
+      <GuideScrollView contentContainerStyle={styles.pageContent} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         {/* The brand group (back button + logo) stays physically on the left
             and the status pill on the right regardless of language - a fixed
@@ -269,13 +271,13 @@ export function HelperHomeScreen() {
             <IconButton label={t('common.back')} size={44} icon={<BackIcon size={21} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
             <Image source={require('../../../assets/images/icon.png')} style={styles.logo} resizeMode="contain" />
           </View>
-          <StatusBadge tone="success" dot label={t('volunteer.availableNow')} />
+          <GuideTarget id="helper.availability"><StatusBadge tone="success" dot label={t('volunteer.availableNow')} /></GuideTarget>
         </View>
         <Text accessibilityRole="header" style={[typography.h1, styles.pageTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.title')}</Text>
         <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.subtitle')}</Text>
       </View>
 
-      <View style={[styles.mapCard, { height: Math.max(300, Math.min(620, windowHeight * 0.52)), borderColor: theme.colors.border }]}>
+      <GuideTarget id="helper.map"><View style={[styles.mapCard, { height: Math.max(300, Math.min(620, windowHeight * 0.52)), borderColor: theme.colors.border }]}>
         {coords ? (
           <>
             <SanadMap ref={mapRef} latitude={coords.latitude} longitude={coords.longitude} zoom={13} interactive markers={requestMarkers} selectedId={selectedId} onMarkerPress={setSelectedId} style={styles.mapFill} />
@@ -293,9 +295,9 @@ export function HelperHomeScreen() {
             />
           </>
         ) : null}
-      </View>
+      </View></GuideTarget>
 
-      <Surface elevation="none" style={styles.bottomPanel}>
+      <GuideTarget id="helper.nearby"><Surface elevation="none" style={styles.bottomPanel}>
         <View style={[styles.bottomHeaderRow, dirStyles(isRTL).row]}>
           <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flex: 1, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.closest.title')}</Text>
           <Pressable accessibilityRole="button" onPress={() => setListOpen(true)} style={[styles.viewAllButton, dirStyles(isRTL).row]}>
@@ -326,8 +328,8 @@ export function HelperHomeScreen() {
           <ArrowClockwise size={12} color={theme.colors.textMuted} />
           <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{t('volunteer.autoUpdateNotice')}</Text>
         </View>
-      </Surface>
-      </ScrollView>
+      </Surface></GuideTarget>
+      </GuideScrollView>
 
       <BottomSheet visible={listOpen} onClose={() => setListOpen(false)} title={t('volunteer.allNearby.title')}>
         {requests.length === 0 ? <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t(requestsError ? 'perks.retry' : 'volunteer.emptyState.title')}</Text> : null}
