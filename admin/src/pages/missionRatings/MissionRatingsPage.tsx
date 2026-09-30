@@ -7,11 +7,15 @@ import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
 import { TablePagination } from '@/components/DataTable'
 import { useMissionRatings } from './useMissionRatings'
 import type { MissionRatingRow } from './useMissionRatings'
+import { useHelperExperienceFeedback } from './useHelperExperienceFeedback'
+import type { HelperExperienceFeedbackRow } from './useHelperExperienceFeedback'
 
 export function MissionRatingsPage() {
   const { t, i18n } = useTranslation()
   const [page, setPage] = useState(0)
   const query = useMissionRatings(page)
+  const [helperPage, setHelperPage] = useState(0)
+  const helperQuery = useHelperExperienceFeedback(helperPage)
 
   const columns: Column<MissionRatingRow>[] = [
     { key: 'helper', header: t('missionRatings.table.helper'), cell: row => row.helper_name || t('common.unknown') },
@@ -20,14 +24,31 @@ export function MissionRatingsPage() {
     { key: 'date', header: t('missionRatings.table.date'), cell: row => new Date(row.created_at).toLocaleDateString(i18n.language, { dateStyle: 'medium' }) }
   ]
 
+  const helperColumns: Column<HelperExperienceFeedbackRow>[] = [
+    { key: 'helper', header: t('missionRatings.helperFeedback.table.helper'), cell: row => row.helper_name || t('common.unknown') },
+    { key: 'stars', header: t('missionRatings.helperFeedback.table.stars'), cell: row => <StarRating rating={row.stars} size="sm" /> },
+    { key: 'date', header: t('missionRatings.helperFeedback.table.date'), cell: row => new Date(row.created_at).toLocaleDateString(i18n.language, { dateStyle: 'medium' }) }
+  ]
+
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-extrabold text-foreground">{t('missionRatings.title')}</h1>
-        <p className="text-sm text-muted-foreground">{t('missionRatings.subtitle')}</p>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-foreground">{t('missionRatings.title')}</h1>
+          <p className="text-sm text-muted-foreground">{t('missionRatings.subtitle')}</p>
+        </div>
+        <DataTable columns={columns} rows={query.data?.rows ?? []} isLoading={query.isPending} isError={query.isError} getRowId={row => row.id} />
+        <TablePagination page={page} pageSize={DEFAULT_PAGE_SIZE} total={query.data?.total ?? 0} onPageChange={setPage} />
       </div>
-      <DataTable columns={columns} rows={query.data?.rows ?? []} isLoading={query.isPending} isError={query.isError} getRowId={row => row.id} />
-      <TablePagination page={page} pageSize={DEFAULT_PAGE_SIZE} total={query.data?.total ?? 0} onPageChange={setPage} />
+
+      <div className="flex flex-col gap-4">
+        <div>
+          <h2 className="text-xl font-extrabold text-foreground">{t('missionRatings.helperFeedback.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('missionRatings.helperFeedback.subtitle')}</p>
+        </div>
+        <DataTable columns={helperColumns} rows={helperQuery.data?.rows ?? []} isLoading={helperQuery.isPending} isError={helperQuery.isError} getRowId={row => row.id} />
+        <TablePagination page={helperPage} pageSize={DEFAULT_PAGE_SIZE} total={helperQuery.data?.total ?? 0} onPageChange={setHelperPage} />
+      </div>
     </div>
   )
 }

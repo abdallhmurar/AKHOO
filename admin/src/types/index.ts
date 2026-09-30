@@ -202,6 +202,16 @@ export type MissionRating = {
   created_at: string
 }
 
+// The helper's own rating of their experience on a mission (0038) - distinct
+// from MissionRating above, which is the requester rating the helper.
+export type MissionHelperFeedback = {
+  id: string
+  request_id: string
+  helper_id: string
+  stars: number
+  created_at: string
+}
+
 export type ReportTargetType = 'request' | 'message' | 'business' | 'offer' | 'user'
 export type ReportStatus = 'open' | 'reviewing' | 'resolved' | 'dismissed'
 

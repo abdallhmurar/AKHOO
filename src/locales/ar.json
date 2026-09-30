@@ -382,7 +382,8 @@
       "pointsEarned": "+{{points}} نقاط",
       "balanceLabel": "رصيدك الآن: {{balance}} نقطة",
       "helpedCount": "ساعدت {{count}} شخصاً حتى الآن",
-      "rateExperience": "قيّم التجربة",
+      "rateExperienceTitle": "كيف كانت تجربتك بالمساعدة؟",
+      "rateExperienceSubtitle": "رأيك بساعدنا نقدّم خدمة أفضل دائماً",
       "backHome": "العودة للرئيسية"
     }
   },

@@ -382,7 +382,8 @@
       "pointsEarned": "+{{points}} points",
       "balanceLabel": "Your balance now: {{balance}} points",
       "helpedCount": "You've helped {{count}} people so far",
-      "rateExperience": "Rate the experience",
+      "rateExperienceTitle": "How was your experience helping?",
+      "rateExperienceSubtitle": "Your feedback helps us give better service",
       "backHome": "Back to home"
     }
   },

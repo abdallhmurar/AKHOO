@@ -546,6 +546,15 @@
       "requester": "Requester",
       "stars": "Rating",
       "date": "Date"
+    },
+    "helperFeedback": {
+      "title": "Helpers' own experience ratings",
+      "subtitle": "The star rating a helper left for their own experience after completing a mission (separate from the requester's rating of them above).",
+      "table": {
+        "helper": "Helper",
+        "stars": "Rating",
+        "date": "Date"
+      }
     }
   },
   "reports": {

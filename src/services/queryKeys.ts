@@ -7,6 +7,7 @@ export const queryKeys = {
   missionEvents: (missionId: string) => ['missions', missionId, 'events'] as const,
   missionMessages: (missionId: string) => ['missions', missionId, 'messages'] as const,
   missionRating: (requestId: string) => ['missions', requestId, 'rating'] as const,
+  missionHelperFeedback: (requestId: string) => ['missions', requestId, 'helper-feedback'] as const,
   missionHelperLocation: (missionId: string) => ['missions', missionId, 'helper-location'] as const,
   categories: ['requests', 'categories'] as const,
   scenarios: (categoryId?: string) => ['requests', 'scenarios', categoryId ?? 'all'] as const,

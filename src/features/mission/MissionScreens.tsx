@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, SafeAreaView, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
-import * as StoreReview from 'expo-store-review'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
 import { ArrowClockwise, ArrowLeft, ArrowRight, Buildings, Camera, Car, ChatCircleDots, CheckCircle, ClipboardText, Coins, FlagCheckered, Handshake, MapPin, PaperPlaneTilt, SealCheck, Star, Tree, UserFocus, UsersThree, VideoCamera as VideoCameraIcon } from 'phosphor-react-native'
@@ -526,7 +525,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
   }
 
   if (mission.status === 'completed') {
-    return <HelperCompletion stats={completionStats} onDone={() => router.replace('/(tabs)')} />
+    return <HelperCompletion stats={completionStats} requestId={mission.request_id} helperId={mission.helper_id} onDone={() => router.replace('/(tabs)')} />
   }
 
   const awaitingConfirmation = mission.status === 'awaiting_confirmation'
@@ -733,27 +732,69 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
 const HELPER_TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
 const HELPER_TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
 
-function HelperCompletion({ stats, onDone }: { stats: { points: number; balance: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null; onDone: () => void }) {
+function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { points: number; balance: number; completedCount: number; leveledUpTo: ActivityLevel | null } | null; requestId: string; helperId: string | null; onDone: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t } = useTranslation()
-  const { stageStyle } = useStaggeredReveal(4)
+  const { stageStyle } = useStaggeredReveal(5)
+  const [selectedStars, setSelectedStars] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const nextThreshold = stats ? HELPER_TIER_MARKS.find(mark => mark > stats.completedCount) ?? null : null
   const progressFraction = stats ? Math.min(stats.completedCount, HELPER_TOP_THRESHOLD) / HELPER_TOP_THRESHOLD : 0
 
-  // Native App Store/Play Store rating prompt, right after a good deed - the
-  // standard moment to ask. Fire-and-forget like Apple's own guidelines
-  // expect: the OS can silently skip showing it (rate limits, or - on iOS -
-  // a TestFlight build, where it never appears at all), and there is no
-  // reliable way to know whether it actually showed, so this never reports
-  // success/failure back to the user, matching submitRating()'s own
-  // best-effort convention just above.
+  const existingFeedback = useQuery({
+    queryKey: queryKeys.missionHelperFeedback(requestId),
+    queryFn: () => ratingRepository.getHelperFeedbackForRequest(requestId),
+    enabled: !!requestId
+  })
+  const alreadyRated = (existingFeedback.data ?? null) !== null
+  const showThanks = alreadyRated || submitted
+  const displayedStars = alreadyRated ? existingFeedback.data! : selectedStars
+
+  // Fire-and-forget, matching Apple's own guidance: the OS can silently skip
+  // showing the native rating sheet (rate limits, or - on iOS - a TestFlight
+  // build, where it never appears at all), and there is no reliable way to
+  // know whether it actually showed, so this never reports success/failure.
+  //
+  // Loaded lazily, not as a top-level import: expo-store-review's native
+  // binding throws the moment its module is evaluated on a binary that
+  // doesn't have it linked (requireNativeModule, not the optional variant).
+  // This app ships JS over OTA independently of native builds - a static
+  // import here would crash this whole file (every mission screen) for
+  // anyone still on the native build from before this module was added,
+  // the instant they received this change as a JS update rather than
+  // through the store. Deferring the import into this try/catch, only
+  // reached when a helper actually opens this screen, keeps that on an old
+  // binary a silent no-op instead.
   async function rateApp() {
     try {
+      const StoreReview = await import('expo-store-review')
       if (await StoreReview.hasAction()) await StoreReview.requestReview()
     } catch {
       // best-effort
+    }
+  }
+
+  // Stored separately from mission_ratings (0038): this is the helper's own
+  // experience rating, not a rating of the requester - asking a volunteer to
+  // rate the person they just helped would be an odd, judgy thing to build.
+  // Submitting also triggers the native store prompt, the same "ask twice"
+  // pattern many apps use: capture feedback internally, then invite a
+  // public rating right after.
+  async function submitFeedback() {
+    if (!helperId || selectedStars === 0) return
+    setSubmitting(true)
+    try {
+      await ratingRepository.submitHelperFeedback(requestId, helperId, selectedStars)
+      setSubmitted(true)
+      await rateApp()
+    } catch {
+      // Best-effort, same as the requester's own rating card - nothing
+      // actionable to retry, and it must not block finishing this screen.
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -790,14 +831,32 @@ function HelperCompletion({ stats, onDone }: { stats: { points: number; balance:
             </Text>
           </Animated.View>
 
-          <Animated.View style={[stageStyle(3), styles.completionActions]}>
+          <Animated.View style={[stageStyle(3), styles.fullWidth]}>
+            <Card tone="primary" elevation="none">
+              <Text style={[typography.bodyMedium, styles.centerText, { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.rateExperienceTitle')}</Text>
+              {!showThanks ? <Text style={[typography.caption, styles.centerText, { color: theme.colors.textSecondary, marginTop: 2 }]}>{t('volunteerJob.completion.rateExperienceSubtitle')}</Text> : null}
+              <View style={styles.starsRow}>
+                {[1, 2, 3, 4, 5].map(value => (
+                  <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
+                    <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />
+                  </Pressable>
+                ))}
+              </View>
+              {showThanks ? (
+                <Text style={[typography.smallMedium, styles.centerText, { color: theme.colors.primary }]}>{t('activeRequest.completion.rateThanks')}</Text>
+              ) : (
+                <Button label={t('activeRequest.completion.rateSubmit')} disabled={selectedStars === 0} loading={submitting} onPress={submitFeedback} />
+              )}
+            </Card>
+          </Animated.View>
+
+          <Animated.View style={[stageStyle(4), styles.completionActions]}>
             {stats.leveledUpTo ? (
               <View style={[styles.levelUpBanner, { ...dirStyles(isRTL).row, backgroundColor: theme.colors.primarySoft }]}>
                 <Star size={18} color={ACTIVITY_LEVEL_COLORS[stats.leveledUpTo]} weight="fill" />
                 <Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{t('activityLevel.levelUpMessage', { levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[stats.leveledUpTo]) })}</Text>
               </View>
             ) : null}
-            <Button label={t('volunteerJob.completion.rateExperience')} leading={<Star size={18} color={theme.colors.onPrimary} weight="fill" />} onPress={rateApp} />
             <Button label={t('volunteerJob.completion.backHome')} variant="outline" onPress={onDone} />
           </Animated.View>
         </>
