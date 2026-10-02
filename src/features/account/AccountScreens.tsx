@@ -34,8 +34,8 @@ import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
 import { useSupportConversation } from '../support/useSupport'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
-const HELP_WHATSAPP_DISPLAY = '0509956046'
-const HELP_WHATSAPP_HREF = 'https://wa.me/972509956046'
+const HELP_WHATSAPP_DISPLAY = '0509956406'
+const HELP_WHATSAPP_HREF = 'https://wa.me/972509956406'
 
 // Real SANAD Account - ported from the intact src/screens/AccountScreen.tsx
 // business logic (profile update, password change, real points card, logout

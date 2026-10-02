@@ -6,16 +6,13 @@ export type LegalBlock =
   | { type: 'h3'; text: string }
   | { type: 'ul'; items: string[] }
 
-// Contact numbers are intentionally different: this is the number shown to
-// the user, but the actual tel:/wa.me links point elsewhere per the exact
-// values given for these documents - not run through normalizePhone/
-// telHref, since those would reformat the tel: link with a "+" prefix and
-// break the literal tel:0526779642 target specified. Same for every
-// language - a phone number isn't translated.
+// Not run through normalizePhone/telHref, since those would reformat the
+// tel: link with a "+" prefix - kept as the literal values below instead.
+// Same number for every language - a phone number isn't translated.
 export const LEGAL_CONTACT = {
   displayPhone: '050-995-6406',
-  telHref: 'tel:0526779642',
-  whatsappHref: 'https://wa.me/972526779642'
+  telHref: 'tel:0509956406',
+  whatsappHref: 'https://wa.me/972509956406'
 }
 
 export const LEGAL_LAST_UPDATED: Record<AppLanguage, string> = {
