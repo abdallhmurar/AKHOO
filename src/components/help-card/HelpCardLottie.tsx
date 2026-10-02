@@ -1,3 +1,4 @@
+import { HomeCardArrow } from '../HomeCardArrow'
 import { useRef } from "react";
 import { Animated, Pressable, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
@@ -46,6 +47,7 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
   return (
     <Animated.View style={[styles.root, { transform: [{ scale }] }]}>
       <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" surfaceType="textureView" />
+      <HomeCardArrow tone="help" locale={locale} />
       {/* Pressable is a sibling, not a parent, of VideoView - on Android a
           native video surface nested inside a Pressable can swallow the
           touch-up event (press animates via onPressIn but onPress never

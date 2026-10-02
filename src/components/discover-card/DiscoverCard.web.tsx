@@ -1,3 +1,4 @@
+import { HomeCardArrow } from '../HomeCardArrow'
 import { useState } from "react";
 
 type Locale = "ar" | "he" | "en";
@@ -70,6 +71,7 @@ export default function DiscoverCard({ locale = "ar", title, onPress }: Props) {
           display: "block",
         }}
       />
+      <HomeCardArrow tone="perks" locale={locale} />
     </div>
   );
 }

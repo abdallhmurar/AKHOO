@@ -1,3 +1,4 @@
+import { HomeCardArrow } from '../HomeCardArrow'
 import { useRef } from "react";
 import { Animated, Pressable, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
@@ -48,6 +49,7 @@ export default function DiscoverCard({ locale = "ar", title, onPress }: Props) {
   return (
     <Animated.View style={[styles.root, { transform: [{ scale }] }]}>
       <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" surfaceType="textureView" />
+      <HomeCardArrow tone="perks" locale={locale} />
       {/* Pressable is a sibling, not a parent, of VideoView - see HelpCardLottie.tsx for why. */}
       <Pressable
         style={StyleSheet.absoluteFill}
