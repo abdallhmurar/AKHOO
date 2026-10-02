@@ -47,16 +47,16 @@ export default function DiscoverCard({ locale = "ar", title, onPress }: Props) {
 
   return (
     <Animated.View style={[styles.root, { transform: [{ scale }] }]}>
+      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" surfaceType="textureView" />
+      {/* Pressable is a sibling, not a parent, of VideoView - see HelpCardLottie.tsx for why. */}
       <Pressable
-        style={styles.pressable}
+        style={StyleSheet.absoluteFill}
         onPress={onPress}
         onPressIn={() => animate(1)}
         onPressOut={() => animate(0)}
         accessibilityRole="button"
         accessibilityLabel={title}
-      >
-        <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" />
-      </Pressable>
+      />
     </Animated.View>
   );
 }
@@ -65,9 +65,6 @@ const styles = StyleSheet.create({
   root: {
     width: "100%",
     aspectRatio: 1905 / 826,
-  },
-  pressable: {
-    flex: 1,
     position: "relative",
     overflow: "hidden",
     borderRadius: 24,

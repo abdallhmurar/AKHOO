@@ -33,7 +33,7 @@ export function WelcomeScreen() {
 
   return (
     <View style={styles.welcomeBg}>
-      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" />
+      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" surfaceType="textureView" />
       <View style={[styles.welcomeActions, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
         <Button label={t('welcome.createAccount')} size="lg" onPress={() => router.push('/signup')} />
         <Button label={t('welcome.haveAccount')} variant="secondary" size="lg" onPress={() => router.push('/login')} />

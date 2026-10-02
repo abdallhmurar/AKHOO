@@ -45,15 +45,19 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
 
   return (
     <Animated.View style={[styles.root, { transform: [{ scale }] }]}>
+      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" surfaceType="textureView" />
+      {/* Pressable is a sibling, not a parent, of VideoView - on Android a
+          native video surface nested inside a Pressable can swallow the
+          touch-up event (press animates via onPressIn but onPress never
+          fires). Keeping the touchable's own view free of any native video
+          child avoids that surface/responder interop entirely. */}
       <Pressable
-        style={styles.pressable}
+        style={StyleSheet.absoluteFill}
         onPress={onPress}
         onPressIn={() => animate(1)}
         onPressOut={() => animate(0)}
         accessibilityRole="button"
-      >
-        <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} pointerEvents="none" />
-      </Pressable>
+      />
     </Animated.View>
   );
 }
@@ -62,9 +66,6 @@ const styles = StyleSheet.create({
   root: {
     width: "100%",
     aspectRatio: 1905 / 826,
-  },
-  pressable: {
-    flex: 1,
     position: "relative",
     overflow: "hidden",
     borderRadius: 24,
