@@ -1,0 +1,12 @@
+name: Publish production mobile update
+
+# Manual only: publishing is an explicit release action, not every git push.
+jobs:
+  publish_update:
+    name: Publish iOS and Android update
+    type: update
+    environment: production
+    params:
+      channel: production
+      platform: all
+      message: Home card arrows and latest approved app improvements
