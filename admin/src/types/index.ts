@@ -150,6 +150,7 @@ export type Offer = {
   image_url: string | null
   image_urls?: string[]
   offer_type_label?: string | null
+  translations?: import('../../../shared/contentTranslations').ContentTranslations
   member_only: boolean
   points_required: number | null
   weekly_slot: number | null

@@ -15,6 +15,7 @@ import type { Offer, OfferDiscountType } from '@/types'
 import { useUpsertOffer } from './useUpsertOffer'
 import { useBusinessOptions } from './useBusinessOptions'
 import { OfferPreviewCard } from './OfferPreviewCard'
+import { ContentTranslationNotice } from '@/components/ContentTranslationNotice'
 
 const DISCOUNT_TYPES: OfferDiscountType[] = ['percentage', 'fixed', 'special_price', 'free_benefit']
 
@@ -77,6 +78,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
     try {
       const result = await upsert.mutateAsync({
         id: offer?.id ?? null,
+        published: offer?.status === 'approved',
         payload: {
           business_id: businessId === NO_BUSINESS_VALUE ? null : businessId,
           title,
@@ -89,6 +91,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           image_url: imageUrls[0] ?? null,
           image_urls: imageUrls,
           offer_type_label: offerTypeLabel.trim() || null,
+          translations: offer?.translations,
           valid_from: validFrom ? new Date(validFrom).toISOString() : null,
           valid_until: validUntil ? new Date(validUntil).toISOString() : null,
           member_only: memberOnly,
@@ -105,6 +108,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <ContentTranslationNotice />
         <Card>
           <CardContent className="flex flex-col gap-4 p-4">
             <h2 className="text-sm font-semibold text-foreground">{t('offers.form.sections.general')}</h2>

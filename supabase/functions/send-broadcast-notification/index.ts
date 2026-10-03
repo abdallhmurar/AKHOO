@@ -2,6 +2,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { json, preflight } from '../_shared/http.ts'
 import { sendPushBatch, truncateForPush } from '../_shared/push.ts'
 import { readAll } from '../_shared/pagination.ts'
+import { contentText } from '../../../shared/contentTranslations.ts'
 
 Deno.serve(async req => {
   const early = preflight(req)
@@ -19,14 +20,15 @@ Deno.serve(async req => {
     const id = input.notification_id
     const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
     const { data: notification, error: readError } = await db.from('broadcast_notifications')
-      .select('id,title,body,target_audience,sent_at,sent_count').eq('id', id).single()
+      .select('id,title,body,translations,target_audience,sent_at,sent_count').eq('id', id).single()
     if (readError || !notification) return json({ error: 'Notification not found' }, 404)
     if (notification.sent_at) return json({ sentCount: notification.sent_count, complete: true })
     const { data: claimed, error: claimError } = await db.rpc('claim_broadcast_send', { p_id: id })
     if (claimError) throw claimError
     if (!claimed) return json({ error: 'Notification is already being sent' }, 409)
     try {
-      const recipients = await readAll<{ token: string }>((from, to) => db.rpc('get_push_recipients', { p_volunteers_only: notification.target_audience === 'volunteers' }).order('token').range(from, to))
+      const recipients = await readAll<{ token: string; language: string }>((from, to) => db.rpc('get_localized_push_recipients', { p_volunteers_only: notification.target_audience === 'volunteers' }).order('token').range(from, to))
+      const languages = new Map(recipients.map(recipient => [recipient.token, recipient.language]))
       const previous = await readAll<{ token: string; status: string; error: string | null }>((from, to) => db.from('broadcast_push_results').select('token,status,error').eq('notification_id', id).order('token').range(from, to))
       const skip = new Set((previous ?? []).filter(r => r.status !== 'failed' || r.error === 'DeviceNotRegistered').map(r => r.token))
       const tokens = [...new Set<string>((recipients ?? []).map((r: { token: string }) => r.token))].filter(t => !skip.has(t))
@@ -36,7 +38,7 @@ Deno.serve(async req => {
         // retries a batch whose delivery status cannot be established.
         const { error: intentError } = await db.from('broadcast_push_results').upsert(batch.map(token => ({ notification_id: id, token, status: 'sending', updated_at: new Date().toISOString() })))
         if (intentError) throw intentError
-        const results = await sendPushBatch(batch.map(to => ({ to, title: notification.title, body: truncateForPush(notification.body), sound: 'default', data: { broadcastNotificationId: id } })))
+        const results = await sendPushBatch(batch.map(to => ({ to, title: contentText(notification.title, notification.translations, 'title', languages.get(to)), body: truncateForPush(contentText(notification.body, notification.translations, 'body', languages.get(to))), sound: 'default', data: { broadcastNotificationId: id } })))
         const { error: resultError } = await db.from('broadcast_push_results').upsert(results.map(r => ({ notification_id: id, ...r, updated_at: new Date().toISOString() })))
         if (resultError) throw resultError
         const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)

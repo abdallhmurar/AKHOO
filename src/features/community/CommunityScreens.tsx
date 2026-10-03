@@ -1,4 +1,5 @@
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
+import { localizeContent, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useEffect, useState } from 'react'
 import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
@@ -181,7 +182,8 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  offer = localizeContent(offer, i18n.language, OFFER_TEXT_FIELDS)
   const price = computeOfferPriceDisplay(offer)
   const savings = computeSavings(price)
   const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
@@ -325,7 +327,7 @@ export function OfferDetailScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const { offerId } = useLocalSearchParams<{ offerId: string }>()
   const { session } = useAuth()
@@ -385,7 +387,8 @@ export function OfferDetailScreen() {
   if (query.isLoading) return <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />}><Skeleton width="100%" height={220} /><Skeleton width="100%" height={140} /></AppScreen>
   if (!query.data) return <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />} contentStyle={styles.content}><EmptyState Icon={Tag} title={t('perks.offer.notFound')} /></AppScreen>
 
-  const { offer, business, rating } = query.data
+  const { offer: originalOffer, business, rating } = query.data
+  const offer = localizeContent(originalOffer, i18n.language, OFFER_TEXT_FIELDS)
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_url ?? business?.logo_url ?? null
   const images = offer.image_urls?.length ? offer.image_urls : imageUri ? [imageUri] : []

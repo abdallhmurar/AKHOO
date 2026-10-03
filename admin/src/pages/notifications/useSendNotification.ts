@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
+import { translateForPublish } from '@/lib/contentTranslation'
 import type { NotificationAudience } from '@/types'
 
 export function useSendNotification() {
@@ -8,7 +9,8 @@ export function useSendNotification() {
 
   return useMutation({
     mutationFn: async ({ title, body, details, audience, imageUrls, durationDays }: { title: string; body: string; details: string; audience: NotificationAudience; imageUrls: string[]; durationDays: number }) => {
-      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls, p_details: details.trim() || null, p_duration_days: durationDays })
+      const translations = await translateForPublish('announcement', { title, body, details: details.trim() })
+      const { data: notification, error } = await supabase.rpc('admin_create_broadcast_notification', { p_title: title, p_body: body, p_target: audience, p_image_urls: imageUrls, p_details: details.trim() || null, p_duration_days: durationDays, p_translations: translations })
       if (error) throw error
 
       const { data: delivery, error: sendError } = await supabase.functions.invoke('send-broadcast-notification', { body: { notification_id: notification.id } })

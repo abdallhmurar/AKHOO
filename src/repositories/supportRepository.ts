@@ -25,7 +25,7 @@ export const supportRepository = {
 
   async listMessages(conversationId: string): Promise<SupportMessage[]> {
     const { data, error } = await supabase.from('support_messages')
-      .select('id, conversation_id, from_admin, body, media_path, media_type, created_at')
+      .select('id, conversation_id, from_admin, body, media_path, media_type, created_at, translations')
       .eq('conversation_id', conversationId)
       .order('created_at', { ascending: false })
       .limit(HISTORY_LIMIT)

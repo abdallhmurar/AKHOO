@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
+import { translateForPublish } from '@/lib/contentTranslation'
+import type { ContentTranslations } from '../../../../shared/contentTranslations'
 import type { Offer, OfferDiscountType } from '@/types'
 
 export type OfferFormPayload = {
@@ -15,6 +17,7 @@ export type OfferFormPayload = {
   image_url: string | null
   image_urls: string[]
   offer_type_label: string | null
+  translations?: ContentTranslations
   valid_from: string | null
   valid_until: string | null
   member_only: boolean
@@ -25,8 +28,11 @@ export function useUpsertOffer() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, payload }: { id: string | null; payload: OfferFormPayload }) => {
-      const { data, error } = await supabase.rpc('admin_upsert_offer', { p_id: id, p_payload: payload })
+    mutationFn: async ({ id, payload, published = false }: { id: string | null; payload: OfferFormPayload; published?: boolean }) => {
+      // Drafts do not incur translation calls. Approval translates them once;
+      // subsequent edits to already published offers translate before saving.
+      const translations = published ? await translateForPublish('offer', { title: payload.title, description: payload.description, terms: payload.terms, offer_type_label: payload.offer_type_label }, payload.translations) : payload.translations ?? {}
+      const { data, error } = await supabase.rpc('admin_upsert_offer', { p_id: id, p_payload: { ...payload, translations } })
       if (error) throw error
       return data as Offer
     },

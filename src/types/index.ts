@@ -139,6 +139,7 @@ export type PartnerOffer = {
   image_url: string | null
   image_urls?: string[]
   offer_type_label?: string | null
+  translations?: import('../../shared/contentTranslations').ContentTranslations
   member_only: boolean
   points_required: number | null
   weekly_slot: number | null
@@ -186,6 +187,7 @@ export type OfferRedemption = {
 // popup on first open, bell until read. popup_shown_at / read_at are this
 // user's own state, null until they happen.
 export type Announcement = {
+  translations?: import('../../shared/contentTranslations').ContentTranslations
   id: string
   title: string
   body: string
@@ -208,6 +210,7 @@ export type SupportConversation = {
 }
 
 export type SupportMessage = {
+  translations?: import('../../shared/contentTranslations').ContentTranslations
   id: string
   conversation_id: string
   from_admin: boolean

@@ -8,6 +8,8 @@ verify_jwt = false
 verify_jwt = false
 [functions.geocode]
 verify_jwt = false
+[functions.translate-content]
+verify_jwt = false
 
 # Database webhooks authenticate with x-webhook-secret, never a client key.
 [functions.notify-new-request]

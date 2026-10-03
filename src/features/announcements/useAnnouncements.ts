@@ -1,4 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { localizeContent, ANNOUNCEMENT_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useAuth } from '../../providers'
 import { announcementRepository } from '../../repositories/announcementRepository'
 import type { Announcement } from '../../types'
@@ -6,6 +9,7 @@ import type { Announcement } from '../../types'
 // One shared query: the home-screen bell, the popup host and the list screen
 // all read the same cache entry, so opening any of them costs no extra request.
 export function useAnnouncements() {
+  const { i18n } = useTranslation()
   const { session, isRestricted } = useAuth()
   const userId = session?.user.id
   const query = useQuery({
@@ -17,7 +21,7 @@ export function useAnnouncements() {
     // foregrounding the app refetches immediately (QueryProvider's focusManager).
     refetchInterval: 2 * 60_000
   })
-  const announcements = query.data ?? []
+  const announcements = useMemo(() => (query.data ?? []).map(item => localizeContent(item, i18n.language, ANNOUNCEMENT_TEXT_FIELDS)), [query.data, i18n.language])
   const unread = announcements.filter(a => !a.read_at)
   return { announcements, unread, query }
 }

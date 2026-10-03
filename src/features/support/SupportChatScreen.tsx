@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ArrowLeft, ArrowRight, Camera, ChatCircleDots, PaperPlaneTilt, X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
+import { contentText } from '../../../shared/contentTranslations'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { translateActionError } from '../../lib/rpcErrors'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
@@ -126,7 +127,7 @@ export function SupportChatScreen() {
               <Image source={{ uri: item.media_url }} style={styles.bubbleImage} />
             </Pressable>
           ) : null}
-          {item.body ? <Text selectable style={[typography.body, { color: ink, textAlign: isRTL ? 'right' : 'left' }]}>{item.body}</Text> : null}
+          {item.body ? <Text selectable style={[typography.body, { color: ink, textAlign: isRTL ? 'right' : 'left' }]}>{item.from_admin ? contentText(item.body, item.translations, 'body', i18n.language) : item.body}</Text> : null}
           <Text style={[typography.caption, { color: isMine ? theme.colors.onPrimary : theme.colors.textMuted, opacity: 0.75, textAlign: isRTL ? 'right' : 'left' }]}>{formatStamp(item.created_at, i18n.language)}</Text>
         </View>
       </View>

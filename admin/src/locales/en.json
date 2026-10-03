@@ -757,5 +757,13 @@
       "add": "Add note",
       "empty": "No notes yet."
     }
+  },
+  "contentTranslation": {
+    "failed": "Translation failed. The new text was not published; please try again.",
+    "notConfigured": "Automatic translation is not configured yet. Only the original text will be saved until a translation service is connected.",
+    "checking": "Checking translation service…",
+    "statusError": "Could not check the translation service. Try refreshing the page.",
+    "enabled": "Automatic translation is enabled: write in Arabic and users see Arabic, Hebrew or English based on their app language. Text inside images is not translated.",
+    "setupNeeded": "Automatic translation is waiting for a translation service connection. Only the original text is published for now."
   }
 }

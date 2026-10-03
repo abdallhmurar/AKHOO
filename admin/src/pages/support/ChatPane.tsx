@@ -10,6 +10,7 @@ import { cn } from '@/lib/cn'
 import { useIsRTL } from '@/lib/direction'
 import { ImageValidationError, validateImageFile } from '@/lib/storage'
 import { CustomerCard } from './CustomerCard'
+import { ContentTranslationNotice } from '@/components/ContentTranslationNotice'
 import { SupportStatusBadge } from './SupportStatusBadge'
 import { formatStamp } from './format'
 import { useSetSupportStatus, useSupportMessages, useSupportReply, type ConversationRow, type MessageRow } from './useSupport'
@@ -121,6 +122,7 @@ export function ChatPane({ conversation, onBack }: { conversation: ConversationR
       </div>
 
       <div className="border-t border-border bg-card p-3">
+        <ContentTranslationNotice />
         {previewUrl ? (
           <div className="relative mb-2 inline-block">
             <img src={previewUrl} alt="" className="h-20 rounded-md border border-border object-cover" />

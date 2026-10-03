@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { localizeContent, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
 import { colors, font, radius, shadow, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '../lib/offerPricing'
@@ -10,7 +11,7 @@ import { PlusBadge } from './PlusBadge'
 import { Tactile } from './Tactile'
 
 export function OfferCard({
-  offer,
+  offer: originalOffer,
   business,
   rating,
   variant = 'rail',
@@ -22,6 +23,8 @@ export function OfferCard({
   variant?: 'rail' | 'list'
   onPress: () => void
 }) {
+  const { i18n } = useTranslation()
+  const offer = localizeContent(originalOffer, i18n.language, OFFER_TEXT_FIELDS)
   const dir = dirStyles(useIsRTL())
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url ?? null

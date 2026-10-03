@@ -3,6 +3,8 @@ import { supabase } from '../lib/supabase'
 import { registerForPushNotificationsAsync } from '../lib/notifications'
 import { getNotificationsEnabled } from '../lib/notificationPreference'
 import { throwIfError } from './errors'
+import { i18next } from '../lib/i18n'
+import { contentLanguage } from '../../shared/contentTranslations'
 
 const TOKEN_KEY = 'akhoo_device_push_token'
 // Serialize registration/disable/logout so a slow OS permission response
@@ -35,6 +37,17 @@ export function syncPushRegistration(userId: string) {
     const { error } = await supabase.rpc('register_push_device', { p_token: token, p_enabled: enabled })
     throwIfError(error, { domain: 'profile', operation: 'register-push' })
     await AsyncStorage.setItem(TOKEN_KEY, token)
+    const { error: languageError } = await supabase.rpc('set_push_device_language', { p_token: token, p_language: contentLanguage(i18next.language) })
+    throwIfError(languageError, { domain: 'profile', operation: 'push-language' })
+  })
+}
+export function syncPushLanguage(userId: string) {
+  return serial(async () => {
+    const token = await AsyncStorage.getItem(TOKEN_KEY)
+    const { data } = await supabase.auth.getSession()
+    if (!token || data.session?.user.id !== userId) return
+    const { error } = await supabase.rpc('set_push_device_language', { p_token: token, p_language: contentLanguage(i18next.language) })
+    throwIfError(error, { domain: 'profile', operation: 'push-language' })
   })
 }
 export function unregisterCurrentDevice() {

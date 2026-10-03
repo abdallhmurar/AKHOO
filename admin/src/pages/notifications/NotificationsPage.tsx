@@ -16,6 +16,7 @@ import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
 import { useDeleteAllNotifications, useDeleteNotification, useRetryNotification, useSendNotification } from './useSendNotification'
 import { AnnouncementPreview } from './AnnouncementPreview'
+import { ContentTranslationNotice } from '@/components/ContentTranslationNotice'
 
 const MAX_IMAGES = 5
 const MIN_DURATION_DAYS = 1
@@ -115,6 +116,7 @@ function ComposeCard() {
             <h2 className="text-sm font-semibold text-foreground">{t('notifications.compose.title')}</h2>
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <ContentTranslationNotice />
             <div className="flex flex-col gap-2">
               <Label htmlFor="notif-title">{t('notifications.compose.titleField')}</Label>
               <Input id="notif-title" required value={title} onChange={e => setTitle(e.target.value)} maxLength={80} />

@@ -6,7 +6,8 @@ import { authRepository, type OAuthProvider, type SignUpInput } from '../reposit
 import { profileRepository } from '../repositories/profileRepository'
 import { consumeAuthLink, signOutSafely } from '../services/authService'
 import { normalizeAppError, reportAppError, type AppError } from '../services/errors'
-import { syncPushRegistration } from '../services/pushRegistration'
+import { syncPushRegistration, syncPushLanguage } from '../services/pushRegistration'
+import { i18next } from '../lib/i18n'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Profile } from '../types'
 import * as Linking from 'expo-linking'
@@ -52,6 +53,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const mounted = useRef(true)
   const identity = useRef<string | null>(null)
   const queryClient = useQueryClient()
+  useEffect(() => {
+    const userId = session?.user.id
+    if (!userId || status !== 'signed-in') return
+    const sync = () => { void syncPushLanguage(userId).catch(() => {}) }
+    sync()
+    i18next.on('languageChanged', sync)
+    return () => { i18next.off('languageChanged', sync) }
+  }, [session?.user.id, status])
 
   const loadProfile = useCallback(async (userId: string) => {
     try {

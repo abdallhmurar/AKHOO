@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
+import { translateForPublish } from '@/lib/contentTranslation'
 import { removeSupportImage, uploadSupportImage } from '@/lib/storage'
 import type { SupportConversation, SupportMessage, SupportNote, SupportStatus } from '@/types'
 
@@ -112,8 +113,9 @@ export function useSupportReply() {
   const refresh = useRefreshSupport()
   return useMutation({
     mutationFn: async ({ conversation, body, image }: { conversation: SupportConversation; body: string; image: File | null }) => {
+      const translations = await translateForPublish('support', { body: body.trim() })
       const path = image ? await uploadSupportImage(image, conversation.user_id) : null
-      const { error } = await supabase.rpc('admin_support_reply', { p_conversation_id: conversation.id, p_body: body.trim() || null, p_media_path: path })
+      const { error } = await supabase.rpc('admin_support_reply', { p_conversation_id: conversation.id, p_body: body.trim() || null, p_media_path: path, p_translations: translations })
       if (error) {
         if (path) await removeSupportImage(path)
         throw error
