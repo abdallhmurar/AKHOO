@@ -22,7 +22,7 @@ export function validateImageFile(file: File) {
 export async function uploadBusinessImage(file: File, businessId: string, folder: 'logo' | 'photos' | 'offers') {
   validateImageFile(file)
   const ext = file.name.split('.').pop() ?? 'jpg'
-  const path = `${folder}/${businessId}/${Date.now()}.${ext}`
+  const path = `${folder}/${businessId}/${Date.now()}-${crypto.randomUUID()}.${ext}`
   const { error } = await supabase.storage.from('business-photos').upload(path, file, { contentType: file.type })
   if (error) throw error
   return supabase.storage.from('business-photos').getPublicUrl(path).data.publicUrl

@@ -404,7 +404,19 @@
       "pointsRequired": "النقاط المطلوبة",
       "pointsRequiredHint": "اتركه فاضياً إذا كان استخدام العرض لا يكلّف نقاطاً.",
       "savedCreate": "تم إنشاء العرض.",
-      "savedEdit": "تم تحديث العرض."
+      "savedEdit": "تم تحديث العرض.",
+      "addImages": "إضافة صور",
+      "uploadingImages": "جارٍ رفع الصور…",
+      "galleryLimit": "يمكنك إضافة حتى 6 صور للعرض.",
+      "galleryHint": "{{count}} من 6 صور • الصورة الأولى هي الغلاف • PNG أو JPEG أو WebP، حتى 5 ميجابايت للصورة.",
+      "imageNumber": "الصورة {{number}}",
+      "coverImage": "صورة الغلاف",
+      "makeCover": "تعيين كغلاف",
+      "removeImage": "إزالة الصورة",
+      "customType": "نوع العرض (اكتب بنفسك)",
+      "customTypePlaceholder": "مثلاً: ملصق أخوو أو هدية مقابل نقاط",
+      "customTypeHint": "اسم يظهر للمستخدم. اتركه فارغاً لاستخدام النوع الافتراضي.",
+      "pricingMethod": "طريقة التسعير"
     },
     "preview": {
       "businessPlaceholder": "اسم العمل التجاري",

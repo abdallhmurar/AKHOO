@@ -739,7 +739,13 @@
     "noPoints": "No points needed",
     "offerDetails": "Offer details",
     "offerDetailsFor": "Offer details: {{title}}",
-    "retry": "Could not load. Try again"
+    "retry": "Could not load. Try again",
+    "gallery": {
+      "imageNumber": "Photo {{number}}",
+      "enlarge": "Enlarge photo of {{title}}",
+      "hint": "{{current}} / {{total}} • Tap the photo to enlarge",
+      "close": "Close photo"
+    }
   },
   "navigation": {
     "home": "Home",

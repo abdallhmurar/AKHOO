@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { uploadBusinessImage, ImageValidationError } from '@/lib/storage'
+import { uploadBusinessImage, validateImageFile, ImageValidationError } from '@/lib/storage'
 import type { Offer, OfferDiscountType } from '@/types'
 import { useUpsertOffer } from './useUpsertOffer'
 import { useBusinessOptions } from './useBusinessOptions'
@@ -43,7 +43,8 @@ export function OfferForm({ offer }: { offer?: Offer }) {
   const [discountValue, setDiscountValue] = useState(offer?.discount_value?.toString() ?? '')
   const [originalPrice, setOriginalPrice] = useState(offer?.original_price?.toString() ?? '')
   const [offerPrice, setOfferPrice] = useState(offer?.offer_price?.toString() ?? '')
-  const [imageUrl, setImageUrl] = useState<string | null>(offer?.image_url ?? null)
+  const [imageUrls, setImageUrls] = useState<string[]>(offer?.image_urls?.length ? offer.image_urls : offer?.image_url ? [offer.image_url] : [])
+  const [offerTypeLabel, setOfferTypeLabel] = useState(offer?.offer_type_label ?? '')
   const [validFrom, setValidFrom] = useState(toDateInputValue(offer?.valid_from ?? null))
   const [validUntil, setValidUntil] = useState(toDateInputValue(offer?.valid_until ?? null))
   const [memberOnly, setMemberOnly] = useState(offer?.member_only ?? false)
@@ -52,12 +53,16 @@ export function OfferForm({ offer }: { offer?: Offer }) {
 
   const selectedBusinessName = useMemo(() => businessOptions.data?.find(b => b.id === businessId)?.name ?? null, [businessOptions.data, businessId])
 
-  async function handleImageChange(file: File | undefined) {
-    if (!file) return
+  async function handleImageChange(files: File[]) {
+    if (!files.length || imageUploading) return
+    if (imageUrls.length + files.length > 6) { toast.error(t('offers.form.galleryLimit')); return }
     setImageUploading(true)
     try {
-      const url = await uploadBusinessImage(file, businessId === NO_BUSINESS_VALUE ? 'general' : businessId, 'offers')
-      setImageUrl(url)
+      files.forEach(validateImageFile)
+      for (const file of files) {
+        const url = await uploadBusinessImage(file, businessId === NO_BUSINESS_VALUE ? 'general' : businessId, 'offers')
+        setImageUrls(current => [...current, url])
+      }
     } catch (error) {
       if (error instanceof ImageValidationError) toast.error(t(`businesses.form.imageErrors.${error.message}`))
       else toast.error((error as Error).message)
@@ -68,6 +73,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
+    if (imageUploading || upsert.isPending) return
     try {
       const result = await upsert.mutateAsync({
         id: offer?.id ?? null,
@@ -80,7 +86,9 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           discount_value: discountValue ? Number(discountValue) : null,
           original_price: originalPrice ? Number(originalPrice) : null,
           offer_price: offerPrice ? Number(offerPrice) : null,
-          image_url: imageUrl,
+          image_url: imageUrls[0] ?? null,
+          image_urls: imageUrls,
+          offer_type_label: offerTypeLabel.trim() || null,
           valid_from: validFrom ? new Date(validFrom).toISOString() : null,
           valid_until: validUntil ? new Date(validUntil).toISOString() : null,
           member_only: memberOnly,
@@ -144,10 +152,20 @@ export function OfferForm({ offer }: { offer?: Offer }) {
               <Label htmlFor="offer-image" className="cursor-pointer">
                 <span className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm">
                   <Upload className="size-4" />
-                  {t('offers.form.uploadImage')}
+                  {t(imageUploading ? 'offers.form.uploadingImages' : 'offers.form.addImages')}
                 </span>
               </Label>
-              <input id="offer-image" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={imageUploading} onChange={e => handleImageChange(e.target.files?.[0])} />
+              <input id="offer-image" type="file" multiple accept="image/jpeg,image/png,image/webp" className="hidden" disabled={imageUploading || imageUrls.length >= 6} onChange={e => { void handleImageChange(Array.from(e.target.files ?? [])); e.target.value = '' }} />
+              <p className="mt-2 text-xs text-muted-foreground" role="status">{t('offers.form.galleryHint', { count: imageUrls.length })}</p>
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {imageUrls.map((url, index) => (
+                  <div key={url} className="flex flex-col gap-2 rounded-lg border border-border p-2">
+                    <img src={url} alt={t('offers.form.imageNumber', { number: index + 1 })} className="aspect-square w-full rounded-md bg-white object-contain" />
+                    <Button type="button" size="sm" variant={index === 0 ? 'secondary' : 'outline'} disabled={imageUploading || index === 0} onClick={() => setImageUrls(current => [url, ...current.filter(image => image !== url)])}>{t(index === 0 ? 'offers.form.coverImage' : 'offers.form.makeCover')}</Button>
+                    <Button type="button" size="sm" variant="ghost" disabled={imageUploading} onClick={() => setImageUrls(current => current.filter(image => image !== url))}>{t('offers.form.removeImage')}</Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -156,7 +174,12 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           <CardContent className="flex flex-col gap-4 p-4">
             <h2 className="text-sm font-semibold text-foreground">{t('offers.form.sections.pricing')}</h2>
             <div className="flex flex-col gap-2">
-              <Label>{t('offers.form.discountType')}</Label>
+              <Label htmlFor="offerTypeLabel">{t('offers.form.customType')}</Label>
+              <Input id="offerTypeLabel" maxLength={80} value={offerTypeLabel} placeholder={t('offers.form.customTypePlaceholder')} onChange={e => setOfferTypeLabel(e.target.value)} />
+              <p className="text-xs text-muted-foreground">{t('offers.form.customTypeHint')}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>{t('offers.form.pricingMethod')}</Label>
               <Select value={discountType} onValueChange={v => setDiscountType(v as OfferDiscountType)}>
                 <SelectTrigger>
                   <SelectValue />
@@ -225,7 +248,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             {t('common.cancel')}
           </Button>
-          <Button type="submit" disabled={upsert.isPending}>
+          <Button type="submit" disabled={upsert.isPending || imageUploading}>
             {t('common.save')}
           </Button>
         </div>
@@ -237,7 +260,9 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           title={title}
           description={description}
           businessName={selectedBusinessName}
-          imageUrl={imageUrl}
+          imageUrl={imageUrls[0] ?? null}
+          imageUrls={imageUrls}
+          offerTypeLabel={offerTypeLabel}
           discountType={discountType}
           discountValue={discountValue ? Number(discountValue) : null}
           originalPrice={originalPrice ? Number(originalPrice) : null}

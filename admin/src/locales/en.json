@@ -404,7 +404,19 @@
       "pointsRequired": "Points required",
       "pointsRequiredHint": "Leave empty if the offer doesn't cost points to use.",
       "savedCreate": "Offer created.",
-      "savedEdit": "Offer updated."
+      "savedEdit": "Offer updated.",
+      "addImages": "Add photos",
+      "uploadingImages": "Uploading photos…",
+      "galleryLimit": "You can add up to 6 photos per offer.",
+      "galleryHint": "{{count}} of 6 photos • First photo is the cover • PNG, JPEG or WebP, up to 5 MB each.",
+      "imageNumber": "Photo {{number}}",
+      "coverImage": "Cover photo",
+      "makeCover": "Set as cover",
+      "removeImage": "Remove photo",
+      "customType": "Offer type (your own text)",
+      "customTypePlaceholder": "For example: AKHOO sticker or gift for points",
+      "customTypeHint": "A name shown to users. Leave blank to use the default type.",
+      "pricingMethod": "Pricing method"
     },
     "preview": {
       "businessPlaceholder": "Business name",

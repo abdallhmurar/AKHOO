@@ -29,6 +29,7 @@ import { EmptyState } from '../../components/EmptyState'
 import { MembershipSheet } from '../../components/MembershipSheet'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { OfferCard } from '../../components/OfferCard'
+import { OfferGallery } from '../../components/OfferGallery'
 import { PlusBadge } from '../../components/PlusBadge'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
@@ -184,16 +185,17 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
   const price = computeOfferPriceDisplay(offer)
   const savings = computeSavings(price)
   const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
-  const imageUri = offer.image_url ?? business?.logo_url
+  const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url
   const textAlign = isRTL ? 'right' : 'left'
   return (
     <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
       <View style={[styles.realOfferTopRow, dirStyles(isRTL).row]}>
         <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }]}>
-          {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="cover" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
+          {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="contain" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
         </View>
         <View style={styles.realOfferBody}>
           <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
+          {offer.offer_type_label ? <Text style={[typography.smallMedium, { color: theme.colors.community, textAlign }]}>{offer.offer_type_label}</Text> : null}
           {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
           {offer.member_only ? <PlusBadge size="sm" /> : null}
           {price.kind === 'free_benefit' ? <Text style={[typography.bodyMedium, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft, textAlign }]}>{t('perks.offer.free')}</Text> : (
@@ -386,12 +388,14 @@ export function OfferDetailScreen() {
   const { offer, business, rating } = query.data
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_url ?? business?.logo_url ?? null
+  const images = offer.image_urls?.length ? offer.image_urls : imageUri ? [imageUri] : []
 
   return (
     <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} loading={creating} />} contentStyle={styles.content}>
-      {imageUri ? <Image source={{ uri: imageUri }} style={styles.offerHero} resizeMode="cover" /> : <View style={[styles.offerHero, styles.galleryFallback, { backgroundColor: theme.colors.rewardSoft }]} />}
+      {images.length ? <OfferGallery key={offer.id} images={images} title={offer.title} /> : <View style={[styles.offerHero, styles.galleryFallback, { backgroundColor: theme.colors.rewardSoft }]} />}
       {offer.member_only ? <PlusBadge size="md" /> : null}
       <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.title}</Text>
+      {offer.offer_type_label ? <Text style={[typography.bodyMedium, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{offer.offer_type_label}</Text> : null}
 
       {business ? (
         <Pressable onPress={() => router.push({ pathname: '/community/business/[businessId]', params: { businessId: business.id } })} style={[styles.businessRow, { ...dirStyles(isRTL).row, borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
@@ -505,7 +509,7 @@ const styles = StyleSheet.create({
   offersList: { gap: space.md },
   realOfferCard: { borderWidth: 1, borderRadius: radius.lg, padding: space.sm },
   realOfferTopRow: { alignItems: 'stretch', gap: space.sm },
-  realOfferImageWrap: { width: '39%', minHeight: 108, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  realOfferImageWrap: { width: '39%', aspectRatio: 1, alignSelf: 'center', borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   realOfferImage: { position: 'absolute', width: '100%', height: '100%' },
   realOfferBody: { flex: 1, gap: 4, paddingVertical: 4 },
   hubPriceRow: { alignItems: 'center', flexWrap: 'wrap', gap: space.sm, marginTop: space.sm },

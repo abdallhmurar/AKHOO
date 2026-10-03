@@ -13,6 +13,8 @@ export type OfferFormPayload = {
   original_price: number | null
   offer_price: number | null
   image_url: string | null
+  image_urls: string[]
+  offer_type_label: string | null
   valid_from: string | null
   valid_until: string | null
   member_only: boolean

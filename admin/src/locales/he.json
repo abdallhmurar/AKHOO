@@ -404,7 +404,19 @@
       "pointsRequired": "נקודות נדרשות",
       "pointsRequiredHint": "השאר ריק אם השימוש במבצע אינו עולה נקודות.",
       "savedCreate": "המבצע נוצר.",
-      "savedEdit": "המבצע עודכן."
+      "savedEdit": "המבצע עודכן.",
+      "addImages": "הוספת תמונות",
+      "uploadingImages": "מעלה תמונות…",
+      "galleryLimit": "ניתן להוסיף עד 6 תמונות להצעה.",
+      "galleryHint": "{{count}} מתוך 6 תמונות • התמונה הראשונה היא תמונת השער • PNG, JPEG או WebP, עד 5 MB לתמונה.",
+      "imageNumber": "תמונה {{number}}",
+      "coverImage": "תמונת שער",
+      "makeCover": "הגדרה כתמונת שער",
+      "removeImage": "הסרת תמונה",
+      "customType": "סוג ההצעה (טקסט חופשי)",
+      "customTypePlaceholder": "למשל: מדבקת אח׳ו או מתנה תמורת נקודות",
+      "customTypeHint": "שם שיוצג למשתמש. השאירו ריק כדי להשתמש בסוג ברירת המחדל.",
+      "pricingMethod": "שיטת תמחור"
     },
     "preview": {
       "businessPlaceholder": "שם העסק",

@@ -164,7 +164,8 @@ export function OfferDetailPage() {
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase text-muted-foreground">{t('offers.form.discountType')}</p>
-                <p className="text-sm text-foreground">{t(`offers.discountTypes.${offer.discount_type}`)}</p>
+                <p className="text-sm text-foreground">{offer.offer_type_label || t(`offers.discountTypes.${offer.discount_type}`)}</p>
+                {offer.offer_type_label ? <p className="text-xs text-muted-foreground">{t('offers.form.pricingMethod')}: {t(`offers.discountTypes.${offer.discount_type}`)}</p> : null}
               </div>
               {offer.terms ? (
                 <div className="col-span-2 sm:col-span-3">
@@ -201,6 +202,8 @@ export function OfferDetailPage() {
             description={offer.description ?? ''}
             businessName={business?.name ?? null}
             imageUrl={offer.image_url}
+            imageUrls={offer.image_urls}
+            offerTypeLabel={offer.offer_type_label}
             discountType={offer.discount_type}
             discountValue={offer.discount_value}
             originalPrice={offer.original_price}

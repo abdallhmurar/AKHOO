@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ImageOff, Sparkles, Tag } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,6 +14,8 @@ export function OfferPreviewCard({
   description,
   businessName,
   imageUrl,
+  imageUrls,
+  offerTypeLabel,
   discountType,
   discountValue,
   originalPrice,
@@ -24,6 +27,8 @@ export function OfferPreviewCard({
   description: string
   businessName: string | null
   imageUrl: string | null
+  imageUrls?: string[]
+  offerTypeLabel?: string | null
   discountType: OfferDiscountType
   discountValue: number | null
   originalPrice: number | null
@@ -32,12 +37,16 @@ export function OfferPreviewCard({
   memberOnly?: boolean
 }) {
   const { t } = useTranslation()
+  const [selected, setSelected] = useState<string | null>(null)
+  const images = imageUrls?.length ? imageUrls : imageUrl ? [imageUrl] : []
+  const active = selected && images.includes(selected) ? selected : images[0]
 
   return (
     <Card className="overflow-hidden">
-      <div className="flex h-32 items-center justify-center bg-secondary">
-        {imageUrl ? <img src={imageUrl} alt="" className="size-full object-cover" /> : <ImageOff className="size-8 text-muted-foreground" />}
+      <div className="flex aspect-square items-center justify-center bg-white">
+        {active ? <img src={active} alt={title} className="size-full object-contain" /> : <ImageOff className="size-8 text-muted-foreground" />}
       </div>
+      {images.length > 1 ? <div className="flex flex-wrap gap-2 p-3">{images.map((url, index) => <button type="button" key={url} aria-label={t('offers.form.imageNumber', { number: index + 1 })} aria-pressed={active === url} onClick={() => setSelected(url)} className={`size-14 overflow-hidden rounded-md border-2 bg-white ${active === url ? 'border-primary' : 'border-border'}`}><img src={url} alt="" className="size-full object-contain" /></button>)}</div> : null}
       <CardContent className="flex flex-col gap-2 p-4">
         {memberOnly ? (
           <span className="inline-flex w-fit items-center gap-1 rounded-full bg-sanad-forest px-2 py-0.5 text-xs font-bold text-sanad-sand">
@@ -57,6 +66,7 @@ export function OfferPreviewCard({
             </span>
           ) : null}
         </div>
+        {offerTypeLabel ? <p className="text-sm font-medium text-sanad-forest">{offerTypeLabel}</p> : null}
         {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
         {originalPrice != null && offerPrice != null ? (
           <div className="flex items-baseline gap-2" dir="ltr">

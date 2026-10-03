@@ -739,7 +739,13 @@
     "noPoints": "بدون نقاط",
     "offerDetails": "تفاصيل العرض",
     "offerDetailsFor": "تفاصيل العرض: {{title}}",
-    "retry": "تعذّر التحميل، حاول مرة ثانية"
+    "retry": "تعذّر التحميل، حاول مرة ثانية",
+    "gallery": {
+      "imageNumber": "الصورة {{number}}",
+      "enlarge": "تكبير صورة {{title}}",
+      "hint": "{{current}} / {{total}} • اضغط على الصورة لتكبيرها",
+      "close": "إغلاق الصورة"
+    }
   },
   "navigation": {
     "home": "الرئيسية",

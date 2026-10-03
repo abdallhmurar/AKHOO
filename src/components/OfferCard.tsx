@@ -24,12 +24,12 @@ export function OfferCard({
 }) {
   const dir = dirStyles(useIsRTL())
   const price = computeOfferPriceDisplay(offer)
-  const imageUri = offer.image_url ?? business?.logo_url ?? null
+  const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url ?? null
 
   return (
     <Tactile onPress={onPress} style={[styles.card, variant === 'rail' ? styles.railCard : styles.listCard]} scaleTo={0.97}>
       <View style={styles.imageWrap}>
-        {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" /> : <View style={[styles.image, styles.imageFallback]} />}
+        {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" /> : <View style={[styles.image, styles.imageFallback]} />}
         {offer.member_only ? <View style={styles.badgeWrap}><PlusBadge /></View> : null}
         {/* Business logo overlaps the image's bottom corner (delivery-app
             card anatomy from the reference board's discount/deals research)
@@ -43,6 +43,7 @@ export function OfferCard({
       </View>
       <View style={styles.body}>
         <Text style={[styles.title, dir.textStart]} numberOfLines={2}>{offer.title}</Text>
+        {offer.offer_type_label ? <Text style={[styles.business, dir.textStart]}>{offer.offer_type_label}</Text> : null}
         {business ? <Text style={[styles.business, dir.textStart]} numberOfLines={1}>{business.name}</Text> : null}
         <View style={[styles.footer, dir.row]}>
           <PriceLine price={price} />

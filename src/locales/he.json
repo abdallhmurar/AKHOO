@@ -739,7 +739,13 @@
     "noPoints": "ללא נקודות",
     "offerDetails": "פרטי ההטבה",
     "offerDetailsFor": "פרטי ההטבה: {{title}}",
-    "retry": "הטעינה נכשלה, נסו שוב"
+    "retry": "הטעינה נכשלה, נסו שוב",
+    "gallery": {
+      "imageNumber": "תמונה {{number}}",
+      "enlarge": "הגדלת התמונה של {{title}}",
+      "hint": "{{current}} / {{total}} • לחצו על התמונה להגדלה",
+      "close": "סגירת התמונה"
+    }
   },
   "navigation": {
     "home": "בית",
