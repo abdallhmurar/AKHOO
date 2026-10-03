@@ -63,7 +63,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
     >
       <View style={[styles.content, dirStyles(isRTL).row]}>
         {loading ? <ActivityIndicator size="small" color={blocked ? theme.colors.disabledContent : foregrounds[variant]} /> : leading}
-        <Text numberOfLines={1} style={[typography.button, { color: blocked ? theme.colors.disabledContent : foregrounds[variant] }]}>{label}</Text>
+        <Text style={[typography.button, styles.label, { color: blocked ? theme.colors.disabledContent : foregrounds[variant] }]}>{label}</Text>
         {!loading ? trailing : null}
       </View>
     </Pressable>
@@ -71,9 +71,10 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, borderWidth: 0 },
+  base: { borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingVertical: space.sm, borderWidth: 0 },
   full: { alignSelf: 'stretch' },
   outline: { borderWidth: 1 },
-  content: { alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  content: { maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  label: { flexShrink: 1, textAlign: 'center' },
   pressed: { opacity: 0.88, transform: [{ scale: 0.985 }] }
 })

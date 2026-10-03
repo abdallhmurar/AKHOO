@@ -9,4 +9,3 @@ jobs:
     params:
       channel: production
       platform: all
-      message: Home card arrows and latest approved app improvements

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Platform } from 'react-native'
 import type { TextStyle } from 'react-native'
 
 export type FontWeightName = 'regular' | 'medium' | 'semibold' | 'bold' | 'extraBold'
@@ -43,10 +44,20 @@ export function useAppFont(weight: FontWeightName = 'regular') {
 }
 
 export function createTypography(language: string | undefined) {
+  const isArabic = normalizeTypographyLanguage(language) === 'ar'
   const family = (weight: FontWeightName) => getFontFamily(language, weight)
-  const text = (weight: FontWeightName, fontSize: number, lineHeight: number, extra?: TextStyle): TextStyle => ({
-    fontFamily: family(weight), fontSize, lineHeight, ...extra
-  })
+  const text = (weight: FontWeightName, fontSize: number, lineHeight: number, extra?: TextStyle): TextStyle => {
+    const style: TextStyle = { fontFamily: family(weight), fontSize, lineHeight, ...extra }
+    if (isArabic) {
+      // Arabic is a connected script: don't apply Latin tracking to its glyphs.
+      delete style.letterSpacing
+      style.writingDirection = 'rtl'
+      // Let iOS use the loaded Arabic font's own metrics, including Dynamic Type,
+      // rather than squeezing multiline glyphs into a fixed line box.
+      if (Platform.OS === 'ios') delete style.lineHeight
+    }
+    return style
+  }
   return {
     // Every size here is one notch smaller than before (on top of the
     // generous line-height-to-font-size ratio already fixed for
