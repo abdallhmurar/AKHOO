@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { ArrowLeft, ArrowRight, Camera, PaperPlaneTilt, X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { setLastReadAt } from '../../lib/chatReadTracker'
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { translateActionError } from '../../lib/rpcErrors'
@@ -32,6 +33,7 @@ export function MissionChatScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
+  const insets = useSafeAreaInsets()
   const { t, i18n } = useTranslation()
   const closeLabel = i18n.language === 'en' ? 'Close' : i18n.language === 'he' ? 'סגירה' : 'إغلاق'
   const router = useRouter()
@@ -135,7 +137,7 @@ export function MissionChatScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
-      <View style={[styles.fill, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.fill, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
         <View style={[styles.header, dirStyles(isRTL).row, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
           <IconButton label={t('common.back')} size={40} icon={<BackIcon size={18} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
           <View style={styles.headerCopy}>
