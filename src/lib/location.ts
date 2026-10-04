@@ -3,6 +3,7 @@ import * as TaskManager from 'expo-task-manager'
 import { supabase } from './supabase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
+import { CURRENT_MARKET_CODE } from './market'
 
 const BACKGROUND_LOCATION_TASK = 'sanad-background-location'
 
@@ -98,7 +99,7 @@ export function distanceKm(lat1: number, lon1: number, lat2: number, lon2: numbe
 export type PilotZone = { center_lat: number; center_lng: number; radius_km: number }
 
 export async function getActivePilotZones(): Promise<PilotZone[]> {
-  const { data } = await supabase.from('pilot_zones').select('center_lat, center_lng, radius_km').eq('active', true)
+  const { data } = await supabase.from('pilot_zones').select('center_lat, center_lng, radius_km').eq('market', CURRENT_MARKET_CODE).eq('active', true)
   return (data ?? []) as PilotZone[]
 }
 

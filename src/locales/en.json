@@ -215,7 +215,7 @@
     },
     "pilotZone": {
       "title": "Outside the Pilot Area",
-      "message": "AKHOO is currently available within the Jerusalem pilot area."
+      "message": "The selected location is outside the currently available service area."
     },
     "serviceCards": {
       "battery": {

@@ -20,7 +20,7 @@ export function MapPanel({ latitude = 31.7784, longitude = 35.2066, markers = []
   return (
     <View style={[styles.wrap, shadow.soft, { height, borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceMuted }]}>
       <SanadMap key={mapKey} latitude={latitude} longitude={longitude} zoom={13} interactive={interactive} markers={markers} selectedId={selectedId} onMarkerPress={onMarkerPress} onMapPress={onMapPress} style={styles.map} />
-      <View style={[styles.top, isRTL ? styles.topRTL : styles.topLTR]}><StatusBadge label={tr('منطقة خدمة القدس', 'אזור השירות בירושלים', 'Jerusalem service area')} tone="success" dot /></View>
+      <View style={[styles.top, isRTL ? styles.topRTL : styles.topLTR]}><StatusBadge label={tr('المساعدة بالقرب منك', 'עזרה בקרבתך', 'Help near you')} tone="success" dot /></View>
       <View style={[styles.controls, isRTL ? styles.controlsRTL : styles.controlsLTR]}><IconButton label={tr('إعادة توسيط الخريطة', 'מרכוז המפה מחדש', 'Recenter map')} icon={<Crosshair size={20} color={theme.colors.primary} />} onPress={() => setMapKey(value => value + 1)} /></View>
       {overlay !== undefined ? (overlay ? <View style={[styles.overlay, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>{overlay}</View> : null) : (
         <View style={[styles.overlay, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, ...dirStyles(isRTL).row }]}>

@@ -11,8 +11,8 @@ export const MARKETS: Record<string, MarketConfig> = {
   IL: { countryCode: 'IL', currencyCode: 'ILS', currencySymbol: '₪', membershipPrice: 59, locale: 'he-IL' }
 }
 
-// Jerusalem pilot (Phase 2) - JO stays in the registry as proof the
-// market-config pattern genuinely supports more than one market.
+// Shared ILS commercial configuration across Palestine and Israel.
+// Service coverage is configured separately in pilot_zones.
 export const CURRENT_MARKET_CODE = 'IL'
 export const CURRENT_MARKET = MARKETS[CURRENT_MARKET_CODE]!
 
@@ -26,7 +26,7 @@ export type MarketFeatureFlags = {
 
 export const MARKET_FEATURES: Record<string, MarketFeatureFlags> = {
   JO: { sanadPlus: true, partners: true, rewards: false, professionalBackup: true, paidServices: false },
-  // Jerusalem pilot (Phase 2): community help + partners + volunteer
+  // Regional rollout: community help + partners + volunteer
   // rewards only - no real SANAD+ payments or paid professional fallback yet.
   IL: { sanadPlus: false, partners: true, rewards: true, professionalBackup: false, paidServices: false }
 }
