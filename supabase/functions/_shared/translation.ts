@@ -23,12 +23,12 @@ export function translationFields(input: unknown): Record<string, string> {
 }
 
 // Plain-text mode keeps markup inert. Credentials never leave this server.
-export async function translateArabic(fields: Record<string, string>, apiKey: string, request: typeof fetch = fetch): Promise<ContentTranslations> {
+export async function translateArabic(fields: Record<string, string>, credential: string | { accessToken: string }, request: typeof fetch = fetch): Promise<ContentTranslations> {
   const entries = Object.entries(fields).filter(([, value]) => value.trim())
   if (!entries.length) return { ar: fields, en: { ...fields }, he: { ...fields } }
   const translations = await Promise.all(['en', 'he'].map(async target => {
     const response = await request('https://translation.googleapis.com/language/translate/v2', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': apiKey },
+      method: 'POST', headers: { 'Content-Type': 'application/json', ...(typeof credential === 'string' ? { 'X-Goog-Api-Key': credential } : { Authorization: `Bearer ${credential.accessToken}` }) },
       body: JSON.stringify({ q: entries.map(([, text]) => text), source: 'ar', target, format: 'text' }),
       signal: AbortSignal.timeout(25000)
     })
