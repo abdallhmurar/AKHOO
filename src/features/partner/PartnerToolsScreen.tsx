@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Redirect } from 'expo-router'
+import { Redirect, useRouter } from 'expo-router'
 import { ArrowClockwise, ClockCounterClockwise, QrCode, Storefront, Tag, UsersThree } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { AppScreen, ListRow, ScreenHeader } from '../../components/v2'
@@ -22,6 +22,7 @@ export function PartnerToolsScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
+  const router = useRouter()
   const { status, access, refetch } = usePartnerAccess()
   const [selectedTool, setSelectedTool] = useState<(typeof TOOL_ENTRIES)[number]['key'] | null>(null)
   const header = <ScreenHeader title={t('partnerTools.title')} back />
@@ -47,7 +48,13 @@ export function PartnerToolsScreen() {
       </Card>
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         {TOOL_ENTRIES.map(({ key, Icon }) => (
-          <ListRow key={key} Icon={Icon} title={t(`partnerTools.tools.${key}`)} subtitle={t('partnerTools.comingSoon')} onPress={() => setSelectedTool(key)} />
+          <ListRow
+            key={key}
+            Icon={Icon}
+            title={t(`partnerTools.tools.${key}`)}
+            subtitle={key === 'scanner' ? undefined : t('partnerTools.comingSoon')}
+            onPress={() => (key === 'scanner' ? router.push('/(tabs)/account/partner-scanner') : setSelectedTool(key))}
+          />
         ))}
       </View>
       <BottomSheet visible={selectedTool !== null} onClose={() => setSelectedTool(null)} title={selectedTool ? t(`partnerTools.tools.${selectedTool}`) : ''} subtitle={t('partnerTools.futureToolMessage')} />

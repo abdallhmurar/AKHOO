@@ -18,5 +18,11 @@ export const redemptionRepository = {
     const { data, error } = await supabase.from('offer_redemptions').select('*').eq('user_id', userId).order('created_at', { ascending: false })
     throwIfError(error, { domain: 'redemptions', operation: 'mine' })
     return (data ?? []) as OfferRedemption[]
+  },
+
+  async redeemByPartner(code: string): Promise<OfferRedemption> {
+    const { data, error } = await supabase.rpc('partner_redeem_offer_code', { p_code: code })
+    throwIfError(error, { domain: 'redemptions', operation: 'redeem-by-partner' })
+    return data as OfferRedemption
   }
 }

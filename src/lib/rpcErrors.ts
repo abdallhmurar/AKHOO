@@ -19,7 +19,9 @@ const KNOWN_MESSAGES: Record<string, string> = {
   'Not your mission': 'common.rpcErrors.notYourMission',
   'Mission cannot be released from its current state': 'common.rpcErrors.cannotRelease',
   'You already released this mission': 'common.rpcErrors.alreadyReleased',
-  'Too many messages. Please wait a moment and try again.': 'common.rpcErrors.tooManyMessages'
+  'Too many messages. Please wait a moment and try again.': 'common.rpcErrors.tooManyMessages',
+  'Invalid, expired, or already-used code': 'common.rpcErrors.redemptionCodeInvalid',
+  'Not authorized to redeem this code': 'common.rpcErrors.redemptionNotAuthorized'
 }
 
 export function translateActionError(t: TFunction, error: { message?: string; code?: string } | null | undefined): string {

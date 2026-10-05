@@ -59,6 +59,13 @@
           "microphonePermission": false
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "أخوو يحتاج الكاميرا حتى يقدر الشريك التجاري يمسح رمز QR لاستخدام العرض. / AKHOO needs the camera so a business partner can scan a QR code to redeem an offer. / לאחוו דרוש המצלמה כדי שהעסק השותף יוכל לסרוק קוד QR למימוש הטבה.",
+          "microphonePermission": false
+        }
+      ],
       "expo-font",
       "expo-web-browser",
       "expo-video",

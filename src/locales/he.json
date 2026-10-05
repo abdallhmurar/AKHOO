@@ -33,7 +33,9 @@
       "notYourMission": "המשימה הזו אינה שלך.",
       "cannotRelease": "לא ניתן לשחרר את המשימה במצבה הנוכחי.",
       "alreadyReleased": "כבר שחררת בקשה זו, ולכן לא ניתן לקבל אותה שוב.",
-      "tooManyMessages": "נשלחו הרבה הודעות בזמן קצר. המתינו מעט ונסו שוב."
+      "tooManyMessages": "נשלחו הרבה הודעות בזמן קצר. המתינו מעט ונסו שוב.",
+      "redemptionCodeInvalid": "הקוד הזה לא תקין, פג תוקף, או כבר נוצל.",
+      "redemptionNotAuthorized": "ההטבה הזו לא שייכת לעסק שלך."
     },
     "search": "חיפוש"
   },
@@ -778,7 +780,18 @@
       "offers": "הטבות פעילות"
     },
     "loadErrorTitle": "לא ניתן לאמת הרשאה",
-    "loadErrorMessage": "בדקו את החיבור ונסו שוב כדי לאמת את הרשאת השותף."
+    "loadErrorMessage": "בדקו את החיבור ונסו שוב כדי לאמת את הרשאת השותף.",
+    "scanner": {
+      "permissionTitle": "נדרשת גישה למצלמה",
+      "permissionMessage": "אחוו צריך גישה למצלמה כדי שתוכלו לסרוק את קוד ה-QR של הלקוח למימוש הטבה.",
+      "permissionAction": "אפשר גישה למצלמה",
+      "hint": "כוונו את המצלמה לקוד ה-QR של הלקוח",
+      "successTitle": "ההטבה מומשה בהצלחה",
+      "successSubtitle": "ההטבה סומנה כמנוצלת.",
+      "successSubtitlePoints": "{{points}} נקודות נוכו מהלקוח.",
+      "errorTitle": "לא הצלחנו להשתמש בקוד הזה",
+      "scanAgain": "סריקת קוד נוסף"
+    }
   },
   "announcements": {
     "title": "התראות",

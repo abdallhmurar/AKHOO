@@ -33,7 +33,9 @@
       "notYourMission": "This mission isn't yours.",
       "cannotRelease": "This mission can't be released from its current state.",
       "alreadyReleased": "You already released this request, so you can't accept it again.",
-      "tooManyMessages": "You've sent a lot of messages in a short time. Wait a moment and try again."
+      "tooManyMessages": "You've sent a lot of messages in a short time. Wait a moment and try again.",
+      "redemptionCodeInvalid": "This code is invalid, expired, or already used.",
+      "redemptionNotAuthorized": "This offer doesn't belong to your business."
     },
     "search": "Search"
   },
@@ -778,7 +780,18 @@
       "offers": "Active Offers"
     },
     "loadErrorTitle": "Unable to verify access",
-    "loadErrorMessage": "Reconnect and try again to verify your Partner access."
+    "loadErrorMessage": "Reconnect and try again to verify your Partner access.",
+    "scanner": {
+      "permissionTitle": "Camera access needed",
+      "permissionMessage": "AKHOO needs camera access so you can scan a customer's QR code to redeem an offer.",
+      "permissionAction": "Allow camera access",
+      "hint": "Point the camera at the customer's QR code",
+      "successTitle": "Offer redeemed successfully",
+      "successSubtitle": "The offer has been marked as used.",
+      "successSubtitlePoints": "{{points}} points were deducted from the customer.",
+      "errorTitle": "Couldn't use this code",
+      "scanAgain": "Scan another code"
+    }
   },
   "announcements": {
     "title": "Notifications",
