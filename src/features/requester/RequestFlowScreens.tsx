@@ -21,6 +21,7 @@ import { useAuth } from '../../providers'
 import { AppScreen, MapPanel, ScreenHeader } from '../../components/v2'
 import { Button, TextArea, TextField } from '../../components/ui'
 import type { ServiceType } from '../../types'
+import { SandRescueButton } from '../../components/SandRescueButton'
 
 type Locale = 'ar' | 'he' | 'en'
 
@@ -357,6 +358,7 @@ export function RequestFlowScreen() {
           <GuideTarget id="request.services"><View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
             {SERVICES.map(item => renderServiceBanner(item))}
           </View></GuideTarget>
+          <SandRescueButton />
         </>
       ) : null}
 

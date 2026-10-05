@@ -1,4 +1,11 @@
 {
+  "sandRescue": {
+    "title": "SAND Search & Rescue",
+    "subtitle": "Sea, land and mountain rescue",
+    "call": "Call now",
+    "hint": "Opens the phone dialer for the SAND team",
+    "callError": "Unable to open the phone app on this device."
+  },
   "common": {
     "back": "Back",
     "next": "Next",
