@@ -14,7 +14,7 @@
         "CFBundleAllowMixedLocalizations": true,
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "15"
+      "buildNumber": "16"
     },
     "android": {
       "package": "app.akhoo.help",
