@@ -62,7 +62,7 @@
         "expo-image-picker",
         {
           "photosPermission": "أخوو يحتاج الوصول لصورك حتى تختار صورة شخصية أو صورة لطلب المساعدة. / AKHOO needs access to your photos so you can pick a profile picture or a photo for a help request. / לאחוו דרוש גישה לתמונות שלך כדי לבחור תמונת פרופיל או תמונה לבקשת עזרה.",
-          "cameraPermission": false,
+          "cameraPermission": "أخوو يحتاج الكاميرا حتى يقدر الشريك التجاري يمسح رمز QR لاستخدام العرض. / AKHOO needs the camera so a business partner can scan a QR code to redeem an offer. / לאחוו דרוש המצלמה כדי שהעסק השותף יוכל לסרוק קוד QR למימוש הטבה.",
           "microphonePermission": false
         }
       ],
