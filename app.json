@@ -25,7 +25,9 @@
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "blockedPermissions": [
         "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_LOCATION"
@@ -41,7 +43,8 @@
         {
           "locationWhenInUsePermission": "أخوو يحتاج موقعك لإرسال طلب المساعدة للمتطوعين القريبين منك. / AKHOO needs your location to send your help request to nearby volunteers. / לאחוו דרוש המיקום שלך כדי לשלוח את בקשת העזרה למתנדבים קרובים.",
           "locationAlwaysAndWhenInUsePermission": "أخوو يحتاج موقعك أثناء التوفر كمتطوع حتى تظهر لك الطلبات القريبة حتى لو التطبيق بالخلفية. / AKHOO needs your location while you're available as a volunteer, so nearby requests reach you even in the background. / לאחוו דרוש המיקום שלך בזמן זמינותך כמתנדב, כדי שבקשות קרובות יגיעו אליך גם ברקע.",
-          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false,
           "isIosBackgroundLocationEnabled": true
         }
       ],

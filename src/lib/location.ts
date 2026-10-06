@@ -39,7 +39,11 @@ TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
 })
 
 export async function startBackgroundLocationUpdates(userId: string, notification: { title: string; body: string }) {
-  if (Platform.OS === 'web') return false
+  // Android ships without ACCESS_BACKGROUND_LOCATION / FOREGROUND_SERVICE_LOCATION
+  // for now (Play requires a permission declaration + in-app disclosure for
+  // them); a volunteer's position there only refreshes while the app is open.
+  // iOS keeps true background updates.
+  if (Platform.OS !== 'ios') return false
   const permission = await Location.requestBackgroundPermissionsAsync()
   if (permission.status !== 'granted') return false
   await AsyncStorage.setItem(BACKGROUND_USER_KEY, userId)
