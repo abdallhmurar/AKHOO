@@ -34,6 +34,11 @@
         "ascApiKeyPath": "./credentials/ios/AuthKey_VWGJ3XDGBC.p8",
         "ascApiKeyIssuerId": "08c65b01-1819-4e93-ba29-48d94dc9f3e0",
         "ascApiKeyId": "VWGJ3XDGBC"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./credentials/android/ahkoo-507219-f9a58ea16565.json",
+        "track": "internal",
+        "releaseStatus": "draft"
       }
     }
   }
