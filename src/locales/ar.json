@@ -785,6 +785,7 @@
       "permissionTitle": "يحتاج التطبيق إذن الكاميرا",
       "permissionMessage": "عشان تقدر تمسح رمز QR وتستخدم العروض، أخوو محتاج إذن الوصول للكاميرا.",
       "permissionAction": "السماح باستخدام الكاميرا",
+      "permissionSettingsAction": "فتح إعدادات التطبيق",
       "hint": "وجّه الكاميرا نحو رمز QR يلي عند العميل",
       "successTitle": "تم استخدام العرض بنجاح",
       "successSubtitle": "العرض اتسجل كمستخدَم.",

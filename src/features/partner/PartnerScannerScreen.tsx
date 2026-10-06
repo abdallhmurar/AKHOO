@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Linking, StyleSheet, Text, View } from 'react-native'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useTranslation } from 'react-i18next'
 import { Camera as CameraIcon, CheckCircle, WarningCircle } from 'phosphor-react-native'
@@ -48,14 +48,18 @@ export function PartnerScannerScreen() {
   }
 
   if (!permission.granted) {
+    // Once Android/iOS has permanently denied the camera, requestPermission()
+    // resolves silently without showing a dialog - the only way back is the
+    // system settings screen.
+    const needsSettings = !permission.canAskAgain
     return (
       <AppScreen header={header}>
         <EmptyState
           icon={<CameraIcon size={38} color={theme.colors.primary} weight="duotone" />}
           title={t('partnerTools.scanner.permissionTitle')}
           message={t('partnerTools.scanner.permissionMessage')}
-          actionLabel={t('partnerTools.scanner.permissionAction')}
-          onAction={() => { void requestPermission() }}
+          actionLabel={t(needsSettings ? 'partnerTools.scanner.permissionSettingsAction' : 'partnerTools.scanner.permissionAction')}
+          onAction={() => { void (needsSettings ? Linking.openSettings() : requestPermission()) }}
         />
       </AppScreen>
     )

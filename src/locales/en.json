@@ -785,6 +785,7 @@
       "permissionTitle": "Camera access needed",
       "permissionMessage": "AKHOO needs camera access so you can scan a customer's QR code to redeem an offer.",
       "permissionAction": "Allow camera access",
+      "permissionSettingsAction": "Open app settings",
       "hint": "Point the camera at the customer's QR code",
       "successTitle": "Offer redeemed successfully",
       "successSubtitle": "The offer has been marked as used.",

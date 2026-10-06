@@ -785,6 +785,7 @@
       "permissionTitle": "נדרשת גישה למצלמה",
       "permissionMessage": "אחוו צריך גישה למצלמה כדי שתוכלו לסרוק את קוד ה-QR של הלקוח למימוש הטבה.",
       "permissionAction": "אפשר גישה למצלמה",
+      "permissionSettingsAction": "פתיחת הגדרות האפליקציה",
       "hint": "כוונו את המצלמה לקוד ה-QR של הלקוח",
       "successTitle": "ההטבה מומשה בהצלחה",
       "successSubtitle": "ההטבה סומנה כמנוצלת.",
