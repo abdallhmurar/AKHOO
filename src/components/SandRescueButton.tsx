@@ -36,7 +36,9 @@ export function SandRescueButton() {
 const styles = StyleSheet.create({
   button: { borderRadius: 22, overflow: 'hidden', borderWidth: 1, borderColor: '#EBD59A', marginTop: 16 },
   content: { padding: 14, gap: 12, alignItems: 'center', minHeight: 156, direction: 'ltr' },
-  logo: { width: '31%', maxWidth: 145, aspectRatio: 1 },
+  // Explicit width AND height: a static require() image otherwise keeps its
+  // intrinsic 1254px height (it beat aspectRatio) and stretched the card.
+  logo: { width: 120, height: 120 },
   copy: { flex: 1, minWidth: 0, gap: 7 },
   text: { color: '#503014' },
   call: { alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#573414', borderRadius: 24, paddingHorizontal: 14, paddingVertical: 10, minHeight: 44, marginTop: 3 },
