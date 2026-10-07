@@ -69,6 +69,7 @@
           "microphonePermission": false
         }
       ],
+      "./plugins/withoutLocationForegroundService",
       "expo-font",
       "expo-web-browser",
       "expo-video",
