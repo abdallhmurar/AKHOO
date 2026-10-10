@@ -10,7 +10,9 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_term text := pg_catalog.btrim(coalesce(p_term, ''));
+  -- Case and dots are ignored on both sides: Gmail treats a.b@gmail.com and
+  -- ab@gmail.com as the same mailbox, but the app stores whatever was typed.
+  v_term text := pg_catalog.replace(pg_catalog.lower(pg_catalog.btrim(coalesce(p_term, ''))), '.', '');
 begin
   if not public.is_admin() then
     raise exception 'Not authorized';
@@ -22,7 +24,8 @@ begin
   return query
     select u.id
     from auth.users u
-    where u.email ilike '%' || pg_catalog.replace(pg_catalog.replace(pg_catalog.replace(v_term, '\', '\\'), '%', '\%'), '_', '\_') || '%'
+    where pg_catalog.replace(pg_catalog.lower(u.email), '.', '')
+      like '%' || pg_catalog.replace(pg_catalog.replace(pg_catalog.replace(v_term, '\', '\\'), '%', '\%'), '_', '\_') || '%'
     limit 200;
 end;
 $$;
