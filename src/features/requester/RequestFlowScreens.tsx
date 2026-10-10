@@ -1,6 +1,6 @@
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CheckCircle, GasPump, HandHeart, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
@@ -358,7 +358,8 @@ export function RequestFlowScreen() {
           <GuideTarget id="request.services"><View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
             {SERVICES.map(item => renderServiceBanner(item))}
           </View></GuideTarget>
-          <SandRescueButton />
+          {/* Hidden on iOS only; Android keeps the SAND rescue contact card. */}
+          {Platform.OS !== 'ios' ? <SandRescueButton /> : null}
         </>
       ) : null}
 
