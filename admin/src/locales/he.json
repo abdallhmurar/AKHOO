@@ -162,6 +162,7 @@
     "subtitle": "כל הרשומים בסָנָד.",
     "table": {
       "name": "שם",
+      "email": "אימייל",
       "phone": "טלפון",
       "joined": "הצטרף",
       "status": "סטטוס",
@@ -171,7 +172,7 @@
       "noName": "(ללא שם)",
       "noPhone": "אין טלפון",
       "points": "נקודות",
-      "searchPlaceholder": "חיפוש לפי שם או טלפון"
+      "searchPlaceholder": "חיפוש לפי שם, אימייל או טלפון"
     },
     "detail": {
       "title": "משתמש",

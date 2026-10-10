@@ -12,6 +12,7 @@ export function UsersTable({ rows, isLoading, isError }: { rows: UserRow[]; isLo
 
   const columns: Column<UserRow>[] = [
     { key: 'name', header: t('users.table.name'), cell: row => row.full_name || <span className="text-muted-foreground">{t('users.table.noName')}</span> },
+    { key: 'email', header: t('users.table.email'), cell: row => (row.email ? <span dir="ltr">{row.email}</span> : <span className="text-muted-foreground">—</span>) },
     { key: 'phone', header: t('users.table.phone'), cell: row => <span dir="ltr">{row.phone || t('users.table.noPhone')}</span> },
     {
       key: 'points',

@@ -162,6 +162,7 @@
     "subtitle": "Everyone registered on SANAD.",
     "table": {
       "name": "Name",
+      "email": "Email",
       "phone": "Phone",
       "joined": "Joined",
       "status": "Status",
@@ -171,7 +172,7 @@
       "noName": "(no name)",
       "noPhone": "No phone",
       "points": "Points",
-      "searchPlaceholder": "Search by name or phone"
+      "searchPlaceholder": "Search by name, email or phone"
     },
     "detail": {
       "title": "User",
