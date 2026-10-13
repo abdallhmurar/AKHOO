@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ClipboardList, Users, Award, Store, Tag, Star, Map,
-  Medal, Ticket, Flag, Bell, Image, Crown, MessagesSquare
+  Medal, Ticket, Flag, Bell, MessagesSquare
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSupportOpenCount, useSupportRealtime } from '@/pages/support/useSupport'
@@ -40,8 +40,6 @@ export function SidebarNav() {
 
       <SectionLabel>{t('nav.sections.growth')}</SectionLabel>
       <NavItem to="/notifications" icon={Bell} label={t('nav.notifications')} />
-      <NavItem to="/content" icon={Image} label={t('nav.content')} />
-      <NavItem to="/pro-max" icon={Crown} label={t('nav.proMax')} badge={t('proMax.comingSoonTitle')} />
     </nav>
   )
 }
