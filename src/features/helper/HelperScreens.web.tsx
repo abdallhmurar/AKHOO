@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   mapCard: { marginHorizontal: space.lg, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden', position: 'relative' },
   mapFill: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
   zoomControls: { position: 'absolute', top: space.md, borderRadius: radius.md, borderWidth: 1, overflow: 'hidden' },
-  locateButton: { position: 'absolute', bottom: 36 },
+  locateButton: { position: 'absolute', bottom: 64 },
 
   bottomPanel: { margin: space.lg, marginTop: space.lg, gap: space.lg, borderRadius: radius.xl },
   bottomHeaderRow: { alignItems: 'center', justifyContent: 'space-between', gap: space.md },
