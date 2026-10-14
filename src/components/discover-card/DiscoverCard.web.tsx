@@ -1,77 +1,72 @@
-import { HomeCardArrow } from '../HomeCardArrow'
-import { useState } from "react";
+import { CaretLeft, CaretRight, Gift } from 'phosphor-react-native'
+import { getFontFamily } from '../../lib/typography'
+import { useSanadTheme } from '../../lib/theme'
 
-type Locale = "ar" | "he" | "en";
+type Locale = 'ar' | 'he' | 'en'
 
 type Props = {
-  locale?: Locale;
-  title: string;
-  onPress: () => void;
-};
-
-// Metro needs static string literals to resolve requires - can't build the
-// path from `locale` at runtime, so each language's video is required
-// separately here and looked up below.
-function assetUri(asset: unknown): string {
-  return typeof asset === "string" ? asset : (asset as { uri: string }).uri;
+  locale?: Locale
+  title: string
+  description?: string
+  onPress: () => void
 }
-const VIDEO_BY_LOCALE: Record<Locale, string> = {
-  ar: assetUri(require("./discover-video-ar.mp4")),
-  he: assetUri(require("./discover-video-he.mp4")),
-  en: assetUri(require("./discover-video-en.mp4")),
-};
 
-/** Same pattern as HelpCardLottie.web.tsx / WantToHelpCard.web.tsx: text is baked into each per-language video, no HTML overlay. */
-export default function DiscoverCard({ locale = "ar", title, onPress }: Props) {
-  const [pressed, setPressed] = useState(false);
-  const videoUri = VIDEO_BY_LOCALE[locale] ?? VIDEO_BY_LOCALE.ar;
+// This compact points link is web-only. Native retains its illustrated card.
+const LABELS: Record<Locale, string> = {
+  ar: 'استخدم نقاط مساعداتك بعروض «مزايا أخو»',
+  he: 'השתמשו בנקודות העזרה שלכם בהטבות AKHOO',
+  en: 'Use your helping points for AKHOO Perks offers',
+}
+
+export default function DiscoverCard({ locale = 'ar', onPress }: Props) {
+  const theme = useSanadTheme()
+  const isRTL = locale !== 'en'
+  const Arrow = isRTL ? CaretLeft : CaretRight
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={title}
+    <button
+      type="button"
+      dir={isRTL ? 'rtl' : 'ltr'}
       onClick={onPress}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onPress();
-      }}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
-      onMouseLeave={() => setPressed(false)}
-      onTouchStart={() => setPressed(true)}
-      onTouchEnd={() => setPressed(false)}
       style={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: "1905 / 826",
-        overflow: "hidden",
-        borderRadius: 24,
-        background: "transparent",
-        cursor: "pointer",
-        border: "none",
-        padding: 0,
-        display: "block",
-        transform: pressed ? "scale(0.985)" : "scale(1)",
-        transition: "transform 0.16s ease",
+        width: '100%',
+        minHeight: 64,
+        boxSizing: 'border-box',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '12px 16px',
+        border: 'none',
+        borderRadius: 18,
+        background: theme.isDark ? theme.colors.communitySoft : '#ECFCF5',
+        color: theme.colors.community,
+        fontFamily: getFontFamily(locale, 'semibold'),
+        fontSize: 15,
+        lineHeight: 1.6,
+        textAlign: 'start',
+        cursor: 'pointer',
+        outlineOffset: 4,
       }}
     >
-      <video
-        key={locale}
-        src={videoUri}
-        autoPlay
-        loop
-        muted
-        playsInline
+      <span aria-hidden="true" style={{ display: 'flex', flexShrink: 0 }}>
+        <Gift size={30} color={theme.colors.community} weight="duotone" />
+      </span>
+      <span style={{ flex: 1, minWidth: 0 }}>{LABELS[locale]}</span>
+      <span
+        aria-hidden="true"
         style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
+          width: 32,
+          height: 32,
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '50%',
+          background: theme.isDark ? theme.colors.surface : '#D4F6E9',
         }}
-      />
-      <HomeCardArrow tone="perks" locale={locale} />
-    </div>
-  );
+      >
+        <Arrow size={18} color={theme.colors.community} weight="bold" />
+      </span>
+    </button>
+  )
 }
