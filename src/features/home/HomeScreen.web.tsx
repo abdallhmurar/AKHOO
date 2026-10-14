@@ -2,13 +2,14 @@ import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
+import { ShieldCheck } from 'phosphor-react-native'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { radius, space, useSanadTheme } from '../../lib/theme'
+import { space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useMission } from '../../providers'
 import { AppScreen } from '../../components/v2'
 import { AnnouncementBell } from '../announcements/AnnouncementBell'
-import { Card, StatusBadge, Surface } from '../../components/ui'
+import { Card, StatusBadge } from '../../components/ui'
 import HelpCardLottie from '../../components/help-card/HelpCardLottie'
 import WantToHelpCard from '../../components/want-to-help-card/WantToHelpCard'
 import DiscoverCard from '../../components/discover-card/DiscoverCard'
@@ -33,7 +34,7 @@ export function HomeScreen() {
   }
 
   return (
-    <AppScreen contentStyle={styles.content}>
+    <AppScreen background={theme.isDark ? theme.colors.background : '#F5F8FC'} contentStyle={styles.content}>
       <View style={[styles.topBar, dirStyles(isRTL).row]}>
         <View style={styles.topBarSpacer} />
         <AnnouncementBell />
@@ -74,9 +75,10 @@ export function HomeScreen() {
         /></GuideTarget>
       </View>
 
-      <Surface tone="muted" bordered={false} padding="lg" style={styles.notice}>
-        <Text style={[typography.caption, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.notice')}</Text>
-      </Surface>
+      <View style={[styles.notice, dirStyles(isRTL).row]}>
+        <Text style={[typography.smallMedium, styles.noticeText, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('home.notice')}</Text>
+        <ShieldCheck size={26} color={theme.colors.community} weight="regular" style={styles.noticeIcon} aria-hidden />
+      </View>
     </AppScreen>
   )
 }
@@ -88,7 +90,9 @@ const styles = StyleSheet.create({
   resumeCard: { gap: space.sm },
   resumeTop: { alignItems: 'center' },
   heroCopy: { alignItems: 'center', marginTop: space.xs },
-  heroLine: { textAlign: 'center' },
+  heroLine: { textAlign: 'center', fontSize: 29, lineHeight: 39 },
   stack: { gap: space.lg },
-  notice: { borderRadius: radius.lg }
+  notice: { alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingHorizontal: space.sm, paddingVertical: space.lg },
+  noticeIcon: { flexShrink: 0 },
+  noticeText: { flexShrink: 1, fontSize: 13, lineHeight: 22 }
 })

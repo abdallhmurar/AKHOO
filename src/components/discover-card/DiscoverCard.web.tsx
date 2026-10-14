@@ -36,9 +36,9 @@ export default function DiscoverCard({ locale = 'ar', onPress }: Props) {
         alignItems: 'center',
         gap: 12,
         padding: '12px 16px',
-        border: 'none',
-        borderRadius: 18,
-        background: theme.isDark ? theme.colors.communitySoft : '#ECFCF5',
+        border: `1px solid ${theme.isDark ? theme.colors.community : '#ADEBDD'}`,
+        borderRadius: 22,
+        background: theme.isDark ? theme.colors.communitySoft : 'linear-gradient(110deg, #EFFCF7, #F3FDFB)',
         color: theme.colors.community,
         fontFamily: getFontFamily(locale, 'semibold'),
         fontSize: 15,
@@ -46,10 +46,20 @@ export default function DiscoverCard({ locale = 'ar', onPress }: Props) {
         textAlign: 'start',
         cursor: 'pointer',
         outlineOffset: 4,
+        boxShadow: theme.isDark ? 'none' : '0 5px 18px rgba(20, 125, 98, 0.035)',
       }}
     >
-      <span aria-hidden="true" style={{ display: 'flex', flexShrink: 0 }}>
-        <Gift size={30} color={theme.colors.community} weight="duotone" />
+      <span aria-hidden="true" style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        background: theme.isDark ? theme.colors.surface : '#D6F5EB',
+      }}>
+        <Gift size={26} color={theme.colors.community} weight="regular" />
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>{LABELS[locale]}</span>
       <span

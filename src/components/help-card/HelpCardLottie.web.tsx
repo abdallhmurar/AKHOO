@@ -30,27 +30,34 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
       role="button"
       tabIndex={0}
       onClick={onPress}
+      aria-label={locale === 'en' ? 'I need help' : locale === 'he' ? 'אני צריך עזרה' : 'بدي مساعدة'}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onPress();
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onPress();
+        }
       }}
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
       onTouchStart={() => setPressed(true)}
       onTouchEnd={() => setPressed(false)}
+      onTouchCancel={() => setPressed(false)}
       style={{
         position: "relative",
         width: "100%",
         aspectRatio: "1905 / 826",
         overflow: "hidden",
         borderRadius: 24,
-        background: "transparent",
+        background: "#FDECE8",
+        boxShadow: "0 6px 22px rgba(201, 61, 52, 0.045)",
         cursor: "pointer",
         border: "none",
         padding: 0,
         display: "block",
         transform: pressed ? "scale(0.985)" : "scale(1)",
         transition: "transform 0.16s ease",
+        outlineOffset: 4,
       }}
     >
       <video
@@ -69,6 +76,7 @@ export default function HelpCardLottie({ locale = "ar", onPress }: Props) {
           display: "block",
         }}
       />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', border: '1px solid rgba(255,255,255,0.9)', pointerEvents: 'none' }} />
       <HomeCardArrow tone="help" locale={locale} />
     </div>
   );
