@@ -13,10 +13,10 @@ import type { SanadMapMarker, SanadMapPoint, SanadMapRef } from './SanadMap.type
 // can request the style/sprites/TileJSON fine but can never parse actual
 // vector tile data, so the basemap silently stays blank forever with only
 // the marker visible. Point it at a copy served from public/ instead - a
-// relative URL (no leading slash) so it still resolves correctly whether
-// the app is hosted at a domain root or a GitHub Pages subpath. Set once
-// at module load, before any Map is constructed.
-setWorkerUrl('maplibre-gl-worker.mjs')
+// root-relative URL for the Vercel site. A document-relative URL incorrectly
+// requests /mission/maplibre-gl-worker.mjs when a mission is opened directly,
+// returning the SPA HTML instead of the worker. Set before any Map is created.
+setWorkerUrl('/maplibre-gl-worker.mjs')
 
 function resolveCoords(latitude: number, longitude: number) {
   if (Number.isFinite(latitude) && Number.isFinite(longitude) && (latitude !== 0 || longitude !== 0)) {
