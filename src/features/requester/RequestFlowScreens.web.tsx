@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, Check, CheckCircle, GasPump, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, Check, CheckCircle, Crosshair, GasPump, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -19,7 +19,9 @@ import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
 import { AppScreen, MapPanel, ScreenHeader } from '../../components/v2'
-import { Button, TextArea, TextField } from '../../components/ui'
+import { Button, IconButton, TextArea, TextField } from '../../components/ui'
+import { SanadMap } from '../../components/SanadMap.web'
+import type { SanadMapRef } from '../../components/SanadMap.types'
 import type { ServiceType } from '../../types'
 
 type Locale = 'ar' | 'he' | 'en'
@@ -61,6 +63,12 @@ const DETAILS_COPY = {
   }
 } as const
 
+const LOCATION_COPY = {
+  ar: { subtitle: 'تأكد من موقعك حتى يوصل المساعد بسهولة', manual: 'تحديد يدوي', recenter: 'إعادة توسيط الخريطة', privacy: 'يُشارك هذا الموقع مع مقدّم المساعدة فقط' },
+  en: { subtitle: 'Check your location so your helper can find you easily', manual: 'Set manually', recenter: 'Recenter map', privacy: 'This location is shared only with your helper' },
+  he: { subtitle: 'בדקו את המיקום כדי שיוכלו להגיע אליכם בקלות', manual: 'בחירה ידנית', recenter: 'מרכוז המפה מחדש', privacy: 'המיקום משותף רק עם מי שמגיע לעזור' }
+} as const
+
 // Show only the illustration region of the original artwork. Text is rendered
 // by the app, so all languages share the same art without embedded Arabic.
 const SERVICES = [
@@ -99,7 +107,7 @@ const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 // Vercel presentation override. Keep request, photo, and location behavior
-// aligned with RequestFlowScreens.tsx; only the details step is restyled here.
+// aligned with RequestFlowScreens.tsx; details and location are restyled here.
 export function RequestFlowScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
@@ -107,6 +115,8 @@ export function RequestFlowScreen() {
   const { t, i18n } = useTranslation()
   const locale: Locale = i18n.language.startsWith('he') ? 'he' : i18n.language.startsWith('en') ? 'en' : 'ar'
   const detailsCopy = DETAILS_COPY[locale]
+  const locationCopy = LOCATION_COPY[locale]
+  const locationMapRef = useRef<SanadMapRef>(null)
   const router = useRouter()
   const { session } = useAuth()
   const userId = session!.user.id
@@ -316,7 +326,7 @@ export function RequestFlowScreen() {
         nodes.push(<View key={`line-${n}`} style={[styles.stepLine, { backgroundColor: current >= n ? theme.colors.primary : theme.colors.border }]} />)
       }
       const isCurrent = current === n
-      const isComplete = step === 'details' && n < current
+      const isComplete = n < current
       nodes.push(
         <View key={`circle-${n}`} style={[styles.stepCircle, { backgroundColor: isCurrent || isComplete ? theme.colors.primary : theme.colors.surface, borderColor: isCurrent || isComplete ? theme.colors.primary : theme.colors.border }]}>
           {isComplete ? <Check size={16} color={theme.colors.onPrimary} weight="bold" /> : <Text style={[typography.smallMedium, { color: isCurrent ? theme.colors.onPrimary : theme.colors.textMuted }]}>{n}</Text>}
@@ -375,9 +385,9 @@ export function RequestFlowScreen() {
       key={step}
       header={<ScreenHeader title="" back onBack={back} />}
       footer={step === 'location'
-        ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!activeCoords || outsideZone} />
+        ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!activeCoords || outsideZone} style={styles.footerAction} />
         : step === 'details'
-          ? <Button label={detailsCopy.next} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} style={styles.detailsNext} />
+          ? <Button label={detailsCopy.next} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} style={styles.footerAction} />
           : <Button label={t('common.next')} disabled={!service} trailing={isRTL ? <ArrowLeft size={18} color={theme.colors.onPrimary} weight="bold" /> : <ArrowRight size={18} color={theme.colors.onPrimary} weight="bold" />} onPress={next} />}
       guideFooterId="request.next"
       contentStyle={step === 'type' ? styles.typeContent : undefined}
@@ -451,13 +461,16 @@ export function RequestFlowScreen() {
 
       {step === 'location' ? (
         <View style={styles.detailsGroup}>
-          <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.step.location.title')}</Text>
-          <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('request.step.location.subtitle')}</Text>
-
-          <View style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
-          <Text style={[typography.small, styles.stepOfText, { color: theme.colors.textSecondary, textAlign: 'center' }]}>
-            {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
-          </Text>
+          <View style={styles.detailsHeader}>
+            <Text accessibilityRole="header" style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.step.location.title')}</Text>
+            <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{locationCopy.subtitle}</Text>
+            <View style={styles.detailsProgress}>
+              <View accessible={false} style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
+              <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>
+                {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
+              </Text>
+            </View>
+          </View>
 
           {locating ? (
             <View style={styles.locationState}>
@@ -477,29 +490,29 @@ export function RequestFlowScreen() {
               <Button label={t('request.retryLocation')} variant="outline" onPress={fetchLocation} />
             </View>
           ) : activeCoords ? (
-            <>
-              <MapPanel latitude={activeCoords.latitude} longitude={activeCoords.longitude} height={260} overlay={null} />
-
-              <View style={[styles.summaryCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
-                <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
-                  <Text style={[typography.smallMedium, { color: theme.colors.textPrimary }]}>{t('request.location.selectedLabel')}</Text>
-                  <MapPin size={16} color={theme.colors.textMuted} />
-                </View>
-                <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
-                  <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{manualLocation ? t('request.location.manualValue') : t('request.currentLocation')}</Text>
-                  <CheckCircle size={18} color={theme.colors.community} weight="fill" />
-                </View>
-                <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
-                  {resolvingAddress ? t('request.location.resolvingAddress') : (locationAddress ?? '')}
-                </Text>
-                <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.location.privacyNote')}</Text>
+            <View style={[styles.locationCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+              <View style={styles.locationMapFrame}>
+                <SanadMap ref={locationMapRef} latitude={activeCoords.latitude} longitude={activeCoords.longitude} zoom={13} height={255} interactive style={styles.locationMap} />
+                <IconButton label={locationCopy.recenter} icon={<Crosshair size={20} color={theme.colors.primary} />} onPress={() => locationMapRef.current?.recenter(activeCoords.latitude, activeCoords.longitude, 13)} style={{ ...styles.locationMapControl, [isRTL ? 'left' : 'right']: space.xxl }} />
               </View>
-
-              <GuideTarget id="location.position"><View style={[styles.locationActionsRow, dirStyles(isRTL).row]}>
-                <Button label={t('request.refreshLocation')} variant="outline" leading={<ArrowClockwise size={16} color={theme.colors.primary} />} onPress={fetchLocation} style={styles.locationActionButton} />
-                <Button label={t('request.location.addManualButton')} variant="outline" leading={<MapPin size={16} color={theme.colors.primary} />} onPress={openManualLocationPicker} style={styles.locationActionButton} />
+              <View style={[styles.locationSummary, dirStyles(isRTL).row]}>
+                <CheckCircle size={22} color={theme.colors.community} weight="fill" />
+                <View style={styles.locationCopy}>
+                  <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{manualLocation ? t('request.location.manualValue') : t('request.currentLocation')}</Text>
+                  {resolvingAddress || locationAddress ? (
+                    <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                      {resolvingAddress ? t('request.location.resolvingAddress') : locationAddress}
+                    </Text>
+                  ) : null}
+                  <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{locationCopy.privacy}</Text>
+                </View>
+              </View>
+              <GuideTarget id="location.position"><View style={[styles.locationActionsRow, dirStyles(isRTL).row, { borderColor: theme.colors.border }]}>
+                <View style={styles.locationActionCell}><Button label={t('request.refreshLocation')} variant="ghost" leading={<ArrowClockwise size={18} color={theme.colors.primary} />} onPress={fetchLocation} style={styles.locationActionButton} /></View>
+                <View style={[styles.locationActionDivider, { backgroundColor: theme.colors.border }]} />
+                <View style={styles.locationActionCell}><Button label={locationCopy.manual} variant="ghost" leading={<MapPin size={18} color={theme.colors.primary} />} onPress={openManualLocationPicker} style={styles.locationActionButton} /></View>
               </View></GuideTarget>
-            </>
+            </View>
           ) : null}
 
           <Image source={LOCATION_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
@@ -525,11 +538,10 @@ const styles = StyleSheet.create({
   detailsHeader: { gap: 6, paddingTop: space.xs, paddingBottom: space.xs },
   detailsProgress: { gap: space.sm, marginTop: space.md },
   detailsSummary: { paddingVertical: space.md },
-  detailsNext: { width: '100%', maxWidth: 520, alignSelf: 'center' },
+  footerAction: { width: '100%', maxWidth: 520, alignSelf: 'center' },
   stepCirclesRow: { alignItems: 'center', justifyContent: 'center', gap: space.sm },
   stepCircle: { width: 32, height: 32, borderRadius: radius.pill, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   stepLine: { width: 36, height: 2 },
-  stepOfText: { marginTop: -space.xs },
   summaryCard: { alignItems: 'center', gap: space.md, padding: space.lg, borderRadius: radius.lg, borderWidth: 1, ...shadow.soft },
   summaryIconCircle: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   summaryTextWrap: { flex: 1, gap: 2 },
@@ -543,8 +555,16 @@ const styles = StyleSheet.create({
   photoCopy: { flex: 1, minWidth: 0, gap: 4 },
   photoPreview: { width: 52, height: 52, borderRadius: radius.sm },
   locationState: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
-  locationActionsRow: { gap: space.sm },
-  locationActionButton: { flex: 1 },
+  locationCard: { borderRadius: radius.xl, borderWidth: 1, overflow: 'hidden', ...shadow.soft },
+  locationMapFrame: { padding: space.md, paddingBottom: 0 },
+  locationMap: { marginTop: 0, borderRadius: radius.lg, borderWidth: 0 },
+  locationMapControl: { position: 'absolute', top: space.xxl },
+  locationSummary: { alignItems: 'flex-start', gap: space.sm, padding: space.lg },
+  locationCopy: { flex: 1, minWidth: 0, gap: 4 },
+  locationActionsRow: { borderTopWidth: StyleSheet.hairlineWidth },
+  locationActionCell: { flex: 1, minWidth: 0 },
+  locationActionDivider: { width: StyleSheet.hairlineWidth, height: 28, alignSelf: 'center' },
+  locationActionButton: { flex: 1, borderRadius: 0, paddingHorizontal: space.sm },
   searchResultsList: { borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden' },
   searchResultRow: { alignItems: 'center', gap: space.sm, padding: space.md },
   searchResultLabel: { flex: 1 }
