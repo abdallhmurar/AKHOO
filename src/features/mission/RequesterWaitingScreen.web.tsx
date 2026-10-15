@@ -18,6 +18,7 @@ import { missionRepository } from '../../repositories/missionRepository'
 import { normalizeAppError } from '../../services/errors'
 import { queryKeys } from '../../services/queryKeys'
 import { LiveMissionScreen } from './MissionScreens'
+import { RequesterTrackingScreen, REQUESTER_TRACKING_STATUSES } from './RequesterTrackingScreen.web'
 
 const COPY = {
   ar: { subtitle: 'تم إرسال طلبك، وعم نبحث عن مساعد قريب', notice: 'رح يوصلك إشعار أول ما ينقبل طلبك', sent: 'تم الإرسال', searching: 'البحث عن مساعد', accepted: 'قبول الطلب', waiting: 'بانتظار القبول', recenter: 'إعادة توسيط الخريطة' },
@@ -26,7 +27,7 @@ const COPY = {
 } as const
 
 // Stay mounted across requester states so a helper release still shows the
-// existing notice. Only the matching state gets this web-only presentation.
+// existing notice. Tracking and finished states keep their own presentations.
 export function RequesterMissionWebScreen({ mission }: { mission: Mission }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
@@ -84,6 +85,7 @@ export function RequesterMissionWebScreen({ mission }: { mission: Mission }) {
     }
   }
 
+  if (REQUESTER_TRACKING_STATUSES.includes(mission.status)) return <RequesterTrackingScreen mission={mission} />
   if (!searching) return <LiveMissionScreen />
 
   return (
