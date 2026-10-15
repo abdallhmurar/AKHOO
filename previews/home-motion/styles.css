@@ -26,10 +26,12 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 .notification{position:absolute;left:4.8%;top:1.9%;width:9.4%;aspect-ratio:1;border:0;border-radius:3.3cqw;background:#fff;color:var(--navy);box-shadow:0 6px 24px #153b6c06;display:grid;place-items:center;transition:transform .18s}
 .notification svg{width:5.1cqw;height:5.1cqw}
 .notification:active{transform:scale(.92)}
-.welcome{position:absolute;right:4.6%;top:7.75%;text-align:right}
-.welcome h1{margin:0;font-size:8.1cqw;line-height:1.18;font-weight:800;letter-spacing:-.12cqw}
-.welcome h1 span{color:var(--blue)}
-.welcome p{font-size:3.6cqw;line-height:1.4;margin:.8cqw 0 0;font-weight:800}
+.welcome{position:absolute;right:6.2%;top:7.1%;width:68%;display:flex;flex-direction:column;align-items:flex-start;gap:1.5cqw;text-align:right}
+.welcome h1{display:grid;gap:.4cqw;margin:0;font-size:7.4cqw;line-height:1.28;font-weight:800;letter-spacing:normal}
+.welcome h1 span{display:block;white-space:nowrap}
+.welcome-lead{font-size:6.6cqw}
+.welcome-accent{color:var(--blue)}
+.welcome p{font-size:3.4cqw;line-height:1.6;margin:0;font-weight:700}
 .road-note{position:absolute;left:5.1%;top:14.7%;margin:0;text-align:center;font-size:2.65cqw;line-height:1.45;color:#2c6095;transform:rotate(-9deg)}
 .road-note span{display:block;height:1.1cqw;margin-top:.8cqw;border-top:.3cqw solid #3674a5;border-radius:50%;width:14cqw}
 .help-content{position:absolute;right:6.3%;top:23.3%;width:43.7%;text-align:right;color:#fff;text-shadow:0 1px 6px #064caa80}
