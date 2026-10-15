@@ -23,6 +23,7 @@ import { profileRepository } from '../../repositories/profileRepository'
 import { queryKeys } from '../../services/queryKeys'
 import { normalizeAppError } from '../../services/errors'
 import { LiveMissionScreen } from './MissionScreens'
+import { RequesterMissionWebScreen } from './RequesterWaitingScreen.web'
 
 const HELPER_STATUSES: MissionStatus[] = ['assigned', 'on_the_way', 'arrived', 'awaiting_confirmation']
 const RELEASE_REASONS = ['cannot_reach', 'emergency', 'accepted_by_mistake', 'other'] as const
@@ -51,19 +52,21 @@ function useMissionCopy() {
   return COPY[language as keyof typeof COPY] ?? COPY.ar
 }
 
-// Only the active helper presentation is replaced. The existing screen still
-// owns requester, completion, cancellation, and other mission states.
+// Web presentations replace the active helper and requester waiting views.
+// Other states continue to use the existing mission screen.
 export function LiveMissionWebScreen() {
   const { missionId } = useLocalSearchParams<{ missionId: string }>()
   const { session } = useAuth()
   const isHelperView = (mission?: Mission | null) => !!mission && mission.helper_id === session?.user.id && HELPER_STATUSES.includes(mission.status)
+  const isRequesterWaiting = (mission?: Mission | null) => !!mission && mission.requester_id === session?.user.id && mission.status === 'matching'
   const mission = useQuery({
     queryKey: queryKeys.mission(String(missionId)),
     queryFn: () => missionRepository.get(String(missionId)),
     enabled: !!missionId,
     // The shared screen already polls when it is rendering the other states.
-    refetchInterval: query => isHelperView(query.state.data) ? 10_000 : false
+    refetchInterval: query => isHelperView(query.state.data) || isRequesterWaiting(query.state.data) ? 10_000 : false
   })
+  if (mission.data && mission.data.requester_id === session?.user.id) return <RequesterMissionWebScreen key={mission.data.id} mission={mission.data} />
   return isHelperView(mission.data) ? <HelperMissionView key={mission.data!.id} mission={mission.data!} /> : <LiveMissionScreen />
 }
 
