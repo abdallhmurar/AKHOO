@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1faff">
+  <title>أخو — معاينة الرئيسية المتحركة</title>
+  <link rel="icon" href="assets/brand.png">
+  <link rel="preload" as="image" href="assets/home-art.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="arrow" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+      <symbol id="bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM9 21h6"/></symbol>
+      <symbol id="home" viewBox="0 0 24 24"><path d="m3 10 9-8 9 8v11h-6v-7H9v7H3Z"/></symbol>
+      <symbol id="history" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 3v7h7M12 7v6l4 2"/></symbol>
+      <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="6" r="4"/><path d="M3 22v-3a9 9 0 0 1 18 0v3Z"/></symbol>
+      <symbol id="coupon" viewBox="0 0 24 24"><path d="m3 4 18 2-1 5a2 2 0 0 0-.4 4l-.6 5L1 18l.6-5A2 2 0 0 0 2 9Z M15 8 7 16"/><circle cx="8" cy="8.5" r="1.1"/><circle cx="14" cy="15.5" r="1.1"/></symbol>
+      <symbol id="shield" viewBox="0 0 24 24"><path d="M12 2 3 5v7c0 5 9 10 9 10s9-5 9-10V5Z M7 11l4 4 6-7"/></symbol>
+      <symbol id="car-help" viewBox="0 0 80 70"><path d="M6 34h39l-6-13H15ZM5 34v22h8v-8h23M13 42h4m13 0h4M23 10V3M9 14l-5-5m34 4 5-6M58 24 38 59h40ZM58 37v9m0 6v1"/></symbol>
+    </defs>
+  </svg>
+
+  <aside class="preview-tools" aria-label="أدوات المعاينة">
+    <span class="preview-badge">معاينة محلية</span>
+    <h2>أخو، بحلّته الجديدة.</h2>
+    <p>جرّب الحركة واضغط الأزرار.<br>هاي معاينة، ما بتبعت طلبات حقيقية.</p>
+    <button id="motion-toggle" type="button" aria-pressed="true">إيقاف الحركة</button>
+    <button id="reference-toggle" type="button" aria-pressed="false">شوف الصورة المعتمدة</button>
+    <small>حركة خفيفة للرسومات، وأزرار قابلة للتجربة.</small>
+  </aside>
+
+  <main class="phone" aria-label="معاينة الصفحة الرئيسية لأخو">
+    <div class="home-screen" id="home-screen">
+      <div class="artwork" aria-hidden="true"></div>
+      <header class="brand-header">
+        <div class="brand" aria-label="أخو">
+          <span class="brand-mark" aria-hidden="true"><img src="assets/brand.png" alt=""></span>
+          <span class="brand-name">أخو</span>
+        </div>
+        <button class="notification" type="button" data-demo="notifications" aria-label="الإشعارات"><svg><use href="#bell"/></svg></button>
+      </header>
+
+      <div class="welcome">
+        <h1>مع بعض،<br><span>الطريق أسهل</span></h1>
+        <p>شو بدك تعمل هلّق؟</p>
+      </div>
+      <p class="road-note">دايمًا<br>في حدا جنبك<span></span></p>
+
+      <section class="help-content" aria-labelledby="help-title">
+        <svg class="help-icon" aria-hidden="true"><use href="#car-help"/></svg>
+        <h2 id="help-title">محتاج مساعدة؟</h2>
+        <p>خلّينا نوصلك بحدا قريب</p>
+      </section>
+      <button class="primary-action action" data-demo="request" type="button"><span>بدي مساعدة</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+
+      <section class="volunteer-content" aria-labelledby="volunteer-title">
+        <span class="points-tag">ساعد واكسب نقاط</span>
+        <h2 id="volunteer-title">في حدا محتاجك</h2>
+        <button class="volunteer-action action" data-demo="help" type="button"><span>بدي أساعد</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+      </section>
+
+      <section class="rewards-copy" aria-labelledby="rewards-title">
+        <h2 id="rewards-title">مساعدتك إلها قيمة</h2>
+        <p>بدّل نقاطك بعروض مزايا أخو</p>
+      </section>
+      <button class="discover-action action" data-demo="perks" type="button"><span>اكتشف</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+
+      <p class="reassurance"><span>طلبك بيوصل لشخص قريب يقدر يساعدك</span><svg aria-hidden="true"><use href="#shield"/></svg></p>
+
+      <svg class="motion-art" viewBox="0 0 887 1774" aria-hidden="true">
+        <defs>
+          <radialGradient id="lamp"><stop stop-color="white" stop-opacity=".9"/><stop offset="1" stop-color="#b5edff" stop-opacity="0"/></radialGradient>
+          <filter id="steam-soft"><feGaussianBlur stdDeviation="4"/></filter>
+        </defs>
+        <g class="steam" fill="none" stroke="#edfaff" stroke-linecap="round" filter="url(#steam-soft)">
+          <path d="M329 640C288 599 373 566 338 527S298 462 330 422 299 381 313 367"/>
+          <path d="M344 636C310 585 387 553 352 514S330 457 348 426"/>
+        </g>
+        <ellipse class="headlight" cx="371" cy="694" rx="40" ry="22" fill="url(#lamp)"/>
+        <ellipse class="helper-light" cx="350" cy="1280" rx="34" ry="24" fill="url(#lamp)"/>
+        <path class="sparkle sparkle-one" d="m674 1356 4 11 11 4-11 4-4 11-4-11-11-4 11-4Z" fill="#ffca54"/>
+        <path class="sparkle sparkle-two" d="m639 1391 3 9 9 3-9 3-3 9-3-9-9-3 9-3Z" fill="#ffd05f"/>
+        <circle class="charge-dot" r="4" fill="#b9ffec"><animateMotion dur="3.5s" repeatCount="indefinite" path="M219 1210C217 1240 220 1270 237 1274S293 1282 315 1256L336 1224"/></circle>
+      </svg>
+
+      <nav class="bottom-nav" aria-label="القائمة الرئيسية">
+        <button class="nav-item active" type="button" data-demo="home" aria-current="page"><svg aria-hidden="true"><use href="#home"/></svg><span>الرئيسية</span></button>
+        <button class="nav-item perks-nav" type="button" data-demo="perks"><svg aria-hidden="true"><use href="#coupon"/></svg><span>مزايا أخو</span></button>
+        <button class="nav-item" type="button" data-demo="activity"><svg aria-hidden="true"><use href="#history"/></svg><span>نشاطي</span></button>
+        <button class="nav-item" type="button" data-demo="account"><svg aria-hidden="true"><use href="#person"/></svg><span>حسابي</span></button>
+      </nav>
+      <img class="reference" id="reference" src="assets/approved-home.png" alt="الصورة المعتمدة للتصميم الجديد" hidden>
+    </div>
+  </main>
+
+  <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
+    <button class="sheet-close" type="button" aria-label="إغلاق">×</button>
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <span class="sheet-icon" aria-hidden="true"><svg><use href="#shield"/></svg></span>
+    <h2 id="demo-title"></h2>
+    <p id="demo-description"></p>
+    <button class="sheet-return" type="button">رجوع للرئيسية</button>
+  </dialog>
+</body>
+</html>
