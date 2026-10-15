@@ -11,6 +11,12 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 .home-screen{position:relative;width:100%;aspect-ratio:887 / 1774;container-type:inline-size;isolation:isolate;overflow:hidden;background:#f2fbff}
 .artwork,.reference{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .artwork{background:url('assets/home-art.png') center / 100% 100% no-repeat;z-index:-1}
+.character-scene{position:absolute;overflow:hidden;pointer-events:none;z-index:-1}
+.character-video{display:block;width:100%;height:100%;object-fit:cover;object-position:left center}
+.help-scene{left:3.5%;top:21.25%;width:93%;height:33.5%;border-radius:5cqw;background:#2386ff}
+.help-scene:after{content:"";position:absolute;inset:0 0 28%;background:linear-gradient(90deg,transparent 40%,#1c7bfaee 76%,#1c7bfa);mask-image:linear-gradient(#000 65%,transparent);pointer-events:none}
+.helper-scene{left:3.5%;top:56.1%;width:57.8%;height:17.4%;border-radius:4.5cqw 0 0 4.5cqw;background:#f3fffb}
+.helper-scene:after{content:"";position:absolute;inset:0 0 0 auto;width:9%;background:linear-gradient(90deg,transparent,#fff)}
 .reference{object-fit:fill;z-index:20}
 [hidden]{display:none!important}
 .brand{position:absolute;right:3.2%;top:1.6%;display:flex;align-items:center;gap:1.15cqw;height:9.5cqw}
@@ -26,7 +32,7 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 .welcome p{font-size:3.6cqw;line-height:1.4;margin:.8cqw 0 0;font-weight:800}
 .road-note{position:absolute;left:5.1%;top:14.7%;margin:0;text-align:center;font-size:2.65cqw;line-height:1.45;color:#2c6095;transform:rotate(-9deg)}
 .road-note span{display:block;height:1.1cqw;margin-top:.8cqw;border-top:.3cqw solid #3674a5;border-radius:50%;width:14cqw}
-.help-content{position:absolute;right:6.3%;top:23.3%;width:43.7%;text-align:right;color:#fff}
+.help-content{position:absolute;right:6.3%;top:23.3%;width:43.7%;text-align:right;color:#fff;text-shadow:0 1px 6px #064caa80}
 .help-icon{width:12cqw;height:11cqw;stroke-width:3;display:block;margin-right:2cqw;margin-bottom:2cqw}
 .help-content h2{font-size:5.8cqw;line-height:1.6;white-space:nowrap;font-weight:800;margin:0}
 .help-content p{font-size:3.65cqw;line-height:1.6;margin:1.2cqw 0 0;white-space:nowrap}
@@ -54,20 +60,7 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 .nav-item.active svg{fill:currentColor;stroke-width:1.1}
 .perks-nav svg{color:#187bff}
 .nav-item:active{transform:scale(.94)}
-.motion-art{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;stroke:none;overflow:hidden}
-.steam path{stroke-width:21;stroke-dasharray:46 110;opacity:.24;animation:steam-flow 4.8s linear infinite}
-.steam path+path{stroke-width:13;stroke-dasharray:32 126;animation-delay:-2.4s;opacity:.15}
-.headlight{animation:headlight 4.8s ease-in-out infinite;mix-blend-mode:screen}
-.helper-light{animation:headlight 5.8s ease-in-out -2s infinite;mix-blend-mode:screen}
-.sparkle{transform-box:fill-box;transform-origin:center;animation:sparkle 3.6s ease-in-out infinite}
-.sparkle-two{animation-delay:-1.8s}
-.charge-dot{opacity:.65;filter:drop-shadow(0 0 5px #aeffed)}
-.motion-off .motion-art{visibility:hidden}
 .motion-off .primary-action:after{animation:none;display:none}
-.motion-off .steam path,.motion-off .headlight,.motion-off .helper-light,.motion-off .sparkle{animation-play-state:paused}
-@keyframes steam-flow{from{stroke-dashoffset:0;transform:translateY(6px)}to{stroke-dashoffset:312;transform:translateY(-6px)}}
-@keyframes headlight{0%,100%{opacity:.1}40%{opacity:.75}65%{opacity:.3}}
-@keyframes sparkle{0%,100%{opacity:.15;transform:scale(.6) rotate(-8deg)}50%{opacity:.85;transform:scale(1.2) rotate(8deg)}}
 @keyframes button-light{0%,65%{transform:translateX(-100%)}85%,100%{transform:translateX(100%)}}
 .preview-tools{position:fixed;top:42px;left:max(24px,calc(50% - 590px));width:270px;text-align:right}
 .preview-badge{font-size:12px;border-radius:30px;background:#d7f1e9;color:#12735e;padding:5px 12px}
@@ -89,4 +82,4 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 @media(hover:hover){.action:hover{transform:translateY(-1px);box-shadow:0 6px 20px #143b6630}.nav-item:not(.active):hover{background:#e7f2ff}.notification:hover{transform:rotate(-8deg)}}
 @media(max-width:1100px){.phone{margin:20px auto}.preview-tools{position:static;width:min(90%,480px);margin:22px auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;text-align:center}.preview-tools h2,.preview-tools p,.preview-tools small{display:none}.preview-tools>button{width:auto;flex:1;font-size:11px;margin:0;padding:6px 9px}.preview-badge{font-size:10px;white-space:nowrap}.phone{margin-top:0}}
 @media(max-width:520px){.phone{border-radius:0;margin:0 auto;box-shadow:none}.preview-tools{margin:10px auto}.preview-tools>button{min-height:38px}.preview-badge{padding:4px 7px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.motion-art{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

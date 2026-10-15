@@ -30,12 +30,22 @@
     <p>جرّب الحركة واضغط الأزرار.<br>هاي معاينة، ما بتبعت طلبات حقيقية.</p>
     <button id="motion-toggle" type="button" aria-pressed="true">إيقاف الحركة</button>
     <button id="reference-toggle" type="button" aria-pressed="false">شوف الصورة المعتمدة</button>
-    <small>حركة خفيفة للرسومات، وأزرار قابلة للتجربة.</small>
+    <small>شخصيات 3D متحركة بفيديوهات صامتة، وأزرار قابلة للتجربة.</small>
   </aside>
 
   <main class="phone" aria-label="معاينة الصفحة الرئيسية لأخو">
     <div class="home-screen" id="home-screen">
       <div class="artwork" aria-hidden="true"></div>
+      <div class="character-scene help-scene" aria-hidden="true">
+        <video class="character-video" muted loop playsinline preload="metadata" poster="assets/help-3d-poster.png" tabindex="-1" disablepictureinpicture>
+          <source src="assets/help-3d.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="character-scene helper-scene" aria-hidden="true">
+        <video class="character-video" muted loop playsinline preload="metadata" poster="assets/helper-3d-poster.png" tabindex="-1" disablepictureinpicture>
+          <source src="assets/helper-3d.mp4" type="video/mp4">
+        </video>
+      </div>
       <header class="brand-header">
         <div class="brand" aria-label="أخو">
           <span class="brand-mark" aria-hidden="true"><img src="assets/brand.png" alt=""></span>
@@ -70,22 +80,6 @@
       <button class="discover-action action" data-demo="perks" type="button"><span>اكتشف</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
 
       <p class="reassurance"><span>طلبك بيوصل لشخص قريب يقدر يساعدك</span><svg aria-hidden="true"><use href="#shield"/></svg></p>
-
-      <svg class="motion-art" viewBox="0 0 887 1774" aria-hidden="true">
-        <defs>
-          <radialGradient id="lamp"><stop stop-color="white" stop-opacity=".9"/><stop offset="1" stop-color="#b5edff" stop-opacity="0"/></radialGradient>
-          <filter id="steam-soft"><feGaussianBlur stdDeviation="4"/></filter>
-        </defs>
-        <g class="steam" fill="none" stroke="#edfaff" stroke-linecap="round" filter="url(#steam-soft)">
-          <path d="M329 640C288 599 373 566 338 527S298 462 330 422 299 381 313 367"/>
-          <path d="M344 636C310 585 387 553 352 514S330 457 348 426"/>
-        </g>
-        <ellipse class="headlight" cx="371" cy="694" rx="40" ry="22" fill="url(#lamp)"/>
-        <ellipse class="helper-light" cx="350" cy="1280" rx="34" ry="24" fill="url(#lamp)"/>
-        <path class="sparkle sparkle-one" d="m674 1356 4 11 11 4-11 4-4 11-4-11-11-4 11-4Z" fill="#ffca54"/>
-        <path class="sparkle sparkle-two" d="m639 1391 3 9 9 3-9 3-3 9-3-9-9-3 9-3Z" fill="#ffd05f"/>
-        <circle class="charge-dot" r="4" fill="#b9ffec"><animateMotion dur="3.5s" repeatCount="indefinite" path="M219 1210C217 1240 220 1270 237 1274S293 1282 315 1256L336 1224"/></circle>
-      </svg>
 
       <nav class="bottom-nav" aria-label="القائمة الرئيسية">
         <button class="nav-item active" type="button" data-demo="home" aria-current="page"><svg aria-hidden="true"><use href="#home"/></svg><span>الرئيسية</span></button>

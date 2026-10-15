@@ -5,16 +5,24 @@ const referenceButton = document.querySelector('#reference-toggle');
 const reference = document.querySelector('#reference');
 const sheet = document.querySelector('.demo-sheet');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const characterVideos = [...document.querySelectorAll('.character-video')];
 let motionEnabled = !reducedMotion.matches;
 
 function renderMotion() {
-  screen.classList.toggle('motion-off', !motionEnabled || document.hidden || !reference.hidden);
+  const shouldPlay = motionEnabled && !document.hidden && reference.hidden && !sheet.open;
+  screen.classList.toggle('motion-off', !shouldPlay);
   motionButton.setAttribute('aria-pressed', String(motionEnabled));
   motionButton.disabled = reducedMotion.matches;
   motionButton.textContent = reducedMotion.matches ? 'الحركة متوقفة حسب إعداد جهازك' : motionEnabled ? 'إيقاف الحركة' : 'تشغيل الحركة';
-  const svg = document.querySelector('.motion-art');
-  if (screen.classList.contains('motion-off')) svg.pauseAnimations();
-  else svg.unpauseAnimations();
+  characterVideos.forEach(video => {
+    if (!shouldPlay) video.pause();
+    else {
+      video.muted = true;
+      video.play().then(() => {
+        if (!motionEnabled || document.hidden || !reference.hidden || sheet.open) video.pause();
+      }).catch(() => { /* Keep the poster if the browser blocks playback. */ });
+    }
+  });
 }
 motionButton.addEventListener('click', () => {
   motionEnabled = !motionEnabled;
@@ -50,6 +58,7 @@ document.querySelectorAll('[data-demo]').forEach(button => {
     document.querySelector('#demo-title').textContent = title;
     document.querySelector('#demo-description').textContent = description;
     sheet.showModal();
+    renderMotion();
   });
 });
 function closeSheet() { sheet.close(); }
@@ -59,5 +68,8 @@ sheet.addEventListener('click', event => { if (event.target === sheet) {
   const rect = sheet.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeSheet();
 } });
-sheet.addEventListener('close', () => opener?.focus({ preventScroll: true }));
+sheet.addEventListener('close', () => {
+  opener?.focus({ preventScroll: true });
+  renderMotion();
+});
 renderMotion();

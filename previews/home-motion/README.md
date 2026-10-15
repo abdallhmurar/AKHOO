@@ -8,7 +8,11 @@ node previews/home-motion/serve.cjs
 
 Open http://127.0.0.1:4178. An optional `AKHOO_PREVIEW_PORT` environment variable changes the port.
 
-The approved illustration is retained in a text-free art plate; headings, navigation and buttons are live HTML. CSS/SVG add flowing steam, gentle headlights, a moving cable highlight, reward sparkles and press feedback. These are browser animations, not an animated GIF or newly generated character video. The people themselves are not animated. Motion can be paused, respects reduced-motion preferences and pauses when the page is hidden. The comparison button displays the approved static image.
+The approved composition is retained in a text-free art plate; headings, navigation and buttons are live HTML. The two main cards now contain real six-second 3D character videos generated in Grok from the included reference frames and motion prompts. The request-help character lowers his hand, leans toward the car and returns to his starting pose. The helpers move the jumper clamps, lean toward the battery and exchange a glance. These are locally served looping MP4s, not GIF files. The earlier SVG steam, light and cable effects have been removed.
+
+Videos play silently with inline playback, loop automatically and can be paused. Reduced-motion preferences disable playback, and motion pauses while the page is hidden, the approved reference is displayed or a demo sheet is open. Posters remain visible before playback or if playback is blocked. The comparison button displays the approved static design. The media stays behind the real HTML text and buttons; a soft blue gradient keeps the white hero text readable throughout the animation.
+
+Both clips are 1168×784, 6.04 seconds and about 4.1 MB combined. The local server supports byte-range requests for video playback and seeking. No Grok connection is needed to view them.
 
 All actions open local explanatory sheets. The preview makes no API requests and never creates help requests or reads account data. It imports no application code and does not change the Expo app, Android, iOS or Vercel configuration. The pixel positions preserve the approved composition at a responsive 887:1774 aspect ratio; this is a review prototype, not the final translated production layout.
 
