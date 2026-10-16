@@ -9,7 +9,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 // Loaded only by the web rewards button, once it enters the viewport.
-export function createRewardsGift(canvas: HTMLCanvasElement, onUnavailable: () => void, onCelebrating: (value: boolean) => void) {
+export function createRewardsGift(canvas: HTMLCanvasElement, onUnavailable: () => void, onCelebrating: (value: boolean) => void, { idle = true }: { idle?: boolean } = {}) {
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
   renderer.outputColorSpace = SRGBColorSpace
@@ -136,12 +136,13 @@ export function createRewardsGift(canvas: HTMLCanvasElement, onUnavailable: () =
   let enabled = false, reduced = false, disposed = false, lost = false
   let time = 0, previous = 0, lastFrame = 0, celebration = -1
   function pose() {
-    const wave = reduced ? 0 : Math.sin(time * 1.5)
+    const still = reduced || (!idle && celebration < 0)
+    const wave = still ? 0 : Math.sin(time * 1.5)
     const progress = celebration < 0 ? 0 : Math.min(celebration / 1.8, 1)
     const open = celebration < 0 ? 0 : reduced ? 0.7 : Math.sin(Math.PI * progress) ** 0.65
     gift.position.y = -0.25 + wave * 0.035
-    gift.rotation.y = -0.15 + (reduced ? 0 : Math.sin(time * 0.8) * 0.09)
-    gift.rotation.z = reduced ? 0 : Math.sin(time * 1.2) * 0.025
+    gift.rotation.y = -0.15 + (still ? 0 : Math.sin(time * 0.8) * 0.09)
+    gift.rotation.z = still ? 0 : Math.sin(time * 1.2) * 0.025
     lid.position.y = 0.59 + open * 0.42
     lid.rotation.set(-open * 0.14, open * 0.12, -open * 0.09)
     coupon.rotation.z = -0.19 - open * 0.1
@@ -149,8 +150,8 @@ export function createRewardsGift(canvas: HTMLCanvasElement, onUnavailable: () =
       star.position.copy(position)
       star.position.x += Math.cos(angle) * open * 0.25
       star.position.y += open * (0.2 + i * 0.04)
-      star.rotation.y = reduced ? 0 : time * 0.4 + i
-      star.scale.setScalar((i < 2 ? 0.12 : 0.07) * (1 + open * 0.65 + (reduced ? 0 : Math.sin(time * 2 + i) * 0.12)))
+      star.rotation.y = still ? 0 : time * 0.4 + i
+      star.scale.setScalar((i < 2 ? 0.12 : 0.07) * (1 + open * 0.65 + (still ? 0 : Math.sin(time * 2 + i) * 0.12)))
     }
     renderer.render(scene, camera)
   }
@@ -163,11 +164,11 @@ export function createRewardsGift(canvas: HTMLCanvasElement, onUnavailable: () =
       if (celebration >= 1.8) { celebration = -1; onCelebrating(false) }
     }
     pose()
-    if (reduced && celebration < 0) renderer.setAnimationLoop(null)
+    if ((reduced || !idle) && celebration < 0) renderer.setAnimationLoop(null)
   }
   function sync() {
     previous = 0
-    renderer.setAnimationLoop(enabled && !lost && (!reduced || celebration >= 0) ? tick : null)
+    renderer.setAnimationLoop(enabled && !lost && ((!reduced && idle) || celebration >= 0) ? tick : null)
     if (!lost) pose()
   }
   function contextLost(event: Event) {
