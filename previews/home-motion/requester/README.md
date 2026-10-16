@@ -1,11 +1,11 @@
-# Requester selection and details — local motion preview
+# Requester flow — local motion preview
 
 Run `node previews/home-motion/serve.cjs` from the repository root and open
 <http://127.0.0.1:4178/requester/>. The local home page's “بدي مساعدة” button
 also opens this screen. The default port remains 4178.
 
-This is an isolated, Arabic, responsive visual prototype of the first two requester
-steps. It does not import the Expo application, make API requests, send assistance
+This is an isolated, Arabic, responsive visual prototype of all three requester
+steps. It does not import the Expo application, call its APIs, send assistance
 requests, read account data, or change Vercel, Android or iOS. The first Next button
 requires one of the four native radio inputs and opens the details screen with the
 matching title, animated scene and example note. Direct preview:
@@ -15,11 +15,38 @@ The details screen has an optional 500-character note and an optional image pick
 with a local preview, replacement and removal. JPEG, PNG, WebP, GIF and AVIF images
 up to 10 MiB are accepted and decoded before display. Invalid replacement files
 leave the previous photo intact. The draft remains in memory while switching
-between these two steps, including browser Back/Forward. Reloading clears the note
+between all three steps, including browser Back/Forward. Reloading clears the note
 and photo. Neither is stored, put in the URL, uploaded or committed. Object URLs are
-revoked when replaced or removed; the local server permits `blob:` images while
-keeping all API connections disabled through CSP. The location button opens an
-explanatory sheet because the next screen is outside this prototype's current scope.
+revoked when replaced or removed. The location button now opens the third screen:
+<http://127.0.0.1:4178/requester/?step=location&problem=battery>.
+
+## Location preview
+
+The third screen uses the same header, compact progress bars, typography, rounded
+cards and footer as the details page. Its interactive map uses the already installed
+MapLibre GL JS package with the same OpenFreeMap Liberty style as the application.
+The local server exposes only four explicitly allowed MapLibre distribution files
+from `node_modules`; no dependencies or generated vendor bundles were committed.
+Run the repository's dependency installation first if `node_modules` is absent.
+
+The map starts at an illustrative Jerusalem point labeled as a preview. It never
+reads the device's GPS or requests location permission. Manual selection shows a
+fixed center pin; drag/pinch, click a place, or use keyboard arrows and +/- before
+confirming. Cancel restores the selected point. Recenter returns to that point;
+Update resets to the illustrative point. Confirmed points survive switching steps
+and are kept only in memory. Send is disabled while choosing a point or while the
+initial map is unavailable. It opens a clearly labeled local preview dialog and
+does not create a real assistance request.
+
+Map styles, tiles, fonts and sprites need an internet connection to
+`https://tiles.openfreemap.org`. They are the only external data requests allowed
+by the requester's CSP. No note, photo, account data or device location is sent.
+Loading failure has a retry control and preserves the rest of the form. The home
+preview keeps its original `connect-src 'none'` policy. The requester allows local
+module/worker loading and WebAssembly compilation required by MapLibre.
+
+Implementation references: [MapLibre Map API](https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/)
+and [OpenFreeMap quick start](https://openfreemap.org/quick_start/).
 
 ## Artwork and motion
 
@@ -41,6 +68,12 @@ built-in image generation tool and copied into this project. The camera preserve
 its generated transparency. Their exact prompts are in `prompts/details.json`.
 The selected-problem card reuses the four existing character videos and posters.
 
+`assets/approved-location.png` is the approved location mockup from the built-in
+image generation tool. The location header reuses `assets/details-header.png`.
+`assets/location-safety.png` is an unchanged copy of the application's existing
+`assets/images/service-location-ar.png`, preserving the user's safety banner.
+The map itself is a live map, not generated artwork. The teal marker is CSS.
+
 Videos loop silently while visible. Selection replays the selected clip. Playback
 pauses when its step or page is hidden, the preview sheet is open or the user pauses it.
 Reduced-motion preference starts with posters and does not fetch video files.
@@ -60,3 +93,14 @@ motion (no video sources fetched). Browser console had no errors. JavaScript
 syntax checks, scoped ESLint and `git diff --check` passed; media byte ranges
 returned HTTP 206. The 390px screenshot is saved locally under
 `test-results/requester-motion/details-390.jpg` (ignored, not committed).
+
+The location step was also checked at 320, 390 and 480px: map rendered, controls
+fit and no horizontal overflow or footer overlap in the default view. Verified
+manual selection/confirmation, cancel, recenter, reset, keyboard panning, reduced
+motion, invalid route fallback, and full selection → note/photo → location flow.
+Browser Back/Forward retained the draft. The submit dialog issued no network
+requests. Blocking the map provider produced the retry state with disabled submit;
+unblocking and Retry recovered successfully. The final clean run had no browser
+errors. The worker returned JavaScript with HTTP 200, disallowed vendor files
+returned 404, and the copied safety image matched the original SHA-256 exactly.
+Final local screenshot: `test-results/requester-motion/location-390.jpg` (ignored).

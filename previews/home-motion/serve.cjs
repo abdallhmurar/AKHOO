@@ -4,7 +4,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = __dirname;
 const port = Number(process.env.AKHOO_PREVIEW_PORT || 4178);
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.ttf': 'font/ttf', '.mp4': 'video/mp4' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.png': 'image/png', '.ttf': 'font/ttf', '.mp4': 'video/mp4' };
+const mapAssets = new Set(['maplibre-gl.mjs', 'maplibre-gl-shared.mjs', 'maplibre-gl-worker.mjs', 'maplibre-gl.css']);
+const mapRoot = path.resolve(root, '../../node_modules/maplibre-gl/dist');
 const server = http.createServer((request, response) => {
   if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405); response.end(); return; }
   let pathname;
@@ -12,16 +14,22 @@ const server = http.createServer((request, response) => {
   catch { response.writeHead(400); response.end(); return; }
   if (pathname === '/requester') { response.writeHead(302, { Location: '/requester/' }); response.end(); return; }
   const relative = pathname === '/' ? 'index.html' : ['/requester', '/requester/'].includes(pathname) ? 'requester/index.html' : pathname.slice(1);
-  const file = path.resolve(root, relative);
+  const vendorName = relative.startsWith('vendor/') ? relative.slice(7) : '';
+  const isMapAsset = mapAssets.has(vendorName);
+  const file = isMapAsset ? path.join(mapRoot, vendorName) : path.resolve(root, relative);
   const withinRoot = path.relative(root, file);
-  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js'].includes(relative)
+  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js', 'requester/location-map.js'].includes(relative)
     || relative.startsWith('assets/') || relative.startsWith('requester/assets/');
-  if (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !allowed) {
+  if (!isMapAsset && (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !allowed)) {
     response.writeHead(404); response.end(); return;
   }
   fs.stat(file, (error, stat) => {
     if (error || !stat.isFile()) { response.writeHead(404); response.end(); return; }
-    const headers = { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Content-Length': stat.size, 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'self'; img-src 'self' blob:; media-src 'self'; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'" };
+    const mapPage = relative.startsWith('requester/') || isMapAsset;
+    const policy = mapPage
+      ? "default-src 'self'; img-src 'self' blob: data: https://tiles.openfreemap.org; media-src 'self'; font-src 'self'; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://tiles.openfreemap.org; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+      : "default-src 'self'; img-src 'self' blob:; media-src 'self'; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'";
+    const headers = { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Content-Length': stat.size, 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': policy };
     let start = 0;
     let end = stat.size - 1;
     let status = 200;

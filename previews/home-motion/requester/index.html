@@ -8,6 +8,7 @@
   <link rel="icon" href="../assets/brand.png">
   <link rel="preload" as="font" href="../assets/arabic-bold.ttf" type="font/ttf" crossorigin>
   <link rel="preload" as="image" href="assets/header.png">
+  <link rel="stylesheet" href="../vendor/maplibre-gl.css">
   <link rel="stylesheet" href="styles.css">
   <script src="preview.js" defer></script>
 </head>
@@ -19,6 +20,7 @@
     <a href="../">الرجوع لمعاينة الرئيسية</a>
     <a href="assets/approved.png" target="_blank" rel="noopener">تصميم اختيار المشكلة</a>
     <a href="assets/approved-details.png" target="_blank" rel="noopener">تصميم تفاصيل المشكلة</a>
+    <a href="assets/approved-location.png" target="_blank" rel="noopener">تصميم تحديد الموقع</a>
     <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
   </aside>
   <main class="request-page">
@@ -107,13 +109,55 @@
         </footer>
       </form>
     </section>
+    <section id="location-step" class="step-panel" aria-labelledby="location-title" hidden>
+      <div class="details-heading">
+        <h1 id="location-title" tabindex="-1">حدّد موقعك</h1>
+        <p>تأكد من موقعك عشان نوصلّك أسرع</p>
+      </div>
+      <form id="location-form">
+        <div class="location-content">
+          <div class="location-card">
+            <div class="map-frame">
+              <div id="location-map" aria-label="خريطة الموقع المحدد"></div>
+              <div id="manual-pin" class="map-center-pin" aria-hidden="true" hidden><span class="pin-halo"></span><span class="map-pin"></span></div>
+              <button id="recenter-map" class="round-control map-recenter" type="button" aria-label="الرجوع للنقطة المحددة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg></button>
+              <div id="map-status" class="map-status" role="status">
+                <span id="map-status-text">جارٍ تحميل الخريطة…</span>
+                <button id="retry-map" class="outline-button" type="button" hidden>إعادة المحاولة</button>
+              </div>
+            </div>
+            <div class="location-summary">
+              <span class="summary-pin" aria-hidden="true"></span>
+              <div>
+                <h2 id="selected-location-title">الموقع المحدد</h2>
+                <p id="selected-location-label">القدس · موقع تجريبي للمعاينة</p>
+                <p class="location-privacy">بنشارك موقعك مع مقدم المساعدة فقط</p>
+              </div>
+            </div>
+            <div id="manual-instructions" class="manual-instructions" hidden>
+              <p id="manual-help">حرّك الخريطة لحد ما الدبوس يصير فوق المكان، وبعدين أكّد الموقع.</p>
+              <button id="cancel-location" type="button">إلغاء التحديد</button>
+            </div>
+            <div class="location-actions">
+              <button id="refresh-location" class="outline-button" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الموقع</span></button>
+              <button id="manual-location" class="outline-button" type="button" aria-pressed="false" aria-describedby="manual-help" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>تحديد يدوي</span></button>
+            </div>
+            <p id="location-feedback" class="location-feedback" role="status" aria-live="polite" hidden></p>
+          </div>
+          <div class="safety-banner"><img src="assets/location-safety.png" alt="حاول الوقوف في مكان آمن إن أمكن. سلامتك هي الأهم بالنسبة لنا." width="900" height="300"></div>
+        </div>
+        <footer class="action-footer">
+          <button id="send-request" class="next-button" type="submit" disabled><span>إرسال طلب المساعدة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        </footer>
+      </form>
+    </section>
   </main>
   <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
     <span class="sheet-handle" aria-hidden="true"></span>
     <span class="selection-badge">تم اختيار <strong id="chosen-name"></strong></span>
-    <h2 id="demo-title">جاهزين للخطوة الجايّة</h2>
-    <p id="demo-description">الخطوة الجايّة هي تحديد الموقع.<br>معاينة تصميمها لسه مش جاهزة هون؛ الملاحظة والصورة بتضل بهالصفحة، وما أرسلنا أي طلب.</p>
-    <button id="return-button" class="next-button" type="button">رجوع للتفاصيل</button>
+    <h2 id="demo-title">معاينة طلبك جاهزة</h2>
+    <p id="demo-description">هاي معاينة محلية فقط. ما انبعت طلب مساعدة، وما شاركنا الملاحظة أو الصورة مع أي شخص.</p>
+    <button id="return-button" class="next-button" type="button">رجوع للموقع</button>
   </dialog>
 </body>
 </html>

@@ -54,6 +54,7 @@ input:checked~.radio-mark:after{transform:scale(1)}
 .details-heading h1{font-size:clamp(23px,6.4vw,29px);line-height:1.6}
 .details-heading p{font-size:clamp(11px,3.2vw,14px);line-height:1.9;margin:6px 0 0;color:#617c97}
 #details-form{display:flex;flex:1;flex-direction:column;min-width:0}
+#location-form{display:flex;flex:1;flex-direction:column;min-width:0}
 .details-content{display:grid;gap:14px;margin:0 16px 26px}
 .selected-problem,.note-card,.upload-card{border:1px solid #d1e7f5;border-radius:23px;background:#ffffffee;box-shadow:0 4px 12px #3677a50b;min-width:0}
 .selected-problem{height:144px;position:relative;display:flex;align-items:center;overflow:hidden;padding:20px}
@@ -83,6 +84,39 @@ textarea::placeholder{color:#6c82a0;opacity:1}
 .photo-feedback.is-error{color:#ad3442}
 .show-details .next-button{font-size:17px}
 .show-details .motion{background:#ffffffc9}
+.show-location .next-button{font-size:17px}
+.location-content{display:grid;gap:16px;margin:0 16px 26px}
+.location-card{padding:10px 10px 13px;background:#ffffffee;border:1px solid #d1e7f5;border-radius:23px;box-shadow:0 4px 12px #3677a50b;min-width:0}
+.map-frame{position:relative;height:clamp(210px,58vw,270px);border-radius:18px;overflow:hidden;background:#eaf2e4;isolation:isolate}
+#location-map{position:absolute;inset:0;direction:ltr}
+.map-frame .maplibregl-canvas:focus-visible{outline:3px solid #0873ff;outline-offset:-4px}
+.map-frame .maplibregl-ctrl-attrib{font-family:Arial,sans-serif;font-size:9px;line-height:18px;max-width:calc(100% - 10px)}
+.map-frame .maplibregl-ctrl-attrib-inner{white-space:normal}
+.map-frame .maplibregl-ctrl-logo{width:67px;height:19px}
+.map-recenter{position:absolute;top:12px;left:12px;z-index:2;color:var(--blue);box-shadow:0 4px 14px #203e7414}
+.map-status{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;background:#f1f8f5;color:#607995;font-size:13px;line-height:2}
+.location-marker,.map-center-pin{width:0;height:0;pointer-events:none}
+.map-center-pin{position:absolute;left:50%;top:50%;z-index:1}
+.pin-halo{position:absolute;width:62px;height:62px;left:-31px;top:-31px;border:1px solid #287cf52e;border-radius:50%;background:#4b9cff29}
+.map-pin{position:absolute;left:-16px;top:-39px;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#21b4a6,#00887b 60%,#056a68);box-shadow:inset 2px 2px 4px #9ff4e855,2px 4px 8px #087c6c33}
+.map-pin:after{content:'';position:absolute;inset:9px;border-radius:50%;background:#fff;box-shadow:inset 0 1px 2px #205f6730}
+.location-summary{display:flex;gap:12px;padding:16px 10px 14px;align-items:flex-start}
+.location-summary h2{font-size:17px;line-height:1.8;font-weight:900;margin:0}
+.location-summary p{font-size:11px;line-height:1.9;color:#7086a3;margin:2px 0 0}
+.location-summary .location-privacy{font-size:10px;margin-top:4px}
+.summary-pin{position:relative;flex:none;width:18px;height:18px;margin:6px 1px 0 3px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#16b2a1,#087d70)}
+.summary-pin:after{content:'';position:absolute;inset:5px;border-radius:50%;background:#fff}
+.location-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.location-actions .outline-button{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:45px;padding:7px 5px;border-radius:15px;font-size:13px;background:#f5fbff}
+.location-actions svg{width:19px;height:19px;flex:none}
+.location-actions button:disabled,.map-recenter:disabled{opacity:.5;cursor:default}
+.location-actions button[aria-pressed=true]{background:#e4f8f1;color:#087d70;border-color:#07917e}
+.manual-instructions{padding:10px;border-radius:13px;background:#eaf4ff;margin:0 0 12px}
+.manual-instructions p{font-size:11px;line-height:1.9;margin:0;color:#42678a}
+.manual-instructions button{display:block;min-height:34px;background:none;border:0;padding:4px 0;color:#536d85;font-size:11px;text-decoration:underline;text-underline-offset:3px}
+.location-feedback{font-size:10px;line-height:1.8;margin:10px 8px 0;color:#087d70}
+.safety-banner{height:105px;position:relative;overflow:hidden;border:1px dashed #b8ddff;border-radius:23px;background:#ffffff8f}
+.safety-banner img{position:absolute;top:50%;left:-5%;width:110%;height:auto;display:block;transform:translateY(-50%);mix-blend-mode:multiply}
 .action-footer{position:sticky;bottom:0;z-index:5;padding:14px 20px max(16px,env(safe-area-inset-bottom));margin-top:auto;background:#ffffffed;border-top:1px solid #d1e7f5;backdrop-filter:blur(12px)}
 .next-button{border:0;border-radius:17px;width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;gap:14px;background:linear-gradient(105deg,#1489ff,#086bff);color:#fff;font-size:18px;font-weight:900;box-shadow:0 6px 18px #0873ff20;transition:transform .18s,opacity .18s,background .2s}
 .next-button:active{transform:scale(.985)}
@@ -105,4 +139,5 @@ textarea::placeholder{color:#6c82a0;opacity:1}
 @media(max-width:1050px){.preview-tools{display:none}}
 @media(max-width:359px){.topbar{padding:12px 14px 0}.hero{height:115px}.hero-copy{padding:12px 16px 0 0;width:64%}.hero-copy h1{font-size:20px}.hero-copy p{font-size:10px}.options{margin-inline:12px;gap:10px}.problem-card{height:110px;padding-right:10px;gap:7px;border-radius:20px}.radio-mark{width:20px;height:20px}.card-copy{width:49%}.card-copy strong{font-size:16px}.card-copy>span{font-size:10px}.action-footer{padding:12px 16px}.scene{width:57%}}
 @media(max-width:359px){.details-heading{padding:20px 10px}.details-content{margin-inline:12px;gap:12px}.selected-problem{height:127px;padding:14px}.selected-copy>span{font-size:10px}.selected-copy strong{font-size:18px}.selected-problem .scene{width:62%}.note-card{padding:13px 12px 8px}.field-heading label{font-size:14px}.upload-card{padding:13px 12px;grid-template-columns:1.3fr 1fr;min-height:132px}.outline-button{min-width:112px}.camera-art{height:118px}.show-details .next-button{font-size:16px}}
+@media(max-width:359px){.location-content{margin-inline:12px;gap:12px}.location-card{padding:8px 8px 11px}.location-summary{padding:13px 6px 12px;gap:9px}.location-summary h2{font-size:16px}.location-summary p{font-size:10px}.location-summary .location-privacy{font-size:9px}.location-actions .outline-button{font-size:12px;gap:5px}.safety-banner{height:92px}.show-location .next-button{font-size:16px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}

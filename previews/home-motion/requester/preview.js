@@ -3,12 +3,13 @@ const form = document.querySelector('#problem-form');
 const cards = [...document.querySelectorAll('.problem-card')];
 const videos = [...document.querySelectorAll('video')];
 const nextButton = document.querySelector('#next-button');
-const locationButton = document.querySelector('#location-button');
 const motionButton = document.querySelector('#motion-toggle');
 const sheet = document.querySelector('.demo-sheet');
 const page = document.querySelector('.request-page');
 const selectionStep = document.querySelector('#selection-step');
 const detailsStep = document.querySelector('#details-step');
+const locationStep = document.querySelector('#location-step');
+const sendButton = document.querySelector('#send-request');
 const selectedVideo = document.querySelector('#selected-video');
 const backLink = document.querySelector('.back');
 const note = document.querySelector('#problem-note');
@@ -23,6 +24,8 @@ let motionEnabled = !reducedMotion.matches;
 let photoUrl = null;
 let photoVersion = 0;
 let step = 'selection';
+let locationMap;
+let locationMapLoading = false;
 const problemCopy = {
   battery: {title:'شحن بطارية', placeholder:'مثال: السيارة ما بتشتغل وبحتاج وصلة بطارية.'},
   fuel: {title:'وقود', placeholder:'مثال: خلص البنزين والسيارة واقفة على جنب الطريق.'},
@@ -108,7 +111,7 @@ form.addEventListener('submit', event => {
 function routeUrl(nextStep, problem) {
   const url = new URL(window.location.href);
   url.search = '';
-  if (nextStep === 'details') url.searchParams.set('step', 'details');
+  if (nextStep !== 'selection') url.searchParams.set('step', nextStep);
   if (problem) url.searchParams.set('problem', problem);
   return url;
 }
@@ -117,24 +120,29 @@ function renderRoute(focusHeading = false) {
   const params = new URLSearchParams(window.location.search);
   const problem = params.get('problem');
   const validProblem = Object.hasOwn(problemCopy, problem);
-  step = params.get('step') === 'details' && validProblem ? 'details' : 'selection';
+  step = ['details', 'location'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
   cards.forEach(card => { card.querySelector('input').checked = card.dataset.kind === problem; });
   nextButton.disabled = !validProblem;
   selectionStep.hidden = step !== 'selection';
   detailsStep.hidden = step !== 'details';
+  locationStep.hidden = step !== 'location';
   page.classList.toggle('show-details', step === 'details');
-  document.querySelector('.details-scenery').hidden = step !== 'details';
-  const caption = step === 'details' ? 'الخطوة ٢ من ٣' : 'الخطوة ١ من ٣';
+  page.classList.toggle('show-location', step === 'location');
+  document.querySelector('.details-scenery').hidden = step === 'selection';
+  motionButton.hidden = step === 'location';
+  const stepIndex = ['selection', 'details', 'location'].indexOf(step);
+  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة'][stepIndex];
   const progress = document.querySelector('.progress');
   progress.setAttribute('aria-label', caption);
   progress.querySelector('span').textContent = caption;
   progress.querySelectorAll('i').forEach((segment, index) => {
-    segment.classList.toggle('current', index === (step === 'details' ? 1 : 0));
-    segment.classList.toggle('complete', step === 'details' && index === 0);
+    segment.classList.toggle('current', index === stepIndex);
+    segment.classList.toggle('complete', index < stepIndex);
   });
-  backLink.href = step === 'details' ? routeUrl('selection', problem) : '../';
-  backLink.setAttribute('aria-label', step === 'details' ? 'الرجوع لاختيار المشكلة' : 'الرجوع للرئيسية');
-  document.title = step === 'details' ? 'أخو — تفاصيل المشكلة' : 'أخو — اختَر نوع المساعدة';
+  backLink.href = step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
+  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل'][stepIndex]);
+  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك'][stepIndex];
+  if (step !== 'location') locationMap?.cancelEditing();
   if (step === 'details') {
     document.querySelector('#selected-title').textContent = problemCopy[problem].title;
     note.placeholder = problemCopy[problem].placeholder;
@@ -153,17 +161,18 @@ function renderRoute(focusHeading = false) {
   }
   if (sheet.open) sheet.close();
   renderMotion();
+  if (step === 'location') prepareLocationMap();
   if (focusHeading) {
     window.scrollTo({top:0, behavior:'instant'});
-    document.querySelector(step === 'details' ? '#details-title' : '#page-title').focus({preventScroll:true});
+    document.querySelector(['#page-title', '#details-title', '#location-title'][stepIndex]).focus({preventScroll:true});
   }
 }
 
 backLink.addEventListener('click', event => {
-  if (step !== 'details' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  if (step === 'selection' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   // Replace this entry so browser Back never reopens the just-dismissed step.
-  history.replaceState(null, '', routeUrl('selection', form.elements.problem.value));
+  history.replaceState(null, '', routeUrl(step === 'location' ? 'details' : 'selection', form.elements.problem.value));
   renderRoute(true);
 });
 window.addEventListener('popstate', () => renderRoute(true));
@@ -232,13 +241,41 @@ removePhoto.addEventListener('click', () => {
 
 document.querySelector('#details-form').addEventListener('submit', event => {
   event.preventDefault();
+  history.pushState(null, '', routeUrl('location', form.elements.problem.value));
+  renderRoute(true);
+});
+
+async function prepareLocationMap() {
+  if (locationMap) { locationMap.resize(); return; }
+  if (locationMapLoading) return;
+  locationMapLoading = true;
+  document.querySelector('#retry-map').hidden = true;
+  document.querySelector('#map-status-text').textContent = 'جارٍ تحميل الخريطة…';
+  try {
+    const {createLocationMap} = await import('./location-map.js');
+    locationMap = createLocationMap();
+  } catch {
+    document.querySelector('#map-status-text').textContent = 'تعذّر تحميل الخريطة. تأكد من اتصال الإنترنت وجرّب مرة ثانية.';
+    document.querySelector('#retry-map').hidden = false;
+  } finally {
+    locationMapLoading = false;
+  }
+}
+document.querySelector('#retry-map').addEventListener('click', () => {
+  if (locationMap) locationMap.retry();
+  else prepareLocationMap();
+});
+
+document.querySelector('#location-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (sendButton.disabled) return;
   document.querySelector('#chosen-name').textContent = problemCopy[form.elements.problem.value].title;
   sheet.showModal();
   renderMotion();
 });
 document.querySelector('#return-button').addEventListener('click', () => sheet.close());
 sheet.addEventListener('close', () => {
-  if (step === 'details') locationButton.focus({preventScroll:true});
+  if (step === 'location') sendButton.focus({preventScroll:true});
   renderMotion();
 });
 renderRoute();
