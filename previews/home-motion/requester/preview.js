@@ -9,6 +9,9 @@ const page = document.querySelector('.request-page');
 const selectionStep = document.querySelector('#selection-step');
 const detailsStep = document.querySelector('#details-step');
 const locationStep = document.querySelector('#location-step');
+const waitingStep = document.querySelector('#waiting-step');
+const mapFrame = document.querySelector('.map-frame');
+const waitingFeedback = document.querySelector('#waiting-feedback');
 const sendButton = document.querySelector('#send-request');
 const selectedVideo = document.querySelector('#selected-video');
 const backLink = document.querySelector('.back');
@@ -120,29 +123,35 @@ function renderRoute(focusHeading = false) {
   const params = new URLSearchParams(window.location.search);
   const problem = params.get('problem');
   const validProblem = Object.hasOwn(problemCopy, problem);
-  step = ['details', 'location'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
+  step = ['details', 'location', 'waiting'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
   cards.forEach(card => { card.querySelector('input').checked = card.dataset.kind === problem; });
   nextButton.disabled = !validProblem;
   selectionStep.hidden = step !== 'selection';
   detailsStep.hidden = step !== 'details';
   locationStep.hidden = step !== 'location';
+  waitingStep.hidden = step !== 'waiting';
   page.classList.toggle('show-details', step === 'details');
   page.classList.toggle('show-location', step === 'location');
+  page.classList.toggle('show-waiting', step === 'waiting');
   document.querySelector('.details-scenery').hidden = step === 'selection';
   motionButton.hidden = step === 'location';
-  const stepIndex = ['selection', 'details', 'location'].indexOf(step);
-  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة'][stepIndex];
+  const stepIndex = ['selection', 'details', 'location', 'waiting'].indexOf(step);
+  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة', 'تم إرسال الطلب'][stepIndex];
   const progress = document.querySelector('.progress');
+  progress.setAttribute('aria-hidden', String(step === 'waiting'));
   progress.setAttribute('aria-label', caption);
   progress.querySelector('span').textContent = caption;
   progress.querySelectorAll('i').forEach((segment, index) => {
     segment.classList.toggle('current', index === stepIndex);
     segment.classList.toggle('complete', index < stepIndex);
   });
-  backLink.href = step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
-  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل'][stepIndex]);
-  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك'][stepIndex];
+  backLink.href = step === 'waiting' ? routeUrl('location', problem) : step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
+  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل', 'الرجوع للموقع'][stepIndex]);
+  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك', 'أخو — انتظار المساعد · معاينة'][stepIndex];
   if (step !== 'location') locationMap?.cancelEditing();
+  // Reuse the live map and selected point, without a second WebGL instance.
+  const mapSlot = document.querySelector(step === 'waiting' ? '#waiting-map-slot' : '#location-map-slot');
+  if (mapFrame.parentElement !== mapSlot) mapSlot.append(mapFrame);
   if (step === 'details') {
     document.querySelector('#selected-title').textContent = problemCopy[problem].title;
     note.placeholder = problemCopy[problem].placeholder;
@@ -161,10 +170,10 @@ function renderRoute(focusHeading = false) {
   }
   if (sheet.open) sheet.close();
   renderMotion();
-  if (step === 'location') prepareLocationMap();
+  if (step === 'location' || step === 'waiting') prepareLocationMap();
   if (focusHeading) {
     window.scrollTo({top:0, behavior:'instant'});
-    document.querySelector(['#page-title', '#details-title', '#location-title'][stepIndex]).focus({preventScroll:true});
+    document.querySelector(['#page-title', '#details-title', '#location-title', '#waiting-title'][stepIndex]).focus({preventScroll:true});
   }
 }
 
@@ -172,7 +181,7 @@ backLink.addEventListener('click', event => {
   if (step === 'selection' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   // Replace this entry so browser Back never reopens the just-dismissed step.
-  history.replaceState(null, '', routeUrl(step === 'location' ? 'details' : 'selection', form.elements.problem.value));
+  history.replaceState(null, '', routeUrl(step === 'waiting' ? 'location' : step === 'location' ? 'details' : 'selection', form.elements.problem.value));
   renderRoute(true);
 });
 window.addEventListener('popstate', () => renderRoute(true));
@@ -269,13 +278,26 @@ document.querySelector('#retry-map').addEventListener('click', () => {
 document.querySelector('#location-form').addEventListener('submit', event => {
   event.preventDefault();
   if (sendButton.disabled) return;
-  document.querySelector('#chosen-name').textContent = problemCopy[form.elements.problem.value].title;
+  waitingFeedback.hidden = true;
+  history.pushState(null, '', routeUrl('waiting', form.elements.problem.value));
+  renderRoute(true);
+});
+document.querySelector('#refresh-request').addEventListener('click', () => {
+  waitingFeedback.textContent = 'تم تحديث المعاينة، لسه بانتظار القبول.';
+  waitingFeedback.hidden = false;
+});
+document.querySelector('#cancel-request').addEventListener('click', () => {
   sheet.showModal();
   renderMotion();
 });
 document.querySelector('#return-button').addEventListener('click', () => sheet.close());
+document.querySelector('#confirm-cancel').addEventListener('click', () => {
+  sheet.close();
+  history.replaceState(null, '', routeUrl('location', form.elements.problem.value));
+  renderRoute(true);
+});
 sheet.addEventListener('close', () => {
-  if (step === 'location') sendButton.focus({preventScroll:true});
+  if (step === 'waiting') document.querySelector('#cancel-request').focus({preventScroll:true});
   renderMotion();
 });
 renderRoute();

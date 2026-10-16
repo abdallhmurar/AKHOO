@@ -135,6 +135,38 @@ textarea::placeholder{color:#6c82a0;opacity:1}
 .selection-badge{display:inline-block;background:#e2f5ef;border-radius:30px;padding:7px 16px;font-size:12px;color:var(--teal)}
 .demo-sheet h2{font-size:22px;margin:20px 0 10px}
 .demo-sheet p{font-size:13px;line-height:2.1;color:var(--muted);margin:0 0 22px}
+.demo-sheet>.outline-button{margin-top:12px;width:100%;border-color:#ccdeee;background:#fff;color:#607995}
+.show-waiting .progress{visibility:hidden}
+.show-waiting .details-scenery{opacity:.85}
+.waiting-heading{padding:16px 12px 14px}
+.waiting-content{display:grid;gap:14px;margin:0 16px 22px}
+.waiting-map{border:1px solid #d1e7f5;border-radius:23px;padding:7px;background:#ffffffd9;box-shadow:0 4px 12px #3677a50b;min-width:0}
+.waiting-map .map-frame{height:clamp(160px,44vw,172px);border-radius:17px}
+.waiting-map .map-recenter{width:39px;height:39px;top:10px;left:10px}
+.waiting-card{background:#fff;border:1px solid #d1e7f5;border-radius:25px;padding:4px 14px 16px;text-align:center;box-shadow:0 6px 18px #3677a50b;overflow:hidden}
+.waiting-scene{height:150px;position:relative;max-width:310px;margin:0 auto;pointer-events:none}
+.waiting-scene img,.waiting-scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.waiting-scene video{opacity:0;transition:opacity .2s}
+.waiting-scene.is-playing video{opacity:1}
+.waiting-card h2{font-weight:900;font-size:clamp(17px,4.7vw,21px);line-height:1.7;margin:0}
+.search-description{font-size:clamp(10px,2.9vw,12px);line-height:1.9;margin:3px 0 16px;color:#6b829a}
+.request-timeline{display:flex;list-style:none;margin:0 0 14px;padding:0;isolation:isolate}
+.request-timeline li{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:clamp(9px,2.5vw,11px);color:#68809a;line-height:1.8}
+.request-timeline li:not(:last-child):before{content:'';height:2px;position:absolute;right:50%;width:100%;top:17px;background:#dbe7f2;z-index:-1}
+.request-timeline .is-complete:before{background:linear-gradient(to left,#159179,#0873ff)}
+.timeline-icon{height:35px;width:35px;border:1.5px solid #d5e3f0;border-radius:50%;background:#fff;display:grid;place-items:center}
+.timeline-icon svg{width:19px;height:19px;stroke-width:2.2}
+.is-complete .timeline-icon{background:#12866e;border-color:#12866e;color:#fff}
+.request-timeline .is-current{color:#0873ff}
+.is-current .timeline-icon{background:#0873ff;border-color:#0873ff;color:#fff;box-shadow:0 0 0 5px #edf5ff}
+.waiting-pill{display:inline-flex;align-items:center;gap:7px;font-size:10px;line-height:1.9;border-radius:30px;padding:4px 13px;background:#edf6ff;color:#617d9c}
+.waiting-pill i{width:5px;height:5px;border-radius:50%;background:#3696f3}
+#waiting-feedback{font-size:10px;color:#12866e;line-height:1.9;margin:10px 0 0}
+.local-preview-note{font-size:10px;line-height:1.8;text-align:center;margin:-3px 0 0;color:#71889f}
+.waiting-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-inline:16px}
+.waiting-actions .next-button,.waiting-actions .outline-button{min-width:0;font-size:14px;min-height:50px;border-radius:16px;gap:8px}
+.waiting-actions .outline-button{background:#fff;color:#405d78;border-color:#c2d7e9}
+.waiting-actions svg{width:19px;height:19px}
 @media(min-width:700px){.request-page{min-height:900px;margin:20px auto;border:1px solid #d3e8f0;border-radius:26px;overflow:clip;box-shadow:0 20px 80px #194d6e12}.hero{height:158px}.topbar{padding-top:20px}.options{gap:12px}.action-footer{border-radius:0 0 26px 26px}.hero-copy{padding-top:23px}.details-heading{padding-block:30px}.selected-problem{height:165px}.upload-card{min-height:160px}.camera-art{height:146px}}
 @media(max-width:1050px){.preview-tools{display:none}}
 @media(max-width:359px){.topbar{padding:12px 14px 0}.hero{height:115px}.hero-copy{padding:12px 16px 0 0;width:64%}.hero-copy h1{font-size:20px}.hero-copy p{font-size:10px}.options{margin-inline:12px;gap:10px}.problem-card{height:110px;padding-right:10px;gap:7px;border-radius:20px}.radio-mark{width:20px;height:20px}.card-copy{width:49%}.card-copy strong{font-size:16px}.card-copy>span{font-size:10px}.action-footer{padding:12px 16px}.scene{width:57%}}

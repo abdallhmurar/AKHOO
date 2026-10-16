@@ -1,0 +1,27 @@
+{
+  "image": {
+    "tool": "built-in image generation",
+    "reference": "assets/approved-waiting.png",
+    "output": "assets/waiting.png",
+    "prompt": "Use case: stylized-concept. Asset type: clean 3D animation keyframe for the waiting-for-help card in an Arabic roadside assistance app. Reference is the approved UI mockup; extract/recreate ONLY the 3D illustration inside its waiting status card, with no UI. A glossy cobalt-blue compact sedan, front three-quarter view facing right, on a very pale blue circular radar base with two delicate concentric white rings. A large glossy teal location pin with white center stands behind the right side of the car. A thick blue magnifying glass with real translucent light-blue glass lens is in the lower-right foreground, handle angled lower-right. Behind them a small softly blurred pale-blue city and green trees, a few small white clouds, fading at edges into clean white. Match the reference car model, color, lighting and friendly polished dimensional style. Entire scene centered, all objects fully visible with safe margins, wide 3:2 composition, pure white at all outer edges for clean blending into a white app card. Keep the background minimal and stable, no people, no text, no logos, no interface, no frame. Professional soft studio daylight, grounded contact shadows, crisp dimensional objects, suitable as identical first and last frame for a six-second loop."
+  },
+  "video": {
+    "tool": "Grok Imagine through browser UI",
+    "output": "assets/waiting.mp4",
+    "firstFrame": "assets/waiting.png",
+    "lastFrame": "assets/waiting.png",
+    "settings": {
+      "seconds": 6,
+      "resolution": "720p",
+      "aspectRatio": "3:2",
+      "audio": false
+    },
+    "prompt": "Animate this exact polished 3D roadside-help illustration into a seamless six-second loop. Keep the camera completely locked, preserve the same car model, blue and teal colors, white background and composition. The blue magnifying glass makes a clearly visible slow searching sweep in a small arc in front of the car, with genuine 3D rotation, changing lens reflections and depth. The large teal location pin gently bobs and turns a few degrees then returns. The car rolls only a few centimeters forward and back with coherent wheel rotation and a subtle suspension settling motion. One soft radar ring travels outward across the base. All movement is calm, premium and carefully eased, with the car, pin and lens moving independently. Finish in exactly the initial pose for a clean continuous loop. First and last frames must match the supplied references. No camera zoom or pan, no cuts, no morphing, no extra objects, no people, no text, no logos and no sound.",
+    "actual": {
+      "width": 1168,
+      "height": 784,
+      "durationSeconds": 6.041667,
+      "bytes": 1323448
+    }
+  }
+}

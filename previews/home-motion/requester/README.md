@@ -5,7 +5,7 @@ Run `node previews/home-motion/serve.cjs` from the repository root and open
 also opens this screen. The default port remains 4178.
 
 This is an isolated, Arabic, responsive visual prototype of all three requester
-steps. It does not import the Expo application, call its APIs, send assistance
+steps plus the waiting-for-helper screen. It does not import the Expo application, call its APIs, send assistance
 requests, read account data, or change Vercel, Android or iOS. The first Next button
 requires one of the four native radio inputs and opens the details screen with the
 matching title, animated scene and example note. Direct preview:
@@ -35,8 +35,33 @@ fixed center pin; drag/pinch, click a place, or use keyboard arrows and +/- befo
 confirming. Cancel restores the selected point. Recenter returns to that point;
 Update resets to the illustrative point. Confirmed points survive switching steps
 and are kept only in memory. Send is disabled while choosing a point or while the
-initial map is unavailable. It opens a clearly labeled local preview dialog and
-does not create a real assistance request.
+initial map is unavailable. It opens the local waiting preview and does not create
+a real assistance request.
+
+## Waiting preview
+
+Send opens <http://127.0.0.1:4178/requester/?step=waiting&problem=battery>.
+The page matches the approved waiting mockup: compact map, white 3D scene card,
+RTL status timeline and paired refresh/cancel buttons. A visible local-preview note
+clarifies that the waiting status is simulated. Refresh reports the unchanged demo
+status; it never invents a helper, notification or ETA. Cancel opens a confirmation
+dialog; continuing resumes motion, while confirming returns to the location step
+and keeps the note, optional photo and selected map point in memory.
+
+The existing map frame moves between the location and waiting screens, preserving
+the selected point and one WebGL instance. Browser Back/Forward works across the
+four screens. The waiting scene is decorative; headings and status remain live HTML.
+The pause button, reduced-motion preference, offscreen and hidden-tab behavior also
+apply to this clip. Opening the cancel dialog pauses it.
+
+`assets/waiting.png` was generated from `assets/approved-waiting.png` using the
+built-in image tool, then supplied as the first and last frames in Grok Imagine.
+`assets/waiting.mp4` is a six-second 1168×784 video (1,323,448 bytes), downloaded
+through Grok's Download control. The teal pin and blue magnifying glass rotate
+independently around the car, with matching starting and ending poses. It plays
+silently in a loop from the local server. Exact prompts and settings are recorded
+in [prompts/waiting.json](prompts/waiting.json). This is a rendered 3D video, not an
+interactive 3D model or a GIF file.
 
 Map styles, tiles, fonts and sprites need an internet connection to
 `https://tiles.openfreemap.org`. They are the only external data requests allowed
@@ -104,3 +129,13 @@ unblocking and Retry recovered successfully. The final clean run had no browser
 errors. The worker returned JavaScript with HTTP 200, disallowed vendor files
 returned 404, and the copied safety image matched the original SHA-256 exactly.
 Final local screenshot: `test-results/requester-motion/location-390.jpg` (ignored).
+
+Waiting preview: verified the selection → note → manual location → waiting flow,
+one retained map instance, Back/Forward, local refresh, both cancel choices, keyboard
+and pointer activation, and pause/resume. Reduced motion loaded no video sources;
+blocking the waiting MP4 preserved the poster. At 320, 390 and 480px there was no
+horizontal overflow and the default content cleared the footer. Compared video
+frames at 0.05, 2.8 and 5.95 seconds: independent pin/lens motion and matching loop
+endpoints. Sending the preview made no assistance API request. Scoped ESLint,
+JavaScript syntax and diff checks passed. Final screenshot:
+`test-results/requester-motion/waiting-390.jpg` (ignored).

@@ -21,6 +21,7 @@
     <a href="assets/approved.png" target="_blank" rel="noopener">تصميم اختيار المشكلة</a>
     <a href="assets/approved-details.png" target="_blank" rel="noopener">تصميم تفاصيل المشكلة</a>
     <a href="assets/approved-location.png" target="_blank" rel="noopener">تصميم تحديد الموقع</a>
+    <a href="assets/approved-waiting.png" target="_blank" rel="noopener">تصميم انتظار المساعد</a>
     <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
   </aside>
   <main class="request-page">
@@ -117,6 +118,7 @@
       <form id="location-form">
         <div class="location-content">
           <div class="location-card">
+            <div id="location-map-slot">
             <div class="map-frame">
               <div id="location-map" aria-label="خريطة الموقع المحدد"></div>
               <div id="manual-pin" class="map-center-pin" aria-hidden="true" hidden><span class="pin-halo"></span><span class="map-pin"></span></div>
@@ -125,6 +127,7 @@
                 <span id="map-status-text">جارٍ تحميل الخريطة…</span>
                 <button id="retry-map" class="outline-button" type="button" hidden>إعادة المحاولة</button>
               </div>
+            </div>
             </div>
             <div class="location-summary">
               <span class="summary-pin" aria-hidden="true"></span>
@@ -151,13 +154,42 @@
         </footer>
       </form>
     </section>
+    <section id="waiting-step" class="step-panel" aria-labelledby="waiting-title" hidden>
+      <div class="details-heading waiting-heading">
+        <h1 id="waiting-title" tabindex="-1">طلب المساعدة</h1>
+        <p>طلبك وصل، وبنبحث عن مساعد قريب</p>
+      </div>
+      <div class="waiting-content">
+        <div id="waiting-map-slot" class="waiting-map"></div>
+        <article class="waiting-card" aria-labelledby="search-title">
+          <div class="waiting-scene" aria-hidden="true">
+            <img src="assets/waiting.png" alt="" width="1536" height="1024">
+            <video id="waiting-video" muted loop playsinline preload="none" poster="assets/waiting.png" data-src="assets/waiting.mp4" tabindex="-1" disablepictureinpicture></video>
+          </div>
+          <h2 id="search-title">جاري العثور على مساعد</h2>
+          <p class="search-description">رح يوصلك إشعار أول ما ينقبل طلبك</p>
+          <ol class="request-timeline" aria-label="حالة الطلب">
+            <li class="is-complete"><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>تم الإرسال</span></li>
+            <li class="is-current" aria-current="step"><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg></span><span>البحث عن مساعد</span></li>
+            <li><span class="timeline-icon"></span><span>قبول الطلب</span></li>
+          </ol>
+          <span class="waiting-pill"><i aria-hidden="true"></i>بانتظار القبول</span>
+          <p id="waiting-feedback" role="status" aria-live="polite" hidden></p>
+        </article>
+        <p class="local-preview-note">معاينة محلية · ما انبعت طلب حقيقي</p>
+      </div>
+      <footer class="action-footer waiting-actions">
+        <button id="refresh-request" class="next-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الحالة</span></button>
+        <button id="cancel-request" class="outline-button" type="button">إلغاء الطلب</button>
+      </footer>
+    </section>
   </main>
   <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
     <span class="sheet-handle" aria-hidden="true"></span>
-    <span class="selection-badge">تم اختيار <strong id="chosen-name"></strong></span>
-    <h2 id="demo-title">معاينة طلبك جاهزة</h2>
-    <p id="demo-description">هاي معاينة محلية فقط. ما انبعت طلب مساعدة، وما شاركنا الملاحظة أو الصورة مع أي شخص.</p>
-    <button id="return-button" class="next-button" type="button">رجوع للموقع</button>
+    <h2 id="demo-title">بدك تلغي الطلب؟</h2>
+    <p id="demo-description">بنرجعك لتحديد الموقع، وبتضل تفاصيلك محفوظة بهالمعاينة.</p>
+    <button id="return-button" class="next-button" type="button" autofocus>خلّيني أستنى</button>
+    <button id="confirm-cancel" class="outline-button" type="button">إلغاء الطلب</button>
   </dialog>
 </body>
 </html>
