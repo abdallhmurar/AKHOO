@@ -7,6 +7,7 @@
   <title>أخو — معاينة الرئيسية المتحركة</title>
   <link rel="icon" href="assets/brand.png">
   <link rel="preload" as="image" href="assets/home-art.png">
+  <link rel="preload" as="image" href="assets/road-header.png">
   <link rel="stylesheet" href="styles.css">
   <script src="preview.js" defer></script>
 </head>
@@ -63,22 +64,11 @@
           <source src="assets/helper-3d.mp4" type="video/mp4">
         </video>
       </div>
-      <header class="brand-header">
-        <div class="brand" aria-label="أخو">
-          <span class="brand-mark" aria-hidden="true"><img src="assets/brand.png" alt=""></span>
-          <span class="brand-name">أخو</span>
-        </div>
+      <header class="landscape-header">
+        <img class="header-art" src="assets/road-header.png" alt="" aria-hidden="true" width="2172" height="724" fetchpriority="high">
+        <h1 class="visually-hidden">أخو — المساعدة على الطريق</h1>
         <button class="notification" type="button" data-demo="notifications" aria-label="الإشعارات"><svg><use href="#bell"/></svg></button>
       </header>
-
-      <div class="welcome">
-        <h1>
-          <span class="welcome-lead">مع بعض،</span>
-          <span class="welcome-accent">الطريق أسهل</span>
-        </h1>
-        <p>شو بدك تعمل هلّق؟</p>
-      </div>
-      <p class="road-note">دايمًا<br>في حدا جنبك<span></span></p>
 
       <section class="help-content" aria-labelledby="help-title">
         <svg class="help-icon" aria-hidden="true"><use href="#car-help"/></svg>
@@ -107,7 +97,7 @@
         <button class="nav-item" type="button" data-demo="activity"><svg aria-hidden="true"><use href="#history"/></svg><span>نشاطي</span></button>
         <button class="nav-item" type="button" data-demo="account"><svg aria-hidden="true"><use href="#person"/></svg><span>حسابي</span></button>
       </nav>
-      <img class="reference" id="reference" src="assets/approved-home.png" alt="الصورة المعتمدة للتصميم الجديد" hidden>
+      <img class="reference" id="reference" src="assets/approved-road-header.png" alt="التصميم المعتمد مع هيدر الطريق والسيارة بدون كتابة" hidden>
     </div>
   </main>
 
