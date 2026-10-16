@@ -165,11 +165,11 @@ export function CommunityHubScreen() {
         </>}
       </Animated.View>}</GuideTarget>
 
-      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, stageStyle(1)]}>
+      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, Platform.OS !== 'web' && stageStyle(1)]}>
         <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
         {offersQuery.isSuccess ? <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.availableOffers', { count: offers.length })}</Text> : null}
       </Animated.View>
-      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, stageStyle(2)]}>
+      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, Platform.OS !== 'web' && stageStyle(2)]}>
         {offersQuery.isLoading ? <><Skeleton width="100%" height={190} /><Skeleton width="100%" height={190} /></> : offersQuery.isError ? (
           <Button label={t('perks.retry')} variant="outline" onPress={() => { void offersQuery.refetch() }} />
         ) : offers.length === 0 ? (
