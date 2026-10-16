@@ -24,7 +24,7 @@
 .motion-art-icon{display:block;object-fit:contain;flex-shrink:0}
 .motion-credits{display:block;text-align:center;font:8px/1.8 Arial,sans-serif;color:#657e93;padding:4px}.motion-credits a{color:inherit}
 .motion-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
-.approved-request,.approved-account,.approved-perks,.approved-activity{background:transparent}
+.approved-request.approved-request,.approved-account.approved-account,.approved-perks.approved-perks,.approved-activity.approved-activity{background:transparent}
 .approved-request:dir(ltr) .problem-card{padding:14px 0 14px 14px}
 .approved-request:dir(ltr) .scene{left:auto;right:0;mask-image:linear-gradient(to left,#000 0%,#000 64%,transparent 100%)}
 .approved-request:dir(ltr) .hero-copy{margin-right:auto;margin-left:0;padding:20px 0 0 20px}
