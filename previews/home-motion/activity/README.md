@@ -39,7 +39,7 @@ Bold and extra-bold fonts are reused from the home preview.
   cancelled status and do not acquire points. Closing restores focus.
 - The level dialog shows the same tier thresholds as `src/lib/activityLevel.ts`:
   5, 15, 30 and 60 completed helps. The fixed sample is silver with 25/30 progress.
-- Perks opens an explanatory preview dialog. Account opens the local account
+- Perks opens the local 3D preview at `../assets/perks/index.html`. Account opens the local account
   preview at `../account/`. The active Activity item scrolls back to the top;
   Home returns to the existing local home page.
 

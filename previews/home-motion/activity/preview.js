@@ -200,9 +200,7 @@ document.querySelector('#level-info').addEventListener('click',event => {
 });
 document.querySelectorAll('[data-info]').forEach(button => button.addEventListener('click',() => {
   if (button.dataset.info === 'account') { window.location.assign('../account/'); return; }
-  document.querySelector('#info-title').textContent = 'مزايا أخو';
-  document.querySelector('#info-content').replaceChildren(el('p','','من هون بتوصل لعروض مزايا أخو. هاي معاينة محلية لشكل الشريط، وما بتغيّر رصيد النقاط.'));
-  openDialog(infoDialog,button);
+  if (button.dataset.info === 'perks') { window.location.assign('../assets/perks/index.html'); return; }
 }));
 document.querySelector('#activity-nav').addEventListener('click',() => window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}));
 window.addEventListener('popstate',readRoute);

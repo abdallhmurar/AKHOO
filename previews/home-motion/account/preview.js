@@ -184,10 +184,10 @@ document.querySelector('#guide-back').addEventListener('click',() => {
 const info = {
   privacy:['الخصوصية والأمان','من هون بتوصل لإعدادات الأمان وسياسة الخصوصية بالتطبيق. هاي معاينة للتصميم فقط، وما بتغيّر كلمة المرور أو إعدادات حسابك.'],
   support:['المساعدة والدعم','بدك تعرف كيف تستخدم أخو؟ هاي إجابات سريعة بالمعاينة، بدون إرسال رسالة دعم.'],
-  perks:['مزايا أخو','من هون بتوصل لعروض مزايا أخو. هاي معاينة لشكل الشريط، وما بتغيّر رصيد النقاط.'],
   logout:['تسجيل خروج','أنت داخل معاينة محلية. الخروج من هون بيرجعك للرئيسية، وما بيسجّل خروج من حسابك الحقيقي.']
 };
 function openInfo(kind,opener) {
+  if (kind === 'perks') { window.location.assign('../assets/perks/index.html'); return; }
   document.querySelector('#info-title').textContent = info[kind][0];
   document.querySelector('#info-copy').textContent = info[kind][1];
   document.querySelector('#support-faq').hidden = kind !== 'support';

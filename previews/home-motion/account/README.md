@@ -39,7 +39,8 @@ name/email from the reference are not copied into code or QA images.
   identity and Arabic/Waze choices.
 - Three-step guide: Next/Previous/Done, restarting at step one, with existing
   battery/helper artwork and trophy icon.
-- Support provides local FAQs. Privacy/Perks show labeled preview explanations.
+- Support provides local FAQs. Privacy shows a labeled preview explanation.
+  Perks now opens the local 3D page at `../assets/perks/index.html`.
   Billing stays unavailable. Logout offers staying or returning to local Home;
   it does not sign out a real account. No password entry or support messages.
 - Native dialogs trap focus, close with Escape/outside click and restore opener
