@@ -288,7 +288,7 @@
     "volunteerSince": "עוזר/ת לך מאז",
     "volunteerLabel": "המסייע/ת",
     "defaultVolunteerName": "מסייע/ת",
-    "callButton": "התקשר/י אל {{phone}}",
+    "callButton": "התקשר/י אל ⁦{{phone}}⁩",
     "chatButton": "צ'אט",
     "backToHome": "חזרה לבחירת תפקיד",
     "cancel": "ביטול הבקשה",
@@ -297,7 +297,9 @@
     "elapsed": {
       "lessThanMinute": "פחות מדקה",
       "minutes": "{{count}} דקות",
+      "minutes_one": "{{count}} דקה",
       "hours": "{{count}} שעות",
+      "hours_one": "{{count}} שעה",
       "hoursAndMinutes": "{{hours}} שעות ו-{{minutes}} דקות"
     },
     "completion": {
@@ -357,7 +359,7 @@
     "requestId": "מספר בקשה",
     "requesterLabel": "מבקש/ת העזרה",
     "defaultRequesterName": "משתמש",
-    "callButton": "התקשר/י אל {{phone}}",
+    "callButton": "התקשר/י אל ⁦{{phone}}⁩",
     "chatButton": "צ'אט",
     "openInGoogleMaps": "פתח/י את המיקום במפות גוגל",
     "openInWaze": "פתח/י את המיקום ב-Waze",
@@ -381,7 +383,7 @@
     "completion": {
       "title": "העזרה הושלמה בהצלחה",
       "message": "תודה שהיית אחוו למישהו היום 💚",
-      "pointsEarned": "+{{points}} נקודות",
+      "pointsEarned": "⁦+{{points}}⁩ נקודות",
       "balanceLabel": "היתרה שלך כעת: {{balance}} נקודות",
       "helpedCount": "עזרת ל-{{count}} אנשים עד כה",
       "rateExperienceTitle": "איך הייתה החוויה שלך בעזרה?",
@@ -445,7 +447,7 @@
     "subtitle": "כל הבקשות שלך והמשימות שבהן עזרת.",
     "empty": "אין עדיין פעילות",
     "emptyMessage": "בקשות ששלחת ומשימות שבהן עזרת יופיעו כאן.",
-    "pointsEarned": "+{{points}} נקודות",
+    "pointsEarned": "⁦+{{points}}⁩ נקודות",
     "all": "הכול",
     "filters": {
       "received": "קיבלתי",
@@ -617,7 +619,11 @@
     "levelUpMessage": "🎉 הגעת לדרגת {{levelName}}"
   },
   "map": {
-    "loading": "טוען מפה..."
+    "loading": "טוען מפה...",
+    "title": "מפה",
+    "marker": "סמן במפה",
+    "attribution": "מקורות המפה",
+    "feedback": "משוב על המפה"
   },
   "perks": {
     "title": "הטבות אחוו",
@@ -735,9 +741,9 @@
     },
     "hubSubtitle": "מבצעים והטבות בשבילך",
     "pointsUnit": "נקודות",
-    "helpProgress": "{{count}} / {{target}} עזרות",
+    "helpProgress": "⁦{{count}} / {{target}}⁩ עזרות",
     "weeklyHeading": "מבצעי השבוע",
-    "availableOffers": "{{count}} מבצעים זמינים",
+    "availableOffers": "מבצעים זמינים: {{count}}",
     "noPoints": "ללא נקודות",
     "offerDetails": "פרטי ההטבה",
     "offerDetailsFor": "פרטי ההטבה: {{title}}",

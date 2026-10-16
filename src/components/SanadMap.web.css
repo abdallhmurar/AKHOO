@@ -1,0 +1,3 @@
+/* Keep provider credits readable without covering the small mobile map. */
+.akhoo-map .maplibregl-ctrl-attrib{direction:ltr;text-align:left;max-width:calc(100% - 8px)}
+@media(max-width:390px){.akhoo-map .maplibregl-ctrl-attrib{font-size:10px;line-height:15px}}

@@ -32,4 +32,24 @@ describe('locale key parity (ar/en/he)', () => {
       expect(empties, `${name} has empty values for: ${empties.join(', ')}`).toEqual([])
     }
   })
+
+  it('preserves interpolation values in every translation', () => {
+    const read = (locale: unknown, key: string) => key.split('.').reduce<any>((value, part) => value?.[part], locale)
+    const parameters = (value: string) => [...value.matchAll(/{{\s*-?\s*([^},\s]+)[^}]*}}/g)].map(match => match[1]).sort()
+    for (const key of arKeys) {
+      for (const [name, locale] of [['en', en], ['he', he]] as const) {
+        expect(parameters(read(locale, key)), `${name}: ${key}`).toEqual(parameters(read(ar, key)))
+      }
+    }
+  })
+
+  it('isolates signed numbers and phone numbers from RTL surrounding text', () => {
+    for (const locale of [ar, en, he]) {
+      expect(locale.perks.helpProgress).toContain('\u2066{{count}} / {{target}}\u2069')
+      expect(locale.activity.pointsEarned).toContain('\u2066+{{points}}\u2069')
+      expect(locale.volunteerJob.completion.pointsEarned).toContain('\u2066+{{points}}\u2069')
+      expect(locale.activeRequest.callButton).toContain('\u2066{{phone}}\u2069')
+      expect(locale.volunteerJob.callButton).toContain('\u2066{{phone}}\u2069')
+    }
+  })
 })

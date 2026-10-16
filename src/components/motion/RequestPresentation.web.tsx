@@ -5,7 +5,7 @@ import './approved-request.css'
 export function FlowHeader({ onBack, step }: { onBack: () => void; step?: number }) {
   const { t } = useTranslation()
   return <div className="approved-request"><header className="topbar">
-    <button type="button" className="round-control" onClick={onBack} aria-label={t('common.back')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button>
+    <button type="button" className="round-control flow-back" onClick={onBack} aria-label={t('common.back')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button>
     {step ? <div className="progress"><div className="progress-segments" aria-hidden="true">{[1, 2, 3].map(n => <i key={n} className={n === step ? 'current' : n < step ? 'complete' : ''} />)}</div><span>{t('request.step.details.stepOf', { current: step, total: 3 })}</span></div> : <span />}
   </header></div>
 }

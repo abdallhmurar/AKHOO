@@ -21,7 +21,7 @@ export function MotionScene({ name, className = '', style, fit = 'cover', childr
     const canPlay = () => !disposed && !failed && visible && focused && !guide?.blocking && !document.hidden && !reduced.matches
     const sync = () => {
       if (!canPlay()) { video.pause(); return }
-      if (!video.getAttribute('src')) video.src = `/motion/${file}.mp4`
+      if (video.getAttribute('src') !== `/motion/${file}.mp4`) video.src = `/motion/${file}.mp4`
       video.muted = true
       void video.play().then(() => { if (!canPlay()) video.pause() }).catch(() => {})
     }
@@ -34,7 +34,7 @@ export function MotionScene({ name, className = '', style, fit = 'cover', childr
     return () => { disposed = true; observer.disconnect(); video.pause(); document.removeEventListener('visibilitychange', sync); reduced.removeEventListener('change', sync); video.removeEventListener('error', error) }
   }, [file, focused, guide?.blocking])
   return <div className={`akhoo-motion motion-scene ${className}`} style={style}>
-    <video ref={ref} muted loop playsInline preload="none" poster={poster} disablePictureInPicture tabIndex={-1} aria-hidden="true" style={{ objectFit: fit }} />
+    <video key={file} ref={ref} muted loop playsInline preload="none" poster={poster} disablePictureInPicture tabIndex={-1} aria-hidden="true" style={{ objectFit: fit }} />
     {children}
   </div>
 }

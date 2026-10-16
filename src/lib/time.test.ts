@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { createInstance } from 'i18next'
+import he from '../locales/he.json'
 import { formatElapsed } from './time'
 
 const t = ((key: string, options?: Record<string, unknown>) => {
@@ -7,6 +9,14 @@ const t = ((key: string, options?: Record<string, unknown>) => {
 }) as any
 
 describe('formatElapsed', () => {
+  it('uses singular Hebrew duration labels for one minute and one hour', async () => {
+    const i18n = createInstance()
+    await i18n.init({ lng: 'he', resources: { he: { translation: he } } })
+    expect(formatElapsed(60_000, i18n.t)).toBe('1 דקה')
+    expect(formatElapsed(3_600_000, i18n.t)).toBe('1 שעה')
+    expect(formatElapsed(5 * 60_000, i18n.t)).toBe('5 דקות')
+  })
+
   it('reports "less than a minute" for anything under 60s', () => {
     expect(formatElapsed(30_000, t)).toBe('activeRequest.elapsed.lessThanMinute')
   })

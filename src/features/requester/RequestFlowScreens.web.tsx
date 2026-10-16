@@ -71,7 +71,11 @@ const LOCATION_COPY = {
 } as const
 
 const SERVICES = [{ key: 'battery' }, { key: 'fuel' }, { key: 'other' }, { key: 'tire' }] as const
-const APPROVED_DESCRIPTIONS = { battery: 'مساعدة لتشغيل السيارة', fuel: 'بنزينك خلص؟ بنوصلك مساعدة', other: 'مساعدة لمشكلة ثانية بالطريق', tire: 'مساعدة لتبديل إطار السيارة' }
+const APPROVED_DESCRIPTIONS = {
+  ar: { battery: 'مساعدة لتشغيل السيارة', fuel: 'بنزينك خلص؟ بنوصلك مساعدة', other: 'مساعدة لمشكلة ثانية بالطريق', tire: 'مساعدة لتبديل إطار السيارة' },
+  en: { battery: 'Help starting your car', fuel: 'Out of fuel? Get help nearby', other: 'Help with another road issue', tire: 'Help changing a flat tire' },
+  he: { battery: 'עזרה בהתנעת הרכב', fuel: 'נגמר הדלק? עזרה בקרבתך', other: 'עזרה בבעיה אחרת בדרך', tire: 'עזרה בהחלפת גלגל' }
+} as const
 
 // Small icon + label shown in the details step's "selected problem" summary
 // card, separate from the illustrated selection cards.
@@ -351,7 +355,7 @@ export function RequestFlowScreen() {
         <>
           <RequestHeading selection title={t('request.step.type.title')} subtitle={t('request.step.type.subtitle')} />
           <GuideTarget id="request.services"><View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
-            {SERVICES.map(item => <RequestChoice key={item.key} kind={item.key} title={t(`request.serviceCards.${item.key}.title`)} description={locale === 'ar' ? APPROVED_DESCRIPTIONS[item.key] : t(`request.serviceCards.${item.key}.description`)} selected={service === item.key} onSelect={() => selectService(item.key)} />)}
+            {SERVICES.map(item => <RequestChoice key={item.key} kind={item.key} title={t(`request.serviceCards.${item.key}.title`)} description={APPROVED_DESCRIPTIONS[locale][item.key]} selected={service === item.key} onSelect={() => selectService(item.key)} />)}
           </View></GuideTarget>
           {/* Hidden on iOS only; Android keeps the SAND rescue contact card. */}
         </>

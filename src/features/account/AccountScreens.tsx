@@ -153,7 +153,7 @@ export function AccountHomeScreen() {
           Icon={Bell}
           title={t('account.menu.notifications')}
           onPress={() => toggleNotifications(!notificationsEnabled)}
-          trailing={<Switch disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
+          trailing={<Switch accessibilityLabel={t('account.menu.notifications')} disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         /> : null}
         <GuideTarget id="account.settings"><ListRow Icon={Globe} title={t('account.language')} onPress={() => setLanguageModalOpen(true)} /></GuideTarget>
         <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => setNavigationModalOpen(true)} />
@@ -161,7 +161,7 @@ export function AccountHomeScreen() {
           Icon={Moon}
           title={t('account.menu.darkMode')}
           onPress={() => setDark(!isDark)}
-          trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
+          trailing={<Switch accessibilityLabel={t('account.menu.darkMode')} style={Platform.OS === 'web' ? { direction: 'ltr' } : undefined} value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
       </View>
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
