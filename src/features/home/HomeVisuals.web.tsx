@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { GuideTarget } from '../guide/GuideProvider'
+import { RewardsGift } from './RewardsGift.web'
 import './home.web.css'
 
 function assetUri(asset: unknown): string {
@@ -17,9 +18,9 @@ const media = {
 }
 
 export const homeWebCopy = {
-  ar: { heading: 'أخو — المساعدة على الطريق', requestTitle: 'محتاج مساعدة؟', requestText: 'خلّينا نوصلك بحدا قريب', requestAction: 'بدي مساعدة', points: 'ساعد واكسب نقاط', helperTitle: 'في حدا محتاجك', helperAction: 'بدي أساعد', rewardsTitle: 'مساعدتك إلها قيمة', rewardsText: 'بدّل نقاطك بعروض مزايا أخو', rewardsAction: 'اكتشف', notice: 'طلبك بيوصل لشخص قريب يقدر يساعدك' },
-  en: { heading: 'AKHOO — Roadside help', requestTitle: 'Need help?', requestText: 'Connect with someone nearby', requestAction: 'I need help', points: 'Help & earn points', helperTitle: 'Lend a hand', helperAction: 'I want to help', rewardsTitle: 'Your help matters', rewardsText: 'Use your points for AKHOO perks', rewardsAction: 'Explore', notice: 'Your request reaches someone nearby who can help' },
-  he: { heading: 'AKHOO — עזרה בדרך', requestTitle: 'צריך עזרה?', requestText: 'נחבר אותך למישהו קרוב', requestAction: 'אני צריך עזרה', points: 'עוזרים וצוברים נקודות', helperTitle: 'מישהו צריך אותך', helperAction: 'אני רוצה לעזור', rewardsTitle: 'לעזרה שלך יש ערך', rewardsText: 'ממירים נקודות בהטבות AKHOO', rewardsAction: 'לגלות', notice: 'הבקשה שלך מגיעה למישהו קרוב שיכול לעזור' }
+  ar: { giftAction: 'افتح هدية مزايا أخو', heading: 'أخو — المساعدة على الطريق', requestTitle: 'محتاج مساعدة؟', requestText: 'خلّينا نوصلك بحدا قريب', requestAction: 'بدي مساعدة', points: 'ساعد واكسب نقاط', helperTitle: 'في حدا محتاجك', helperAction: 'بدي أساعد', rewardsTitle: 'مساعدتك إلها قيمة', rewardsText: 'بدّل نقاطك بعروض مزايا أخو', rewardsAction: 'اكتشف', notice: 'طلبك بيوصل لشخص قريب يقدر يساعدك' },
+  en: { giftAction: 'Open the AKHOO perks gift', heading: 'AKHOO — Roadside help', requestTitle: 'Need help?', requestText: 'Connect with someone nearby', requestAction: 'I need help', points: 'Help & earn points', helperTitle: 'Lend a hand', helperAction: 'I want to help', rewardsTitle: 'Your help matters', rewardsText: 'Use your points for AKHOO perks', rewardsAction: 'Explore', notice: 'Your request reaches someone nearby who can help' },
+  he: { giftAction: 'פתח את מתנת ההטבות של AKHOO', heading: 'AKHOO — עזרה בדרך', requestTitle: 'צריך עזרה?', requestText: 'נחבר אותך למישהו קרוב', requestAction: 'אני צריך עזרה', points: 'עוזרים וצוברים נקודות', helperTitle: 'מישהו צריך אותך', helperAction: 'אני רוצה לעזור', rewardsTitle: 'לעזרה שלך יש ערך', rewardsText: 'ממירים נקודות בהטבות AKHOO', rewardsAction: 'לגלות', notice: 'הבקשה שלך מגיעה למישהו קרוב שיכול לעזור' }
 } as const
 
 type Copy = typeof homeWebCopy[keyof typeof homeWebCopy]
@@ -94,7 +95,8 @@ export function HomeVisualActions({ copy, active, onRequest, onHelp, onPerks }: 
       </section>
     </GuideTarget>
     <GuideTarget id="home.perks">
-      <section className="akh-home-rewards" aria-labelledby="akh-rewards-title" style={{ '--reward-art': `url("${media.artwork}")` } as CSSProperties}>
+      <section className="akh-home-rewards" aria-labelledby="akh-rewards-title">
+        <RewardsGift active={active} label={copy.giftAction} artwork={media.artwork} onFallback={onPerks} />
         <div className="akh-home-rewards-copy"><h2 id="akh-rewards-title">{copy.rewardsTitle}</h2><p>{copy.rewardsText}</p></div>
         <button className="akh-home-action akh-home-rewards-button" onClick={onPerks} type="button"><span>{copy.rewardsAction}</span><Arrow /></button>
       </section>
