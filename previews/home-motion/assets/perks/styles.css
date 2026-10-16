@@ -17,3 +17,9 @@ body:has(dialog[open]){overflow:hidden}.sr-only{position:absolute;width:1px;heig
 @media(max-width:1050px){.preview-tools{display:none}}
 @media(max-width:359px){.medal-controls{width:112px}.page-content{padding-inline:12px;gap:16px}.points-card{padding-inline:15px}.balance bdi{font-size:42px}.medal-button{width:95px;height:105px}.section-heading h2{font-size:15px}.section-heading>span{font-size:9px}.offer-copy h3{font-size:15px}.offer-bottom{gap:7px;margin-inline:4px}.primary-button{font-size:11px}.next-level{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.offer-image:hover>img,.nav-item:hover img{transform:none}}
+/* Grok's centered 7:3 frame occupies 7/9 of the approved 3:1 banner.
+   Keep the original typography on a static plate outside the animated region. */
+.header-media{position:relative;overflow:hidden;isolation:isolate}
+.header-media video{position:absolute;top:0;left:11.111111%;width:77.777778%;height:100%;object-fit:fill;pointer-events:none;opacity:0;mask-image:linear-gradient(to right,transparent,#000 6%,#000 52%,transparent 64%)}
+.header-media.motion-ready:not(.reduced-motion) video{opacity:1}
+@media(prefers-reduced-motion:reduce){.header-media video{visibility:hidden}}

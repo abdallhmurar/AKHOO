@@ -14,18 +14,20 @@ facts. Next-level thresholds match `src/lib/activityLevel.ts`.
 
 ## Motion and interaction
 
-- The header uses the exact newly approved static image at its natural 3:1
-  ratio, with no cropping or overlaid controls. A visually hidden heading and
-  subtitle preserve the accessible page outline. No gift video is loaded.
+- The header keeps the approved image at its natural 3:1 ratio. A new six-second
+  Grok video animates the gift, satin ribbon and glow over the left side. The
+  original image supplies the right side, so the Arabic text remains completely
+  still. A visually hidden heading and subtitle preserve the accessible outline.
+  Playback is muted, inline and looping, with the image as a loading/error fallback.
 - `scene.js` builds the silver medal from real Three.js 0.186.1 geometry: blue
   ribbons, a layered metal face and raised star. It turns before opening levels.
   Procedural studio reflections need no external textures/models. Its single
   transparent WebGL canvas caps rendering at 30fps and device pixel ratio at 2.
 - Pause/Resume, reduced-motion preferences, page visibility, dialogs and
-  intersection observation govern the medal. Its Pause/Resume control now sits
-  below the medal. Reduced motion shows a still frame and opens dialogs
-  immediately. WebGL failure preserves the static medal. No native app
-  dependency changed.
+  intersection observation govern both animations. The shared Pause/Resume
+  control sits below the medal. Reduced motion reveals the approved image and
+  opens dialogs immediately. WebGL failure preserves the static medal while the
+  header video can continue. No native app dependency changed.
 - Photo and Details open a native offer dialog. Escape, close, backdrop and
   return restore focus. The active Perks item scrolls to the header;
   Home, Activity and Account navigate to their local previews.
@@ -38,8 +40,21 @@ facts. Next-level thresholds match `src/lib/activityLevel.ts`.
 `header-approved-v2.png` is the exact 2172 × 724 image approved in chat, copied
 without image processing from built-in ImageGen output
 `exec-1716b5d9-7108-4973-bce5-b064bcd16642.png`. The generation prompt is in
-[header-approved-v2-prompt.txt](header-approved-v2-prompt.txt). It supersedes the
-gift video in the page; earlier media files below are retained as design history.
+[header-approved-v2-prompt.txt](header-approved-v2-prompt.txt).
+
+`header-motion-v2.mp4` was generated in Grok Imagine using this image as both
+first and last frame, Auto aspect ratio, 720p and six-second settings. Prompt:
+[header-motion-v2-prompt.txt](header-motion-v2-prompt.txt). The selected take has
+restrained ribbon/glow movement and slight lid rocking so the bow stays within
+the frame. It is a real generated MP4, not a CSS animation or a GIF container.
+Decoded output: **1456 × 624, 6.041667 seconds, 1,391,230 bytes**.
+SHA-256: `b6e81340f21180d84579082bdc529a2e0541faabd4f9e60309ef88615c0c3ff8`.
+
+Grok returns a centered 7:3 crop of the 3:1 reference. CSS maps it to 7/9 of the
+banner width with an 1/9 left inset, without stretching, and masks its right
+side before the original title. The approved full-width image remains beneath
+it. The clip is intended to be viewed in this composite; its raw right-hand
+text is cropped. Earlier gift media below is retained only as design history.
 
 `gift-poster.png` was generated with the built-in image tool, using the approved
 design as a visual reference. Exact prompt: [gift-poster-prompt.txt](gift-poster-prompt.txt).
@@ -70,11 +85,13 @@ Reference: [Three.js WebGLRenderer](https://threejs.org/docs/pages/WebGLRenderer
 
 ## Verification
 
-The static header revision checks image loading, natural aspect ratio, accessible
-heading, absence of a gift video or obsolete controls, responsive overflow,
-medal Pause/Resume and level dialog, offer details and focus restoration.
-Reduced motion disables medal animation controls. Preference changes also
-reconcile on frames, focus and resize to handle deferred browser notifications.
+Browser checks cover muted playback and loop wraparound, Pause/Resume with a
+stable paused frame, dialog suspension/resume and focus restoration. Reduced
+motion pauses the video and reveals the approved still image. Scrolling the
+header out of view pauses playback. Preference changes also reconcile on frames,
+focus and resize to handle deferred browser notifications. Thirteen sampled
+frames across the selected take show the bow staying inside the top boundary,
+and visible ribbon/glow changes. The title uses the unanimated original plate.
 
 Medal levels, both offer entry points and Home/Activity/Account round trips were
 checked. At 320/390/480px, images load without horizontal overflow. The offer
