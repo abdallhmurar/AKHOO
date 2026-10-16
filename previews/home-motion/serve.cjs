@@ -10,10 +10,13 @@ const server = http.createServer((request, response) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname); }
   catch { response.writeHead(400); response.end(); return; }
-  const relative = pathname === '/' ? 'index.html' : pathname.slice(1);
+  if (pathname === '/requester') { response.writeHead(302, { Location: '/requester/' }); response.end(); return; }
+  const relative = pathname === '/' ? 'index.html' : ['/requester', '/requester/'].includes(pathname) ? 'requester/index.html' : pathname.slice(1);
   const file = path.resolve(root, relative);
   const withinRoot = path.relative(root, file);
-  if (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !['index.html', 'styles.css', 'preview.js'].includes(relative) && !relative.startsWith('assets/')) {
+  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js'].includes(relative)
+    || relative.startsWith('assets/') || relative.startsWith('requester/assets/');
+  if (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !allowed) {
     response.writeHead(404); response.end(); return;
   }
   fs.stat(file, (error, stat) => {

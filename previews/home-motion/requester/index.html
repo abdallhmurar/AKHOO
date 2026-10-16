@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#effaff">
+  <title>أخو — اختَر نوع المساعدة</title>
+  <link rel="icon" href="../assets/brand.png">
+  <link rel="preload" as="font" href="../assets/arabic-bold.ttf" type="font/ttf" crossorigin>
+  <link rel="preload" as="image" href="assets/header.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <aside class="preview-tools" aria-label="أدوات المعاينة">
+    <span class="preview-badge">معاينة محلية</span>
+    <h2>كل مساعدة، إلها حكاية.</h2>
+    <p>اختَر بطاقة وجرّب الحركة.<br>هاي معاينة للتصميم، ما بتبعت طلبات حقيقية.</p>
+    <a href="../">الرجوع لمعاينة الرئيسية</a>
+    <a href="assets/approved.png" target="_blank" rel="noopener">الصورة المعتمدة</a>
+    <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
+  </aside>
+  <main class="request-page">
+    <header class="topbar">
+      <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      <div class="progress" aria-label="الخطوة ١ من ٣">
+        <div class="progress-segments" aria-hidden="true"><i class="current"></i><i></i><i></i></div>
+        <span>الخطوة ١ من ٣</span>
+      </div>
+      <button id="motion-toggle" class="round-control motion" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button>
+    </header>
+    <section class="hero" aria-labelledby="page-title">
+      <img src="assets/header.png" alt="" width="2172" height="724" fetchpriority="high">
+      <div class="hero-copy">
+        <h1 id="page-title">شو المشكلة<br>اللي بتواجهك؟</h1>
+        <p>اختَر نوع المساعدة اللي بتحتاجها</p>
+      </div>
+    </section>
+    <form id="problem-form">
+      <fieldset class="options">
+        <legend class="sr-only">نوع المساعدة</legend>
+        <label class="problem-card" data-kind="battery">
+          <input type="radio" name="problem" value="battery" aria-labelledby="battery-title" aria-describedby="battery-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="battery-title">شحن بطارية</strong><span id="battery-description">مساعدة لتشغيل السيارة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/battery.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/battery.png" data-src="assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="fuel">
+          <input type="radio" name="problem" value="fuel" aria-labelledby="fuel-title" aria-describedby="fuel-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="fuel-title">وقود</strong><span id="fuel-description">بنزينك خلص؟<br>بنوصلك مساعدة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/fuel.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/fuel.png" data-src="assets/fuel.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="other">
+          <input type="radio" name="problem" value="other" aria-labelledby="other-title" aria-describedby="other-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="other-title">شيء آخر</strong><span id="other-description">مساعدة لمشكلة ثانية<br>بالطريق</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/other.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/other.png" data-src="assets/other.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="tire">
+          <input type="radio" name="problem" value="tire" aria-labelledby="tire-title" aria-describedby="tire-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="tire-title">بنشر</strong><span id="tire-description">مساعدة لتبديل<br>إطار السيارة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/tire.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/tire.png" data-src="assets/tire.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+      </fieldset>
+      <footer class="action-footer">
+        <button id="next-button" class="next-button" type="submit" disabled><span>التالي</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+      </footer>
+    </form>
+  </main>
+  <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <span class="selection-badge">تم اختيار <strong id="chosen-name"></strong></span>
+    <h2 id="demo-title">جاهزين للخطوة الجايّة</h2>
+    <p id="demo-description">بالخطوة الجايّة بتضيف تفاصيل المشكلة.<br>هاي معاينة محلية، ما أرسلنا أي طلب.</p>
+    <button id="return-button" class="next-button" type="button">رجوع للاختيارات</button>
+  </dialog>
+</body>
+</html>

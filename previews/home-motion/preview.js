@@ -53,6 +53,10 @@ let opener;
 document.querySelectorAll('[data-demo]').forEach(button => {
   button.addEventListener('click', () => {
     if (button.dataset.demo === 'home') return;
+    if (button.dataset.demo === 'request') {
+      window.location.assign('requester/');
+      return;
+    }
     opener = button;
     const [title, description] = demos[button.dataset.demo];
     document.querySelector('#demo-title').textContent = title;
