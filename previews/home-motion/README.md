@@ -12,7 +12,9 @@ The request-help button now opens the [local problem-selection preview](requeste
 at http://127.0.0.1:4178/requester/, with four separate 3D character video cards.
 
 The offer-help button opens the [local helper preview](helper/README.md) at
-http://127.0.0.1:4178/helper/, with an interactive map and a 3D volunteer animation.
+http://127.0.0.1:4178/helper/, with an interactive map, animated battery request,
+detail sheet and mission tracking. The previous empty state is available at
+http://127.0.0.1:4178/helper/?view=empty.
 
 The compact header uses the approved 3D road, blue car and city illustration with no visible headline, road caption or logo. Its notification button remains live HTML. The landscape keeps its natural 3:1 proportions and fades into the page behind the first card's rounded corners. The original card artwork is shifted upward by 12% of the screen width, keeping card sizes and text alignment intact; the opaque lower art plate starts after the first video so it cannot cut across the landscape. Headings, navigation and buttons remain live HTML. The two main cards contain real six-second 3D character videos generated in Grok from the included reference frames and motion prompts. The request-help character lowers his hand, leans toward the car and returns to his starting pose. The helpers move the jumper clamps, lean toward the battery and exchange a glance. These are locally served looping MP4s, not GIF files. The earlier SVG steam, light and cable effects have been removed.
 

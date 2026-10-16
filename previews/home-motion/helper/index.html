@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#effaff">
   <title>أخو — بدي أساعد · معاينة</title>
   <link rel="icon" href="../assets/brand.png">
@@ -14,23 +14,30 @@
 <body>
   <aside class="preview-tools">
     <span>معاينة محلية</span><h2>جاهز تكون أخو لحدا؟</h2>
-    <p>جرّب الخريطة وحركة الشخصية.<br>الموقع والحالة للتصميم فقط.</p>
+    <p>من طلب قريب لحدّ إتمام المساعدة.<br>جرّب المراحل بدون إرسال طلبات فعلية.</p>
     <a href="../">الرجوع لمعاينة الرئيسية</a>
-    <a href="assets/approved.png" target="_blank" rel="noopener">الصورة المعتمدة</a>
+    <a href="?view=nearby" data-view="nearby">١ · طلب قريب</a>
+    <a href="?view=details" data-view="details">٢ · تفاصيل الطلب</a>
+    <a href="?view=mission" data-view="mission">٣ · متابعة المهمة</a>
+    <a href="?view=empty" data-view="empty">معاينة بدون طلبات</a>
   </aside>
   <main class="helper-page">
     <header class="helper-header">
       <img class="header-scenery" src="../requester/assets/details-header.png" alt="" width="2172" height="724">
       <div class="topbar">
-        <span class="availability"><i aria-hidden="true"></i>متاح للمساعدة</span>
-        <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <span class="availability"><i aria-hidden="true"></i><span id="availability-label">متاح للمساعدة</span></span>
+        <div class="header-controls">
+          <button id="motion-toggle" class="round-control motion-toggle" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button>
+          <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        </div>
       </div>
-      <div class="heading"><h1>بدي أساعد</h1><p>طلبات المساعدة القريبة بتظهر هون</p></div>
+      <div class="heading"><h1 id="page-title" tabindex="-1">بدي أساعد</h1><p id="page-subtitle">مساعدة صغيرة منك، بتفرق كثير</p></div>
     </header>
     <div class="helper-content">
       <section class="map-card" aria-label="خريطة الطلبات القريبة">
         <div class="map-frame" aria-busy="true">
           <div id="helper-map"></div>
+          <button class="map-request-tag" type="button" data-open-details><span class="status-dot"></span>طلب قريب منك <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></button>
           <div class="zoom-controls" role="group" aria-label="تكبير وتصغير الخريطة">
             <button id="zoom-in" type="button" aria-label="تكبير الخريطة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></button>
             <button id="zoom-out" type="button" aria-label="تصغير الخريطة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/></svg></button>
@@ -39,15 +46,56 @@
           <div id="map-status" class="map-status" role="status"><span id="map-status-text">جارٍ تحميل الخريطة…</span><button id="retry-map" type="button" hidden>إعادة المحاولة</button></div>
         </div>
       </section>
-      <section class="empty-card" aria-labelledby="nearby-title">
-        <div class="card-heading"><h2 id="nearby-title">طلبات قريبة منك</h2><button id="motion-toggle" class="motion-toggle" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button></div>
+      <section id="nearby-panel" class="request-card surface" aria-labelledby="nearby-title">
+        <div class="card-heading"><h2 id="nearby-title">أقرب طلب إلك</h2><span class="small-badge"><span class="status-dot"></span>جديد</span></div>
+        <div class="request-overview">
+          <div class="request-copy"><span class="eyebrow">مساعدة على الطريق</span><h3>شحن بطارية</h3><p>السيارة بحاجة لوصلة بطارية</p></div>
+          <div class="request-scene media-scene" aria-hidden="true"><img src="../requester/assets/battery.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="../requester/assets/battery.png" data-src="../requester/assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></div>
+        </div>
+        <div class="request-meta"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><bdi>0.8 كم</bdi> منك</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>قبل دقيقة</span></div>
+        <button class="primary-button" type="button" data-open-details><span id="view-request-label">عرض الطلب</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        <p class="quiet-line"><span class="status-dot"></span>الطلبات الجديدة بتظهر هون تلقائيًا</p>
+      </section>
+      <section id="empty-panel" class="empty-card" aria-labelledby="empty-title" hidden>
+        <div class="card-heading"><h2 id="empty-title">طلبات قريبة منك</h2></div>
         <div class="helper-scene" aria-hidden="true"><img src="assets/helper.png" alt="" width="1536" height="1024"><video id="helper-video" muted loop playsinline preload="none" poster="assets/helper.png" data-src="assets/helper.mp4" tabindex="-1" disablepictureinpicture></video></div>
         <h3>ما في طلبات قريبة حاليًا</h3>
         <p>خليك متاح، الطلبات الجديدة بتظهر هون تلقائيًا</p>
         <span class="update-status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg>تحديث تلقائي</span>
       </section>
-      <details class="local-note"><summary>معاينة محلية · موقع وحالة تجريبيان</summary><p>هاي معاينة لحالة عدم وجود طلبات. ما بتغيّر توفّرك بالحساب، وما بتقرأ موقعك أو تستقبل طلبات فعلية.</p></details>
+      <section id="mission-panel" class="mission-panel" aria-label="متابعة المهمة" hidden>
+        <section class="tracking-card surface" aria-labelledby="mission-status">
+          <div class="mission-overview">
+            <div><span class="eyebrow">شحن بطارية</span><h2 id="mission-status">جاهز تنطلق؟</h2><p id="mission-hint">صاحب الطلب بانتظارك</p></div>
+            <div class="mission-scene media-scene" aria-hidden="true"><img src="../requester/assets/accepted.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="../requester/assets/accepted.png" data-src="../requester/assets/accepted.mp4" tabindex="-1" disablepictureinpicture></video></div>
+          </div>
+          <ol class="mission-timeline" aria-label="مراحل المساعدة">
+            <li><span class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg></span><span>تم القبول</span></li>
+            <li><span class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 2-5h10l2 5M4 10h16v8H4Zm3 8v2m10-2v2M7 13h2m6 0h2"/></svg></span><span>بالطريق</span></li>
+            <li><span class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>وصلت</span></li>
+            <li><span class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6Z"/><path d="m8 12 3 3 5-6"/></svg></span><span>التأكيد</span></li>
+            <li><span class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4m0 0c5-5 7 5 13 0v10c-6 5-8-5-13 0"/></svg></span><span>اكتملت</span></li>
+          </ol>
+        </section>
+        <section class="contact-card surface" aria-labelledby="requester-name">
+          <div class="contact-heading"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="17" r="8"/><path d="M10 43v-5a14 14 0 0 1 28 0v5"/></svg></span><div><h2 id="requester-name">صاحب الطلب</h2><p>حساب تجريبي</p></div><span class="small-badge">شحن بطارية</span></div>
+          <div class="contact-actions"><button class="secondary-button call-button" type="button" data-info="call"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3 3 5-3 3c2 3 3 4 6 6l3-3 5 3c0 3-2 5-5 4C8 19 5 16 3 8 2 5 4 3 7 3Z"/></svg>اتصال</button><button class="secondary-button chat-button" type="button" data-info="chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11a9 9 0 0 1-9 9H4l-2 2V11a9 9 0 0 1 19 0Z"/><path d="M7 11h.01M12 11h.01M17 11h.01"/></svg>محادثة</button></div>
+        </section>
+        <div class="order-row"><span>رقم الطلب <bdi>#DEMO-001</bdi></span><button class="text-button" type="button" data-info="request">تفاصيل الطلب <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></button></div>
+      </section>
+      <details class="local-note"><summary>معاينة محلية · طلب وموقع تجريبيان</summary><p>هاي تجربة للتصميم. ما بتقرأ موقعك، أو تغيّر توفّرك، أو تتصل بصاحب طلب فعلي.</p><div class="preview-switcher"><a href="?view=nearby" data-view="nearby">طلب قريب</a><a href="?view=empty" data-view="empty">بدون طلبات</a><button id="reset-demo" type="button">إعادة التجربة</button><button id="complete-demo" type="button" hidden>معاينة تأكيد صاحب الطلب</button></div></details>
     </div>
+    <footer id="mission-footer" class="mission-footer" hidden><button class="navigation-button" type="button" data-info="navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4Z"/><path d="m10 14 6-6"/></svg>افتح الملاحة</button><button id="next-stage" class="primary-button" type="button">أنا في الطريق <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button><p id="next-hint">حدّث حالتك ليعرف صاحب الطلب وين وصلت</p></footer>
   </main>
+  <dialog id="request-dialog" class="request-dialog" aria-labelledby="request-title" aria-describedby="request-description">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-top"><span class="small-badge"><span class="status-dot"></span>طلب قريب منك</span><div class="header-controls"><button class="round-control motion-toggle" data-motion type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button><button id="close-request" class="round-control" type="button" aria-label="إغلاق تفاصيل الطلب" autofocus><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div></div>
+    <div class="sheet-scene media-scene" aria-hidden="true"><img src="../requester/assets/battery.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="../requester/assets/battery.png" data-src="../requester/assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></div>
+    <div class="sheet-copy"><span class="eyebrow">إيدك بتفرق</span><h2 id="request-title">شحن بطارية</h2><p id="request-description">السيارة ما بتشتغل وبحاجة لوصلة بطارية.</p><div class="request-meta"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><bdi>0.8 كم</bdi> منك</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>قبل دقيقة</span></div></div>
+    <div class="sheet-actions"><button id="accept-request" class="primary-button teal-button" type="button">استلام المهمة <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button><button class="secondary-button" type="button" data-info="navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4Z"/></svg>الملاحة</button></div>
+    <p class="sheet-note">طلب تجريبي للمعاينة</p>
+  </dialog>
+  <dialog id="info-dialog" class="info-dialog" aria-labelledby="info-title" aria-describedby="info-copy"><span class="info-symbol" aria-hidden="true">i</span><h2 id="info-title"></h2><p id="info-copy"></p><button id="close-info" class="primary-button" type="button" autofocus>تمام</button></dialog>
+  <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
 </body>
 </html>
