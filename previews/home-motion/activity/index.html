@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#effaff">
+  <title>أخو — سجل النشاط · معاينة</title>
+  <link rel="icon" href="../assets/brand.png">
+  <link rel="preload" as="font" href="assets/arabic-regular.ttf" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="4"/><path d="M8 3v4m8-4v4M4 11h16M8 15h2m4 0h2"/></symbol>
+    <symbol id="chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></symbol>
+    <symbol id="clock" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 8M3 4v6h6M12 6v6l4 2"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <linearGradient id="silver-metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".32" stop-color="#dce8f2"/><stop offset=".52" stop-color="#95afc3"/><stop offset=".75" stop-color="#edf6fc"/><stop offset="1" stop-color="#8ea6bb"/></linearGradient>
+    <linearGradient id="medal-face" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6fbff"/><stop offset="1" stop-color="#acc6d9"/></linearGradient>
+    <linearGradient id="medal-ribbon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#43a9ff"/><stop offset="1" stop-color="#0658d6"/></linearGradient>
+    <symbol id="silver-medal" viewBox="0 0 110 130">
+      <ellipse cx="57" cy="121" rx="32" ry="5" fill="#0c629e" opacity=".12"/>
+      <path d="M21 7h24l21 46H43Z" fill="url(#medal-ribbon)"/><path d="M66 7h24L68 53H44Z" fill="#145fc7"/>
+      <path d="M26 7h6l21 45h-7Z" fill="#93d3ff" opacity=".7"/>
+      <circle cx="56" cy="78" r="39" fill="#7798b3"/><circle cx="54" cy="74" r="39" fill="url(#silver-metal)" stroke="#c6dbe9"/>
+      <circle cx="54" cy="74" r="30" fill="url(#medal-face)" stroke="#fff" stroke-width="2"/>
+      <path d="m55 53 6 13 14 2-10 10 2 14-12-7-13 7 3-14-10-10 14-2Z" fill="#6e95b4"/>
+      <path d="m53 50 6 13 14 2-10 10 2 14-12-7-13 7 3-14-10-10 14-2Z" fill="#edf8ff" stroke="#8eb2ce" stroke-width="1.5"/>
+      <path d="m53 50 6 13 14 2-20 9Z" fill="#fff"/>
+      <path d="M20 62a36 36 0 0 1 23-21" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+  </defs></svg>
+  <aside class="preview-tools"><span>معاينة محلية</span><h2>كل مساعدة إلها أثر.</h2><p>جرّب الفلاتر، الفترة الزمنية وتفاصيل النشاط. الأرقام المعروضة تجريبية.</p><a href="../">الرجوع لمعاينة الرئيسية</a><a href="../helper/">معاينة المساعد</a></aside>
+  <main class="activity-page">
+    <header class="page-header"><img class="header-scenery" src="../requester/assets/details-header.png" alt="" width="2172" height="724"><div><span class="eyebrow">أثرك مع أخو</span><h1>سجل النشاط</h1><p>مساعداتك ونقاطك، بمكان واحد</p></div><span class="history-emblem" aria-hidden="true"><svg><use href="#clock"/></svg></span></header>
+    <div class="page-content">
+      <section class="level-card" aria-labelledby="level-title">
+        <div class="level-top"><div class="level-copy"><span class="level-tag"><i></i>مستواك الحالي</span><h2 id="level-title">مساعد فضي</h2><p>باقي <strong>5 مساعدات</strong> وتصير ذهبي</p></div><button class="medal-button" type="button" id="level-info" aria-label="عرض مستويات المساعدة"><svg class="medal" aria-hidden="true"><use href="#silver-medal"/></svg></button></div>
+        <div class="progress-labels"><span>خطوتك الجاية <svg aria-hidden="true"><use href="#star"/></svg><b>الذهبي</b></span><bdi><strong>25</strong> / 30 مساعدة</bdi></div>
+        <progress max="30" value="25" aria-label="التقدم للمستوى الذهبي، 25 من 30 مساعدة">25 من 30</progress>
+      </section>
+      <section class="stats" aria-label="إحصائياتك الإجمالية">
+        <button class="stat stat-given" data-filter="given" type="button" aria-label="عرض المساعدات التي قدمتها، الإجمالي 25" aria-pressed="false"><span class="stat-icon"><img src="assets/icons/hands.png" width="32" height="32" alt="" draggable="false"></span><strong>25</strong><span>قدّمت مساعدة</span></button>
+        <button class="stat stat-received" data-filter="received" type="button" aria-label="عرض المساعدات التي تلقيتها، الإجمالي 19" aria-pressed="false"><span class="stat-icon"><img src="assets/icons/person.png" width="32" height="32" alt="" draggable="false"></span><strong>19</strong><span>تلقّيت مساعدة</span></button>
+        <button class="stat stat-points" data-filter="points" type="button" aria-label="عرض سجل النقاط، الرصيد 250 نقطة" aria-pressed="false"><span class="stat-icon"><img src="assets/icons/trophy.png" width="32" height="32" alt="" draggable="false"></span><strong>250</strong><span>رصيد النقاط</span></button>
+      </section>
+      <section class="history-section" aria-labelledby="history-title">
+        <div class="history-heading"><div><h2 id="history-title">آخر نشاطاتك</h2><p id="result-count"></p></div><button id="duration-button" class="duration-button" type="button" aria-haspopup="dialog" aria-expanded="false"><svg aria-hidden="true"><use href="#calendar"/></svg><span id="duration-label">آخر 30 يوم</span><svg class="chevron" aria-hidden="true"><use href="#chevron"/></svg></button></div>
+        <div class="filters" role="tablist" aria-label="نوع النشاط"><button id="tab-all" type="button" role="tab" aria-selected="true" aria-controls="feed-panel" data-filter="all">الكل</button><button id="tab-given" type="button" role="tab" aria-selected="false" aria-controls="feed-panel" tabindex="-1" data-filter="given">قدّمت</button><button id="tab-received" type="button" role="tab" aria-selected="false" aria-controls="feed-panel" tabindex="-1" data-filter="received">تلقّيت</button><button id="tab-points" type="button" role="tab" aria-selected="false" aria-controls="feed-panel" tabindex="-1" data-filter="points">نقاط</button></div>
+        <div id="feed-panel" role="tabpanel" aria-labelledby="tab-all" tabindex="0"><div id="activity-feed"></div><div id="empty-state" class="empty-state" hidden><span class="empty-icon"><svg aria-hidden="true"><use href="#clock"/></svg></span><h3>ما في نشاط بهالفترة</h3><p>جرّب مدة أطول لتشوف باقي نشاطاتك</p><button id="show-all-time" class="text-button" type="button">عرض كل الفترات <svg aria-hidden="true"><use href="#arrow"/></svg></button></div></div>
+        <button id="load-more" class="load-more" type="button" hidden>عرض المزيد <svg aria-hidden="true"><use href="#chevron"/></svg></button>
+      </section>
+      <details class="local-note"><summary>معاينة محلية · بيانات تجريبية</summary><p>سجل نموذجي بتاريخ 16 تشرين الأول 2026. الإحصائيات إجمالية؛ الفلاتر بتغيّر السجل فقط. ما بنقرأ حسابك أو نغيّر رصيدك.</p></details>
+      <p class="icon-credits" dir="ltr">Icons designed by <a href="https://www.flaticon.com/free-icon/home_10307931" target="_blank" rel="noopener noreferrer">Fathema Khanom</a>, <a href="https://www.flaticon.com/free-icon/user_1077012" target="_blank" rel="noopener noreferrer">Magnific</a>, <a href="https://www.flaticon.com/free-icon/handshake_8635541" target="_blank" rel="noopener noreferrer">smashingstocks</a>, <a href="https://www.flaticon.com/free-icon/trophy_7937805" target="_blank" rel="noopener noreferrer">setiawanap</a>, <a href="https://www.flaticon.com/free-icon/car-battery_3294292" target="_blank" rel="noopener noreferrer">IconMarketPK</a>, <a href="https://www.flaticon.com/free-icon/gift_4305969" target="_blank" rel="noopener noreferrer">catkuro</a> &amp; <a href="https://www.flaticon.com/free-icon/fuel-pump_9084001" target="_blank" rel="noopener noreferrer">VectorPortal</a> from <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">Flaticon</a>.</p>
+    </div>
+    <nav class="bottom-nav" aria-label="القائمة الرئيسية"><a class="nav-item nav-home" href="../"><span class="nav-icon"><img src="assets/icons/home.png" width="32" height="32" alt="" draggable="false"></span><span>الرئيسية</span></a><button class="nav-item nav-perks" type="button" data-info="perks"><span class="nav-icon"><img src="assets/icons/gift.png" width="32" height="32" alt="" draggable="false"></span><span>مزايا أخو</span></button><button class="nav-item active nav-activity" type="button" id="activity-nav" aria-current="page"><span class="nav-icon"><img src="assets/icons/hands.png" width="32" height="32" alt="" draggable="false"></span><span>نشاطي</span></button><button class="nav-item nav-account" type="button" data-info="account"><span class="nav-icon"><img src="assets/icons/person.png" width="32" height="32" alt="" draggable="false"></span><span>حسابي</span></button></nav>
+  </main>
+  <dialog id="duration-dialog" class="sheet" aria-labelledby="duration-title"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-heading"><h2 id="duration-title">أي فترة بدك تشوف؟</h2><button class="round-control" type="button" data-close="duration-dialog" aria-label="إغلاق اختيار الفترة"><svg aria-hidden="true"><use href="#close"/></svg></button></div><p class="sheet-description">اختَر الفترة لسجل نشاطاتك</p><form id="duration-form"><fieldset><legend class="sr-only">الفترة الزمنية</legend><label><input type="radio" name="duration" value="7"><span>آخر 7 أيام</span><span class="radio-indicator" aria-hidden="true"></span></label><label><input type="radio" name="duration" value="30" checked><span>آخر 30 يوم</span><span class="radio-indicator" aria-hidden="true"></span></label><label><input type="radio" name="duration" value="90"><span>آخر 90 يوم</span><span class="radio-indicator" aria-hidden="true"></span></label><label><input type="radio" name="duration" value="all"><span>كل الفترات</span><span class="radio-indicator" aria-hidden="true"></span></label></fieldset><button class="primary-button" type="submit">عرض النشاطات</button></form></dialog>
+  <dialog id="entry-dialog" class="sheet entry-sheet" aria-labelledby="entry-title"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-heading"><span class="eyebrow">تفاصيل النشاط</span><button class="round-control" type="button" data-close="entry-dialog" aria-label="إغلاق تفاصيل النشاط"><svg aria-hidden="true"><use href="#close"/></svg></button></div><span id="entry-icon" class="entry-detail-icon" aria-hidden="true"></span><h2 id="entry-title"></h2><p id="entry-subtitle" class="sheet-description"></p><dl id="entry-facts"></dl><p class="entry-note">نشاط تجريبي للمعاينة</p><button class="primary-button" type="button" data-close="entry-dialog">رجوع للسجل</button></dialog>
+  <dialog id="info-dialog" class="sheet info-sheet" aria-labelledby="info-title"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-heading"><h2 id="info-title"></h2><button class="round-control" type="button" data-close="info-dialog" aria-label="إغلاق"><svg aria-hidden="true"><use href="#close"/></svg></button></div><div id="info-content"></div><button class="primary-button" type="button" data-close="info-dialog">تمام</button></dialog>
+  <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

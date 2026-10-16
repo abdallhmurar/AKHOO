@@ -12,14 +12,14 @@ const server = http.createServer((request, response) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname); }
   catch { response.writeHead(400); response.end(); return; }
-  if (['/requester', '/helper'].includes(pathname)) { response.writeHead(302, { Location: `${pathname}/` }); response.end(); return; }
-  const relative = pathname === '/' ? 'index.html' : ['/requester/', '/helper/'].includes(pathname) ? `${pathname.slice(1)}index.html` : pathname.slice(1);
+  if (['/requester', '/helper', '/activity'].includes(pathname)) { response.writeHead(302, { Location: `${pathname}/` }); response.end(); return; }
+  const relative = pathname === '/' ? 'index.html' : ['/requester/', '/helper/', '/activity/'].includes(pathname) ? `${pathname.slice(1)}index.html` : pathname.slice(1);
   const vendorName = relative.startsWith('vendor/') ? relative.slice(7) : '';
   const isMapAsset = mapAssets.has(vendorName);
   const file = isMapAsset ? path.join(mapRoot, vendorName) : path.resolve(root, relative);
   const withinRoot = path.relative(root, file);
-  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js', 'requester/location-map.js', 'helper/index.html', 'helper/styles.css', 'helper/preview.js', 'helper/map.js'].includes(relative)
-    || relative.startsWith('assets/') || relative.startsWith('requester/assets/') || relative.startsWith('helper/assets/');
+  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js', 'requester/location-map.js', 'helper/index.html', 'helper/styles.css', 'helper/preview.js', 'helper/map.js', 'activity/index.html', 'activity/styles.css', 'activity/preview.js'].includes(relative)
+    || relative.startsWith('assets/') || relative.startsWith('requester/assets/') || relative.startsWith('helper/assets/') || relative.startsWith('activity/assets/');
   if (!isMapAsset && (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !allowed)) {
     response.writeHead(404); response.end(); return;
   }
