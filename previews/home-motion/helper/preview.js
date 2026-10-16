@@ -5,7 +5,9 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 const requestDialog = document.querySelector('#request-dialog');
 const infoDialog = document.querySelector('#info-dialog');
 const inView = new WeakMap();
-const views = new Set(['nearby', 'details', 'mission', 'empty']);
+const views = new Set(['nearby', 'details', 'mission', 'empty', 'success']);
+const ratingForm = document.querySelector('#helper-rating-form');
+let rating = {value:0,submitted:false};
 let enabled = !reduced.matches;
 let helperMap;
 let mapLoading = false;
@@ -100,36 +102,45 @@ function renderMission() {
     if (index === missionStage) item.setAttribute('aria-current','step');
     else item.removeAttribute('aria-current');
   });
-  document.querySelector('#view-request-label').textContent = missionStage === null ? 'عرض الطلب' : 'متابعة المهمة';
-  document.querySelector('#accept-request').textContent = missionStage === null ? 'استلام المهمة' : 'متابعة المهمة';
+  document.querySelector('#view-request-label').textContent = missionStage === null ? 'عرض الطلب' : missionStage === 4 ? 'عرض نتيجة المساعدة' : 'متابعة المهمة';
+  document.querySelector('#accept-request').textContent = missionStage === null ? 'استلام المهمة' : missionStage === 4 ? 'عرض نتيجة المساعدة' : 'متابعة المهمة';
   return stage;
 }
 function renderRoute({focus = false} = {}) {
   const requestedView = new URLSearchParams(location.search).get('view') || 'nearby';
   view = views.has(requestedView) ? requestedView : 'nearby';
   if (view === 'mission' && missionStage === null) missionStage = 0;
+  const success = view === 'success';
+  if (success) missionStage = 4;
   const mission = view === 'mission';
   const empty = view === 'empty';
   document.body.classList.toggle('show-mission', mission);
   document.body.classList.toggle('show-empty', empty);
-  document.body.classList.toggle('show-nearby', !mission && !empty);
-  document.querySelector('#nearby-panel').hidden = mission || empty;
+  document.body.classList.toggle('show-success', success);
+  document.body.classList.toggle('show-nearby', !mission && !empty && !success);
+  document.querySelector('.map-card').hidden = success;
+  document.querySelector('.heading').hidden = success;
+  document.querySelector('#success-panel').hidden = !success;
+  document.querySelector('#nearby-panel').hidden = mission || empty || success;
   document.querySelector('#empty-panel').hidden = !empty;
   document.querySelector('#mission-panel').hidden = !mission;
   document.querySelector('#mission-footer').hidden = !mission;
   const stage = renderMission();
-  const title = document.querySelector('#page-title');
-  title.textContent = mission ? stage.title : 'بدي أساعد';
+  const title = document.querySelector(success ? '#success-title' : '#page-title');
+  if (!success) title.textContent = mission ? stage.title : 'بدي أساعد';
   document.title = 'أخو — ' + title.textContent + ' · معاينة';
   document.querySelector('#page-subtitle').textContent = mission ? 'تابع المهمة وتواصل مع صاحب الطلب' : empty ? 'طلبات المساعدة القريبة بتظهر هون' : 'مساعدة صغيرة منك، بتفرق كثير';
-  document.querySelector('#availability-label').textContent = mission ? (missionStage === 4 ? 'تمت المساعدة' : 'عم تساعد') : 'متاح للمساعدة';
+  document.querySelector('#availability-label').textContent = success ? 'المهمة اكتملت' : mission ? (missionStage === 4 ? 'تمت المساعدة' : 'عم تساعد') : 'متاح للمساعدة';
+  document.querySelector('#local-note-label').textContent = success ? 'معاينة محلية · نقاط وتقييم تجريبيان' : 'معاينة محلية · طلب وموقع تجريبيان';
   const back = document.querySelector('.back');
   back.href = mission ? '?view=nearby' : '../';
   back.setAttribute('aria-label', mission ? 'الرجوع للطلبات' : 'الرجوع للرئيسية');
   if (infoDialog.open) infoDialog.close();
   if (view === 'details' && !requestDialog.open) requestDialog.showModal();
   else if (view !== 'details' && requestDialog.open) requestDialog.close();
+  renderRating();
   renderMotion();
+  if (!success && !helperMap && !mapLoading) prepareMap();
   if (focus && view !== 'details') title.focus({preventScroll:true});
 }
 function navigate(nextView, {replace = false, sheet = false} = {}) {
@@ -141,7 +152,8 @@ function navigate(nextView, {replace = false, sheet = false} = {}) {
   if (!sheet) window.scrollTo({top:0,behavior:'instant'});
 }
 function openRequest() {
-  if (missionStage !== null) navigate('mission');
+  if (missionStage === 4) navigate('success');
+  else if (missionStage !== null) navigate('mission');
   else navigate('details',{sheet:true});
 }
 function closeRequest() {
@@ -164,12 +176,12 @@ requestDialog.addEventListener('click',event => {
 requestDialog.addEventListener('close',renderMotion);
 document.querySelector('#accept-request').addEventListener('click',() => {
   if (missionStage === null) missionStage = 0;
-  navigate('mission');
+  navigate(missionStage === 4 ? 'success' : 'mission');
   announce('تم استلام المهمة التجريبية');
 });
 document.querySelector('#next-stage').addEventListener('click',() => {
   if (view !== 'mission' || missionStage === 3) return;
-  if (missionStage === 4) { missionStage = null; navigate('nearby'); return; }
+  if (missionStage === 4) { missionStage = null; rating = {value:0,submitted:false}; navigate('nearby'); return; }
   missionStage += 1;
   renderRoute();
   announce(stages[missionStage].title);
@@ -177,15 +189,51 @@ document.querySelector('#next-stage').addEventListener('click',() => {
 document.querySelector('#complete-demo').addEventListener('click',() => {
   if (missionStage !== 3) return;
   missionStage = 4;
-  navigate('mission');
+  navigate('success');
   announce('معاينة اكتمال المهمة بعد تأكيد صاحب الطلب');
 });
 document.querySelector('#reset-demo').addEventListener('click',() => {
   missionStage = null;
+  rating = {value:0,submitted:false};
   navigate('nearby');
   announce('بدأت تجربة طلب جديد');
 });
 window.addEventListener('popstate',() => renderRoute());
+
+function renderRating() {
+  ratingForm.querySelectorAll('input').forEach(input => {
+    input.checked = Number(input.value) === rating.value;
+    input.disabled = rating.submitted;
+    input.closest('label').classList.toggle('is-filled',Number(input.value) <= rating.value);
+  });
+  const submit = document.querySelector('#helper-submit-rating');
+  submit.disabled = !rating.value || rating.submitted;
+  submit.hidden = rating.submitted;
+  document.querySelector('#helper-edit-rating').hidden = !rating.submitted;
+  document.querySelector('.success-rating').classList.toggle('is-submitted',rating.submitted);
+  document.querySelector('#helper-rating-hint').textContent = rating.submitted
+    ? `شكرًا! حُفظ تقييمك (${rating.value}/5) في المعاينة`
+    : rating.value ? `تقييمك ${rating.value} من 5` : 'اختر عدد النجوم';
+}
+ratingForm.addEventListener('change',() => {
+  const value = Number(ratingForm.elements.rating.value);
+  if (view !== 'success' || rating.submitted || !Number.isInteger(value) || value < 1 || value > 5) return;
+  rating = {value,submitted:false};
+  renderRating();
+});
+ratingForm.addEventListener('submit',event => {
+  event.preventDefault();
+  if (view !== 'success' || !rating.value || rating.submitted) return;
+  rating.submitted = true;
+  renderRating();
+  document.querySelector('#helper-edit-rating').focus({preventScroll:true});
+});
+document.querySelector('#helper-edit-rating').addEventListener('click',() => {
+  if (view !== 'success' || !rating.submitted) return;
+  rating.submitted = false;
+  renderRating();
+  ratingForm.querySelector('input:checked').focus({preventScroll:true});
+});
 
 const information = {
   call:['الاتصال بصاحب الطلب','بالتطبيق بيفتح الاتصال بصاحب الطلب. هون بنجرّب شكل الزر، بدون اتصال فعلي أو رقم شخصي.'],
@@ -208,4 +256,3 @@ infoDialog.addEventListener('close',() => {
 });
 
 renderRoute();
-prepareMap();

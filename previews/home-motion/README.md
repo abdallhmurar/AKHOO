@@ -15,6 +15,8 @@ The offer-help button opens the [local helper preview](helper/README.md) at
 http://127.0.0.1:4178/helper/, with an interactive map, animated battery request,
 detail sheet and mission tracking. The previous empty state is available at
 http://127.0.0.1:4178/helper/?view=empty.
+The helper's completed-help reward/rating page is available at
+http://127.0.0.1:4178/helper/?view=success and follows explicit demo confirmation.
 
 The Activity navigation item opens the [local activity preview](activity/README.md)
 at http://127.0.0.1:4178/activity/, with filterable sample history, date ranges,

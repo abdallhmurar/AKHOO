@@ -19,6 +19,7 @@
     <a href="?view=nearby" data-view="nearby">١ · طلب قريب</a>
     <a href="?view=details" data-view="details">٢ · تفاصيل الطلب</a>
     <a href="?view=mission" data-view="mission">٣ · متابعة المهمة</a>
+    <a href="?view=success" data-view="success">٤ · نجاح المساعدة</a>
     <a href="?view=empty" data-view="empty">معاينة بدون طلبات</a>
   </aside>
   <main class="helper-page">
@@ -83,7 +84,27 @@
         </section>
         <div class="order-row"><span>رقم الطلب <bdi>#DEMO-001</bdi></span><button class="text-button" type="button" data-info="request">تفاصيل الطلب <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></button></div>
       </section>
-      <details class="local-note"><summary>معاينة محلية · طلب وموقع تجريبيان</summary><p>هاي تجربة للتصميم. ما بتقرأ موقعك، أو تغيّر توفّرك، أو تتصل بصاحب طلب فعلي.</p><div class="preview-switcher"><a href="?view=nearby" data-view="nearby">طلب قريب</a><a href="?view=empty" data-view="empty">بدون طلبات</a><button id="reset-demo" type="button">إعادة التجربة</button><button id="complete-demo" type="button" hidden>معاينة تأكيد صاحب الطلب</button></div></details>
+      <section id="success-panel" class="success-panel" aria-labelledby="success-title" hidden>
+        <div class="success-hero media-scene" aria-hidden="true"><img src="../requester/assets/success.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="../requester/assets/success.png" data-src="../requester/assets/success.mp4" tabindex="-1" disablepictureinpicture></video></div>
+        <div class="success-heading"><span class="success-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>مساعدة بتفرق</span><h1 id="success-title" tabindex="-1">تمت المساعدة بنجاح</h1><p>شكرًا لأنك كنت أخو لحدا اليوم <span aria-hidden="true">💚</span></p></div>
+        <section class="reward-card surface" aria-labelledby="reward-title">
+          <div class="reward-top"><div><span class="eyebrow" id="reward-title">مكافأة مساعدتك</span><h2><bdi>+10</bdi> <span>نقاط</span></h2><p>رصيدك الآن <strong>250</strong> نقطة</p></div><span class="reward-art" aria-hidden="true"><img src="../activity/assets/icons/trophy.png" width="64" height="64" alt=""></span></div>
+          <div class="reward-progress"><div class="reward-progress-heading"><span><img src="../activity/assets/icons/hands.png" width="24" height="24" alt="">ساعدت <strong>25</strong> شخص</span><bdi><strong>25</strong> / 30</bdi></div><progress max="30" value="25" aria-label="التقدم نحو المستوى الذهبي، 25 من 30 مساعدة">25 من 30</progress><p>باقي <strong>5 مساعدات</strong> وتصير مساعد ذهبي <img src="assets/rating-star.png" width="15" height="15" alt=""></p></div>
+        </section>
+        <section class="success-rating surface" aria-labelledby="rating-title">
+          <h2 id="rating-title">كيف كانت تجربتك بالمساعدة؟</h2><p>رأيك بساعدنا نكون أحسن</p>
+          <form id="helper-rating-form"><fieldset class="rating-stars" aria-describedby="helper-rating-hint"><legend class="sr-only">قيّم تجربتك من نجمة إلى خمس نجوم</legend>
+            <label><input type="radio" name="rating" value="1" aria-label="نجمة واحدة"><img src="assets/rating-star.png" width="34" height="34" alt="" draggable="false"></label>
+            <label><input type="radio" name="rating" value="2" aria-label="نجمتان"><img src="assets/rating-star.png" width="34" height="34" alt="" draggable="false"></label>
+            <label><input type="radio" name="rating" value="3" aria-label="3 نجوم"><img src="assets/rating-star.png" width="34" height="34" alt="" draggable="false"></label>
+            <label><input type="radio" name="rating" value="4" aria-label="4 نجوم"><img src="assets/rating-star.png" width="34" height="34" alt="" draggable="false"></label>
+            <label><input type="radio" name="rating" value="5" aria-label="5 نجوم"><img src="assets/rating-star.png" width="34" height="34" alt="" draggable="false"></label>
+          </fieldset><p id="helper-rating-hint" role="status" aria-live="polite">اختر عدد النجوم</p><button id="helper-submit-rating" class="secondary-button" type="submit" disabled>إرسال التقييم</button><button id="helper-edit-rating" class="secondary-button" type="button" hidden>تعديل التقييم</button></form>
+        </section>
+        <div class="success-actions"><a class="primary-button" href="../">العودة للرئيسية <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></a><a class="success-activity-link" href="../activity/">شوف نشاطك ونقاطك <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></a></div>
+        <p class="success-icon-credits" dir="ltr">Icons designed by <a href="https://www.flaticon.com/free-icon/star_1828884" target="_blank" rel="noopener noreferrer">Pixel perfect</a>, <a href="https://www.flaticon.com/free-icon/trophy_7937805" target="_blank" rel="noopener noreferrer">setiawanap</a> &amp; <a href="https://www.flaticon.com/free-icon/handshake_8635541" target="_blank" rel="noopener noreferrer">smashingstocks</a> from <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">Flaticon</a>.</p>
+      </section>
+      <details class="local-note"><summary id="local-note-label">معاينة محلية · طلب وموقع تجريبيان</summary><p>هاي تجربة للتصميم. الطلب والنقاط والرصيد أرقام تجريبية، والتقييم بينحفظ مؤقتًا بالمعاينة فقط. ما بتقرأ حسابك، أو تغيّر توفّرك، أو تتصل بصاحب طلب فعلي.</p><div class="preview-switcher"><a href="?view=nearby" data-view="nearby">طلب قريب</a><a href="?view=empty" data-view="empty">بدون طلبات</a><a href="?view=success" data-view="success">نتيجة المساعدة</a><button id="reset-demo" type="button">إعادة التجربة</button><button id="complete-demo" type="button" hidden>معاينة تأكيد صاحب الطلب</button></div></details>
     </div>
     <footer id="mission-footer" class="mission-footer" hidden><button class="navigation-button" type="button" data-info="navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4Z"/><path d="m10 14 6-6"/></svg>افتح الملاحة</button><button id="next-stage" class="primary-button" type="button">أنا في الطريق <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button><p id="next-hint">حدّث حالتك ليعرف صاحب الطلب وين وصلت</p></footer>
   </main>
