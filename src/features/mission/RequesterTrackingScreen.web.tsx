@@ -1,10 +1,12 @@
+import { MotionScene } from '../../components/motion/Motion'
+import { FlowHeader } from '../../components/motion/RequestPresentation.web'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { useFocusEffect, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowClockwise, Car, ChatCircleDots, Check, Crosshair, FlagCheckered, Handshake, MapPin, Phone, SealCheck } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { AppScreen, ScreenHeader } from '../../components/v2'
+import { AppScreen } from '../../components/v2'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
 import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
 import { SanadMap } from '../../components/SanadMap.web'
@@ -108,7 +110,7 @@ export function RequesterTrackingScreen({ mission }: { mission: Mission }) {
 
   return (
     <AppScreen
-      header={<ScreenHeader title="" back onBack={() => router.replace('/(tabs)')} />}
+      header={<FlowHeader onBack={() => router.replace('/(tabs)')} />}
       contentStyle={compact ? styles.compactContent : styles.content}
       footer={<View style={styles.footer}><Button label={t('activeRequest.updateStatus')} variant="ghost" leading={<ArrowClockwise size={18} color={theme.colors.primary} />} loading={refreshing} onPress={refresh} style={{ backgroundColor: theme.colors.primarySoft }} /></View>}
     >
@@ -123,6 +125,7 @@ export function RequesterTrackingScreen({ mission }: { mission: Mission }) {
       </View>
 
       <View style={[styles.card, compact && styles.compactCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+        <MotionScene name={awaitingConfirmation ? 'confirmation' : 'accepted'} style={{ height: compact ? 135 : 165, aspectRatio: 'auto' }} fit="contain" />
         <View style={[styles.timeline, dirStyles(isRTL).row]}>
           {TIMELINE.map((step, index) => {
             const active = index === activeIndex

@@ -1,3 +1,5 @@
+import { AccountIdentity, AccountHeading } from '../../components/motion/ApprovedPanels'
+import { IconCredits } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage, useGuide } from '../guide/GuideProvider'
 import { useGuideCopy } from '../guide/guideCopy'
 import { useEffect, useState } from 'react'
@@ -128,9 +130,9 @@ export function AccountHomeScreen() {
 
   return (
     <AppScreen contentStyle={styles.content}>
-      <ScreenHeader title={t('account.title')} subtitle={t('account.subtitle')} />
+      {Platform.OS === 'web' ? <AccountHeading title={t('account.title')} subtitle={t('account.subtitle')} /> : <ScreenHeader title={t('account.title')} subtitle={t('account.subtitle')} />}
 
-      <View style={styles.identity}>
+      {Platform.OS === 'web' ? <AccountIdentity name={profile.full_name?.trim() || t('account.title')} email={session?.user.email ?? ''} avatar={profile.avatar_url} busy={avatarUploading} onPhoto={pickAvatar} onEdit={() => router.push('/(tabs)/account/profile')} /> : <View style={styles.identity}>
         <Pressable onPress={pickAvatar} disabled={avatarUploading} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border }]}>
           {profile.avatar_url ? (
             <Image source={{ uri: profile.avatar_url }} style={styles.avatarImage} />
@@ -143,7 +145,7 @@ export function AccountHomeScreen() {
         </Pressable>
         <Text style={[typography.h2, { color: theme.colors.textPrimary, marginTop: space.md }]}>{profile.full_name?.trim() || t('account.title')}</Text>
         <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{session?.user.email ?? ''}</Text>
-      </View>
+      </View>}
 
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <GuideTarget id="account.profile"><ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} /></GuideTarget>
@@ -161,6 +163,8 @@ export function AccountHomeScreen() {
           onPress={() => setDark(!isDark)}
           trailing={<Switch value={isDark} onValueChange={setDark} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         />
+      </View>
+      <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <GuideTarget id="account.guide"><ListRow Icon={Lifebuoy} title={guideCopy.restart} onPress={async () => {
           if (guideStarting) return
           setGuideStarting(true)
@@ -187,6 +191,7 @@ export function AccountHomeScreen() {
         <Text style={[typography.bodyMedium, { color: theme.colors.danger }]}>{t('account.logout')}</Text>
       </Pressable>
 
+      <IconCredits />
       <ChoiceModal
         visible={navigationModalOpen}
         onClose={() => setNavigationModalOpen(false)}

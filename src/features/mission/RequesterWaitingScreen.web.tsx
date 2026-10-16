@@ -1,10 +1,12 @@
+import { MotionScene } from '../../components/motion/Motion'
+import { FlowHeader } from '../../components/motion/RequestPresentation.web'
 import { useEffect, useRef, useState } from 'react'
 import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowClockwise, Check, Crosshair, UserFocus } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
-import { AppScreen, ScreenHeader } from '../../components/v2'
+import { AppScreen } from '../../components/v2'
 import { Button, Card, IconButton, useToast } from '../../components/ui'
 import { SanadMap } from '../../components/SanadMap.web'
 import type { SanadMapRef } from '../../components/SanadMap.types'
@@ -90,7 +92,7 @@ export function RequesterMissionWebScreen({ mission }: { mission: Mission }) {
 
   return (
     <AppScreen
-      header={<ScreenHeader title="" back onBack={() => router.replace('/(tabs)')} />}
+      header={<FlowHeader onBack={() => router.replace('/(tabs)')} />}
       contentStyle={compact ? styles.compactContent : styles.content}
       footer={
         <View style={[styles.footer, dirStyles(isRTL).row]}>
@@ -117,9 +119,7 @@ export function RequesterMissionWebScreen({ mission }: { mission: Mission }) {
       {justReleased ? <Card tone="default" elevation="none" title={t('activeRequest.releasedNotice.title')} subtitle={t('activeRequest.releasedNotice.message')} /> : null}
 
       <View style={[styles.statusCard, compact && styles.compactCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <View accessible={false} style={[styles.halo, compact && styles.compactHalo, { backgroundColor: theme.colors.primarySoft }]}>
-          <View style={[styles.searchIcon, { backgroundColor: theme.colors.primary }]}><UserFocus size={26} color={theme.colors.onPrimary} weight="fill" /></View>
-        </View>
+        <MotionScene name="waiting" style={{ height: compact ? 155 : 200, aspectRatio: 'auto' }} fit="contain" />
         <View style={styles.statusCopy}>
           <Text accessibilityRole="header" style={[typography.h3, styles.center, { color: theme.colors.textPrimary }]}>{t('activeRequest.searchingCard.title')}</Text>
           <Text style={[typography.small, styles.center, { color: theme.colors.textSecondary }]}>{copy.notice}</Text>

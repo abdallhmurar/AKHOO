@@ -1,7 +1,9 @@
+import { PerksHeader } from '../../components/motion/Motion'
+import { PointsPanel } from '../../components/motion/ApprovedPanels'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { localizeContent, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useEffect, useState } from 'react'
-import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Animated, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import QRCode from 'react-native-qrcode-svg'
@@ -129,15 +131,15 @@ export function CommunityHubScreen() {
 
   return (
     <AppScreen contentStyle={styles.hubContent}>
-      <View style={[styles.hubHeader, dirStyles(isRTL).row]}>
+      {Platform.OS === 'web' ? <PerksHeader /> : <View style={[styles.hubHeader, dirStyles(isRTL).row]}>
         <View style={styles.headerCopy}>
           <Text accessibilityRole="header" style={[typography.h1, styles.hubTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.title')}</Text>
           <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.hubSubtitle')}</Text>
         </View>
         <Image source={require('../../../assets/images/perks-coupon-icon.png')} style={styles.headerCoupon} resizeMode="cover" accessible={false} />
-      </View>
+      </View>}
 
-      <GuideTarget id="perks.points"><Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <GuideTarget id="perks.points">{Platform.OS === 'web' && statsReady ? <PointsPanel balance={balance} count={completedCount} target={nextThreshold ?? TOP_THRESHOLD} level={level} levelLabel={t(levelLabelKey)} remainingLabel={nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')} /> : <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         {!statsReady ? (
           pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
         ) : <>
@@ -161,7 +163,7 @@ export function CommunityHubScreen() {
           </View>
           <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: completedCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
         </>}
-      </Animated.View></GuideTarget>
+      </Animated.View>}</GuideTarget>
 
       <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, stageStyle(1)]}>
         <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
@@ -190,12 +192,12 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
   const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url
   const textAlign = isRTL ? 'right' : 'left'
   return (
-    <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row]}>
-        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }]}>
+    <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }, Platform.OS === 'web' && { padding: 8, borderRadius: 24 }]}>
+      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row, Platform.OS === 'web' && { flexDirection: 'column', alignItems: 'stretch' }]}>
+        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }, Platform.OS === 'web' && { width: '100%', height: undefined, aspectRatio: 1.95, borderRadius: 18 }]}>
           {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="contain" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
         </View>
-        <View style={styles.realOfferBody}>
+        <View style={[styles.realOfferBody, Platform.OS === 'web' && { padding: 10, gap: 6 }]}>
           <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
           {offer.offer_type_label ? <Text style={[typography.smallMedium, { color: theme.colors.community, textAlign }]}>{offer.offer_type_label}</Text> : null}
           {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
