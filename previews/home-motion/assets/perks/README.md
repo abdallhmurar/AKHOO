@@ -6,33 +6,40 @@ or server/security configuration change. The same asset URL works on the older
 4178 server too, but use 4179 for navigation to the newer Account page.
 Home's two Perks buttons, Activity and Account navigate here.
 
-The approved design is `approved.png`. The page keeps the blue, teal and navy
+The full-page reference is `approved.png`; the newly approved header is
+`header-approved-v2.png`. The page keeps the blue, teal and navy
 palette, 250 sample points, silver helper level with 25 of 30 completed helps,
 and the single sticker offer. Free benefit and 50-point cost remain separate
 facts. Next-level thresholds match `src/lib/activityLevel.ts`.
 
 ## Motion and interaction
 
-- The gift is a **Grok Imagine video**: its lid lifts, ribbon moves and gold
-  sparkles turn before the box closes. It is a looping MP4, not a GIF container.
-  Playback is muted, inline and automatic; touching the gift restarts it.
-  A generated still remains visible if playback fails.
+- The header uses the exact newly approved static image at its natural 3:1
+  ratio, with no cropping or overlaid controls. A visually hidden heading and
+  subtitle preserve the accessible page outline. No gift video is loaded.
 - `scene.js` builds the silver medal from real Three.js 0.186.1 geometry: blue
   ribbons, a layered metal face and raised star. It turns before opening levels.
   Procedural studio reflections need no external textures/models. Its single
   transparent WebGL canvas caps rendering at 30fps and device pixel ratio at 2.
 - Pause/Resume, reduced-motion preferences, page visibility, dialogs and
-  intersection observation govern both animations. Reduced motion shows a
-  still frame and opens dialogs immediately. WebGL failure preserves the
-  static medal and the independent gift video. No native app dependency changed.
+  intersection observation govern the medal. Its Pause/Resume control now sits
+  below the medal. Reduced motion shows a still frame and opens dialogs
+  immediately. WebGL failure preserves the static medal. No native app
+  dependency changed.
 - Photo and Details open a native offer dialog. Escape, close, backdrop and
-  return restore focus. The active Perks item scrolls up and restarts the gift;
+  return restore focus. The active Perks item scrolls to the header;
   Home, Activity and Account navigate to their local previews.
 - No redemption, API calls, purchases, private user data, storage or points
   deductions. The page identifies local fixtures and the product illustration.
   No production deployment is part of this change.
 
 ## Assets and provenance
+
+`header-approved-v2.png` is the exact 2172 × 724 image approved in chat, copied
+without image processing from built-in ImageGen output
+`exec-1716b5d9-7108-4973-bce5-b064bcd16642.png`. The generation prompt is in
+[header-approved-v2-prompt.txt](header-approved-v2-prompt.txt). It supersedes the
+gift video in the page; earlier media files below are retained as design history.
 
 `gift-poster.png` was generated with the built-in image tool, using the approved
 design as a visual reference. Exact prompt: [gift-poster-prompt.txt](gift-poster-prompt.txt).
@@ -63,17 +70,15 @@ Reference: [Three.js WebGLRenderer](https://threejs.org/docs/pages/WebGLRenderer
 
 ## Verification
 
-Browser checks confirm video advancement and automatic loop wraparound,
-Pause/Resume, click-to-restart, dialog suspension/resume and focus restoration.
-Reduced motion pauses at time zero and disables animation controls. Preference
-changes also reconcile on frames, focus and resize to handle deferred browser
-media-query notifications. Deliberate medal WebGL context loss retains its
-static fallback while the gift video continues; reloading restores the medal.
+The static header revision checks image loading, natural aspect ratio, accessible
+heading, absence of a gift video or obsolete controls, responsive overflow,
+medal Pause/Resume and level dialog, offer details and focus restoration.
+Reduced motion disables medal animation controls. Preference changes also
+reconcile on frames, focus and resize to handle deferred browser notifications.
 
 Medal levels, both offer entry points and Home/Activity/Account round trips were
-checked. At 320/390/480px, images load without horizontal overflow. At 320x568,
-scrolled credits end at y=458 and navigation starts at y=488. The offer dialog
-fits 320px width and scrolls within its 548px maximum height. Balance stays 250.
+checked. At 320/390/480px, images load without horizontal overflow. The offer
+dialog fits 320px width and scrolls within its maximum height. Balance stays 250.
 The page returns HTTP 200 under the original `connect-src 'none'` policy.
 Chrome/ANGLE emits a nonfatal shader precision warning during PMREM compilation.
 Scoped ESLint, JavaScript syntax and `git diff --check` pass for authored files.

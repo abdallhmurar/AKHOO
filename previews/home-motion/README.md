@@ -28,8 +28,8 @@ editor. The current review server is on port **4179**:
 http://127.0.0.1:4179/account/ (the previous 4178 process remains running).
 
 The Perks buttons now open the [local 3D perks preview](assets/perks/README.md)
-at http://127.0.0.1:4179/assets/perks/index.html, with a looping 3D gift video and
-silver medal, points progress and the approved sticker offer layout. This path
+at http://127.0.0.1:4179/assets/perks/index.html, with the approved static 3D gift
+header, interactive silver medal, points progress and sticker offer layout. This path
 uses the running server's existing asset allowlist, so no server restart or
 additional port is needed. Home, Activity and Account link to the same page.
 

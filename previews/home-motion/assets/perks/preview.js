@@ -9,14 +9,13 @@ document.querySelectorAll('dialog').forEach(dialog=>{
   dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom))dialog.close();});
 });
 document.querySelectorAll('#offer-details,#offer-image').forEach(button=>button.addEventListener('click',()=>openDialog(document.querySelector('#offer-dialog'),button)));
-document.querySelector('#gift-button').addEventListener('click',()=>{motion?.play('gift');});
 document.querySelector('#medal-button').addEventListener('click',event=>{
   clearTimeout(medalTimer);const opener=event.currentTarget;
-  if(motion?.play('medal'))medalTimer=setTimeout(()=>openDialog(document.querySelector('#level-dialog'),opener),450);
+  if(motion?.play())medalTimer=setTimeout(()=>openDialog(document.querySelector('#level-dialog'),opener),450);
   else openDialog(document.querySelector('#level-dialog'),opener);
 });
-document.querySelector('#perks-nav').addEventListener('click',()=>{window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});motion?.play('gift');});
+document.querySelector('#perks-nav').addEventListener('click',()=>{window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearTimeout(medalTimer);});
-import('./scene.js').then(({createMotion})=>{motion=createMotion();motion.suspend(!!document.querySelector('dialog[open]'));}).catch(()=>{document.querySelector('#motion-toggle span').textContent='عرض ثابت';document.querySelector('#gift-button').disabled=true;document.querySelector('#gift-button').setAttribute('aria-label','هدية مزايا أخو');document.querySelector('#gift-hint').textContent='كل مساعدة إلها قيمة';});
+import('./scene.js').then(({createMotion})=>{motion=createMotion();motion.suspend(!!document.querySelector('dialog[open]'));}).catch(()=>{document.querySelector('#motion-toggle span').textContent='عرض ثابت';document.querySelector('#motion-toggle').disabled=true;});
 window.addEventListener('pagehide',event=>{clearTimeout(medalTimer);if(!event.persisted)motion?.dispose();else motion?.suspend(true);});
 window.addEventListener('pageshow',()=>motion?.suspend(!!document.querySelector('dialog[open]')));
