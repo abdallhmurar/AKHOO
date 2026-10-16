@@ -12,20 +12,20 @@ const server = http.createServer((request, response) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname); }
   catch { response.writeHead(400); response.end(); return; }
-  if (pathname === '/requester') { response.writeHead(302, { Location: '/requester/' }); response.end(); return; }
-  const relative = pathname === '/' ? 'index.html' : ['/requester', '/requester/'].includes(pathname) ? 'requester/index.html' : pathname.slice(1);
+  if (['/requester', '/helper'].includes(pathname)) { response.writeHead(302, { Location: `${pathname}/` }); response.end(); return; }
+  const relative = pathname === '/' ? 'index.html' : ['/requester/', '/helper/'].includes(pathname) ? `${pathname.slice(1)}index.html` : pathname.slice(1);
   const vendorName = relative.startsWith('vendor/') ? relative.slice(7) : '';
   const isMapAsset = mapAssets.has(vendorName);
   const file = isMapAsset ? path.join(mapRoot, vendorName) : path.resolve(root, relative);
   const withinRoot = path.relative(root, file);
-  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js', 'requester/location-map.js'].includes(relative)
-    || relative.startsWith('assets/') || relative.startsWith('requester/assets/');
+  const allowed = ['index.html', 'styles.css', 'preview.js', 'requester/index.html', 'requester/styles.css', 'requester/preview.js', 'requester/location-map.js', 'helper/index.html', 'helper/styles.css', 'helper/preview.js', 'helper/map.js'].includes(relative)
+    || relative.startsWith('assets/') || relative.startsWith('requester/assets/') || relative.startsWith('helper/assets/');
   if (!isMapAsset && (withinRoot.startsWith('..') || path.isAbsolute(withinRoot) || !allowed)) {
     response.writeHead(404); response.end(); return;
   }
   fs.stat(file, (error, stat) => {
     if (error || !stat.isFile()) { response.writeHead(404); response.end(); return; }
-    const mapPage = relative.startsWith('requester/') || isMapAsset;
+    const mapPage = relative.startsWith('requester/') || relative.startsWith('helper/') || isMapAsset;
     const policy = mapPage
       ? "default-src 'self'; img-src 'self' blob: data: https://tiles.openfreemap.org; media-src 'self'; font-src 'self'; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://tiles.openfreemap.org; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
       : "default-src 'self'; img-src 'self' blob:; media-src 'self'; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'";

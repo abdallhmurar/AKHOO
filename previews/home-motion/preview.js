@@ -43,7 +43,6 @@ referenceButton.addEventListener('click', () => {
 
 const demos = {
   request: ['بدي مساعدة', 'هيك بيكون إحساس الزر. بالتطبيق بننتقل لاختيار نوع المساعدة؛ هون ما أرسلنا أي طلب.'],
-  help: ['بدي أساعد', 'بالتطبيق بيفتح هذا الزر خريطة طلبات المساعدة القريبة. هون بنجرّب التصميم فقط.'],
   perks: ['مزايا أخو', 'من هون بتوصل لعروض مزايا أخو. هاي معاينة لشكل الصفحة وحركة الأزرار.'],
   notifications: ['الإشعارات', 'هذا مكان إشعاراتك في التطبيق. المعاينة غير متصلة بحسابك.'],
   activity: ['نشاطي', 'هذا الزر بيفتح سجل مساعداتك وطلباتك في التطبيق.'],
@@ -55,6 +54,10 @@ document.querySelectorAll('[data-demo]').forEach(button => {
     if (button.dataset.demo === 'home') return;
     if (button.dataset.demo === 'request') {
       window.location.assign('requester/');
+      return;
+    }
+    if (button.dataset.demo === 'help') {
+      window.location.assign('helper/');
       return;
     }
     opener = button;

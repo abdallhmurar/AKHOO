@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#effaff">
+  <title>أخو — بدي أساعد · معاينة</title>
+  <link rel="icon" href="../assets/brand.png">
+  <link rel="preload" as="font" href="../assets/arabic-bold.ttf" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="../vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <aside class="preview-tools">
+    <span>معاينة محلية</span><h2>جاهز تكون أخو لحدا؟</h2>
+    <p>جرّب الخريطة وحركة الشخصية.<br>الموقع والحالة للتصميم فقط.</p>
+    <a href="../">الرجوع لمعاينة الرئيسية</a>
+    <a href="assets/approved.png" target="_blank" rel="noopener">الصورة المعتمدة</a>
+  </aside>
+  <main class="helper-page">
+    <header class="helper-header">
+      <img class="header-scenery" src="../requester/assets/details-header.png" alt="" width="2172" height="724">
+      <div class="topbar">
+        <span class="availability"><i aria-hidden="true"></i>متاح للمساعدة</span>
+        <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      </div>
+      <div class="heading"><h1>بدي أساعد</h1><p>طلبات المساعدة القريبة بتظهر هون</p></div>
+    </header>
+    <div class="helper-content">
+      <section class="map-card" aria-label="خريطة الطلبات القريبة">
+        <div class="map-frame" aria-busy="true">
+          <div id="helper-map"></div>
+          <div class="zoom-controls" role="group" aria-label="تكبير وتصغير الخريطة">
+            <button id="zoom-in" type="button" aria-label="تكبير الخريطة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></button>
+            <button id="zoom-out" type="button" aria-label="تصغير الخريطة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/></svg></button>
+          </div>
+          <button id="recenter-map" class="round-control map-recenter" type="button" aria-label="الرجوع للموقع التجريبي" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg></button>
+          <div id="map-status" class="map-status" role="status"><span id="map-status-text">جارٍ تحميل الخريطة…</span><button id="retry-map" type="button" hidden>إعادة المحاولة</button></div>
+        </div>
+      </section>
+      <section class="empty-card" aria-labelledby="nearby-title">
+        <div class="card-heading"><h2 id="nearby-title">طلبات قريبة منك</h2><button id="motion-toggle" class="motion-toggle" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button></div>
+        <div class="helper-scene" aria-hidden="true"><img src="assets/helper.png" alt="" width="1536" height="1024"><video id="helper-video" muted loop playsinline preload="none" poster="assets/helper.png" data-src="assets/helper.mp4" tabindex="-1" disablepictureinpicture></video></div>
+        <h3>ما في طلبات قريبة حاليًا</h3>
+        <p>خليك متاح، الطلبات الجديدة بتظهر هون تلقائيًا</p>
+        <span class="update-status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg>تحديث تلقائي</span>
+      </section>
+      <details class="local-note"><summary>معاينة محلية · موقع وحالة تجريبيان</summary><p>هاي معاينة لحالة عدم وجود طلبات. ما بتغيّر توفّرك بالحساب، وما بتقرأ موقعك أو تستقبل طلبات فعلية.</p></details>
+    </div>
+  </main>
+</body>
+</html>
