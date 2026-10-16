@@ -1,5 +1,5 @@
 import '../../components/motion/approved-activity.css'
-import { ArtIcon, MotionHeader, MotionControls, IconCredits } from '../../components/motion/Motion'
+import { ArtIcon, MotionHeader, IconCredits } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
@@ -107,7 +107,7 @@ export function ActivityScreen() {
           <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('activity.hubSubtitle')}</Text>
         </View>
         <View style={[styles.historyIcon, { backgroundColor: theme.colors.primarySoft }]}><ClockCounterClockwise size={50} color={theme.colors.primary} weight="bold" /></View>
-      </View><MotionControls /></MotionHeader>
+      </View></MotionHeader>
       <Pressable accessibilityRole="button" accessibilityLabel={t('activity.duration.sheetTitle')} accessibilityState={{ expanded: durationOpen }} onPress={() => setDurationOpen(true)} style={[styles.durationPill, dirStyles(isRTL).row, { alignSelf: isRTL ? 'flex-start' : 'flex-end', backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <CalendarBlank size={18} color={theme.colors.textSecondary} />
         <Text style={[typography.smallMedium, { color: theme.colors.textSecondary }]}>{t(selectedDuration.labelKey)}</Text>

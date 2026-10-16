@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { MotionControls, MotionScene } from './Motion'
+import { MotionScene } from './Motion'
 import './approved-request.css'
 
 export function FlowHeader({ onBack, step }: { onBack: () => void; step?: number }) {
@@ -7,7 +7,6 @@ export function FlowHeader({ onBack, step }: { onBack: () => void; step?: number
   return <div className="approved-request"><header className="topbar">
     <button type="button" className="round-control" onClick={onBack} aria-label={t('common.back')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button>
     {step ? <div className="progress"><div className="progress-segments" aria-hidden="true">{[1, 2, 3].map(n => <i key={n} className={n === step ? 'current' : n < step ? 'complete' : ''} />)}</div><span>{t('request.step.details.stepOf', { current: step, total: 3 })}</span></div> : <span />}
-    <MotionControls />
   </header></div>
 }
 export function RequestHeading({ title, subtitle, selection = false }: { title: string; subtitle: string; selection?: boolean }) {

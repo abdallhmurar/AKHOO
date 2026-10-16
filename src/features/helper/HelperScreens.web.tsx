@@ -1,4 +1,4 @@
-import { MotionScene, MotionControls } from '../../components/motion/Motion'
+import { MotionScene } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage, GuideScrollView } from '../guide/GuideProvider'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
@@ -290,7 +290,6 @@ export function HelperHomeScreen() {
           <IconButton label={t('common.back')} size={44} icon={<BackIcon size={21} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
           <GuideTarget id="helper.availability"><StatusBadge tone="success" dot label={t('volunteer.availableNow')} /></GuideTarget>
         </View>
-        <View style={{ alignSelf: 'flex-start' }}><MotionControls /></View>
         <Text accessibilityRole="header" style={[typography.h1, styles.pageTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.title')}</Text>
         <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('volunteer.subtitle')}</Text>
       </View>

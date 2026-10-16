@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -6,17 +6,10 @@ import type { MotionSceneProps } from './Motion'
 import { useGuide } from '../../features/guide/GuideProvider'
 import './motion.css'
 
-const listeners = new Set<() => void>()
-let enabled = true
-const subscribe = (fn: () => void) => { listeners.add(fn); return () => { listeners.delete(fn) } }
-export function useMotionEnabled() { return useSyncExternalStore(subscribe, () => enabled, () => true) }
-function toggleMotion() { enabled = !enabled; listeners.forEach(fn => fn()) }
-
 export function MotionScene({ name, className = '', style, fit = 'cover', children }: MotionSceneProps) {
   const ref = useRef<HTMLVideoElement>(null)
   const [focused, setFocused] = useState(false)
   useFocusEffect(useCallback(() => { setFocused(true); return () => setFocused(false) }, []))
-  const playing = useMotionEnabled()
   const guide = useGuide()
   const file = name === 'perks' ? 'assets/perks/header-people-motion-v3' : name === 'help' || name === 'helper-home' ? `assets/${name === 'help' ? 'help' : 'helper'}-3d` : name === 'helper' ? 'helper/assets/helper' : `requester/assets/${name}`
   const poster = `/motion/${file}${['perks', 'help', 'helper-home'].includes(name) ? '-poster' : ''}.png`
@@ -25,7 +18,7 @@ export function MotionScene({ name, className = '', style, fit = 'cover', childr
     if (!video) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
     let visible = false, disposed = false, failed = false
-    const canPlay = () => !disposed && !failed && visible && focused && playing && !guide?.blocking && !document.hidden && !reduced.matches
+    const canPlay = () => !disposed && !failed && visible && focused && !guide?.blocking && !document.hidden && !reduced.matches
     const sync = () => {
       if (!canPlay()) { video.pause(); return }
       if (!video.getAttribute('src')) video.src = `/motion/${file}.mp4`
@@ -39,19 +32,11 @@ export function MotionScene({ name, className = '', style, fit = 'cover', childr
     reduced.addEventListener('change', sync)
     video.addEventListener('error', error)
     return () => { disposed = true; observer.disconnect(); video.pause(); document.removeEventListener('visibilitychange', sync); reduced.removeEventListener('change', sync); video.removeEventListener('error', error) }
-  }, [file, focused, playing, guide?.blocking])
+  }, [file, focused, guide?.blocking])
   return <div className={`akhoo-motion motion-scene ${className}`} style={style}>
     <video ref={ref} muted loop playsInline preload="none" poster={poster} disablePictureInPicture tabIndex={-1} aria-hidden="true" style={{ objectFit: fit }} />
     {children}
   </div>
-}
-
-export function MotionControls() {
-  const active = useMotionEnabled()
-  const { i18n } = useTranslation()
-  const lang = i18n.language.split('-')[0]
-  const label = lang === 'ar' ? active ? 'إيقاف الحركة' : 'تشغيل الحركة' : lang === 'he' ? active ? 'עצירת תנועה' : 'הפעלת תנועה' : active ? 'Pause animation' : 'Play animation'
-  return <button type="button" className="akhoo-motion motion-control" aria-pressed={active} onClick={toggleMotion}>{active ? 'Ⅱ' : '▷'} <span>{label}</span></button>
 }
 
 export function MotionHeader({ children, kind = 'details' }: { children?: ReactNode; kind?: 'road' | 'request' | 'details' }) {
@@ -65,7 +50,6 @@ export function PerksHeader() {
   return <header className={`akhoo-motion perks-motion-header ${arabic ? '' : 'translated'}`}>
     <MotionScene name="perks" fit="contain" />
     {arabic ? <h1 className="motion-sr-only">{t('perks.title')}</h1> : <div className="perks-translated-copy"><h1>{t('perks.title')}</h1><p>{t('perks.hubSubtitle')}</p></div>}
-    <div className="perks-motion-control"><MotionControls /></div>
   </header>
 }
 
