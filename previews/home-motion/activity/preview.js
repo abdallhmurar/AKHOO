@@ -199,9 +199,9 @@ document.querySelector('#level-info').addEventListener('click',event => {
   openDialog(infoDialog,event.currentTarget);
 });
 document.querySelectorAll('[data-info]').forEach(button => button.addEventListener('click',() => {
-  const perks = button.dataset.info === 'perks';
-  document.querySelector('#info-title').textContent = perks ? 'مزايا أخو' : 'حسابي';
-  document.querySelector('#info-content').replaceChildren(el('p','',perks ? 'من هون بتوصل لعروض مزايا أخو. هاي معاينة محلية لشكل الشريط، وما بتغيّر رصيد النقاط.' : 'من هون بتوصل لحسابك وإعداداتك. المعاينة غير متصلة بحساب فعلي.'));
+  if (button.dataset.info === 'account') { window.location.assign('../account/'); return; }
+  document.querySelector('#info-title').textContent = 'مزايا أخو';
+  document.querySelector('#info-content').replaceChildren(el('p','','من هون بتوصل لعروض مزايا أخو. هاي معاينة محلية لشكل الشريط، وما بتغيّر رصيد النقاط.'));
   openDialog(infoDialog,button);
 }));
 document.querySelector('#activity-nav').addEventListener('click',() => window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}));

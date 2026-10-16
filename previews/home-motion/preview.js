@@ -45,7 +45,6 @@ const demos = {
   request: ['بدي مساعدة', 'هيك بيكون إحساس الزر. بالتطبيق بننتقل لاختيار نوع المساعدة؛ هون ما أرسلنا أي طلب.'],
   perks: ['مزايا أخو', 'من هون بتوصل لعروض مزايا أخو. هاي معاينة لشكل الصفحة وحركة الأزرار.'],
   notifications: ['الإشعارات', 'هذا مكان إشعاراتك في التطبيق. المعاينة غير متصلة بحسابك.'],
-  account: ['حسابي', 'هذا الزر بيفتح حسابك وإعداداتك في التطبيق.'],
 };
 let opener;
 document.querySelectorAll('[data-demo]').forEach(button => {
@@ -61,6 +60,10 @@ document.querySelectorAll('[data-demo]').forEach(button => {
     }
     if (button.dataset.demo === 'activity') {
       window.location.assign('activity/');
+      return;
+    }
+    if (button.dataset.demo === 'account') {
+      window.location.assign('account/');
       return;
     }
     opener = button;

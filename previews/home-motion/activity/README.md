@@ -39,8 +39,9 @@ Bold and extra-bold fonts are reused from the home preview.
   cancelled status and do not acquire points. Closing restores focus.
 - The level dialog shows the same tier thresholds as `src/lib/activityLevel.ts`:
   5, 15, 30 and 60 completed helps. The fixed sample is silver with 25/30 progress.
-- Perks and Account open explanatory preview dialogs. The active Activity item
-  scrolls back to the top; Home returns to the existing local home page.
+- Perks opens an explanatory preview dialog. Account opens the local account
+  preview at `../account/`. The active Activity item scrolls back to the top;
+  Home returns to the existing local home page.
 
 The 12 feed records are synthetic and use `DEMO-*` identifiers. They are anchored
 to **16 October 2026, 18:00 Asia/Jerusalem**, not the viewer's current clock. The
