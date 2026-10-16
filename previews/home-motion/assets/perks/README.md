@@ -6,26 +6,28 @@ or server/security configuration change. The same asset URL works on the older
 4178 server too, but use 4179 for navigation to the newer Account page.
 Home's two Perks buttons, Activity and Account navigate here.
 
-The full-page reference is `approved.png`; the newly approved header is
-`header-approved-v2.png`. The page keeps the blue, teal and navy
+The full-page reference is `approved.png`; the newly approved two-person header is
+`header-people-v3.png`. The page keeps the blue, teal and navy
 palette, 250 sample points, silver helper level with 25 of 30 completed helps,
 and the single sticker offer. Free benefit and 50-point cost remain separate
 facts. Next-level thresholds match `src/lib/activityLevel.ts`.
 
 ## Motion and interaction
 
-- The header keeps the approved image at its natural 3:1 ratio. A new six-second
-  Grok video animates the gift, satin ribbon and glow over the left side. The
-  original image supplies the right side, so the Arabic text remains completely
-  still. A visually hidden heading and subtitle preserve the accessible outline.
-  Playback is muted, inline and looping, with the image as a loading/error fallback.
+- A six-second Grok video animates two people sharing a gift: the helper wears
+  the AKHOO shirt logo, and the recipient smiles and nods. The video retains the
+  Arabic title and subtitle in its frame. Its natural 7:3 ratio keeps both heads,
+  hands and the gift visible, with no stretching, cropped edges or video masks.
+  A frame extracted at 0.1 seconds supplies an aligned loading/error fallback.
+  Playback is muted, inline and looping. A visually hidden heading and subtitle
+  preserve the accessible outline.
 - `scene.js` builds the silver medal from real Three.js 0.186.1 geometry: blue
   ribbons, a layered metal face and raised star. It turns before opening levels.
   Procedural studio reflections need no external textures/models. Its single
   transparent WebGL canvas caps rendering at 30fps and device pixel ratio at 2.
 - Pause/Resume, reduced-motion preferences, page visibility, dialogs and
   intersection observation govern both animations. The shared Pause/Resume
-  control sits below the medal. Reduced motion reveals the approved image and
+  control sits below the medal. Reduced motion reveals the still frame and
   opens dialogs immediately. WebGL failure preserves the static medal while the
   header video can continue. No native app dependency changed.
 - Photo and Details open a native offer dialog. Escape, close, backdrop and
@@ -36,6 +38,25 @@ facts. Next-level thresholds match `src/lib/activityLevel.ts`.
   No production deployment is part of this change.
 
 ## Assets and provenance
+
+`header-people-v3.png` is the approved 2172 × 724 two-person concept, copied
+without image processing from built-in ImageGen output
+`exec-d8aa2e1d-d353-4b16-ad4e-6459dd590f11.png`. References were the existing
+`../brand.png` and `header-approved-v2.png`. Concept and provenance:
+[header-people-v3-prompt.txt](header-people-v3-prompt.txt).
+
+`header-people-motion-v3.mp4` was generated with Grok Imagine using the approved
+concept as first and last reference, Auto aspect ratio, 720p and six seconds.
+Exact prompt: [header-people-motion-v3-prompt.txt](header-people-motion-v3-prompt.txt).
+The result reframes the full composition to 7:3, retaining both characters and
+all Arabic text. The page displays that complete frame rather than applying the
+old gift video's crop compensation. Decoded output: **1456 × 624, 6.041667 seconds,
+2,066,423 bytes**. SHA-256:
+`0124e1ee53d64d0d6dcf87b69651d3328a95b9da53d18b272bf93118b3cf0a20`.
+`header-people-motion-v3-poster.png` is the unedited decoded frame at 0.1 seconds,
+extracted with the browser canvas API. Earlier gift-only assets are design history.
+
+### Earlier gift-only concept
 
 `header-approved-v2.png` is the exact 2172 × 724 image approved in chat, copied
 without image processing from built-in ImageGen output
@@ -50,11 +71,9 @@ the frame. It is a real generated MP4, not a CSS animation or a GIF container.
 Decoded output: **1456 × 624, 6.041667 seconds, 1,391,230 bytes**.
 SHA-256: `b6e81340f21180d84579082bdc529a2e0541faabd4f9e60309ef88615c0c3ff8`.
 
-Grok returns a centered 7:3 crop of the 3:1 reference. CSS maps it to 7/9 of the
-banner width with an 1/9 left inset, without stretching, and masks its right
-side before the original title. The approved full-width image remains beneath
-it. The clip is intended to be viewed in this composite; its raw right-hand
-text is cropped. Earlier gift media below is retained only as design history.
+That earlier take returned a centered 7:3 crop of the 3:1 reference. Its old CSS
+mapped it to 7/9 of the banner width with an 1/9 left inset and masked its right side before the original
+title. That crop compensation is no longer used by the current two-person video.
 
 `gift-poster.png` was generated with the built-in image tool, using the approved
 design as a visual reference. Exact prompt: [gift-poster-prompt.txt](gift-poster-prompt.txt).
@@ -85,13 +104,13 @@ Reference: [Three.js WebGLRenderer](https://threejs.org/docs/pages/WebGLRenderer
 
 ## Verification
 
-Browser checks cover muted playback and loop wraparound, Pause/Resume with a
-stable paused frame, dialog suspension/resume and focus restoration. Reduced
-motion pauses the video and reveals the approved still image. Scrolling the
-header out of view pauses playback. Preference changes also reconcile on frames,
-focus and resize to handle deferred browser notifications. Thirteen sampled
-frames across the selected take show the bow staying inside the top boundary,
-and visible ribbon/glow changes. The title uses the unanimated original plate.
+Current browser checks cover muted inline playback, loop wraparound, Pause/Resume
+with a stable paused frame, dialog suspension/resume, and focus restoration.
+Reduced motion pauses the video, reveals the extracted still and disables the
+motion control. At 320/390/480px, the complete video fits without horizontal
+overflow. Sampled frames show the gift handoff, changing hands, expressions and
+head poses while the shirt logo remains visible. The full Arabic copy stays in
+the frame. Existing offscreen/page visibility suspension remains unchanged.
 
 Medal levels, both offer entry points and Home/Activity/Account round trips were
 checked. At 320/390/480px, images load without horizontal overflow. The offer
