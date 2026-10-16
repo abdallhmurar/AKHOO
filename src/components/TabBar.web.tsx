@@ -1,116 +1,129 @@
-import { GuideTarget } from '../features/guide/GuideProvider'
-import { useEffect, useRef, useState } from 'react'
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
-import type { LayoutChangeEvent } from 'react-native'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { CSSProperties, PointerEvent, ReactNode } from 'react'
+import { StyleSheet, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import type { BottomTabBarProps } from 'expo-router/js-tabs'
-import { dirStyles, useIsRTL } from '../lib/direction'
+import { GuideTarget, useGuide } from '../features/guide/GuideProvider'
+import { useIsRTL } from '../lib/direction'
 import { useAppFont } from '../lib/typography'
-import { radius, space, spring, useSanadTheme } from '../lib/theme'
+import { space, useSanadTheme } from '../lib/theme'
+import { DockGift } from './DockGift.web'
+import './tabBar.web.css'
 
-// Web-only dock polish. Reuse the existing tab icons (including the blue
-// perks coupon), labels, and navigation; native keeps TabBar.tsx.
+function assetUri(asset: unknown): string {
+  return typeof asset === 'string' ? asset : (asset as { uri: string }).uri
+}
+const icons: Record<string, string> = {
+  index: assetUri(require('./dock-assets/home.png')),
+  activity: assetUri(require('./dock-assets/activity.png')),
+  account: assetUri(require('./dock-assets/account.png'))
+}
+
+function DockTab({ selected, name, label, accessibilityLabel, testId, onPress, onLongPress, children }: {
+  selected: boolean; name: string; label: string; accessibilityLabel?: string; testId?: string
+  onPress: () => boolean; onLongPress: () => void; children: ReactNode
+}) {
+  const icon = useRef<HTMLSpanElement>(null)
+  const longPress = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pointer = useRef<{ x: number; y: number } | null>(null)
+  const consumed = useRef(false)
+  const clearLongPress = () => { if (longPress.current) clearTimeout(longPress.current); longPress.current = null }
+  useEffect(() => () => { if (longPress.current) clearTimeout(longPress.current) }, [])
+  function startPress(event: PointerEvent<HTMLButtonElement>) {
+    if (event.button !== 0) return
+    clearLongPress()
+    consumed.current = false
+    pointer.current = { x: event.clientX, y: event.clientY }
+    longPress.current = setTimeout(() => { consumed.current = true; onLongPress() }, 500)
+  }
+  function activate() {
+    clearLongPress()
+    if (consumed.current) { consumed.current = false; return }
+    if (!onPress() || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const target = icon.current
+    target?.getAnimations().forEach(animation => animation.cancel())
+    target?.animate([
+      { transform: 'translateY(0) scale(.9) rotate(0deg)' },
+      { transform: `translateY(-4px) scale(1.13) rotate(${name === 'activity' ? -9 : 0}deg)`, offset: 0.36 },
+      { transform: 'translateY(1px) scale(.98) rotate(0deg)', offset: 0.72 },
+      { transform: 'translateY(0) scale(1) rotate(0deg)' }
+    ], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' })
+  }
+  return <button className="akh-dock-tab" type="button" data-route={name} data-selected={selected}
+    data-testid={testId} aria-label={accessibilityLabel ?? label} aria-current={selected ? 'page' : undefined}
+    onClick={activate} onPointerDown={startPress} onPointerUp={clearLongPress}
+    onPointerCancel={() => { clearLongPress(); consumed.current = false }}
+    onPointerLeave={() => { clearLongPress(); consumed.current = false; pointer.current = null }}
+    onPointerMove={event => { if (pointer.current && Math.hypot(event.clientX - pointer.current.x, event.clientY - pointer.current.y) > 10) clearLongPress() }}
+    onContextMenu={event => { event.preventDefault(); clearLongPress(); if (!consumed.current) onLongPress() }}>
+    <span className="akh-dock-tab-content"><span className="akh-dock-icon" ref={icon} aria-hidden="true">{children}</span>
+      <span className="akh-dock-label">{label}</span></span>
+  </button>
+}
+
+// Only web navigation changes; native TabBar.tsx remains separate.
 export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const theme = useSanadTheme()
   const isRTL = useIsRTL()
-  const dir = dirStyles(isRTL)
-  const activeFont = useAppFont('semibold')
-  const inactiveFont = useAppFont('medium')
-
-  const routeCount = state.routes.length
-  const [rowWidth, setRowWidth] = useState(0)
-  const segmentWidth = Math.max(0, rowWidth - 12) / routeCount
+  const font = useAppFont('semibold'), bold = useAppFont('bold')
+  const guide = useGuide()
+  const [giftPress, setGiftPress] = useState(0)
+  const nav = useRef<HTMLElement>(null)
   const isHome = state.routes[state.index]?.name === 'index'
-
-  const indicatorAnim = useRef(new Animated.Value(state.index)).current
-  const liftAnims = useRef(state.routes.map((_, i) => new Animated.Value(i === state.index ? 1 : 0))).current
-
-  useEffect(() => {
-    Animated.spring(indicatorAnim, { toValue: state.index, ...spring.soft }).start()
-    liftAnims.forEach((anim, i) => {
-      Animated.spring(anim, { toValue: i === state.index ? 1 : 0, ...spring.soft }).start()
-    })
-  }, [state.index, indicatorAnim, liftAnims])
-
-  function onRowLayout(event: LayoutChangeEvent) {
-    setRowWidth(event.nativeEvent.layout.width)
-  }
-
-  // Left/right are physical (not logical) in RN, but on both native (row-reverse)
-  // and web (ambient dir=rtl mirroring plain row - see lib/direction.ts) an RTL
-  // bar ends up rendering tab 0 on the physical right either way. Flipping the
-  // index here keeps the indicator under the tab it's actually supposed to be
-  // under regardless of which of those two mirroring mechanisms is in play.
-  const translateX = indicatorAnim.interpolate({
-    inputRange: state.routes.map((_, i) => i),
-    outputRange: state.routes.map((_, i) => (isRTL ? routeCount - 1 - i : i) * segmentWidth)
-  })
-
-  return (
-    <GuideTarget id="navigation"><View style={[styles.wrap, { backgroundColor: isHome && !theme.isDark ? '#F5F8FC' : theme.colors.background, paddingBottom: Math.max(insets.bottom, space.sm) }]}>
-      <View
-        style={[styles.pill, dir.row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, boxShadow: theme.isDark ? '0 8px 24px rgba(0, 0, 0, 0.25)' : '0 8px 24px rgba(11, 31, 51, 0.09)' }]}
-        onLayout={onRowLayout}
-      >
-        {segmentWidth > 0 && (
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.indicator, { width: segmentWidth, backgroundColor: theme.colors.primarySoft, transform: [{ translateX }] }]}
-          />
-        )}
-        {state.routes.map((route, index) => {
-          const descriptor = descriptors[route.key]
-          const lift = liftAnims[index]
-          if (!descriptor || !lift) return null
-          const { options } = descriptor
-          const isFocused = state.index === index
-          const label = typeof options.tabBarLabel === 'string' ? options.tabBarLabel : (options.title ?? route.name)
-          const color = isFocused ? theme.colors.primary : theme.colors.textMuted
-
-          function onPress() {
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
-            if (!isFocused && !event.defaultPrevented) {
-              Haptics.selectionAsync().catch(() => {})
-              navigation.navigate(route.name)
-            }
-          }
-
-          function onLongPress() {
-            navigation.emit({ type: 'tabLongPress', target: route.key })
-          }
-
-          const translateY = lift.interpolate({ inputRange: [0, 1], outputRange: [0, -3] })
-          const scale = lift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.06] })
-
-          return (
-            <Pressable
-              key={route.key}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isFocused }}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              style={styles.tab}
-            >
-              <Animated.View style={[styles.tabContent, { transform: [{ translateY }, { scale }] }]}>
-                {options.tabBarIcon?.({ focused: isFocused, color, size: 22 })}
-                <Text style={[styles.label, { color, fontFamily: isFocused ? activeFont : inactiveFont }]} numberOfLines={1}>
-                  {label}
-                </Text>
-              </Animated.View>
-            </Pressable>
-          )
-        })}
-      </View>
-    </View></GuideTarget>
-  )
+  useLayoutEffect(() => {
+    const node = nav.current
+    if (!node) return
+    const update = () => {
+      const selected = node.querySelector<HTMLButtonElement>('[data-selected=true]')
+      if (!selected) return
+      node.style.setProperty('--indicator-x', `${selected.offsetLeft}px`)
+      node.style.setProperty('--indicator-width', `${selected.offsetWidth}px`)
+      node.dataset.ready = 'true'
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(node)
+    node.querySelectorAll('button').forEach(button => observer.observe(button))
+    return () => observer.disconnect()
+  }, [state.index, state.routes.length, isRTL])
+  return <GuideTarget id="navigation">
+    <View style={[styles.wrap, { backgroundColor: isHome && !theme.isDark ? '#F2FBFF' : theme.colors.background, paddingBottom: Math.max(insets.bottom, space.sm) }]}>
+      <div className="akh-dock-shell" dir={isRTL ? 'rtl' : 'ltr'} data-dark={theme.isDark}
+        style={{ '--dock-font': font, '--dock-bold': bold, maxWidth: isHome ? 448 : 560 } as CSSProperties}>
+        <nav ref={nav} className="akh-dock" aria-label="Navigation">
+          <span className="akh-dock-indicator" aria-hidden="true" />
+          {state.routes.map((route, index) => {
+            const descriptor = descriptors[route.key]
+            if (!descriptor) return null
+            const { options } = descriptor
+            const selected = state.index === index
+            const label = typeof options.tabBarLabel === 'string' ? options.tabBarLabel : (options.title ?? route.name)
+            return <DockTab key={route.key} name={route.name} selected={selected}
+              label={label} accessibilityLabel={options.tabBarAccessibilityLabel} testId={options.tabBarButtonTestID}
+              onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+              onPress={() => {
+                const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
+                if (event.defaultPrevented) return false
+                if (route.name === 'community') setGiftPress(value => value + 1)
+                if (!selected) { Haptics.selectionAsync().catch(() => {}); navigation.navigate(route.name) }
+                return true
+              }}>
+              {route.name === 'community'
+                ? <DockGift active={selected && !guide?.blocking} press={giftPress} />
+                : icons[route.name]
+                  ? <img src={icons[route.name]} alt="" draggable={false} width={32} height={32} />
+                  : options.tabBarIcon?.({ focused: selected, color: selected ? '#FFFFFF' : '#526A80', size: 28 })}
+            </DockTab>
+          })}
+        </nav>
+        <footer className="akh-dock-credits" dir="ltr" lang="en">
+          Icons by <a href="https://www.flaticon.com/free-icon/home_10307931" target="_blank" rel="noreferrer">Fathema Khanom</a>,{' '}
+          <a href="https://www.flaticon.com/free-icon/user_1077012" target="_blank" rel="noreferrer">Magnific</a> &amp;{' '}
+          <a href="https://www.flaticon.com/free-icon/holding-hands_3131389" target="_blank" rel="noreferrer">Smashicons</a> —{' '}
+          <a href="https://www.flaticon.com/" target="_blank" rel="noreferrer">Flaticon</a>
+        </footer>
+      </div>
+    </View>
+  </GuideTarget>
 }
-
-const styles = StyleSheet.create({
-  wrap: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  pill: { width: '100%', maxWidth: 560, alignSelf: 'center', borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, paddingVertical: 6, paddingHorizontal: 6, overflow: 'hidden' },
-  indicator: { position: 'absolute', top: 6, bottom: 6, left: 6, borderRadius: radius.pill },
-  tab: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 8 },
-  tabContent: { alignItems: 'center', gap: 3 },
-  label: { fontSize: 10.5 }
-})
+const styles = StyleSheet.create({ wrap: { paddingHorizontal: space.sm, paddingTop: space.sm } })
