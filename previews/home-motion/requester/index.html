@@ -22,6 +22,8 @@
     <a href="assets/approved-details.png" target="_blank" rel="noopener">تصميم تفاصيل المشكلة</a>
     <a href="assets/approved-location.png" target="_blank" rel="noopener">تصميم تحديد الموقع</a>
     <a href="assets/approved-waiting.png" target="_blank" rel="noopener">تصميم انتظار المساعد</a>
+    <a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">معاينة قبول الطلب</a>
+    <a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">معاينة تأكيد المساعدة</a>
     <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
   </aside>
   <main class="request-page">
@@ -176,11 +178,61 @@
           <span class="waiting-pill"><i aria-hidden="true"></i>بانتظار القبول</span>
           <p id="waiting-feedback" role="status" aria-live="polite" hidden></p>
         </article>
-        <p class="local-preview-note">معاينة محلية · ما انبعت طلب حقيقي</p>
+        <details class="tracking-preview-tools"><summary>معاينة محلية · حالات الطلب</summary><nav class="preview-state-links" aria-label="معاينة حالات الطلب"><a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">معاينة قبول الطلب</a><a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">معاينة التأكيد</a></nav></details>
       </div>
       <footer class="action-footer waiting-actions">
         <button id="refresh-request" class="next-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الحالة</span></button>
         <button id="cancel-request" class="outline-button" type="button">إلغاء الطلب</button>
+      </footer>
+    </section>
+    <section id="tracking-step" class="step-panel" aria-labelledby="tracking-title" hidden>
+      <div class="details-heading tracking-heading">
+        <h1 id="tracking-title" tabindex="-1">المساعد استلم طلبك</h1>
+        <p id="tracking-description">تابع حالته وتواصل معه من هون</p>
+      </div>
+      <div class="tracking-content">
+        <div id="tracking-map-slot" class="waiting-map"></div>
+        <article class="tracking-card" aria-labelledby="tracking-status-title">
+          <div class="tracking-overview">
+            <div class="tracking-copy"><h2 id="tracking-status-title">تم قبول طلبك</h2><p id="tracking-status-description">مساعدك جاهز يساعدك</p></div>
+            <div class="tracking-scene" aria-hidden="true">
+              <img id="tracking-poster" src="assets/accepted.png" alt="" width="1536" height="1024">
+              <video id="tracking-video" muted loop playsinline preload="none" poster="assets/accepted.png" data-src="assets/accepted.mp4" tabindex="-1" disablepictureinpicture></video>
+            </div>
+          </div>
+          <ol id="tracking-timeline" class="request-timeline" aria-label="حالة الطلب">
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>تم القبول</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>بالطريق</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>وصل</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>التأكيد</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>اكتمل</span></li>
+          </ol>
+          <p id="tracking-caption" class="tracking-caption">تم قبول الطلب · معاينة</p>
+        </article>
+        <section id="confirmation-card" class="confirmation-card" aria-labelledby="confirmation-question" hidden>
+          <h2 id="confirmation-question">هل تمت المساعدة بنجاح؟</h2>
+          <div class="confirmation-actions">
+            <button id="confirm-success" type="button">تمت المساعدة بنجاح</button>
+            <button id="confirm-incomplete" type="button">المساعدة لم تكتمل</button>
+          </div>
+          <p id="confirmation-result" role="status" aria-live="polite" hidden></p>
+          <button id="reset-confirmation" class="text-button" type="button" hidden>إعادة تجربة التأكيد</button>
+        </section>
+        <section class="helper-card" aria-labelledby="helper-name">
+          <div class="helper-profile">
+            <span class="helper-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22v-2a8 8 0 0 1 16 0v2Z"/></svg></span>
+            <div><h2 id="helper-name">مساعد تجريبي</h2><p>٣ مساعدات مكتملة · بيانات للمعاينة</p></div>
+          </div>
+          <button id="open-chat" class="next-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-9 9 10 10 0 0 1-4-.9L3 21l1.4-4.7A9 9 0 1 1 21 11.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg><span>المحادثة</span></button>
+        </section>
+        <p id="tracking-feedback" class="tracking-feedback" role="status" aria-live="polite" hidden></p>
+        <details class="tracking-preview-tools">
+          <summary>معاينة محلية · حالات الطلب</summary>
+          <nav class="preview-state-links" aria-label="معاينة حالات الطلب"><a href="?step=waiting&amp;problem=battery" data-preview-step="waiting">الانتظار</a><a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">القبول</a><a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">التأكيد</a></nav>
+        </details>
+      </div>
+      <footer class="action-footer tracking-actions">
+        <button id="refresh-tracking" class="outline-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الحالة</span></button>
       </footer>
     </section>
   </main>
@@ -190,6 +242,12 @@
     <p id="demo-description">بنرجعك لتحديد الموقع، وبتضل تفاصيلك محفوظة بهالمعاينة.</p>
     <button id="return-button" class="next-button" type="button" autofocus>خلّيني أستنى</button>
     <button id="confirm-cancel" class="outline-button" type="button">إلغاء الطلب</button>
+  </dialog>
+  <dialog id="chat-preview" class="demo-sheet" aria-labelledby="chat-preview-title" aria-describedby="chat-preview-description">
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <h2 id="chat-preview-title">معاينة المحادثة</h2>
+    <p id="chat-preview-description">بالتطبيق، هذا الزر بيفتح المحادثة مع المساعد. هاي معاينة للتصميم، وما بنرسل منها رسائل.</p>
+    <button id="close-chat" class="next-button" type="button" autofocus>رجوع للطلب</button>
   </dialog>
 </body>
 </html>

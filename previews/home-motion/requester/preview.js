@@ -10,6 +10,10 @@ const selectionStep = document.querySelector('#selection-step');
 const detailsStep = document.querySelector('#details-step');
 const locationStep = document.querySelector('#location-step');
 const waitingStep = document.querySelector('#waiting-step');
+const trackingStep = document.querySelector('#tracking-step');
+const trackingVideo = document.querySelector('#tracking-video');
+const chatPreview = document.querySelector('#chat-preview');
+const confirmationOutcomes = new Map();
 const mapFrame = document.querySelector('.map-frame');
 const waitingFeedback = document.querySelector('#waiting-feedback');
 const sendButton = document.querySelector('#send-request');
@@ -37,8 +41,8 @@ const problemCopy = {
 };
 
 function canPlay(video) {
-  return motionEnabled && !reducedMotion.matches && !document.hidden && !sheet.open
-    && !video.closest('.step-panel').hidden && inView.has(video) && !video.dataset.failed;
+  return motionEnabled && !reducedMotion.matches && !document.hidden && !document.querySelector('dialog[open]')
+    && !video.closest('.step-panel').hidden && !video.parentElement.hidden && inView.has(video) && !video.dataset.failed;
 }
 
 function renderMotion() {
@@ -123,34 +127,38 @@ function renderRoute(focusHeading = false) {
   const params = new URLSearchParams(window.location.search);
   const problem = params.get('problem');
   const validProblem = Object.hasOwn(problemCopy, problem);
-  step = ['details', 'location', 'waiting'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
+  step = ['details', 'location', 'waiting', 'accepted', 'confirmation'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
+  const isTracking = step === 'accepted' || step === 'confirmation';
   cards.forEach(card => { card.querySelector('input').checked = card.dataset.kind === problem; });
   nextButton.disabled = !validProblem;
   selectionStep.hidden = step !== 'selection';
   detailsStep.hidden = step !== 'details';
   locationStep.hidden = step !== 'location';
   waitingStep.hidden = step !== 'waiting';
+  trackingStep.hidden = !isTracking;
   page.classList.toggle('show-details', step === 'details');
   page.classList.toggle('show-location', step === 'location');
   page.classList.toggle('show-waiting', step === 'waiting');
+  page.classList.toggle('show-tracking', isTracking);
+  page.classList.toggle('show-confirmation', step === 'confirmation');
   document.querySelector('.details-scenery').hidden = step === 'selection';
   motionButton.hidden = step === 'location';
-  const stepIndex = ['selection', 'details', 'location', 'waiting'].indexOf(step);
-  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة', 'تم إرسال الطلب'][stepIndex];
+  const stepIndex = ['selection', 'details', 'location', 'waiting', 'accepted', 'confirmation'].indexOf(step);
+  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة', 'تم إرسال الطلب', 'تم قبول الطلب', 'بانتظار التأكيد'][stepIndex];
   const progress = document.querySelector('.progress');
-  progress.setAttribute('aria-hidden', String(step === 'waiting'));
+  progress.setAttribute('aria-hidden', String(step === 'waiting' || isTracking));
   progress.setAttribute('aria-label', caption);
   progress.querySelector('span').textContent = caption;
   progress.querySelectorAll('i').forEach((segment, index) => {
     segment.classList.toggle('current', index === stepIndex);
     segment.classList.toggle('complete', index < stepIndex);
   });
-  backLink.href = step === 'waiting' ? routeUrl('location', problem) : step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
-  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل', 'الرجوع للموقع'][stepIndex]);
-  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك', 'أخو — انتظار المساعد · معاينة'][stepIndex];
+  backLink.href = step === 'confirmation' ? routeUrl('accepted', problem) : step === 'accepted' ? routeUrl('waiting', problem) : step === 'waiting' ? routeUrl('location', problem) : step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
+  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل', 'الرجوع للموقع', 'الرجوع لمعاينة الانتظار', 'الرجوع لمعاينة القبول'][stepIndex]);
+  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك', 'أخو — انتظار المساعد · معاينة', 'أخو — المساعد استلم طلبك · معاينة', 'أخو — بانتظار تأكيدك · معاينة'][stepIndex];
   if (step !== 'location') locationMap?.cancelEditing();
   // Reuse the live map and selected point, without a second WebGL instance.
-  const mapSlot = document.querySelector(step === 'waiting' ? '#waiting-map-slot' : '#location-map-slot');
+  const mapSlot = document.querySelector(isTracking ? '#tracking-map-slot' : step === 'waiting' ? '#waiting-map-slot' : '#location-map-slot');
   if (mapFrame.parentElement !== mapSlot) mapSlot.append(mapFrame);
   if (step === 'details') {
     document.querySelector('#selected-title').textContent = problemCopy[problem].title;
@@ -169,11 +177,18 @@ function renderRoute(focusHeading = false) {
     }
   }
   if (sheet.open) sheet.close();
+  if (chatPreview.open) chatPreview.close();
+  if (isTracking) renderTracking();
+  document.querySelectorAll('[data-preview-step]').forEach(link => {
+    link.href = routeUrl(link.dataset.previewStep, validProblem ? problem : 'battery');
+    if (link.dataset.previewStep === step) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
   renderMotion();
-  if (step === 'location' || step === 'waiting') prepareLocationMap();
+  if (step === 'location' || step === 'waiting' || isTracking) prepareLocationMap();
   if (focusHeading) {
     window.scrollTo({top:0, behavior:'instant'});
-    document.querySelector(['#page-title', '#details-title', '#location-title', '#waiting-title'][stepIndex]).focus({preventScroll:true});
+    document.querySelector(['#page-title', '#details-title', '#location-title', '#waiting-title', '#tracking-title', '#tracking-title'][stepIndex]).focus({preventScroll:true});
   }
 }
 
@@ -181,7 +196,7 @@ backLink.addEventListener('click', event => {
   if (step === 'selection' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   // Replace this entry so browser Back never reopens the just-dismissed step.
-  history.replaceState(null, '', routeUrl(step === 'waiting' ? 'location' : step === 'location' ? 'details' : 'selection', form.elements.problem.value));
+  history.replaceState(null, '', backLink.href);
   renderRoute(true);
 });
 window.addEventListener('popstate', () => renderRoute(true));
@@ -300,4 +315,77 @@ sheet.addEventListener('close', () => {
   if (step === 'waiting') document.querySelector('#cancel-request').focus({preventScroll:true});
   renderMotion();
 });
+
+function renderTracking() {
+  const confirmation = step === 'confirmation';
+  const outcome = confirmationOutcomes.get(form.elements.problem.value);
+  const complete = confirmation && outcome === 'success';
+  const asset = confirmation ? 'confirmation' : 'accepted';
+  document.querySelector('#tracking-title').textContent = complete ? 'تمت المساعدة بنجاح' : confirmation ? 'بانتظار تأكيدك' : 'المساعد استلم طلبك';
+  document.querySelector('#tracking-description').textContent = complete ? 'شكرًا لتأكيدك، أخوك دايمًا قريب' : confirmation ? 'أكد إذا وصلتك المساعدة فعلاً' : 'تابع حالته وتواصل معه من هون';
+  document.querySelector('#tracking-status-title').textContent = complete ? 'تم تأكيد المساعدة' : confirmation ? 'بانتظار تأكيدك' : 'تم قبول طلبك';
+  document.querySelector('#tracking-status-description').textContent = complete ? 'اكتملت تجربة الطلب' : confirmation ? 'أكد إذا وصلتك المساعدة فعلاً' : 'مساعدك جاهز يساعدك';
+  document.querySelector('#confirmation-card').hidden = !confirmation;
+  document.querySelector('#tracking-caption').textContent = complete ? 'تم التأكيد · معاينة' : confirmation ? 'بانتظار تأكيد وصول المساعدة · معاينة' : 'تم قبول الطلب · معاينة';
+  const currentIndex = complete ? 4 : confirmation ? 3 : 0;
+  document.querySelectorAll('#tracking-timeline li').forEach((item, index) => {
+    item.classList.toggle('is-complete', index < currentIndex);
+    item.classList.toggle('is-current', index === currentIndex);
+    item.classList.toggle('is-finished', complete && index === 4);
+    if (index === currentIndex) item.setAttribute('aria-current', 'step');
+    else item.removeAttribute('aria-current');
+  });
+  const result = document.querySelector('#confirmation-result');
+  result.hidden = !outcome;
+  result.textContent = outcome === 'success' ? 'تم تسجيل التأكيد في المعاينة.' : outcome === 'incomplete' ? 'سجّلنا أن المساعدة لم تكتمل في المعاينة.' : '';
+  document.querySelector('.confirmation-actions').hidden = Boolean(outcome);
+  document.querySelector('#confirmation-question').textContent = outcome === 'success' ? 'شكرًا لتأكيدك' : outcome === 'incomplete' ? 'المساعدة لم تكتمل' : 'هل تمت المساعدة بنجاح؟';
+  document.querySelector('#reset-confirmation').hidden = !outcome;
+  if (trackingVideo.dataset.src !== `assets/${asset}.mp4`) {
+    trackingVideo.pause();
+    trackingVideo.parentElement.classList.remove('is-playing');
+    document.querySelector('#tracking-poster').src = `assets/${asset}.png`;
+    trackingVideo.poster = `assets/${asset}.png`;
+    trackingVideo.removeAttribute('src');
+    trackingVideo.dataset.src = `assets/${asset}.mp4`;
+    delete trackingVideo.dataset.failed;
+    trackingVideo.load();
+  }
+  trackingVideo.parentElement.hidden = complete;
+}
+
+document.querySelectorAll('[data-preview-step]').forEach(link => {
+  link.addEventListener('click', event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    document.querySelector('#tracking-feedback').hidden = true;
+    history.pushState(null, '', link.href);
+    renderRoute(true);
+  });
+});
+document.querySelector('#refresh-tracking').addEventListener('click', () => {
+  const feedback = document.querySelector('#tracking-feedback');
+  feedback.textContent = 'تم تحديث المعاينة. حالة الطلب ما تغيّرت.';
+  feedback.hidden = false;
+});
+document.querySelector('#open-chat').addEventListener('click', () => {
+  chatPreview.showModal();
+  renderMotion();
+});
+document.querySelector('#close-chat').addEventListener('click', () => chatPreview.close());
+chatPreview.addEventListener('close', () => {
+  if (step === 'accepted' || step === 'confirmation') document.querySelector('#open-chat').focus({preventScroll:true});
+  renderMotion();
+});
+function setConfirmation(outcome) {
+  if (step !== 'confirmation') return;
+  if (outcome) confirmationOutcomes.set(form.elements.problem.value, outcome);
+  else confirmationOutcomes.delete(form.elements.problem.value);
+  renderTracking();
+  renderMotion();
+  document.querySelector(outcome ? '#reset-confirmation' : '#confirm-success').focus({preventScroll:true});
+}
+document.querySelector('#confirm-success').addEventListener('click', () => setConfirmation('success'));
+document.querySelector('#confirm-incomplete').addEventListener('click', () => setConfirmation('incomplete'));
+document.querySelector('#reset-confirmation').addEventListener('click', () => setConfirmation(null));
 renderRoute();

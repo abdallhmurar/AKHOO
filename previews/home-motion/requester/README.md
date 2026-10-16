@@ -5,7 +5,7 @@ Run `node previews/home-motion/serve.cjs` from the repository root and open
 also opens this screen. The default port remains 4178.
 
 This is an isolated, Arabic, responsive visual prototype of all three requester
-steps plus the waiting-for-helper screen. It does not import the Expo application, call its APIs, send assistance
+steps plus waiting, accepted and confirmation screens. It does not import the Expo application, call its APIs, send assistance
 requests, read account data, or change Vercel, Android or iOS. The first Next button
 requires one of the four native radio inputs and opens the details screen with the
 matching title, animated scene and example note. Direct preview:
@@ -50,7 +50,7 @@ and keeps the note, optional photo and selected map point in memory.
 
 The existing map frame moves between the location and waiting screens, preserving
 the selected point and one WebGL instance. Browser Back/Forward works across the
-four screens. The waiting scene is decorative; headings and status remain live HTML.
+screens. The waiting scene is decorative; headings and status remain live HTML.
 The pause button, reduced-motion preference, offscreen and hidden-tab behavior also
 apply to this clip. Opening the cancel dialog pauses it.
 
@@ -62,6 +62,36 @@ independently around the car, with matching starting and ending poses. It plays
 silently in a loop from the local server. Exact prompts and settings are recorded
 in [prompts/waiting.json](prompts/waiting.json). This is a rendered 3D video, not an
 interactive 3D model or a GIF file.
+
+## Accepted and confirmation previews
+
+- Accepted: <http://127.0.0.1:4178/requester/?step=accepted&problem=battery>
+- Confirmation: <http://127.0.0.1:4178/requester/?step=confirmation&problem=battery>
+
+These pages implement the approved blue/teal 3D comparison design. They share the
+existing map instance and a five-stage RTL timeline. The accepted screen marks only
+acceptance as current. Confirmation marks the first three stages complete and
+leaves the final stage pending until the success button is selected.
+
+The collapsed local-preview controls switch explicitly between waiting, acceptance
+and confirmation; no timer or refresh fabricates a helper response. Refresh reports
+the same simulated state. Chat opens an explanatory local dialog and sends no
+messages. The helper uses clearly labeled sample data and a generic avatar; no real
+person's portrait or account details are included in these assets.
+
+Success updates the local timeline to completed and hides the question illustration;
+incomplete keeps the timeline at confirmation. Both decisions have a reset control
+for trying the other outcome. Outcomes are held in memory per problem type and are
+cleared on reload. Draft notes/photos and the chosen map point survive route changes.
+
+`assets/accepted.png` and `assets/confirmation.png` were generated with the built-in
+image tool from the approved comparison. Each was supplied to Grok's Loop template
+as matching first/last frames, at 3:2, 720p and six seconds. `accepted.mp4` animates
+the handshake medallion; `confirmation.mp4` animates the question bubble, car lights
+and radar base. Both are 1168×784 and 6.041667 seconds, served locally, muted and
+looped. Exact prompts and file metadata are in [prompts/statuses.json](prompts/statuses.json).
+Motion stops for hidden pages/steps, offscreen media, open dialogs and reduced-motion
+preferences. Posters remain visible if playback is unavailable.
 
 Map styles, tiles, fonts and sprites need an internet connection to
 `https://tiles.openfreemap.org`. They are the only external data requests allowed
@@ -139,3 +169,15 @@ frames at 0.05, 2.8 and 5.95 seconds: independent pin/lens motion and matching l
 endpoints. Sending the preview made no assistance API request. Scoped ESLint,
 JavaScript syntax and diff checks passed. Final screenshot:
 `test-results/requester-motion/waiting-390.jpg` (ignored).
+
+Accepted/confirmation previews: checked both states at 320, 390 and 480px, with
+no horizontal overflow and the confirmation/chat controls above the sticky footer.
+Verified both confirmation outcomes and reset, acceptance/confirmation Back/Forward,
+chat dialog pausing, refresh without status advancement, and the full note → manual
+location → waiting → accepted → confirmation flow with one retained map and draft.
+Refresh, chat and confirmation generated no assistance or messaging requests.
+Reduced motion fetched no video sources; a blocked confirmation clip kept its PNG.
+Both six-second clips were inspected at 0.05, 2.8 and 5.95 seconds for independent
+object motion and matching endpoints. MP4 range requests returned 206/video/mp4.
+JavaScript syntax, scoped ESLint and diff checks passed. Screenshots are saved under
+`test-results/requester-motion/accepted-390.jpg` and `confirmation-390.jpg` (ignored).
