@@ -15,12 +15,14 @@
   <aside class="preview-tools" aria-label="أدوات المعاينة">
     <span class="preview-badge">معاينة محلية</span>
     <h2>كل مساعدة، إلها حكاية.</h2>
-    <p>اختَر بطاقة وجرّب الحركة.<br>هاي معاينة للتصميم، ما بتبعت طلبات حقيقية.</p>
+    <p>اختَر المشكلة، وبعدين جرّب التفاصيل وإضافة صورة.<br>هاي معاينة للتصميم، ما بتبعت طلبات حقيقية.</p>
     <a href="../">الرجوع لمعاينة الرئيسية</a>
-    <a href="assets/approved.png" target="_blank" rel="noopener">الصورة المعتمدة</a>
+    <a href="assets/approved.png" target="_blank" rel="noopener">تصميم اختيار المشكلة</a>
+    <a href="assets/approved-details.png" target="_blank" rel="noopener">تصميم تفاصيل المشكلة</a>
     <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
   </aside>
   <main class="request-page">
+    <img class="details-scenery" src="assets/details-header.png" alt="" width="2172" height="724" hidden>
     <header class="topbar">
       <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
       <div class="progress" aria-label="الخطوة ١ من ٣">
@@ -29,13 +31,14 @@
       </div>
       <button id="motion-toggle" class="round-control motion" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button>
     </header>
-    <section class="hero" aria-labelledby="page-title">
+    <section id="selection-step" class="step-panel" aria-labelledby="page-title">
+    <div class="hero">
       <img src="assets/header.png" alt="" width="2172" height="724" fetchpriority="high">
       <div class="hero-copy">
-        <h1 id="page-title">شو المشكلة<br>اللي بتواجهك؟</h1>
+        <h1 id="page-title" tabindex="-1">شو المشكلة<br>اللي بتواجهك؟</h1>
         <p>اختَر نوع المساعدة اللي بتحتاجها</p>
       </div>
-    </section>
+    </div>
     <form id="problem-form">
       <fieldset class="options">
         <legend class="sr-only">نوع المساعدة</legend>
@@ -68,13 +71,49 @@
         <button id="next-button" class="next-button" type="submit" disabled><span>التالي</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
       </footer>
     </form>
+    </section>
+    <section id="details-step" class="step-panel" aria-labelledby="details-title" hidden>
+      <div class="details-heading">
+        <h1 id="details-title" tabindex="-1">تفاصيل المشكلة</h1>
+        <p>وصف بسيط بيساعدنا نساعدك أسرع</p>
+      </div>
+      <form id="details-form">
+        <div class="details-content">
+          <div class="selected-problem" data-kind="battery">
+            <div class="selected-copy"><span>المشكلة المختارة</span><strong id="selected-title">شحن بطارية</strong></div>
+            <div class="scene" aria-hidden="true"><img id="selected-poster" src="assets/battery.png" alt="" width="1536" height="1024"><video id="selected-video" muted loop playsinline preload="none" poster="assets/battery.png" data-src="assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></div>
+          </div>
+          <div class="note-card">
+            <div class="field-heading"><label for="problem-note">ملاحظة إضافية</label><span id="note-optional" class="optional-badge">اختياري</span></div>
+            <textarea id="problem-note" name="note" rows="4" maxlength="500" aria-describedby="note-optional note-limit" placeholder="مثال: السيارة ما بتشتغل وبحتاج وصلة بطارية."></textarea>
+            <span id="note-limit" class="sr-only">بحد أقصى ٥٠٠ حرف</span>
+            <div id="note-count" class="note-count" dir="ltr" aria-hidden="true">0/500</div>
+          </div>
+          <div class="upload-card">
+            <div class="upload-copy">
+              <h2 id="upload-title">أضف صورة للمشكلة</h2>
+              <p id="upload-description">اختياري، الصورة بتوضّح أكثر</p>
+              <input id="problem-photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" aria-labelledby="upload-title" aria-describedby="upload-description" hidden>
+              <button id="add-photo" class="outline-button" type="button">إضافة صورة</button>
+              <button id="remove-photo" class="remove-photo" type="button" hidden>إزالة الصورة</button>
+            </div>
+            <img id="camera-art" class="camera-art" src="assets/details-camera.png" alt="" width="1254" height="1254">
+            <img id="photo-preview" class="photo-preview" alt="معاينة الصورة المضافة للمشكلة" hidden>
+          </div>
+          <p id="photo-feedback" class="photo-feedback" role="status" aria-live="polite" hidden></p>
+        </div>
+        <footer class="action-footer">
+          <button id="location-button" class="next-button" type="submit"><span>التالي: تحديد الموقع</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        </footer>
+      </form>
+    </section>
   </main>
   <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
     <span class="sheet-handle" aria-hidden="true"></span>
     <span class="selection-badge">تم اختيار <strong id="chosen-name"></strong></span>
     <h2 id="demo-title">جاهزين للخطوة الجايّة</h2>
-    <p id="demo-description">بالخطوة الجايّة بتضيف تفاصيل المشكلة.<br>هاي معاينة محلية، ما أرسلنا أي طلب.</p>
-    <button id="return-button" class="next-button" type="button">رجوع للاختيارات</button>
+    <p id="demo-description">الخطوة الجايّة هي تحديد الموقع.<br>معاينة تصميمها لسه مش جاهزة هون؛ الملاحظة والصورة بتضل بهالصفحة، وما أرسلنا أي طلب.</p>
+    <button id="return-button" class="next-button" type="button">رجوع للتفاصيل</button>
   </dialog>
 </body>
 </html>

@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "../assets/approved-details.png",
+  "assets": [
+    {
+      "path": "../assets/details-camera.png",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: isolated illustration for an Arabic roadside assistance app upload card. Reference image is a style/composition reference, not the edit target. Generate ONLY the blue 3D camera, two overlapping rounded landscape photo tiles behind it (green trees, blue sky, small sun/cloud), and teal circular plus badge overlapping camera lower right as seen in the lower card of the reference. Premium friendly polished 3D render, rounded blue plastic camera body, metallic white lens rim, dark glass lens, soft contact shadows. Center the complete group with tight but safe margins on genuine transparent background. No text, no UI, no card, no border, no extra objects. Square composition, all objects fully visible."
+    },
+    {
+      "path": "../assets/details-header.png",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Asset type: very wide 3:1 decorative header scenery for the problem details mobile screen in the reference image. Use reference only for art style and pale palette. Generate just background artwork: a small grouping of lush rounded green trees and pale blue city towers at the FAR LEFT, two soft white clouds, a very subtle curved curb at the lower left. The scenery fades smoothly into empty very pale icy blue sky (#effaff) across center and right (right 65% entirely empty). Beautiful friendly polished 3D landscape, soft daylight, restrained detail. No car, no people, no camera, no icons, no UI, no text, no borders. The top and bottom edges fade toward #effaff to blend into a page. Wide 3:1 landscape."
+    }
+  ]
+}
