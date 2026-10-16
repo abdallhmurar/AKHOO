@@ -1,0 +1,21 @@
+{
+  "mode": "built-in image generation and Grok Imagine browser UI",
+  "reference": "Approved success page mockup in the conversation (preview only)",
+  "imagePrompt": "Use case: stylized-concept. Create ONLY the standalone 3D hero illustration from the supplied approved AKHOO success-page mockup. No UI, no text, no logo, no summary card. Wide 3:2 composition. Same glossy cobalt blue compact sedan in three-quarter front view facing right, with a large polished teal round medallion standing to the front right, containing a raised WHITE CHECKMARK. The car is entirely visible. Miniature soft blue city towers, small fresh green trees, soft white clouds behind, a pale blue circular base with two fine rings underneath. Three tiny warm golden sparkle shapes near the check medallion. Preserve the matching friendly premium dimensional materials, camera angle, car shape and scale from the reference. Scene fills the image with safe margins, every object completely within bounds. Pure white at all outer edges, background softly fading from pale blue into white. Crisp stable coherent geometry, realistic reflections and soft shadows, no baked text, no labels, no people or hands, no question mark. This image will be the identical start/end keyframe for a gentle six-second animation. 1536x1024.",
+  "motionPrompt": "Animate this exact polished 3D roadside-assistance success illustration into a seamless six-second loop. Keep the camera locked and preserve the blue sedan, teal success medallion with rigid white checkmark, miniature blue city, trees, clouds, golden sparkles and circular base. The teal medallion gently rotates 15 degrees around its vertical axis and returns, showing dimensional reflections; the white checkmark remains firmly attached and unchanged. The car has a tiny natural suspension settle, and its headlights softly brighten once. Golden sparkles gently twinkle independently and turn slightly without changing shape or multiplying. A soft light travels around the base once. Keep the background stable, white at all edges, all objects inside the original frame. Slow premium calm motion, no camera pan or zoom, no cuts, no morphing, no new objects, no people, no text or sound. Return every object exactly to the supplied starting pose at six seconds for matching first and last frames.",
+  "poster": "assets/success.png",
+  "video": "assets/success.mp4",
+  "settings": {
+    "duration": 6,
+    "resolution": "720p",
+    "aspect": "3:2",
+    "matchingFirstLastFrames": true
+  },
+  "actual": {
+    "durationSeconds": 6.041667,
+    "height": 784,
+    "width": 1168,
+    "bytes": 1414815,
+    "sha256": "2c55eb9d6dcee24c41273ce00ff73ea537f1ff450bff1e70cf3ebd3f0ae7cfaa"
+  }
+}

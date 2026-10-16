@@ -5,7 +5,7 @@ Run `node previews/home-motion/serve.cjs` from the repository root and open
 also opens this screen. The default port remains 4178.
 
 This is an isolated, Arabic, responsive visual prototype of all three requester
-steps plus waiting, accepted and confirmation screens. It does not import the Expo application, call its APIs, send assistance
+steps plus waiting, accepted, confirmation and success screens. It does not import the Expo application, call its APIs, send assistance
 requests, read account data, or change Vercel, Android or iOS. The first Next button
 requires one of the four native radio inputs and opens the details screen with the
 matching title, animated scene and example note. Direct preview:
@@ -79,10 +79,10 @@ the same simulated state. Chat opens an explanatory local dialog and sends no
 messages. The helper uses clearly labeled sample data and a generic avatar; no real
 person's portrait or account details are included in these assets.
 
-Success updates the local timeline to completed and hides the question illustration;
-incomplete keeps the timeline at confirmation. Both decisions have a reset control
-for trying the other outcome. Outcomes are held in memory per problem type and are
-cleared on reload. Draft notes/photos and the chosen map point survive route changes.
+Success opens the completed-help page below; incomplete keeps the timeline at
+confirmation. Returning to confirmation shows the recorded outcome and its reset
+control. Outcomes are held in memory per problem type and are cleared on reload.
+Draft notes/photos and the chosen map point survive route changes.
 
 `assets/accepted.png` and `assets/confirmation.png` were generated with the built-in
 image tool from the approved comparison. Each was supplied to Grok's Loop template
@@ -92,6 +92,32 @@ and radar base. Both are 1168×784 and 6.041667 seconds, served locally, muted a
 looped. Exact prompts and file metadata are in [prompts/statuses.json](prompts/statuses.json).
 Motion stops for hidden pages/steps, offscreen media, open dialogs and reduced-motion
 preferences. Posters remain visible if playback is unavailable.
+
+## Success preview
+
+Open <http://127.0.0.1:4178/requester/?step=success&problem=battery>, or confirm
+successful help on the confirmation page. The screen matches the approved success
+mockup: the original logo, blue sedan with a teal 3D check medallion, compact service
+summary, gold star rating and primary/secondary actions. It uses labeled sample
+helper/order data instead of committing the real person's name or request ID from
+the reference. The service follows the selected problem; the duration is sample data.
+
+The five native radio inputs start empty, support keyboard and pointer selection,
+and enable Submit only after a rating is chosen. Submission records an in-memory
+demo rating, announces it, and allows editing. It is never sent to a backend or
+stored. Ratings survive same-document navigation per problem and clear on reload.
+Home opens the existing local home page. New Request opens a fresh selection page,
+clearing the temporary draft. Share opens a dialog with only the public application
+homepage URL and a copy action, with manual selection if clipboard access fails.
+It never includes a request ID, rating, note, photo or map point and sends no message.
+
+`assets/success.png` was generated with the built-in image tool from the approved
+mockup. Grok's Loop template used that image as matching first/last frames, at 3:2,
+720p and six seconds. The downloaded `assets/success.mp4` is 1168×784, 6.041667 seconds
+and 1,414,815 bytes. The medallion rotates, sparkles turn and the headlights brighten;
+the camera stays still. It is a rendered 3D video, not a live 3D model or GIF file.
+Exact generation prompts, settings and SHA-256 are in [prompts/success.json](prompts/success.json).
+The existing motion controls, reduced-motion behavior and image fallback apply.
 
 Map styles, tiles, fonts and sprites need an internet connection to
 `https://tiles.openfreemap.org`. They are the only external data requests allowed
@@ -181,3 +207,16 @@ Both six-second clips were inspected at 0.05, 2.8 and 5.95 seconds for independe
 object motion and matching endpoints. MP4 range requests returned 206/video/mp4.
 JavaScript syntax, scoped ESLint and diff checks passed. Screenshots are saved under
 `test-results/requester-motion/accepted-390.jpg` and `confirmation-390.jpg` (ignored).
+
+Success preview: verified the fuel selection → note → location → waiting →
+confirmation → success flow and correct summary service, one retained map and draft.
+Tested empty/selected/submitted/edited ratings with pointer and keyboard, per-problem
+state, Back/Forward retention and clearing on reload. Home and New Request reach
+their intended local pages. Share pauses motion, copies only the public homepage
+URL and closes correctly. Success/rating actions made only a local video GET,
+with no API or submission requests. At 320, 390 and 480px, all actions fit above
+844px and there was no horizontal overflow. Reduced motion loaded no videos;
+blocking the clip kept the poster. Inspected video frames at 0.05, 2.8 and 5.99s
+for independent object movement and matching loop endpoints. Scoped ESLint,
+JavaScript syntax and diff checks passed. Final screenshot:
+`test-results/requester-motion/success-390.png` (ignored).

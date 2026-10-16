@@ -14,6 +14,10 @@ const trackingStep = document.querySelector('#tracking-step');
 const trackingVideo = document.querySelector('#tracking-video');
 const chatPreview = document.querySelector('#chat-preview');
 const confirmationOutcomes = new Map();
+const successStep = document.querySelector('#success-step');
+const ratingForm = document.querySelector('#rating-form');
+const ratings = new Map();
+const sharePreview = document.querySelector('#share-preview');
 const mapFrame = document.querySelector('.map-frame');
 const waitingFeedback = document.querySelector('#waiting-feedback');
 const sendButton = document.querySelector('#send-request');
@@ -127,7 +131,7 @@ function renderRoute(focusHeading = false) {
   const params = new URLSearchParams(window.location.search);
   const problem = params.get('problem');
   const validProblem = Object.hasOwn(problemCopy, problem);
-  step = ['details', 'location', 'waiting', 'accepted', 'confirmation'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
+  step = ['details', 'location', 'waiting', 'accepted', 'confirmation', 'success'].includes(params.get('step')) && validProblem ? params.get('step') : 'selection';
   const isTracking = step === 'accepted' || step === 'confirmation';
   cards.forEach(card => { card.querySelector('input').checked = card.dataset.kind === problem; });
   nextButton.disabled = !validProblem;
@@ -136,17 +140,20 @@ function renderRoute(focusHeading = false) {
   locationStep.hidden = step !== 'location';
   waitingStep.hidden = step !== 'waiting';
   trackingStep.hidden = !isTracking;
+  successStep.hidden = step !== 'success';
   page.classList.toggle('show-details', step === 'details');
   page.classList.toggle('show-location', step === 'location');
   page.classList.toggle('show-waiting', step === 'waiting');
   page.classList.toggle('show-tracking', isTracking);
   page.classList.toggle('show-confirmation', step === 'confirmation');
-  document.querySelector('.details-scenery').hidden = step === 'selection';
+  page.classList.toggle('show-success', step === 'success');
+  document.querySelector('.success-brand').hidden = step !== 'success';
+  document.querySelector('.details-scenery').hidden = step === 'selection' || step === 'success';
   motionButton.hidden = step === 'location';
-  const stepIndex = ['selection', 'details', 'location', 'waiting', 'accepted', 'confirmation'].indexOf(step);
-  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة', 'تم إرسال الطلب', 'تم قبول الطلب', 'بانتظار التأكيد'][stepIndex];
+  const stepIndex = ['selection', 'details', 'location', 'waiting', 'accepted', 'confirmation', 'success'].indexOf(step);
+  const caption = ['الخطوة ١ من ٣', 'الخطوة ٢ من ٣', 'الخطوة الأخيرة', 'تم إرسال الطلب', 'تم قبول الطلب', 'بانتظار التأكيد', 'اكتملت المساعدة'][stepIndex];
   const progress = document.querySelector('.progress');
-  progress.setAttribute('aria-hidden', String(step === 'waiting' || isTracking));
+  progress.setAttribute('aria-hidden', String(step === 'waiting' || isTracking || step === 'success'));
   progress.setAttribute('aria-label', caption);
   progress.querySelector('span').textContent = caption;
   progress.querySelectorAll('i').forEach((segment, index) => {
@@ -154,8 +161,8 @@ function renderRoute(focusHeading = false) {
     segment.classList.toggle('complete', index < stepIndex);
   });
   backLink.href = step === 'confirmation' ? routeUrl('accepted', problem) : step === 'accepted' ? routeUrl('waiting', problem) : step === 'waiting' ? routeUrl('location', problem) : step === 'location' ? routeUrl('details', problem) : step === 'details' ? routeUrl('selection', problem) : '../';
-  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل', 'الرجوع للموقع', 'الرجوع لمعاينة الانتظار', 'الرجوع لمعاينة القبول'][stepIndex]);
-  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك', 'أخو — انتظار المساعد · معاينة', 'أخو — المساعد استلم طلبك · معاينة', 'أخو — بانتظار تأكيدك · معاينة'][stepIndex];
+  backLink.setAttribute('aria-label', ['الرجوع للرئيسية', 'الرجوع لاختيار المشكلة', 'الرجوع للتفاصيل', 'الرجوع للموقع', 'الرجوع لمعاينة الانتظار', 'الرجوع لمعاينة القبول', 'الرجوع للرئيسية'][stepIndex]);
+  document.title = ['أخو — اختَر نوع المساعدة', 'أخو — تفاصيل المشكلة', 'أخو — حدّد موقعك', 'أخو — انتظار المساعد · معاينة', 'أخو — المساعد استلم طلبك · معاينة', 'أخو — بانتظار تأكيدك · معاينة', 'أخو — تمت المساعدة بنجاح · معاينة'][stepIndex];
   if (step !== 'location') locationMap?.cancelEditing();
   // Reuse the live map and selected point, without a second WebGL instance.
   const mapSlot = document.querySelector(isTracking ? '#tracking-map-slot' : step === 'waiting' ? '#waiting-map-slot' : '#location-map-slot');
@@ -178,7 +185,9 @@ function renderRoute(focusHeading = false) {
   }
   if (sheet.open) sheet.close();
   if (chatPreview.open) chatPreview.close();
+  if (sharePreview.open) sharePreview.close();
   if (isTracking) renderTracking();
+  if (step === 'success') renderSuccess();
   document.querySelectorAll('[data-preview-step]').forEach(link => {
     link.href = routeUrl(link.dataset.previewStep, validProblem ? problem : 'battery');
     if (link.dataset.previewStep === step) link.setAttribute('aria-current', 'page');
@@ -188,7 +197,7 @@ function renderRoute(focusHeading = false) {
   if (step === 'location' || step === 'waiting' || isTracking) prepareLocationMap();
   if (focusHeading) {
     window.scrollTo({top:0, behavior:'instant'});
-    document.querySelector(['#page-title', '#details-title', '#location-title', '#waiting-title', '#tracking-title', '#tracking-title'][stepIndex]).focus({preventScroll:true});
+    document.querySelector(['#page-title', '#details-title', '#location-title', '#waiting-title', '#tracking-title', '#tracking-title', '#success-title'][stepIndex]).focus({preventScroll:true});
   }
 }
 
@@ -381,6 +390,11 @@ function setConfirmation(outcome) {
   if (step !== 'confirmation') return;
   if (outcome) confirmationOutcomes.set(form.elements.problem.value, outcome);
   else confirmationOutcomes.delete(form.elements.problem.value);
+  if (outcome === 'success') {
+    history.pushState(null, '', routeUrl('success', form.elements.problem.value));
+    renderRoute(true);
+    return;
+  }
   renderTracking();
   renderMotion();
   document.querySelector(outcome ? '#reset-confirmation' : '#confirm-success').focus({preventScroll:true});
@@ -388,4 +402,70 @@ function setConfirmation(outcome) {
 document.querySelector('#confirm-success').addEventListener('click', () => setConfirmation('success'));
 document.querySelector('#confirm-incomplete').addEventListener('click', () => setConfirmation('incomplete'));
 document.querySelector('#reset-confirmation').addEventListener('click', () => setConfirmation(null));
+
+function renderSuccess() {
+  document.querySelector('#success-service').textContent = problemCopy[form.elements.problem.value].title;
+  renderRating();
+}
+
+function renderRating() {
+  const rating = ratings.get(form.elements.problem.value) || {value:0, submitted:false};
+  ratingForm.querySelectorAll('input').forEach(input => {
+    input.checked = Number(input.value) === rating.value;
+    input.disabled = rating.submitted;
+    input.closest('label').classList.toggle('is-filled', Number(input.value) <= rating.value);
+  });
+  const submit = document.querySelector('#submit-rating');
+  submit.disabled = !rating.value || rating.submitted;
+  submit.hidden = rating.submitted;
+  document.querySelector('#edit-rating').hidden = !rating.submitted;
+  document.querySelector('#rating-hint').textContent = rating.submitted
+    ? `شكرًا! تم حفظ تقييمك (${rating.value}/5) في المعاينة.`
+    : rating.value ? `تقييمك ${rating.value} من 5` : 'اختر عدد النجوم';
+}
+
+ratingForm.addEventListener('change', () => {
+  const value = Number(ratingForm.elements.rating.value);
+  if (step !== 'success' || value < 1 || value > 5) return;
+  ratings.set(form.elements.problem.value, {value, submitted:false});
+  renderRating();
+});
+ratingForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const rating = ratings.get(form.elements.problem.value);
+  if (step !== 'success' || !rating?.value || rating.submitted) return;
+  rating.submitted = true;
+  renderRating();
+  document.querySelector('#edit-rating').focus({preventScroll:true});
+});
+document.querySelector('#edit-rating').addEventListener('click', () => {
+  const rating = ratings.get(form.elements.problem.value);
+  if (!rating) return;
+  rating.submitted = false;
+  renderRating();
+  ratingForm.querySelector('input:checked').focus({preventScroll:true});
+});
+document.querySelector('#share-app').addEventListener('click', () => {
+  document.querySelector('#share-feedback').hidden = true;
+  sharePreview.showModal();
+  renderMotion();
+});
+document.querySelector('#copy-share').addEventListener('click', async () => {
+  const input = document.querySelector('#share-url');
+  const feedback = document.querySelector('#share-feedback');
+  try {
+    await navigator.clipboard.writeText(input.value);
+    feedback.textContent = 'تم نسخ رابط التطبيق.';
+  } catch {
+    input.focus();
+    input.select();
+    feedback.textContent = 'انسخ الرابط المحدد يدويًا.';
+  }
+  feedback.hidden = false;
+});
+document.querySelector('#close-share').addEventListener('click', () => sharePreview.close());
+sharePreview.addEventListener('close', () => {
+  if (step === 'success') document.querySelector('#share-app').focus({preventScroll:true});
+  renderMotion();
+});
 renderRoute();
