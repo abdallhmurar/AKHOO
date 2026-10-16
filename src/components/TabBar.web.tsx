@@ -64,13 +64,14 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
   return (
     <GuideTarget id="navigation">
       <View style={[styles.wrap, {
-        backgroundColor: isHome && !theme.isDark ? '#F5F8FC' : theme.colors.background,
+        backgroundColor: isHome && !theme.isDark ? '#F2FBFF' : theme.colors.background,
         paddingBottom: Math.max(insets.bottom, space.sm)
       }]}>
         <LinearGradient
           colors={theme.isDark ? [theme.colors.surface, '#0C2D32'] : ['#FFFFFF', '#EFFBF8']}
           start={{ x: 0, y: 0.25 }} end={{ x: 1, y: 0.75 }}
           style={[styles.pill, dir.row, {
+            maxWidth: isHome ? 448 : 560,
             borderColor: theme.isDark ? '#29514E' : '#CFE8E6',
             boxShadow: theme.isDark ? '0 8px 24px rgba(0, 0, 0, 0.25)' : '0 8px 24px rgba(10, 119, 108, 0.10)'
           }]}
