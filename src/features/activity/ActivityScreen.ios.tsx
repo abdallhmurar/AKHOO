@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   content: { paddingTop: space.lg, paddingHorizontal: space.lg, gap: space.md },
   header: { alignItems: 'center', gap: space.md },
   headerCopy: { flex: 1, gap: 4 },
-  title: { fontSize: 30, lineHeight: 44 },
+  title: { fontSize: 23 },
   historyIcon: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
   durationPill: { minHeight: 44, alignItems: 'center', gap: space.sm, borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, paddingVertical: 8, paddingHorizontal: space.md },
   levelCard: { borderRadius: 24, borderWidth: StyleSheet.hairlineWidth, padding: space.md, gap: space.sm },

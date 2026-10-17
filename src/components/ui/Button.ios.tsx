@@ -62,7 +62,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
         style
       ]}
     >
-      {!blocked && (variant === 'primary' || variant === 'community') ? <LinearGradient pointerEvents="none" colors={variant === 'primary' ? ['#086bf2', '#09aeb0'] : ['#078f83', '#117d68']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: 16 }]} /> : null}
+      {!blocked && (variant === 'primary' || variant === 'community') ? <LinearGradient pointerEvents="none" colors={variant === 'primary' ? ['#086bf2', '#09aeb0'] : ['#078f83', '#117d68']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /> : null}
       <View style={[styles.content, dirStyles(isRTL).row]}>
         {loading ? <ActivityIndicator size="small" color={blocked ? theme.colors.disabledContent : foregrounds[variant]} /> : leading}
         <Text style={[typography.button, styles.label, { color: blocked ? theme.colors.disabledContent : foregrounds[variant] }]}>{label}</Text>
@@ -73,7 +73,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingVertical: space.sm, borderWidth: 0 },
+  base: { borderRadius: 16, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingVertical: space.sm, borderWidth: 0 },
   full: { alignSelf: 'stretch' },
   outline: { borderWidth: 1 },
   content: { maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: space.sm },

@@ -18,7 +18,7 @@ export function AccountIdentity({ name, email, avatar, busy, onPhoto, onEdit }: 
   const text = { textAlign: isRTL ? 'right' as const : 'left' as const }
   return <LinearGradient colors={theme.isDark ? ['#194152', '#152d40'] : ['#e6f6fb', '#ffffff']} style={[styles.identity, dirStyles(isRTL).row, { borderColor: theme.colors.border }]}>
     <Pressable accessibilityRole="button" accessibilityLabel={t('account.menu.profile')} accessibilityState={{ disabled: busy, busy }} onPress={onPhoto} disabled={busy} style={styles.avatarButton}>
-      <View style={styles.avatarFrame}>{avatar ? <Image source={{ uri: avatar }} style={StyleSheet.absoluteFill} resizeMode="cover" /> : <ArtIcon name="person" size={56} />}</View>
+      <View style={styles.avatarFrame}>{avatar ? <Image source={{ uri: avatar }} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} resizeMode="cover" /> : <ArtIcon name="person" size={56} />}</View>
       <View style={[styles.camera, { [isRTL ? 'left' : 'right']: -3 }]}><Camera size={15} color="#fff" /></View>
     </Pressable>
     <View style={styles.copy}><Text style={[type.h3, text, { color: theme.colors.textPrimary }]}>{name}</Text><Text style={[type.caption, text, { color: theme.colors.textMuted, writingDirection: 'ltr' }]}>{email}</Text>

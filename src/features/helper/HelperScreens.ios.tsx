@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   enablingWrap: { alignItems: 'center', gap: space.md, paddingVertical: space.xxl },
 
   pageContent: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingBottom: space.lg },
-  pageTitle: { fontSize: 26, lineHeight: 36 },
+  pageTitle: { fontSize: 23 },
   header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.lg, gap: 4 },
   headerTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
 

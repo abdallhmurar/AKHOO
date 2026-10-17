@@ -17,7 +17,7 @@ export const motionIcons: Record<string, number> = {
   'home': require('../../../previews/home-motion/activity/assets/icons/home.png'),
   'person': require('../../../previews/home-motion/activity/assets/icons/person.png'),
   'hands': require('../../../previews/home-motion/activity/assets/icons/hands.png'),
-  'gift': require('../../../previews/home-motion/activity/assets/icons/gift.png'),
+  'gift': require('../dock-assets/gift.png'),
   'trophy': require('../../../previews/home-motion/activity/assets/icons/trophy.png'),
   'battery': require('../../../previews/home-motion/activity/assets/icons/battery.png'),
   'fuel': require('../../../previews/home-motion/activity/assets/icons/fuel.png'),

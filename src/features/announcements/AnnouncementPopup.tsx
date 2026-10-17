@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Bell, CaretLeft, CaretRight, X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
@@ -58,7 +58,7 @@ export function AnnouncementPopup({ announcement, onViewNow, onLater }: { announ
 
   return (
     <Modal visible transparent animationType="fade" statusBarTranslucent onRequestClose={onLater}>
-      <View style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
+      <View style={[styles.overlay, Platform.OS === 'ios' && { direction: 'ltr' }, { backgroundColor: theme.colors.overlay }]}>
         <Pressable accessibilityRole="button" accessibilityLabel={t('announcements.close')} onPress={onLater} style={StyleSheet.absoluteFill} />
         <View accessibilityViewIsModal style={[styles.card, shadow.floating, { backgroundColor: theme.colors.surface }]}>
           <ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerStyle={styles.cardContent}>

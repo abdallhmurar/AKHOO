@@ -45,7 +45,7 @@ export function HelperSheet({ visible, title, onClose, dismissible = true, foote
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, justifyContent: 'flex-end', alignItems: 'center' },
+  overlay: { flex: 1, direction: 'ltr', justifyContent: 'flex-end', alignItems: 'center' },
   sheet: { width: '100%', maxWidth: 620, maxHeight: '90%', borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, borderWidth: 1, borderBottomWidth: 0, overflow: 'hidden' },
   header: { alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm, borderBottomWidth: StyleSheet.hairlineWidth, flexShrink: 0 },
   title: { flex: 1 },

@@ -1,5 +1,5 @@
 import { motionImages } from '../../components/motion/media.ios'
-import { FlowHeader, RequestHeading, RequestChoice, SelectedProblem } from '../../components/motion/RequestPresentation.ios'
+import { FlowHeader, RequestHeading, RequestChoice, SelectedProblem, SafetyBanner } from '../../components/motion/RequestPresentation.ios'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -66,9 +66,9 @@ const DETAILS_COPY = {
 } as const
 
 const LOCATION_COPY = {
-  ar: { subtitle: 'تأكد من موقعك حتى يوصل المساعد بسهولة', manual: 'تحديد يدوي', recenter: 'إعادة توسيط الخريطة', privacy: 'يُشارك هذا الموقع مع مقدّم المساعدة فقط' },
-  en: { subtitle: 'Check your location so your helper can find you easily', manual: 'Set manually', recenter: 'Recenter map', privacy: 'This location is shared only with your helper' },
-  he: { subtitle: 'בדקו את המיקום כדי שיוכלו להגיע אליכם בקלות', manual: 'בחירה ידנית', recenter: 'מרכוז המפה מחדש', privacy: 'המיקום משותף רק עם מי שמגיע לעזור' }
+  ar: { subtitle: 'تأكد من موقعك حتى يوصل المساعد بسهولة', manual: 'تحديد يدوي', recenter: 'إعادة توسيط الخريطة', privacy: 'يُشارك هذا الموقع مع مقدّم المساعدة فقط', safety: 'حاول الوقوف في مكان آمن إن أمكن', safetyDetail: 'سلامتك هي الأهم بالنسبة لنا' },
+  en: { subtitle: 'Check your location so your helper can find you easily', manual: 'Set manually', recenter: 'Recenter map', privacy: 'This location is shared only with your helper', safety: 'Stop somewhere safe if you can', safetyDetail: 'Your safety comes first' },
+  he: { subtitle: 'בדקו את המיקום כדי שיוכלו להגיע אליכם בקלות', manual: 'בחירה ידנית', recenter: 'מרכוז המפה מחדש', privacy: 'המיקום משותף רק עם מי שמגיע לעזור', safety: 'אם אפשר, עצרו במקום בטוח', safetyDetail: 'הבטיחות שלכם קודמת לכול' }
 } as const
 
 const SERVICES = [{ key: 'battery' }, { key: 'fuel' }, { key: 'other' }, { key: 'tire' }] as const
@@ -85,14 +85,6 @@ const SERVICE_SUMMARY: Partial<Record<ServiceType, { labelKey: string; Icon: typ
   fuel: { labelKey: 'request.fuel', Icon: GasPump },
   other: { labelKey: 'request.other', Icon: Wrench },
   tire: { labelKey: 'request.tire', Icon: Tire }
-}
-
-// Safety-tip banner shown at the end of the location step, same per-locale
-// baked-in-text illustration pattern as the service banners above.
-const LOCATION_BANNER_BY_LOCALE: Record<Locale, number> = {
-  ar: require('../../../assets/images/service-location-ar.png'),
-  he: require('../../../assets/images/service-location-he.png'),
-  en: require('../../../assets/images/service-location-en.png')
 }
 
 const STEPS: RequestHelpStep[] = ['type', 'details', 'location']
@@ -435,7 +427,7 @@ export function RequestFlowScreen() {
             </View>
           ) : null}
 
-          <Image source={locale === 'ar' ? motionImages.safety : LOCATION_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+          <SafetyBanner title={locationCopy.safety} subtitle={locationCopy.safetyDetail} />
         </View>
       ) : null}
     </AppScreen>

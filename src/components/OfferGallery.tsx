@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useIsRTL, dirStyles } from '../lib/direction'
@@ -31,7 +31,7 @@ export function OfferGallery({ images, title }: { images: string[]; title: strin
     <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('perks.gallery.hint', { current: images.indexOf(active) + 1, total: images.length })}</Text>
     {thumbnails}
     <Modal visible={expanded} onRequestClose={() => setExpanded(false)} animationType="fade">
-      <SafeAreaView style={[styles.expanded, { backgroundColor: theme.colors.surface }]}>
+      <SafeAreaView style={[styles.expanded, Platform.OS === 'ios' && { direction: 'ltr' }, { backgroundColor: theme.colors.surface }]}>
         <Button label={t('perks.gallery.close')} variant="outline" onPress={() => setExpanded(false)} />
         <Image source={{ uri: active }} style={styles.expandedImage} resizeMode="contain" accessibilityLabel={title} />
         {thumbnails}

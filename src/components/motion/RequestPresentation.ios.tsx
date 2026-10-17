@@ -24,9 +24,9 @@ export function RequestHeading({ title, subtitle, selection = false }: { title: 
   const type = useAppTypography()
   const isRTL = useIsRTL()
   return <View style={[styles.heading, selection && { minHeight: 160 }]}>
-    <Image source={selection ? motionImages.request : motionImages.details} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: selection ? 1 : 0.3 }]} resizeMode="cover" accessible={false} />
-    <View style={[styles.headingCopy, selection && { width: '65%', alignSelf: 'flex-end' }]}>
-      <Text accessibilityRole="header" style={[type.h1, { fontSize: 25, lineHeight: 36, color: theme.colors.textPrimary, textAlign: selection ? isRTL ? 'right' : 'left' : 'center' }]}>{title}</Text>
+    <Image source={selection ? motionImages.request : motionImages.details} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: selection ? 1 : 0.3, transform: [{ scaleX: selection && !isRTL ? -1 : 1 }] }]} resizeMode="cover" accessible={false} />
+    <View style={[styles.headingCopy, selection && { width: '65%', alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}>
+      <Text accessibilityRole="header" style={[type.h1, { fontSize: 23, color: theme.colors.textPrimary, textAlign: selection ? isRTL ? 'right' : 'left' : 'center' }]}>{title}</Text>
       <Text style={[type.small, { color: theme.colors.textSecondary, textAlign: selection ? isRTL ? 'right' : 'left' : 'center' }]}>{subtitle}</Text>
     </View>
   </View>
@@ -40,7 +40,7 @@ export function RequestChoice({ kind, title, description, selected, onSelect }: 
     <LinearGradient colors={theme.isDark ? ['#173549', '#162c40'] : [tone, '#ffffff']} style={[styles.choiceBody, dirStyles(isRTL).row]}>
       <View style={[styles.radio, { backgroundColor: selected ? theme.colors.primary : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.borderStrong }]}>{selected ? <Check size={14} color="#fff" weight="bold" /> : null}</View>
       <View style={styles.copy}><Text style={[type.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text><Text style={[type.small, { fontSize: 12, color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{description}</Text></View>
-      <View style={styles.choiceArt}><MotionScene name={kind} style={{ height: 118, borderRadius: 17 }} fit="contain" /></View>
+      <View style={styles.choiceArt}><MotionScene name={kind} style={{ aspectRatio: 1168 / 784, borderRadius: 17 }} fit="contain" /></View>
     </LinearGradient>
   </Pressable>
 }
@@ -50,7 +50,14 @@ export function SelectedProblem({ kind, title, label }: { kind: string; title: s
   const isRTL = useIsRTL()
   return <View style={[styles.selected, dirStyles(isRTL).row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
     <View style={styles.copy}><Text style={[type.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{label}</Text><Text style={[type.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text></View>
-    <View style={{ width: 126 }}><MotionScene name={kind} style={{ height: 90 }} fit="contain" /></View>
+    <View style={{ width: '43%', flexShrink: 0 }}><MotionScene name={kind} style={{ aspectRatio: 1168 / 784 }} fit="contain" /></View>
+  </View>
+}
+export function SafetyBanner({ title, subtitle }: { title: string; subtitle: string }) {
+  const theme = useSanadTheme(), type = useAppTypography(), isRTL = useIsRTL()
+  return <View style={[styles.safety, dirStyles(isRTL).row, { backgroundColor: theme.colors.primarySoft, borderColor: theme.colors.border }]}>
+    <View style={styles.copy}><Text style={[type.smallMedium, { color: theme.colors.primary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text><Text style={[type.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{subtitle}</Text></View>
+    <View style={styles.safetyArt} pointerEvents="none"><Image source={motionImages.safety} accessible={false} style={{ position: 'absolute', width: 324, height: 108, left: -18, top: -26 }} resizeMode="contain" /></View>
   </View>
 }
 const styles = StyleSheet.create({
@@ -60,8 +67,10 @@ const styles = StyleSheet.create({
   heading: { minHeight: 134, marginHorizontal: -20, marginTop: -16, justifyContent: 'center', overflow: 'hidden' },
   headingCopy: { paddingHorizontal: 20, paddingVertical: 18, gap: 5 },
   choice: { borderRadius: 23, overflow: 'hidden', borderWidth: 1 },
-  choiceBody: { paddingHorizontal: 10, paddingVertical: 8, gap: 9, alignItems: 'center' },
+  choiceBody: { minHeight: 132, paddingHorizontal: 10, paddingVertical: 12, gap: 9, alignItems: 'center' },
   radio: { width: 23, height: 23, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   copy: { flex: 1, minWidth: 0, gap: 5 }, choiceArt: { width: '42%' },
   selected: { borderWidth: 1, borderRadius: 22, padding: 12, gap: 12, alignItems: 'center' },
+  safety: { borderWidth: 1, borderRadius: 20, padding: 12, gap: 8, alignItems: 'center' },
+  safetyArt: { width: 108, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0 },
 })

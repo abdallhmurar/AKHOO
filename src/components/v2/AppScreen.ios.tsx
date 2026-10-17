@@ -1,5 +1,5 @@
 import { GuideScrollView, GuideTarget } from '../../features/guide/GuideProvider'
-import type { PropsWithChildren, ReactNode } from 'react'
+import { useState, type PropsWithChildren, type ReactNode } from 'react'
 import { StyleSheet, View } from 'react-native'
 import type { ScrollViewProps, ViewStyle } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
@@ -20,6 +20,7 @@ type AppScreenProps = PropsWithChildren<{
 
 export function AppScreen({ children, scroll = true, header, footer, background, contentStyle, scrollProps, guideFooterId, unsafeTop = false, unsafeBottom = false }: AppScreenProps) {
   const theme = useSanadTheme()
+  const [footerHeight, setFooterHeight] = useState(104)
   const insets = useSafeAreaInsets()
   const top = unsafeTop ? 0 : insets.top
   const bottom = unsafeBottom ? 0 : insets.bottom
@@ -29,11 +30,11 @@ export function AppScreen({ children, scroll = true, header, footer, background,
       <StatusBar style={theme.isDark ? 'light' : 'dark'} />
       {header}
       {scroll ? (
-        <GuideScrollView {...scrollProps} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.scroll, { paddingBottom: bottom + (footer ? 104 : space.xxl) }, scrollProps?.contentContainerStyle]} showsVerticalScrollIndicator={false}>
+        <GuideScrollView {...scrollProps} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.scroll, { paddingBottom: footer ? footerHeight + space.lg : bottom + space.xxl }, scrollProps?.contentContainerStyle]} showsVerticalScrollIndicator={false}>
           <View style={styles.webFrame}>{content}</View>
         </GuideScrollView>
       ) : <View style={[styles.flexContent, { paddingBottom: bottom }]}><View style={styles.webFrame}>{content}</View></View>}
-      {footer ? <View style={[styles.footer, { paddingBottom: Math.max(bottom, space.md), backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]} >{guideFooterId ? <GuideTarget id={guideFooterId}>{footer}</GuideTarget> : footer}</View> : null}
+      {footer ? <View onLayout={event => setFooterHeight(event.nativeEvent.layout.height)} style={[styles.footer, { paddingBottom: Math.max(bottom, space.md), backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]} >{guideFooterId ? <GuideTarget id={guideFooterId}>{footer}</GuideTarget> : footer}</View> : null}
     </View>
   )
 }
