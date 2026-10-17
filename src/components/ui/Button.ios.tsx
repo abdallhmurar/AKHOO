@@ -17,10 +17,11 @@ export type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   fullWidth?: boolean
   leading?: ReactNode
   trailing?: ReactNode
+  labelColor?: string
   style?: ViewStyle
 }
 
-export function Button({ label, variant = 'primary', size = 'md', loading = false, fullWidth = true, leading, trailing, disabled, style, ...props }: ButtonProps) {
+export function Button({ label, variant = 'primary', size = 'md', loading = false, fullWidth = true, leading, trailing, labelColor, disabled, style, ...props }: ButtonProps) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
@@ -62,10 +63,10 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
         style
       ]}
     >
-      {!blocked && (variant === 'primary' || variant === 'community') ? <LinearGradient pointerEvents="none" colors={variant === 'primary' ? ['#086bf2', '#09aeb0'] : ['#078f83', '#117d68']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /> : null}
+      {!blocked && (variant === 'primary' || variant === 'community') ? <LinearGradient pointerEvents="none" colors={variant === 'primary' ? [theme.colors.primary, theme.isDark ? theme.colors.primaryPressed : '#087f85'] : [theme.colors.community, theme.colors.communityPressed]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /> : null}
       <View style={[styles.content, dirStyles(isRTL).row]}>
         {loading ? <ActivityIndicator size="small" color={blocked ? theme.colors.disabledContent : foregrounds[variant]} /> : leading}
-        <Text style={[typography.button, styles.label, { color: blocked ? theme.colors.disabledContent : foregrounds[variant] }]}>{label}</Text>
+        <Text style={[typography.button, styles.label, { color: blocked ? theme.colors.disabledContent : labelColor ?? foregrounds[variant] }]}>{label}</Text>
         {!loading ? trailing : null}
       </View>
     </Pressable>

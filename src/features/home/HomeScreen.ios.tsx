@@ -11,7 +11,8 @@ import { normalizeTypographyLanguage, useAppTypography } from '../../lib/typogra
 import { useMission } from '../../providers'
 import { AppScreen } from '../../components/v2'
 import { AnnouncementBell } from '../announcements/AnnouncementBell'
-import { Button, Card, StatusBadge } from '../../components/ui'
+import { Card, StatusBadge } from '../../components/ui'
+import { Button } from '../../components/ui/Button.ios'
 import { ArtIcon, MotionScene } from '../../components/motion/Motion.ios'
 import { motionImages } from '../../components/motion/media.ios'
 import { homeCopy } from './homeCopy.ios'
@@ -39,7 +40,7 @@ export function HomeScreen() {
         <View style={StyleSheet.absoluteFill}><MotionScene name="help" style={{ height: '100%', borderRadius: 22 }} /></View>
         <LinearGradient pointerEvents="none" colors={['#1c7bfa00', '#1c7bfaf0']} start={{ x: 0.35, y: 0 }} end={{ x: 1, y: 0 }} style={styles.requestShade} />
         <View style={[styles.requestCopy, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}><Svg width={44} height={39} viewBox="0 0 80 70" accessible={false}><Path d="M6 34h39l-6-13H15ZM5 34v22h8v-8h23M13 42h4m13 0h4M23 10V3M9 14l-5-5m34 4 5-6M58 24 38 59h40ZM58 37v9m0 6v1" fill="none" stroke="#fff" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" /></Svg><Text style={[type.h2, align, { color: '#fff', fontSize: Math.min(20, frameWidth * 0.055), alignSelf: 'stretch' }]}>{copy.requestTitle}</Text><Text style={[type.small, align, { color: '#fff', alignSelf: 'stretch' }]}>{copy.requestText}</Text></View>
-        <View style={styles.requestButton}><Button label={copy.requestAction} variant="outline" onPress={() => activeKind === 'request' ? resume() : router.push('/requester')} style={{ backgroundColor: '#fff', borderRadius: 30, borderWidth: 0 }} /></View>
+        <View style={styles.requestButton}><Button label={copy.requestAction} variant="outline" labelColor="#1768E5" onPress={() => activeKind === 'request' ? resume() : router.push('/requester')} style={{ backgroundColor: '#fff', borderRadius: 30, borderWidth: 0 }} /></View>
       </View></GuideTarget>
       <GuideTarget id="home.help"><View style={[styles.helper, { backgroundColor: theme.colors.surface }]}>
         <View style={styles.helperArt}><MotionScene name="helper-home" style={{ height: '100%', borderRadius: 0 }} fit="contain" /></View>
