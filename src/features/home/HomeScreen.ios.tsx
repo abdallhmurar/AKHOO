@@ -13,7 +13,9 @@ import { AppScreen } from '../../components/v2'
 import { AnnouncementBell } from '../announcements/AnnouncementBell'
 import { Card, StatusBadge } from '../../components/ui'
 import { Button } from '../../components/ui/Button.ios'
-import { ArtIcon, MotionScene } from '../../components/motion/Motion.ios'
+import { MotionScene } from '../../components/motion/Motion.ios'
+import { BlendedArt } from '../../components/motion/BlendedArt.ios'
+import { RewardsGift } from './RewardsGift.ios'
 import { motionImages } from '../../components/motion/media.ios'
 import { homeCopy } from './homeCopy.ios'
 
@@ -31,7 +33,7 @@ export function HomeScreen() {
   const align = { textAlign: isRTL ? 'right' as const : 'left' as const }
   return <AppScreen contentStyle={styles.content} scrollProps={{ contentContainerStyle: { paddingBottom: 12 } }}>
     <View style={[styles.header, { height: frameWidth / 3 }]} accessibilityLabel={copy.heading}>
-      <Image source={motionImages.road} accessible={false} style={styles.fill} resizeMode="cover" />
+      <BlendedArt edge="bottom" start={0.86}><Image source={motionImages.road} accessible={false} style={styles.fill} resizeMode="cover" /></BlendedArt>
       <View style={styles.bell}><AnnouncementBell /></View>
     </View>
     <View style={styles.stack}>
@@ -43,11 +45,11 @@ export function HomeScreen() {
         <View style={styles.requestButton}><Button label={copy.requestAction} variant="outline" labelColor="#1768E5" onPress={() => activeKind === 'request' ? resume() : router.push('/requester')} style={{ backgroundColor: '#fff', borderRadius: 30, borderWidth: 0 }} /></View>
       </View></GuideTarget>
       <GuideTarget id="home.help"><View style={[styles.helper, { backgroundColor: theme.colors.surface }]}>
-        <View style={styles.helperArt}><MotionScene name="helper-home" style={{ height: '100%', borderRadius: 0 }} fit="contain" /></View>
+        <View style={styles.helperArt}><BlendedArt start={0.86}><MotionScene name="helper-home" style={{ height: '100%', borderRadius: 0 }} /></BlendedArt></View>
         <View style={styles.helperCopy}><Text style={[type.caption, align, { color: theme.colors.community }]}>{copy.points}</Text><Text style={[type.h3, align, { color: theme.colors.community }]}>{copy.helperTitle}</Text><Button label={copy.helperAction} variant="community" size="sm" onPress={() => activeKind ? resume() : router.push('/helper')} style={{ paddingHorizontal: 10, borderRadius: 22 }} /></View>
       </View></GuideTarget>
       <GuideTarget id="home.perks"><LinearGradient colors={theme.isDark ? ['#253640', '#3a3528'] : ['#fffdf7', '#fff4d9']} style={[styles.rewards, dirStyles(isRTL).row]}>
-        <ArtIcon name="gift" size={58} /><View style={styles.rewardCopy}><Text style={[type.bodyMedium, align, { color: theme.colors.textPrimary }]}>{copy.rewardsTitle}</Text><Text style={[type.caption, align, { color: theme.colors.textSecondary }]}>{copy.rewardsText}</Text></View><Button label={copy.rewardsAction} size="sm" variant="outline" onPress={() => router.push('/(tabs)/community')} fullWidth={false} style={{ paddingHorizontal: 12, borderRadius: 22 }} />
+        <RewardsGift label={copy.giftAction} onFallback={() => router.push('/(tabs)/community')} /><View style={styles.rewardCopy}><Text style={[type.bodyMedium, align, { color: theme.colors.textPrimary }]}>{copy.rewardsTitle}</Text><Text style={[type.caption, align, { color: theme.colors.textSecondary }]}>{copy.rewardsText}</Text></View><Button label={copy.rewardsAction} size="sm" variant="outline" onPress={() => router.push('/(tabs)/community')} fullWidth={false} style={{ paddingHorizontal: 12, borderRadius: 22 }} />
       </LinearGradient></GuideTarget>
       <View style={[styles.notice, dirStyles(isRTL).row]}><ShieldCheck size={19} color={theme.colors.community} /><Text style={[type.caption, { color: theme.colors.textMuted, textAlign: 'center', flex: 1 }]}>{copy.notice}</Text></View>
     </View>

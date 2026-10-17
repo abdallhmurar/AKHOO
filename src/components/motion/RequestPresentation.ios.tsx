@@ -7,6 +7,7 @@ import { useAppTypography } from '../../lib/typography'
 import { useSanadTheme } from '../../lib/theme'
 import { MotionScene } from './Motion.ios'
 import { motionImages } from './media.ios'
+import { BlendedArt } from './BlendedArt.ios'
 
 export function FlowHeader({ onBack, step }: { onBack: () => void; step?: number }) {
   const { t } = useTranslation()
@@ -24,7 +25,7 @@ export function RequestHeading({ title, subtitle, selection = false }: { title: 
   const type = useAppTypography()
   const isRTL = useIsRTL()
   return <View style={[styles.heading, selection && { minHeight: 160 }]}>
-    <Image source={selection ? motionImages.request : motionImages.details} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: selection ? 1 : 0.3, transform: [{ scaleX: selection && !isRTL ? -1 : 1 }] }]} resizeMode="cover" accessible={false} />
+    <View style={StyleSheet.absoluteFill}><BlendedArt edge="bottom" start={0.8}><Image source={selection ? motionImages.request : motionImages.details} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: theme.isDark ? 0.24 : selection ? 1 : 0.3, transform: [{ scaleX: selection && !isRTL ? -1 : 1 }] }]} resizeMode="cover" accessible={false} /></BlendedArt></View>
     <View style={[styles.headingCopy, selection && { width: '65%', alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}>
       <Text accessibilityRole="header" style={[type.h1, { fontSize: 23, color: theme.colors.textPrimary, textAlign: selection ? isRTL ? 'right' : 'left' : 'center' }]}>{title}</Text>
       <Text style={[type.small, { color: theme.colors.textSecondary, textAlign: selection ? isRTL ? 'right' : 'left' : 'center' }]}>{subtitle}</Text>
@@ -38,9 +39,10 @@ export function RequestChoice({ kind, title, description, selected, onSelect }: 
   const tone = kind === 'fuel' ? '#fff7e9' : kind === 'tire' ? '#fff0f2' : kind === 'other' ? '#eef9f5' : '#edf6ff'
   return <Pressable accessibilityRole="radio" accessibilityState={{ checked: selected }} accessibilityLabel={title} accessibilityHint={description} onPress={onSelect} style={({ pressed }) => [styles.choice, { borderColor: selected ? theme.colors.primary : theme.colors.border, backgroundColor: theme.colors.surface, transform: [{ scale: pressed ? 0.985 : 1 }] }]}>
     <LinearGradient colors={theme.isDark ? ['#173549', '#162c40'] : [tone, '#ffffff']} style={[styles.choiceBody, dirStyles(isRTL).row]}>
+      <View style={[styles.choiceArt, isRTL ? { left: 0 } : { right: 0 }]}><BlendedArt edge={isRTL ? 'right' : 'left'} start={0.48}><MotionScene name={kind} style={{ height: '100%', borderRadius: 0 }} /></BlendedArt></View>
       <View style={[styles.radio, { backgroundColor: selected ? theme.colors.primary : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.borderStrong }]}>{selected ? <Check size={14} color="#fff" weight="bold" /> : null}</View>
       <View style={styles.copy}><Text style={[type.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text><Text style={[type.small, { fontSize: 12, color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{description}</Text></View>
-      <View style={styles.choiceArt}><MotionScene name={kind} style={{ aspectRatio: 1168 / 784, borderRadius: 17 }} fit="contain" /></View>
+      <View style={styles.artSpace} pointerEvents="none" />
     </LinearGradient>
   </Pressable>
 }
@@ -49,8 +51,9 @@ export function SelectedProblem({ kind, title, label }: { kind: string; title: s
   const type = useAppTypography()
   const isRTL = useIsRTL()
   return <View style={[styles.selected, dirStyles(isRTL).row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+    <View style={[styles.choiceArt, isRTL ? { left: 0 } : { right: 0 }]}><BlendedArt edge={isRTL ? 'right' : 'left'} start={0.48}><MotionScene name={kind} style={{ height: '100%', borderRadius: 0 }} /></BlendedArt></View>
     <View style={styles.copy}><Text style={[type.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{label}</Text><Text style={[type.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text></View>
-    <View style={{ width: '43%', flexShrink: 0 }}><MotionScene name={kind} style={{ aspectRatio: 1168 / 784 }} fit="contain" /></View>
+    <View style={styles.artSpace} pointerEvents="none" />
   </View>
 }
 export function SafetyBanner({ title, subtitle }: { title: string; subtitle: string }) {
@@ -69,8 +72,8 @@ const styles = StyleSheet.create({
   choice: { borderRadius: 23, overflow: 'hidden', borderWidth: 1 },
   choiceBody: { minHeight: 132, paddingHorizontal: 10, paddingVertical: 12, gap: 9, alignItems: 'center' },
   radio: { width: 23, height: 23, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  copy: { flex: 1, minWidth: 0, gap: 5 }, choiceArt: { width: '42%' },
-  selected: { borderWidth: 1, borderRadius: 22, padding: 12, gap: 12, alignItems: 'center' },
+  copy: { flex: 1, minWidth: 0, gap: 5 }, choiceArt: { position: 'absolute', top: 0, bottom: 0, width: '52%' }, artSpace: { width: '46%', flexShrink: 0 },
+  selected: { minHeight: 116, borderWidth: 1, borderRadius: 22, padding: 12, gap: 12, alignItems: 'center', overflow: 'hidden' },
   safety: { borderWidth: 1, borderRadius: 20, padding: 12, gap: 8, alignItems: 'center' },
   safetyArt: { width: 108, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0 },
 })

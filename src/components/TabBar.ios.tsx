@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { ArtIcon, IconCredits } from './motion/Motion.ios'
+import { IconCredits } from './motion/Motion.ios'
+import { RewardsGift } from '../features/home/RewardsGift.ios'
 import { GuideTarget } from '../features/guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -23,6 +24,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
   const inactiveFont = useAppFont('medium')
 
   const [reducedMotion, setReducedMotion] = useState(true)
+  const [giftPress, setGiftPress] = useState(0)
   useEffect(() => {
     let mounted = true
     AccessibilityInfo.isReduceMotionEnabled().then(value => { if (mounted) setReducedMotion(value) }).catch(() => {})
@@ -81,6 +83,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
 
           function onPress() {
             const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
+            if (route.name === 'community' && !event.defaultPrevented) setGiftPress(value => value + 1)
             if (!isFocused && !event.defaultPrevented) {
               Haptics.selectionAsync().catch(() => {})
               navigation.navigate(route.name)
@@ -105,7 +108,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
               style={styles.tab}
             >
               <Animated.View style={[styles.tabContent, { transform: [{ translateY }, { scale }] }]}>
-                {route.name === 'community' ? <ArtIcon name="gift" size={32} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 24 })}
+                {route.name === 'community' ? <RewardsGift label={label} size={32} interactive={false} active={isFocused} interaction={giftPress} idle={false} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 24 })}
                 <Text style={[styles.label, { color, fontFamily: isFocused ? activeFont : inactiveFont }]} numberOfLines={1}>
                   {label}
                 </Text>

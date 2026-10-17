@@ -13,6 +13,7 @@ import type { MotionSceneProps } from './Motion.types'
 import { motionImages, motionIcons, motionMedia } from './media.ios'
 import { mediaFrame } from './mediaLayout'
 import { useVideoPlayback } from './useVideoPlayback.ios'
+import { BlendedArt } from './BlendedArt.ios'
 
 function dimension(value: unknown): number | `${number}%` | undefined {
   return typeof value === 'number' ? value : typeof value === 'string' && /^\d+(\.\d+)?%$/.test(value) ? value as `${number}%` : undefined
@@ -71,10 +72,13 @@ function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps
     borderRadius: typeof style?.borderRadius === 'number' ? style.borderRadius : 20,
   }
   const artwork = mediaFrame(size.width, size.height, name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'helper-home' ? 'left' : 'center')
+  const content = <>
+    {!failed && !reduced ? <VideoView player={player} style={styles.fill} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
+    {!ready || failed || reduced ? <Image source={media.poster} style={styles.fill} resizeMode="cover" /> : null}
+  </>
   return <View ref={ref} collapsable={false} style={[styles.scene, frame]} onLayout={event => setSize(event.nativeEvent.layout)}>
-    <View pointerEvents="none" accessible={false} accessibilityElementsHidden style={StyleSheet.absoluteFill}>
-      {!failed && !reduced ? <VideoView player={player} style={[styles.artwork, artwork]} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
-      {!ready || failed || reduced ? <Image source={media.poster} style={[styles.artwork, artwork]} resizeMode="cover" /> : null}
+    <View pointerEvents="none" accessible={false} accessibilityElementsHidden style={[styles.artwork, artwork]}>
+      {fit === 'contain' && name !== 'perks' ? <BlendedArt edge="soft">{content}</BlendedArt> : content}
     </View>
     {children}
   </View>
@@ -93,7 +97,7 @@ export function PerksHeader() {
   const theme = useSanadTheme()
   const [width, setWidth] = useState(0)
   return <View style={[styles.perks, { backgroundColor: theme.isDark ? '#153347' : '#eefaff', minHeight: width * 3 / 7 }]} onLayout={event => setWidth(event.nativeEvent.layout.width)}>
-    <View style={styles.perksArt} pointerEvents="none"><MotionScene name="perks" style={{ width, aspectRatio: 7 / 3, borderRadius: 0 }} fit="contain" /></View>
+    <View style={styles.perksArt} pointerEvents="none"><BlendedArt start={0.84}><MotionScene name="perks" style={{ width, aspectRatio: 7 / 3, borderRadius: 0 }} fit="contain" /></BlendedArt></View>
     <View style={styles.perksCopy}>
       <Text accessibilityRole="header" style={[typography.h2, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.title')}</Text>
       <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.hubSubtitle')}</Text>
@@ -118,6 +122,7 @@ export function IconCredits() {
 const styles = StyleSheet.create({
   scene: { position: 'relative', overflow: 'hidden' },
   artwork: { position: 'absolute' },
+  fill: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
   header: { minHeight: 130, marginHorizontal: -20, marginTop: -16, overflow: 'hidden' },
   headerCopy: { padding: 20, minHeight: 130, justifyContent: 'center', gap: 8 },
   perks: { position: 'relative', marginHorizontal: -16, marginTop: -16, overflow: 'hidden', justifyContent: 'center' },

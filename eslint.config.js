@@ -11,6 +11,7 @@ module.exports = defineConfig([
       '.expo/**',
       'playwright-report/**',
       'test-results/**',
+      'src/components/motion/generated/**',
       '.baseline-dist/**',
       '.gh-pages-worktree/**',
       'node_modules/**',

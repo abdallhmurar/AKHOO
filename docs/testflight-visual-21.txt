@@ -1,0 +1,51 @@
+AKHOO — iOS TestFlight visual integration / build 21
+2026-10-18
+
+Scope
+Address the eight user screenshots: videos appeared as inset rectangles, and
+the gift / earned medals had lost their real 3D interaction on iOS. Preserve
+the approved artwork, translations, request flows, and existing video lifecycle
+crash fix. This change is for TestFlight 2.0.2 (21), not an App Store release.
+
+Changes
+- Restore the approved procedural Three.js gift in the home reward card and
+  active perks tab. Pressing the gift opens its lid; tab navigation stays native.
+- Render earned medals with actual geometry, bevelled edges, metal lighting,
+  and a press-to-spin interaction. Preserve earned level colours and labels.
+- Bundle both scenes in a transparent offline WebView. No remote JavaScript,
+  images, or CDN fetches are needed. Navigation and messages are constrained.
+- Unmount offscreen/background scenes, respect reduced motion and guide
+  overlays, and retain static artwork if WebGL cannot render.
+- Blend video and poster edges into their card surfaces. Request choices and
+  selected-problem artwork fill the card edge rather than an inset thumbnail.
+  Helper/perks videos and contained scenes also fade into their parent surface.
+- Reserve room for text at narrow widths and improve the request heading's
+  contrast in dark mode. No play/pause controls were added.
+
+Validation before cloud build
+- TypeScript: passed.
+- Vitest: 221 tests passed in 40 files, including all four startup video-player
+  release regression tests and two offline-scene bridge checks.
+- Targeted ESLint: zero errors; one existing resolver warning in medal-element.js.
+- iOS Hermes export: passed; contains the offline scene bridge, no QA route.
+- EAS archive: 551 files; no credentials, environment files, user attachments,
+  QA routes, test output, or generated scene HTML. The postinstall generator
+  successfully regenerated the scene from archived source.
+- Browser adapter exercised the actual iOS component layout and bundled Three
+  scene: gift lid opening and medal rotation observed; home/perks blending,
+  Arabic at 390 px, English and Hebrew at 320 px, and dark mode inspected.
+  Adjusted narrow-card spacing and dark heading contrast from those findings.
+- Temporary browser adapters, audit route, Metro aliases, and viewport overrides
+  removed after inspection. No test account data or screenshots committed.
+
+Limitations
+The browser adapter is not WKWebView or native AVPlayer. No physical iPhone or
+iOS simulator is available on this Windows machine; on-device playback, memory,
+touch response and the final masked-video composition need the TestFlight run.
+Expo's compatibility check reports pre-existing patch-version drift across SDK
+packages. Newly added WebView and MaskedView versions match SDK 57; this task
+does not perform a broad dependency upgrade.
+
+Release delivery
+Pending signed build and Apple processing. Record exact source SHA, build ID,
+IPA verification and TestFlight availability after delivery.
