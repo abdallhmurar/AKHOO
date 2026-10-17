@@ -47,5 +47,26 @@ packages. Newly added WebView and MaskedView versions match SDK 57; this task
 does not perform a broad dependency upgrade.
 
 Release delivery
-Pending signed build and Apple processing. Record exact source SHA, build ID,
-IPA verification and TestFlight availability after delivery.
+- Source commit: 598b827c83da3c2a483155fd5edadaf59156b90d
+  https://github.com/abdallhmurar/AKHOO/commit/598b827c83da3c2a483155fd5edadaf59156b90d
+- EAS build: cb9fbaaf-e682-482a-9398-34b7c0f11001 — FINISHED
+  https://expo.dev/accounts/abad003/projects/sanad/builds/cb9fbaaf-e682-482a-9398-34b7c0f11001
+- Submission: 29e8babc-20e6-416e-ad49-8868409a832a — delivered to Apple.
+- Apple build: 4e7ef9fe-3db1-4088-8600-93da025b7b33
+  Version 2.0.2 (21), VALID / IN_BETA_TESTING, internal group Test.
+  Upload COMPLETE, no Apple upload errors or warnings.
+- Signed IPA verified: app.akhoo.help, 2.0.2 (21), minimum iOS 16.4,
+  92,801,039 bytes, 18 MP4 files, all four Tajawal font hashes matched.
+  Offline scene bridge and native WebView/MaskedView classes are present;
+  temporary QA route absent, Expo OTA updates disabled.
+- Cloud postinstall generated the offline scenes successfully; Xcode compiled
+  and signed the native WebView integration successfully.
+- Apple API comparison confirmed the published App Store app remains
+  2.0.1 (17), READY_FOR_SALE, with unchanged version and build identifiers.
+- No Google Play, Vercel production, App Store release, or OTA publish performed.
+
+On-device check still required
+Update to 2.0.2 (21) in TestFlight, open the home screen, tap the gift, then tap
+an earned medal in Activity/Perks. Check request-card video blending and switch
+between Arabic, Hebrew and English. The signed build is available; native
+visual/runtime behavior has not been certified on a physical iPhone here.
