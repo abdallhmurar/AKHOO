@@ -24,5 +24,18 @@ Validation
   labels. No new tests were added for the presentational footer removal.
 
 Delivery
-Pending signed iOS build and TestFlight processing.
-No App Store release, Google Play, Vercel production, or OTA publish requested.
+- Source commit: 0e605d7358df1a2e43ea0789b86632316653f3d3
+  https://github.com/abdallhmurar/AKHOO/commit/0e605d7358df1a2e43ea0789b86632316653f3d3
+- EAS build: 23f6b9f2-6ba8-414f-bf8f-e8cbc5572c44 — FINISHED
+  https://expo.dev/accounts/abad003/projects/sanad/builds/23f6b9f2-6ba8-414f-bf8f-e8cbc5572c44
+- Submission: 10ce1270-f758-417a-83e5-2f3ce0ccfc26 — delivered to Apple.
+- Signed IPA verified: app.akhoo.help, 2.0.2 (22), iOS 16.4 minimum,
+  92,801,276 bytes, 18 MP4 files, four Tajawal font hashes matched.
+- Old footer labels absent from the signed bundle; licenses entry, offline
+  3D bridge, native WebView and MaskedView classes present. OTA disabled.
+- Apple build: 2cc49cda-ff87-40a4-90b3-7afeea7edc11 — VALID,
+  IN_BETA_TESTING, available to the internal Test group. Upload COMPLETE,
+  no Apple upload errors or warnings.
+- Apple API comparison confirmed the published App Store app remains
+  2.0.1 (17), READY_FOR_SALE, with unchanged version and build identifiers.
+- No App Store release, Google Play, Vercel production, or OTA publish performed.
