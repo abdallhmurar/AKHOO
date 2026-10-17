@@ -25,7 +25,8 @@
 .approved-account .avatar-button{position:relative;display:grid;place-items:center;width:79px;height:79px;flex:none;padding:8px;border:2px solid #fff;border-radius:26px;background:linear-gradient(140deg,#d9f1ff,#b9e1f5);box-shadow:0 8px 18px #227cab1c,inset 0 2px 0 #ffffffa0;transition:transform .2s}
 .approved-account .avatar-button>img{width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 5px 3px #1369bd18)}
 .approved-account .avatar-button.has-photo{padding:0;overflow:visible}
-.approved-account .avatar-button.has-photo>img{width:100%;height:100%;object-fit:cover;border-radius:24px;filter:none}
+/* Keep the photo's intrinsic aspect ratio from sizing the button's grid track. */
+.approved-account .avatar-button.has-photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:24px;filter:none}
 .approved-account .camera-badge{position:absolute;bottom:-5px;left:-5px;display:grid;place-items:center;width:27px;height:27px;background:linear-gradient(135deg,#0d72ef,#05a6b0);color:#fff;border:2px solid #fff;border-radius:10px;box-shadow:0 3px 7px #0a70b52a}
 .approved-account .camera-badge svg{width:14px;height:14px}
 .approved-account .profile-copy{min-width:0;flex:1}
