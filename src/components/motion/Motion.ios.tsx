@@ -12,6 +12,7 @@ import { useSanadTheme } from '../../lib/theme'
 import type { MotionSceneProps } from './Motion.types'
 import { motionImages, motionIcons, motionMedia } from './media.ios'
 import { mediaFrame } from './mediaLayout'
+import { useVideoPlayback } from './useVideoPlayback.ios'
 
 function dimension(value: unknown): number | `${number}%` | undefined {
   return typeof value === 'number' ? value : typeof value === 'string' && /^\d+(\.\d+)?%$/.test(value) ? value as `${number}%` : undefined
@@ -63,11 +64,7 @@ function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps
     const timer = setInterval(measure, 500)
     return () => { mounted = false; clearInterval(timer) }
   }, [focused, active, reduced, viewportHeight, viewportWidth])
-  useEffect(() => {
-    if (focused && active && visible && loaded && !reduced && !failed && !guide?.blocking) player.play()
-    else player.pause()
-    return () => player.pause()
-  }, [player, focused, active, visible, loaded, reduced, failed, guide?.blocking])
+  useVideoPlayback(player, focused && active && visible && loaded && !reduced && !failed && !guide?.blocking)
   const frame: ViewStyle = {
     width: dimension(style?.width) ?? '100%', height: dimension(style?.height),
     aspectRatio: style?.height ? undefined : typeof style?.aspectRatio === 'number' ? style.aspectRatio : 1.5,

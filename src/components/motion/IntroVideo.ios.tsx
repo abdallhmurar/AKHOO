@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AccessibilityInfo, AppState, Image, StyleSheet, View } from 'react-native'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { civicColors } from '../../lib/theme'
+import { useVideoPlayback } from './useVideoPlayback.ios'
 
 // These portrait clips include translated text. Fit the entire frame so that
 // a different device aspect ratio cannot cut that text or the characters off.
@@ -28,11 +29,7 @@ export function IntroVideo({ source, active = true }: { source: number; active?:
     const status = player.addListener('statusChange', event => sync(event.status))
     return () => { mounted = false; motion.remove(); app.remove(); status.remove() }
   }, [player])
-  useEffect(() => {
-    if (active && foreground && loaded && !reduced && !failed) player.play()
-    else player.pause()
-    return () => player.pause()
-  }, [player, active, foreground, loaded, reduced, failed])
+  useVideoPlayback(player, active && foreground && loaded && !reduced && !failed)
   return <View style={styles.frame} pointerEvents="none" accessible={false} accessibilityElementsHidden>
     {!failed ? <VideoView player={player} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} contentFit="contain" nativeControls={false} fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setFirstFrame(true)} /> : null}
     {!firstFrame || failed ? <View style={styles.fallback}><Image source={require('../../../assets/images/icon.png')} style={styles.logo} resizeMode="contain" /></View> : null}
