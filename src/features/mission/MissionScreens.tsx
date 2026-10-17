@@ -684,7 +684,7 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
       <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobTop, { backgroundColor: theme.colors.primarySoft }]} />
       <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobBottom, { backgroundColor: theme.colors.communitySoft }]} />
       <ScrollView contentContainerStyle={styles.completionScroll} showsVerticalScrollIndicator={false}>
-        {Platform.OS === 'web' ? <MotionScene name="success" style={{ height: 220, aspectRatio: 'auto' }} fit="contain" /> : <><Image source={require('../../../assets/images/icon.png')} style={styles.completionLogo} resizeMode="contain" /><SuccessCheckmark tone="success" /></>}
+        {Platform.OS !== 'android' ? <MotionScene name="success" style={{ height: 220, aspectRatio: 'auto' }} fit="contain" /> : <><Image source={require('../../../assets/images/icon.png')} style={styles.completionLogo} resizeMode="contain" /><SuccessCheckmark tone="success" /></>}
         <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('activeRequest.completion.title')}</Animated.Text>
         <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('activeRequest.subtitleCompleted')}</Animated.Text>
         <Animated.Text style={[typography.small, styles.centerText, stageStyle(1), { color: theme.colors.textMuted, marginTop: -space.sm }]}>{t('activeRequest.completion.subtitle2')}</Animated.Text>
@@ -705,7 +705,7 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
             <View style={styles.starsRow}>
               {[1, 2, 3, 4, 5].map(value => (
                 <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
-                  {Platform.OS === 'web' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
+                  {Platform.OS !== 'android' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
                 </Pressable>
               ))}
             </View>
@@ -802,7 +802,7 @@ function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { poi
   const CompletionFrame = Platform.OS === 'web' ? ScrollView : SafeAreaView
   return (
     <CompletionFrame style={[styles.fill, Platform.OS !== 'web' && styles.completionContent, { backgroundColor: theme.colors.background }]} {...(Platform.OS === 'web' ? { contentContainerStyle: { ...styles.completionContent, width: '100%' as const, maxWidth: 480, alignSelf: 'center' as const } } : {})}>
-      {Platform.OS === 'web' ? <MotionScene name="success" style={{ height: 210, aspectRatio: 'auto' }} fit="contain" /> : <><ConfettiBurst /><SuccessCheckmark tone="success" size={112} pulse /></>}
+      {Platform.OS !== 'android' ? <MotionScene name="success" style={{ height: 210, aspectRatio: 'auto' }} fit="contain" /> : <><ConfettiBurst /><SuccessCheckmark tone="success" size={112} pulse /></>}
       <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.title')}</Animated.Text>
       <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('volunteerJob.completion.message')}</Animated.Text>
       {stats ? (
@@ -839,7 +839,7 @@ function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { poi
               <View style={styles.starsRow}>
                 {[1, 2, 3, 4, 5].map(value => (
                   <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
-                    {Platform.OS === 'web' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
+                    {Platform.OS !== 'android' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
                   </Pressable>
                 ))}
               </View>

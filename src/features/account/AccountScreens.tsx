@@ -130,9 +130,9 @@ export function AccountHomeScreen() {
 
   return (
     <AppScreen contentStyle={styles.content}>
-      {Platform.OS === 'web' ? <AccountHeading title={t('account.title')} subtitle={t('account.subtitle')} /> : <ScreenHeader title={t('account.title')} subtitle={t('account.subtitle')} />}
+      {Platform.OS !== 'android' ? <AccountHeading title={t('account.title')} subtitle={t('account.subtitle')} /> : <ScreenHeader title={t('account.title')} subtitle={t('account.subtitle')} />}
 
-      {Platform.OS === 'web' ? <AccountIdentity name={profile.full_name?.trim() || t('account.title')} email={session?.user.email ?? ''} avatar={profile.avatar_url} busy={avatarUploading} onPhoto={pickAvatar} onEdit={() => router.push('/(tabs)/account/profile')} /> : <View style={styles.identity}>
+      {Platform.OS !== 'android' ? <AccountIdentity name={profile.full_name?.trim() || t('account.title')} email={session?.user.email ?? ''} avatar={profile.avatar_url} busy={avatarUploading} onPhoto={pickAvatar} onEdit={() => router.push('/(tabs)/account/profile')} /> : <View style={styles.identity}>
         <Pressable onPress={pickAvatar} disabled={avatarUploading} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border }]}>
           {profile.avatar_url ? (
             <Image source={{ uri: profile.avatar_url }} style={styles.avatarImage} />

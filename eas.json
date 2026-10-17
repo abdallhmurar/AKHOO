@@ -4,6 +4,20 @@
     "appVersionSource": "local"
   },
   "build": {
+    "testflight": {
+      "developmentClient": false,
+      "distribution": "store",
+      "channel": "testflight",
+      "environment": "preview",
+      "env": {
+        "AKHOO_BUILD_TARGET": "testflight",
+        "AKHOO_IOS_VERSION": "2.0.2",
+        "AKHOO_IOS_BUILD_NUMBER": "18"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
@@ -27,6 +41,15 @@
     }
   },
   "submit": {
+    "testflight": {
+      "ios": {
+        "ascAppId": "6809610412",
+        "appleTeamId": "KMZS5NXXHB",
+        "ascApiKeyPath": "./credentials/ios/AuthKey_VWGJ3XDGBC.p8",
+        "ascApiKeyIssuerId": "08c65b01-1819-4e93-ba29-48d94dc9f3e0",
+        "ascApiKeyId": "VWGJ3XDGBC"
+      }
+    },
     "production": {
       "ios": {
         "ascAppId": "6809610412",

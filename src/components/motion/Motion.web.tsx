@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import type { MotionSceneProps } from './Motion'
+import type { MotionSceneProps } from './Motion.types'
 import { useGuide } from '../../features/guide/GuideProvider'
 import './motion.css'
 

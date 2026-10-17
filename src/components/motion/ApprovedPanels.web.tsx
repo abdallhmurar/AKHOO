@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { HelperMedal } from '../HelperMedal'
 import { ArtIcon } from './Motion'
 import { useIsRTL } from '../../lib/direction'
-import type { IdentityProps, PointsPanelProps } from './ApprovedPanels'
+import type { IdentityProps, PointsPanelProps } from './ApprovedPanels.types'
 import './approved-perks.css'
 import './approved-account.css'
 
