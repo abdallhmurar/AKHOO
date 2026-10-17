@@ -61,8 +61,6 @@
 .approved-account .local-note{font-size:9px;color:var(--muted);line-height:1.9;text-align:center;margin-top:-6px}
 .approved-account .local-note summary{cursor:pointer;padding:5px;min-height:30px}
 .approved-account .local-note p{margin:0 7px}
-.approved-account .icon-credits{font:9px/1.9 Arial,sans-serif;text-align:center;color:var(--muted);margin:-10px 9px 0;overflow-wrap:anywhere}
-.approved-account .icon-credits a{color:var(--muted);text-underline-offset:2px}
 .approved-account .bottom-nav{position:fixed;z-index:5;bottom:max(12px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:452px;display:flex;align-items:center;gap:4px;padding:6px;border:1px solid #cbe9e8;border-radius:30px;background:var(--nav);box-shadow:0 6px 28px #166b8520;backdrop-filter:blur(14px)}
 .approved-account .nav-item{flex:1;min-width:0;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;border-radius:24px;color:var(--muted);background:transparent;text-decoration:none;font-size:9px;font-weight:600;line-height:1.5;transition:transform .2s}
 .approved-account .nav-item img{height:27px;width:27px;object-fit:contain;transition:transform .2s}

@@ -1,0 +1,28 @@
+AKHOO — icon attribution placement / TestFlight 2.0.2 (22)
+2026-10-18
+
+Requested change
+Remove the repeated icon-credit text from the bottom of application screens
+and navigation in every supported language.
+
+Implementation
+- Remove icon-credit footers from both iOS and web navigation, Activity,
+  Account, and requester/helper completion screens.
+- Remove the shared footer components and their unused CSS/native styles.
+- Collect the existing ten author attributions and links in Account >
+  Privacy & Security > Licenses. Add Arabic, Hebrew and English labels.
+- Preserve existing icons, videos, 3D interactions, and map attribution.
+- No new permissions, external data requests, or authentication changes.
+
+Validation
+- TypeScript and targeted ESLint passed.
+- All five existing locale parity/interpolation checks passed.
+- Changed CSS parsed successfully; no footer component or credit-class
+  references remain in app/src runtime sources.
+- iOS Hermes export and web production export passed. The iOS bundle contains
+  the new licenses entry and the existing offline 3D bridge, without old footer
+  labels. No new tests were added for the presentational footer removal.
+
+Delivery
+Pending signed iOS build and TestFlight processing.
+No App Store release, Google Play, Vercel production, or OTA publish requested.

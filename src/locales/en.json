@@ -519,7 +519,8 @@
       "privacy": "Privacy & Security",
       "help": "Help & Support",
       "privacyPolicy": "Privacy Policy",
-      "termsOfUse": "Terms of Use"
+      "termsOfUse": "Terms of Use",
+      "licenses": "Licenses"
     },
     "sections": {
       "personalInfo": "Personal info",
@@ -557,6 +558,11 @@
         "reauthenticate": "Verify identity by signing in",
         "reauthenticateHint": "Sign in to the same account again, then confirm account deletion within ten minutes."
       }
+    },
+    "licenses": {
+      "description": "Sources of the icons used in AKHOO.",
+      "author": "Designed by {{author}} from Flaticon",
+      "viewLicense": "View icon license"
     },
     "legal": {
       "lastUpdated": "Last updated"

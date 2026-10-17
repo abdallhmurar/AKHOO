@@ -1,4 +1,4 @@
-import { MotionScene, ArtIcon, IconCredits } from '../../components/motion/Motion'
+import { MotionScene, ArtIcon } from '../../components/motion/Motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ActivityIndicator, Animated, Easing, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
@@ -724,7 +724,6 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
             <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'underline' }]}>{t('activeRequest.completion.shareApp')}</Text>
           </Pressable>
         </Animated.View>
-        <IconCredits />
       </ScrollView>
     </SafeAreaView>
   )
@@ -864,7 +863,6 @@ function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { poi
       ) : (
         <ActivityIndicator color={theme.colors.primary} />
       )}
-      <IconCredits />
     </CompletionFrame>
   )
 }

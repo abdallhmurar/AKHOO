@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { AccessibilityInfo, AppState, Image, Linking, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { AccessibilityInfo, AppState, Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import type { ViewStyle } from 'react-native'
 import { useFocusEffect } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
@@ -108,17 +108,6 @@ export function ArtIcon({ name, size = 32 }: { name: string; size?: number }) {
   const source = motionIcons[name]
   return source ? <Image accessible={false} source={source} style={{ width: size, height: size }} resizeMode="contain" /> : null
 }
-export function IconCredits() {
-  const theme = useSanadTheme()
-  const { i18n } = useTranslation()
-  const [expanded, setExpanded] = useState(false)
-  const label = i18n.language.startsWith('ar') ? 'حقوق الأيقونات' : i18n.language.startsWith('he') ? 'קרדיט לאייקונים' : 'Icon credits'
-  return <View><Text style={[styles.credits, { color: theme.colors.textMuted }]} accessibilityRole="button" accessibilityState={{ expanded }} onPress={() => setExpanded(value => !value)}>{label} · Flaticon</Text>
-    {expanded ? <Text style={[styles.credits, { color: theme.colors.textMuted }]} accessibilityRole="link" onPress={() => void Linking.openURL('https://www.flaticon.com/')}>
-      setiawanap, IconMarketPK, smashingstocks, Magnific, DinosoftLabs, Roundicons, VectorPortal, Pixel perfect, Fathema Khanom & Smashicons — Flaticon
-    </Text> : null}
-  </View>
-}
 const styles = StyleSheet.create({
   scene: { position: 'relative', overflow: 'hidden' },
   artwork: { position: 'absolute' },
@@ -128,5 +117,4 @@ const styles = StyleSheet.create({
   perks: { position: 'relative', marginHorizontal: -16, marginTop: -16, overflow: 'hidden', justifyContent: 'center' },
   perksArt: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '66%', overflow: 'hidden', justifyContent: 'center' },
   perksCopy: { marginLeft: '66%', paddingHorizontal: 10, paddingVertical: 16, justifyContent: 'center', gap: 6 },
-  credits: { fontSize: 9, textAlign: 'center', paddingVertical: 4 },
 })

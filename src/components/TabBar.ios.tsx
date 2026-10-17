@@ -1,5 +1,4 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { IconCredits } from './motion/Motion.ios'
 import { RewardsGift } from '../features/home/RewardsGift.ios'
 import { GuideTarget } from '../features/guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
@@ -117,7 +116,6 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
           )
         })}
       </View>
-      <IconCredits />
     </View></GuideTarget>
   )
 }

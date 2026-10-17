@@ -519,7 +519,8 @@
       "privacy": "פרטיות ואבטחה",
       "help": "עזרה ותמיכה",
       "privacyPolicy": "מדיניות פרטיות",
-      "termsOfUse": "תנאי שימוש"
+      "termsOfUse": "תנאי שימוש",
+      "licenses": "רישיונות"
     },
     "sections": {
       "personalInfo": "פרטים אישיים",
@@ -557,6 +558,11 @@
         "reauthenticate": "אימות זהות בכניסה מחדש",
         "reauthenticateHint": "התחברו שוב לאותו חשבון ואשרו את המחיקה תוך עשר דקות."
       }
+    },
+    "licenses": {
+      "description": "מקורות האייקונים המשמשים באפליקציית AKHOO.",
+      "author": "עיצוב של {{author}} מאתר Flaticon",
+      "viewLicense": "הצגת רישיון האייקונים"
     },
     "legal": {
       "lastUpdated": "עדכון אחרון"

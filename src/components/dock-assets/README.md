@@ -1,7 +1,8 @@
-# Web navigation artwork
+# Navigation artwork
 
-These PNG icons use the Flaticon free license, with visible author attribution
-in the web navigation footer. Native navigation does not import them.
+These PNG icons use the Flaticon free license. Author attribution is available
+in Account > Privacy & Security > Licenses on web and iOS, instead of repeated
+footers below navigation and individual screens.
 
 - `home.png`: Fathema Khanom, https://www.flaticon.com/free-icon/home_10307931
 - `account.png`: Magnific (formerly Freepik), https://www.flaticon.com/free-icon/user_1077012

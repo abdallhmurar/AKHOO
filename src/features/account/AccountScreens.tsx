@@ -1,5 +1,4 @@
 import { AccountIdentity, AccountHeading } from '../../components/motion/ApprovedPanels'
-import { IconCredits } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage, useGuide } from '../guide/GuideProvider'
 import { useGuideCopy } from '../guide/guideCopy'
 import { useEffect, useState } from 'react'
@@ -191,7 +190,6 @@ export function AccountHomeScreen() {
         <Text style={[typography.bodyMedium, { color: theme.colors.danger }]}>{t('account.logout')}</Text>
       </Pressable>
 
-      <IconCredits />
       <ChoiceModal
         visible={navigationModalOpen}
         onClose={() => setNavigationModalOpen(false)}
@@ -388,6 +386,7 @@ export function AccountPrivacyScreen() {
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacyPolicy')} onPress={() => router.push('/(tabs)/account/privacy-policy')} />
         <ListRow Icon={FileText} title={t('account.menu.termsOfUse')} onPress={() => router.push('/(tabs)/account/terms')} />
+        <ListRow Icon={FileText} title={t('account.menu.licenses')} onPress={() => router.push('/(tabs)/account/licenses')} />
       </View>
     </AppScreen>
   )

@@ -519,7 +519,8 @@
       "privacy": "الخصوصية والأمان",
       "help": "المساعدة والدعم",
       "privacyPolicy": "سياسة الخصوصية",
-      "termsOfUse": "شروط الاستخدام"
+      "termsOfUse": "شروط الاستخدام",
+      "licenses": "التراخيص"
     },
     "sections": {
       "personalInfo": "المعلومات الشخصية",
@@ -557,6 +558,11 @@
         "reauthenticate": "تأكيد الهوية بتسجيل الدخول",
         "reauthenticateHint": "سجّل الدخول مجدداً بالحساب نفسه، ثم أكّد حذف الحساب خلال عشر دقائق."
       }
+    },
+    "licenses": {
+      "description": "مصادر الأيقونات المستخدمة في أخوو.",
+      "author": "تصميم {{author}} من Flaticon",
+      "viewLicense": "عرض ترخيص الأيقونات"
     },
     "legal": {
       "lastUpdated": "آخر تحديث"

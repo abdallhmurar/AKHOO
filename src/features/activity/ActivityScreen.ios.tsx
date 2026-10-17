@@ -1,4 +1,4 @@
-import { ArtIcon, MotionHeader, IconCredits } from '../../components/motion/Motion'
+import { ArtIcon, MotionHeader } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
@@ -140,8 +140,6 @@ export function ActivityScreen() {
           <ActivityCard key={entry.id} entry={entry} onPress={entry.missionId ? () => router.push({ pathname: '/mission/[missionId]', params: { missionId: entry.missionId! } }) : undefined} />
         ))}
       </View></GuideTarget>
-
-      <IconCredits />
       <BottomSheet visible={durationOpen} onClose={() => setDurationOpen(false)} title={t('activity.duration.sheetTitle')}>
         {DURATION_OPTIONS.map(option => {
           const active = option.value === duration
