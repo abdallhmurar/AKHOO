@@ -16,8 +16,12 @@ export function FlowHeader({ onBack, step }: { onBack: () => void; step?: number
   const type = useAppTypography()
   const Back = isRTL ? ArrowRight : ArrowLeft
   return <View style={[styles.topbar, dirStyles(isRTL).row]}>
-    <Pressable accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={onBack} style={[styles.back, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}><Back size={21} color={theme.colors.textPrimary} /></Pressable>
-    {step ? <View style={styles.progress}><View style={[styles.segments, dirStyles(isRTL).row]}>{[1, 2, 3].map(n => <View key={n} style={[styles.segment, { backgroundColor: n <= step ? theme.colors.primary : theme.colors.border }]} />)}</View><Text style={[type.caption, { color: theme.colors.textMuted }]}>{t('request.step.details.stepOf', { current: step, total: 3 })}</Text></View> : null}
+    <Pressable accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={onBack} style={[styles.sideSlot, styles.back, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}><Back size={21} color={theme.colors.textPrimary} /></Pressable>
+    {step ? <>
+      <View style={styles.progress}><View style={[styles.segments, dirStyles(isRTL).row]}>{[1, 2, 3].map(n => <View key={n} style={[styles.segment, { backgroundColor: n <= step ? theme.colors.primary : theme.colors.border }]} />)}</View><Text style={[type.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>{t('request.step.details.stepOf', { current: step, total: 3 })}</Text></View>
+      {/* Match the back button's width so progress stays centered in either direction. */}
+      <View style={styles.sideSlot} pointerEvents="none" accessible={false} />
+    </> : null}
   </View>
 }
 export function RequestHeading({ title, subtitle, selection = false }: { title: string; subtitle: string; selection?: boolean }) {
@@ -65,8 +69,9 @@ export function SafetyBanner({ title, subtitle }: { title: string; subtitle: str
 }
 const styles = StyleSheet.create({
   topbar: { paddingHorizontal: 20, paddingVertical: 10, alignItems: 'center', justifyContent: 'space-between' },
-  back: { width: 44, height: 44, borderWidth: 1, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  progress: { alignItems: 'center', gap: 5 }, segments: { gap: 5 }, segment: { width: 28, height: 5, borderRadius: 3 },
+  sideSlot: { width: 44, height: 44, flexShrink: 0 },
+  back: { borderWidth: 1, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  progress: { flex: 1, minWidth: 0, alignItems: 'center', gap: 5 }, segments: { gap: 5 }, segment: { width: 28, height: 5, borderRadius: 3 },
   heading: { minHeight: 134, marginHorizontal: -20, marginTop: -16, justifyContent: 'center', overflow: 'hidden' },
   headingCopy: { paddingHorizontal: 20, paddingVertical: 18, gap: 5 },
   choice: { borderRadius: 23, overflow: 'hidden', borderWidth: 1 },
