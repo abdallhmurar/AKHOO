@@ -1,0 +1,40 @@
+﻿AKHOO — centered request progress / TestFlight 2.0.2 (23)
+2026-10-18
+
+Change
+The iOS request header placed the back button and step counter at opposite
+ends of a space-between row. Keep equal 44-point side slots and let the
+progress indicator fill the center, with centered text. This applies to
+problem selection, details, and location. RTL changes the back-button side
+without moving the counter. Headers without steps retain their back button.
+The web header already uses balanced 44px / 1fr / 44px columns.
+
+Validation
+- TypeScript, targeted ESLint, and git diff --check passed.
+- iOS production Hermes export passed.
+- Rendered the actual iOS FlowHeader through a temporary React Native Web
+  adapter using the native direction logic and actual translations/fonts.
+- All three steps: Arabic at 390px, Hebrew and English at 320px centered
+  within 0.01px in DOM measurements. Arabic/Hebrew back buttons were right;
+  English back buttons were left. The back callback fired when clicked.
+- Verified no-step headers still display their back control.
+- The temporary QA route and Metro adapter were removed before export/build.
+- Browser adapter checks are not a physical iPhone runtime test.
+
+Source
+https://github.com/abdallhmurar/AKHOO/commit/d5aad2bdcb970b472450dad54b602a5a5a1af48d
+
+Delivery
+EAS build: b184a904-cb8e-4442-8f58-923b2c136d69
+https://expo.dev/accounts/abad003/projects/sanad/builds/b184a904-cb8e-4442-8f58-923b2c136d69
+- EAS build FINISHED; source commit matches d5aad2bdcb970b472450dad54b602a5a5a1af48d.
+- Submission: 62760a47-9070-4130-b77a-81341575692a, delivered to Apple.
+- Signed IPA: app.akhoo.help, 2.0.2 (23), 92,801,956 bytes,
+  iOS 16.4 minimum, OTA disabled, 18 MP4 assets, four Tajawal fonts verified.
+- Existing offline 3D bridge, WebView and MaskedView present. Old icon-credit
+  footer labels absent; dedicated licenses entry present.
+- Apple build: 1c5babbc-662a-41ee-a3be-dbcf4782d979, VALID,
+  IN_BETA_TESTING, internal group Test. Upload COMPLETE, no errors/warnings.
+- Published App Store version remains 2.0.1 (17), READY_FOR_SALE,
+  with the same version/build IDs as the pre-submission baseline.
+- No App Store release, Google Play, Vercel or OTA deployment performed.
