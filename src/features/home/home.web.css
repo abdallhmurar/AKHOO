@@ -13,7 +13,6 @@
 .akh-home-request>.akh-home-video{position:absolute;inset:0}
 .akh-home-request:after{content:"";position:absolute;inset:0 0 28%;background:linear-gradient(90deg,transparent 40%,#1c7bfaee 76%,#1c7bfa);mask-image:linear-gradient(#000 65%,transparent);pointer-events:none}
 .akh-home-request-copy{position:absolute;z-index:1;right:3%;top:4.1cqw;width:47%;text-align:start;text-shadow:0 1px 6px #064caa80}
-.akh-home-help-icon{width:12cqw;height:11cqw;stroke-width:3!important;display:block;margin-inline-start:2cqw;margin-bottom:2cqw}
 .akh-home-request-copy h2{font-family:var(--akh-extra);font-size:5.8cqw;line-height:1.6;white-space:nowrap}
 .akh-home-request-copy p{font-size:3.65cqw;line-height:1.6;margin-top:1.2cqw}
 .akh-home-action{border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1.4;min-height:44px;transition:transform .16s;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent;outline-offset:3px}
@@ -44,14 +43,11 @@
 .akh-home-rewards-button{position:absolute;left:2%;top:50%;transform:translateY(-50%);height:8.8cqw;width:24.5%;border:1px solid #086bff;border-radius:6cqw;background:#fffdf7;color:#086bff;font-size:3.2cqw;padding-inline:4cqw}
 .akh-home-rewards-button:active{transform:translateY(-50%) scale(.98)}
 .akh-home-rewards-button .akh-home-arrow{left:5%;width:3cqw;height:3cqw}
-.akh-home-notice{display:flex;align-items:center;justify-content:center;gap:2.4cqw;padding:4cqw 3.5cqw 2cqw;font-size:2.7cqw;color:var(--akh-muted);line-height:1.7;text-align:center}
-.akh-home-notice svg{color:#096b5c;width:4.4cqw;height:5cqw;stroke-width:2}
 .akh-home-resume{padding:0 3.5cqw 3cqw;position:relative}
 .akh-home[data-dark=true]{--akh-surface:#071522;--akh-ink:#f7fafc;--akh-muted:#aabccb}
 .akh-home[data-dark=true] .akh-home-helper{background:#102a43;border-color:#29514e}
 .akh-home[data-dark=true] .akh-home-helper-art:after{background:linear-gradient(90deg,transparent,#102a43)}
 .akh-home[data-dark=true] .akh-home-helper-copy h2{color:#77d9bb}
-.akh-home[data-dark=true] .akh-home-notice svg{color:#77d9bb}
 .akh-home:lang(en) .akh-home-helper-copy h2{font-size:4.1cqw}
 .akh-home:lang(he) .akh-home-helper-copy h2{font-size:4cqw}
 .akh-home:lang(he) .akh-home-helper-button{font-size:3.4cqw}

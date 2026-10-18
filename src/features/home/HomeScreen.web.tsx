@@ -10,7 +10,7 @@ import { useMission } from '../../providers'
 import { AppScreen } from '../../components/v2'
 import { AnnouncementBell } from '../announcements/AnnouncementBell'
 import { Card, StatusBadge } from '../../components/ui'
-import { HomeVisualActions, HomeVisualHeader, HomeVisualNotice, homeWebCopy } from './HomeVisuals.web'
+import { HomeVisualActions, HomeVisualHeader, homeWebCopy } from './HomeVisuals.web'
 
 // The approved local design is web-only. Mission routing, announcements and
 // guide targets continue to use the existing application providers.
@@ -60,7 +60,6 @@ export function HomeScreen() {
             onPerks={() => router.push('/(tabs)/community')}
           />
         </div>
-        <HomeVisualNotice text={copy.notice} />
       </div>
     </AppScreen>
   )

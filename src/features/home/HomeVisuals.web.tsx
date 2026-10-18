@@ -18,9 +18,9 @@ const media = {
 }
 
 export const homeWebCopy = {
-  ar: { giftAction: 'افتح هدية مزايا أخو', heading: 'أخو — المساعدة على الطريق', requestTitle: 'محتاج مساعدة؟', requestText: 'خلّينا نوصلك بحدا قريب', requestAction: 'بدي مساعدة', points: 'ساعد واكسب نقاط', helperTitle: 'في حدا محتاجك', helperAction: 'بدي أساعد', rewardsTitle: 'مساعدتك إلها قيمة', rewardsText: 'بدّل نقاطك بعروض مزايا أخو', rewardsAction: 'اكتشف', notice: 'طلبك بيوصل لشخص قريب يقدر يساعدك' },
-  en: { giftAction: 'Open the AKHOO perks gift', heading: 'AKHOO — Roadside help', requestTitle: 'Need help?', requestText: 'Connect with someone nearby', requestAction: 'I need help', points: 'Help & earn points', helperTitle: 'Lend a hand', helperAction: 'I want to help', rewardsTitle: 'Your help matters', rewardsText: 'Use your points for AKHOO perks', rewardsAction: 'Explore', notice: 'Your request reaches someone nearby who can help' },
-  he: { giftAction: 'פתח את מתנת ההטבות של AKHOO', heading: 'AKHOO — עזרה בדרך', requestTitle: 'צריך עזרה?', requestText: 'נחבר אותך למישהו קרוב', requestAction: 'אני צריך עזרה', points: 'עוזרים וצוברים נקודות', helperTitle: 'מישהו צריך אותך', helperAction: 'אני רוצה לעזור', rewardsTitle: 'לעזרה שלך יש ערך', rewardsText: 'ממירים נקודות בהטבות AKHOO', rewardsAction: 'לגלות', notice: 'הבקשה שלך מגיעה למישהו קרוב שיכול לעזור' }
+  ar: { giftAction: 'افتح هدية مزايا أخو', heading: 'أخو — المساعدة على الطريق', requestTitle: 'محتاج مساعدة؟', requestText: 'خلّينا نوصلك بحدا قريب', requestAction: 'بدي مساعدة', points: 'ساعد واكسب نقاط', helperTitle: 'في حدا محتاجك', helperAction: 'بدي أساعد', rewardsTitle: 'مساعدتك إلها قيمة', rewardsText: 'بدّل نقاطك بعروض مزايا أخو', rewardsAction: 'اكتشف' },
+  en: { giftAction: 'Open the AKHOO perks gift', heading: 'AKHOO — Roadside help', requestTitle: 'Need help?', requestText: 'Connect with someone nearby', requestAction: 'I need help', points: 'Help & earn points', helperTitle: 'Lend a hand', helperAction: 'I want to help', rewardsTitle: 'Your help matters', rewardsText: 'Use your points for AKHOO perks', rewardsAction: 'Explore' },
+  he: { giftAction: 'פתח את מתנת ההטבות של AKHOO', heading: 'AKHOO — עזרה בדרך', requestTitle: 'צריך עזרה?', requestText: 'נחבר אותך למישהו קרוב', requestAction: 'אני צריך עזרה', points: 'עוזרים וצוברים נקודות', helperTitle: 'מישהו צריך אותך', helperAction: 'אני רוצה לעזור', rewardsTitle: 'לעזרה שלך יש ערך', rewardsText: 'ממירים נקודות בהטבות AKHOO', rewardsAction: 'לגלות' }
 } as const
 
 type Copy = typeof homeWebCopy[keyof typeof homeWebCopy]
@@ -77,7 +77,6 @@ export function HomeVisualActions({ copy, active, onRequest, onHelp, onPerks }: 
       <section className="akh-home-request" aria-labelledby="akh-request-title">
         <MotionVideo src={media.help} poster={media.helpPoster} active={active} />
         <div className="akh-home-request-copy">
-          <svg className="akh-home-help-icon" viewBox="0 0 80 70" aria-hidden="true"><path d="M6 34h39l-6-13H15ZM5 34v22h8v-8h23M13 42h4m13 0h4M23 10V3M9 14l-5-5m34 4 5-6M58 24 38 59h40ZM58 37v9m0 6v1" /></svg>
           <h2 id="akh-request-title">{copy.requestTitle}</h2>
           <p>{copy.requestText}</p>
         </div>
@@ -102,8 +101,4 @@ export function HomeVisualActions({ copy, active, onRequest, onHelp, onPerks }: 
       </section>
     </GuideTarget>
   </>
-}
-
-export function HomeVisualNotice({ text }: { text: string }) {
-  return <p className="akh-home-notice"><span>{text}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 5v7c0 5 9 10 9 10s9-5 9-10V5Z M7 11l4 4 6-7" /></svg></p>
 }
