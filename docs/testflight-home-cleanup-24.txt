@@ -1,0 +1,41 @@
+﻿AKHOO — home icon and notice removal / TestFlight 2.0.2 (24)
+2026-10-18
+
+Requested changes
+Remove the white car/warning outline from the Need Help card and the shield
+beside the home notice. Follow-up: remove the entire nearby-help notice text.
+
+Implementation
+- Remove the decorative help-card SVG on iOS and web.
+- Remove the notice and shield from the home screen on iOS and web.
+- Remove unused imports, notice component, CSS rules, and Arabic/Hebrew/English
+  notice strings from the platform-specific home copy.
+- Keep the existing videos, 3D gift, button labels and navigation handlers.
+
+Validation
+- TypeScript, targeted ESLint, CSS parsing and git diff --check passed.
+- iOS Hermes export and web production export passed.
+- Visual review of the actual iOS home through a temporary browser adapter:
+  Arabic 390px; Hebrew and English 320px. The requested icon and notice are
+  absent; card text and actions fit and the 3D gift remains present.
+- Temporary QA route/Metro aliases were removed before exports and cloud build.
+- Browser adapter review is not a physical iPhone runtime test.
+
+Source
+https://github.com/abdallhmurar/AKHOO/commit/57f5835924eebadcd9c508a7a7a84e564e9251a7
+
+Delivery
+- EAS build: c1542202-1d63-4e62-99af-0fae4ba9131d, FINISHED.
+  https://expo.dev/accounts/abad003/projects/sanad/builds/c1542202-1d63-4e62-99af-0fae4ba9131d
+- Signed IPA source matches 57f5835924eebadcd9c508a7a7a84e564e9251a7.
+  app.akhoo.help, 2.0.2 (24), 92,801,740 bytes, iOS 16.4 minimum,
+  OTA disabled; 18 videos and four Tajawal font hashes verified.
+- Existing offline 3D bridge, WebView and MaskedView present; prior icon-credit
+  footer removal and dedicated licenses entry preserved.
+- Submission: 9ec95053-d0d7-4702-a86a-76a17a32e819, delivered to Apple.
+- Apple build: e0b76a68-5ef4-46b0-b42e-c882f856c9f9, VALID,
+  IN_BETA_TESTING, available to internal group Test.
+- Upload COMPLETE with no errors or warnings.
+- Published App Store version remains 2.0.1 (17), READY_FOR_SALE, with
+  version/build IDs unchanged from the pre-submission baseline.
+- No App Store release, Google Play, Vercel or OTA deployment performed.
