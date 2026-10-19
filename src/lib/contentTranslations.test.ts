@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { BUSINESS_TEXT_FIELDS, contentText, localizeContent, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
-import { translateArabic, translationFields } from '../../supabase/functions/_shared/translation'
+import { translateArabic, translateText, translationFields, userTextRequest } from '../../supabase/functions/_shared/translation'
 
 describe('localized published content', () => {
   const translations = { ar: { title: 'هدية' }, en: { title: 'Gift' }, he: { title: 'מתנה' } }
@@ -46,6 +46,18 @@ describe('localized published content', () => {
     })
     expect(await translateArabic({ title: 'هدية', body: '' }, 'test-key', request)).toEqual({ ar: { title: 'هدية', body: '' }, en: { title: 'Gift', body: '' }, he: { title: 'מתנה', body: '' } })
     expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('validates user text translation requests and detects the source language', async () => {
+    expect(userTextRequest({ text: 'مرحبا', target: 'he', extra: 'ignored' })).toEqual({ text: 'مرحبا', target: 'he' })
+    expect(() => userTextRequest({ text: '   ', target: 'en' })).toThrow()
+    expect(() => userTextRequest({ text: 'a'.repeat(1501), target: 'en' })).toThrow()
+    expect(() => userTextRequest({ text: 'hi', target: 'fr' })).toThrow()
+    const request = vi.fn(async (_url: string | URL | Request, options?: RequestInit) => {
+      expect(JSON.parse(String(options?.body))).toEqual({ q: ['hello'], target: 'ar', format: 'text' })
+      return Response.json({ data: { translations: [{ translatedText: 'مرحبا', detectedSourceLanguage: 'iw' }] } })
+    })
+    expect(await translateText('hello', 'ar', 'key', request)).toEqual({ text: 'مرحبا', detected: 'he' })
+    await expect(translateText('hello', 'ar', 'key', async () => Response.json({ data: { translations: [] } }))).rejects.toThrow('Incomplete')
   })
   it('never treats a failed or partial provider response as successful translation', async () => {
     await expect(translateArabic({ body: 'أهلاً' }, 'test', async () => new Response('', { status: 429 }))).rejects.toThrow('unavailable')

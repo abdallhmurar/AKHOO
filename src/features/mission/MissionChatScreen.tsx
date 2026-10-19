@@ -19,6 +19,7 @@ import { messageRepository } from '../../repositories/messageRepository'
 import type { ChatMessage } from '../../repositories/messageRepository'
 import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, IconButton, useToast } from '../../components/ui'
+import { TranslatableText } from '../../components/TranslatableText'
 import { ChatSafety, useChatBlocked } from './ChatSafety'
 
 function useMissionDetail(missionId: string) {
@@ -129,7 +130,7 @@ export function MissionChatScreen() {
             </Pressable>
           ) : null}
           {item.media_type === 'video' && item.media_url ? <ChatVideoBubble uri={item.media_url} /> : null}
-          {item.body ? <Text style={[typography.body, { color: isMine ? theme.colors.onPrimary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{item.body}</Text> : null}
+          {item.body ? <TranslatableText text={item.body} translatable={!isMine} style={[typography.body, { color: isMine ? theme.colors.onPrimary : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]} /> : null}
         </View>
       </View>
     )
