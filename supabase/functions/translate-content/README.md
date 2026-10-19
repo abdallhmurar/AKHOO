@@ -1,6 +1,6 @@
 # Published content translation
 
-Admin-only endpoint. Arabic originals are stored alongside English/Hebrew translations for offers, businesses (name, description, address, service area), announcements and support replies. Images and text embedded in images are not translated. Internal support notes and user-authored chat messages are not sent to the provider.
+Admin-only endpoint. Arabic originals are stored alongside English/Hebrew translations for offers, businesses (name, description, address, service area), announcements and support replies. Images and text embedded in images are not translated. Internal support notes and user-authored text are never sent by this admin endpoint. User-written text (reviews, request notes, mission chat) is translated only when a reader taps **Translate**, through the separate `translate-user-text` function (see below).
 
 ## Activate
 
@@ -26,3 +26,7 @@ The server sends only the selected text fields, not identifiers, emails, image U
 ## Verification
 
 `npm test`, `npm run typecheck`, `npm run typecheck:edge`, and the admin test/build cover input bounds, complete provider responses, source freshness, language switching, private support access, announcement eligibility/receipts and per-device push ownership. A live provider smoke test is still required after setting a real key.
+
+## On-demand translation of user text (`translate-user-text`)
+
+Signed-in users can tap **Translate** under a review, a request note or a received chat message. The app sends that one text and the reader's language; the function checks the session, applies a per-user limit of 60 translations per hour (`consume_translation_quota`, migration 0046) and calls the same Google credentials as `translate-content`. The source language is auto-detected; text already in the reader's language returns `same`. Nothing is stored or logged, the app keeps results only in memory for the session, and the privacy policy discloses this. Deploy it with `supabase functions deploy translate-user-text` after applying migration 0046.

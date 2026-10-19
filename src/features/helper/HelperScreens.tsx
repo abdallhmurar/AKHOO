@@ -27,6 +27,7 @@ import type { ServiceType } from '../../types'
 import { AppScreen, ScreenHeader } from '../../components/v2'
 import { BottomSheet, Button, Card, IconButton, StatusBadge, Surface, useToast } from '../../components/ui'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
+import { TranslatableText } from '../../components/TranslatableText'
 import { SanadMap } from '../../components/SanadMap'
 import type { SanadMapRef } from '../../components/SanadMap.types'
 
@@ -358,7 +359,7 @@ export function HelperHomeScreen() {
                 <Text style={[typography.caption, { color: theme.colors.primary }]}>{formatElapsed(now - new Date(selectedRequest.created_at).getTime(), t)}</Text>
               </View>
             </View>
-            {selectedRequest.note ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{selectedRequest.note}</Text> : null}
+            {selectedRequest.note ? <TranslatableText text={selectedRequest.note} style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]} /> : null}
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} /> : null}
             <View style={[styles.sheetActions, dirStyles(isRTL).row]}>
               <Pressable onPress={() => Linking.openURL(directionsHref(selectedRequest.latitude, selectedRequest.longitude, navigationApp))} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>

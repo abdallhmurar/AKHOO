@@ -47,3 +47,30 @@ export async function translateArabic(fields: Record<string, string>, credential
   }))
   return { ar: fields, ...Object.fromEntries(translations) }
 }
+
+export type TranslationTarget = 'ar' | 'he' | 'en'
+export type UserTextTranslation = { text: string; detected: TranslationTarget | string | null }
+
+// Text written by app users, translated only after the reader taps "Translate".
+export function userTextRequest(input: unknown): { text: string; target: TranslationTarget } {
+  if (!input || typeof input !== 'object') throw new Error('Invalid translation request')
+  const { text, target } = input as { text?: unknown; target?: unknown }
+  if (typeof text !== 'string' || !text.trim() || text.length > 1500) throw new Error('Invalid translation text')
+  if (target !== 'ar' && target !== 'he' && target !== 'en') throw new Error('Invalid translation language')
+  return { text, target }
+}
+
+// The source language is detected by the provider. Plain-text mode keeps markup inert.
+export async function translateText(text: string, target: TranslationTarget, credential: string | { accessToken: string }, request: typeof fetch = fetch): Promise<UserTextTranslation> {
+  const response = await request('https://translation.googleapis.com/language/translate/v2', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', ...(typeof credential === 'string' ? { 'X-Goog-Api-Key': credential } : { Authorization: `Bearer ${credential.accessToken}` }) },
+    body: JSON.stringify({ q: [text], target, format: 'text' }),
+    signal: AbortSignal.timeout(25000)
+  })
+  if (!response.ok) throw new Error('Translation provider unavailable')
+  const data = await response.json()
+  const first = data?.data?.translations?.[0]
+  if (typeof first?.translatedText !== 'string' || !first.translatedText.trim() || first.translatedText.length > 6000) throw new Error('Incomplete translation')
+  const detected = typeof first.detectedSourceLanguage === 'string' ? first.detectedSourceLanguage.toLowerCase().split('-')[0] : null
+  return { text: first.translatedText, detected: detected === 'iw' ? 'he' : detected }
+}

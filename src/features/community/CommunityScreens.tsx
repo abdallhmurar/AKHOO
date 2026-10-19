@@ -31,6 +31,7 @@ import { OfferCard } from '../../components/OfferCard'
 import { OfferGallery } from '../../components/OfferGallery'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
+import { TranslatableText } from '../../components/TranslatableText'
 import { HelperMedal } from '../../components/HelperMedal'
 
 const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
@@ -298,7 +299,7 @@ export function BusinessDetailScreen() {
               <RatingStars rating={review.rating} count={1} size={12.5} />
               <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{new Date(review.created_at).toLocaleDateString()}</Text>
             </View>
-            {review.comment ? <Text style={[typography.small, { color: theme.colors.textSecondary, marginTop: 4 }]}>{review.comment}</Text> : null}
+            {review.comment ? <TranslatableText text={review.comment} style={[typography.small, { color: theme.colors.textSecondary, marginTop: 4 }]} /> : null}
           </Card>
         ))}</View>
       )}
