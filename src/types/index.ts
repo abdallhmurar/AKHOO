@@ -107,6 +107,7 @@ export type Partner = {
   opening_hours: OpeningHours | null
   website_url: string | null
   social_url: string | null
+  translations?: import('../../shared/contentTranslations').ContentTranslations
   market: string
   status: PartnerStatus
   is_active: boolean

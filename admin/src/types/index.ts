@@ -119,6 +119,7 @@ export type Business = {
   opening_hours: OpeningHours | null
   website_url: string | null
   social_url: string | null
+  translations?: import('../../../shared/contentTranslations').ContentTranslations
   market: string
   status: BusinessStatus
   is_active: boolean

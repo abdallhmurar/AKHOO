@@ -3,7 +3,9 @@ import i18next from 'i18next'
 import { supabase } from './supabase'
 import type { ContentTranslations } from '../../../shared/contentTranslations'
 
-export async function translateForPublish(kind: 'offer' | 'announcement' | 'support', fields: Record<string, string | null | undefined>, existing?: ContentTranslations): Promise<ContentTranslations> {
+export type TranslationKind = 'offer' | 'announcement' | 'support' | 'business'
+
+export async function translateForPublish(kind: TranslationKind, fields: Record<string, string | null | undefined>, existing?: ContentTranslations): Promise<ContentTranslations> {
   const source = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, value ?? '']))
   if (!Object.values(source).some(value => value.trim())) return {}
   if (existing && ['en', 'he'].every(language => Object.entries(source).every(([key, value]) => existing.ar?.[key] === value && (!value.trim() || typeof existing[language as 'en' | 'he']?.[key] === 'string' && !!existing[language as 'en' | 'he']?.[key]?.trim())))) return existing

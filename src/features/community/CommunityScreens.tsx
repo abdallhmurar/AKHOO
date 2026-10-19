@@ -1,5 +1,5 @@
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
-import { localizeContent, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
+import { localizeContent, BUSINESS_TEXT_FIELDS, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useEffect, useState } from 'react'
 import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
@@ -175,12 +175,13 @@ export function CommunityHubScreen() {
   )
 }
 
-function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; business?: Partner; onUse: () => void }) {
+function RealOfferCard({ offer, business: originalBusiness, onUse }: { offer: PartnerOffer; business?: Partner; onUse: () => void }) {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t, i18n } = useTranslation()
   offer = localizeContent(offer, i18n.language, OFFER_TEXT_FIELDS)
+  const business = originalBusiness ? localizeContent(originalBusiness, i18n.language, BUSINESS_TEXT_FIELDS) : undefined
   const price = computeOfferPriceDisplay(offer)
   const savings = computeSavings(price)
   const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
@@ -234,7 +235,7 @@ export function BusinessDetailScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const { businessId } = useLocalSearchParams<{ businessId: string }>()
   const query = useQuery({ queryKey: ['community', 'business', businessId], queryFn: () => loadBusinessDetail(String(businessId)), enabled: !!businessId })
@@ -243,7 +244,8 @@ export function BusinessDetailScreen() {
   if (query.isLoading) return <AppScreen header={<ScreenHeader title={t('perks.business.title')} back />}><Skeleton width="100%" height={220} /><Skeleton width="100%" height={140} /></AppScreen>
   if (!query.data) return <AppScreen header={<ScreenHeader title={t('perks.business.title')} back />} contentStyle={styles.content}><EmptyState Icon={MapPin} title={t('perks.business.notFound')} /></AppScreen>
 
-  const { business, photos, rating, offers, reviews } = query.data
+  const { photos, rating, offers, reviews } = query.data
+  const business = localizeContent(query.data.business, i18n.language, BUSINESS_TEXT_FIELDS)
   const Icon = businessCategoryIcons[business.category]
   const gallery = photos.length > 0 ? photos.map(p => p.url) : business.logo_url ? [business.logo_url] : []
 
@@ -380,8 +382,9 @@ export function OfferDetailScreen() {
   if (query.isLoading) return <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />}><Skeleton width="100%" height={220} /><Skeleton width="100%" height={140} /></AppScreen>
   if (!query.data) return <AppScreen header={<ScreenHeader title={t('perks.offer.title')} back />} contentStyle={styles.content}><EmptyState Icon={Tag} title={t('perks.offer.notFound')} /></AppScreen>
 
-  const { offer: originalOffer, business, rating } = query.data
+  const { offer: originalOffer, business: originalBusiness, rating } = query.data
   const offer = localizeContent(originalOffer, i18n.language, OFFER_TEXT_FIELDS)
+  const business = originalBusiness ? localizeContent(originalBusiness, i18n.language, BUSINESS_TEXT_FIELDS) : null
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_url ?? business?.logo_url ?? null
   const images = offer.image_urls?.length ? offer.image_urls : imageUri ? [imageUri] : []
