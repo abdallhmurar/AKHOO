@@ -13,7 +13,6 @@ import { businessCategoryIcons } from '../../lib/businessCategories'
 import { telHref, whatsappHref, directionsHref } from '../../lib/contactLinks'
 import { useNavigationApp } from '../../lib/navigationPreference'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../../lib/market'
-import { useMembership, resolveOfferUseAction } from '../../lib/membership'
 import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '../../lib/offerPricing'
 import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import { useStaggeredReveal } from '../../lib/useStaggeredReveal'
@@ -27,11 +26,9 @@ import type { BusinessPhoto, BusinessRating, OfferRedemption, Partner, PartnerOf
 import { AppScreen, MapPanel, ScreenHeader, SectionHeading } from '../../components/v2'
 import { BottomSheet, Button, Card } from '../../components/ui'
 import { EmptyState } from '../../components/EmptyState'
-import { MembershipSheet } from '../../components/MembershipSheet'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { OfferCard } from '../../components/OfferCard'
 import { OfferGallery } from '../../components/OfferGallery'
-import { PlusBadge } from '../../components/PlusBadge'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
 import { HelperMedal } from '../../components/HelperMedal'
@@ -199,7 +196,6 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
           <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
           {offer.offer_type_label ? <Text style={[typography.smallMedium, { color: theme.colors.community, textAlign }]}>{offer.offer_type_label}</Text> : null}
           {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
-          {offer.member_only ? <PlusBadge size="sm" /> : null}
           {price.kind === 'free_benefit' ? <Text style={[typography.bodyMedium, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft, textAlign }]}>{t('perks.offer.free')}</Text> : (
             <View style={[styles.hubPriceRow, dirStyles(isRTL).row]}>
               {price.offerPrice != null ? <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{formatPrice(price.offerPrice, CURRENT_MARKET.currencySymbol)}</Text> : null}
@@ -332,12 +328,10 @@ export function OfferDetailScreen() {
   const { offerId } = useLocalSearchParams<{ offerId: string }>()
   const { session } = useAuth()
   const userId = session!.user.id
-  const { isPlusMember } = useMembership(userId)
   const queryClient = useQueryClient()
   const query = useQuery({ queryKey: ['community', 'offer', offerId], queryFn: () => loadOfferDetail(String(offerId)), enabled: !!offerId })
   const balanceQuery = useQuery({ queryKey: ['community', 'points', userId], queryFn: () => rewardRepository.points(userId) })
   const navigationApp = useNavigationApp()
-  const [membershipOpen, setMembershipOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
   const [insufficientOpen, setInsufficientOpen] = useState(false)
   const [redemption, setRedemption] = useState<OfferRedemption | null>(null)
@@ -349,7 +343,6 @@ export function OfferDetailScreen() {
 
   async function handleUse() {
     if (!query.data) return
-    if (resolveOfferUseAction(query.data.offer, isPlusMember) === 'membership-required') { setMembershipOpen(true); return }
     if (!usesPoints) { setContactOpen(true); return }
 
     const required = query.data.offer.points_required ?? 0
@@ -394,9 +387,8 @@ export function OfferDetailScreen() {
   const images = offer.image_urls?.length ? offer.image_urls : imageUri ? [imageUri] : []
 
   return (
-    <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant={offer.member_only ? 'reward' : 'primary'} onPress={handleUse} loading={creating} />} contentStyle={styles.content}>
+    <AppScreen header={<ScreenHeader title={offer.title} back />} footer={<Button label={t('perks.offer.use')} variant="primary" onPress={handleUse} loading={creating} />} contentStyle={styles.content}>
       {images.length ? <OfferGallery key={offer.id} images={images} title={offer.title} /> : <View style={[styles.offerHero, styles.galleryFallback, { backgroundColor: theme.colors.rewardSoft }]} />}
-      {offer.member_only ? <PlusBadge size="md" /> : null}
       <Text style={[typography.h1, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.title}</Text>
       {offer.offer_type_label ? <Text style={[typography.bodyMedium, { color: theme.colors.community, textAlign: isRTL ? 'right' : 'left' }]}>{offer.offer_type_label}</Text> : null}
 
@@ -422,8 +414,6 @@ export function OfferDetailScreen() {
       {offer.description ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.description}</Text> : null}
       {offer.terms ? <Card title={t('perks.offer.termsTitle')} elevation="none"><Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{offer.terms}</Text></Card> : null}
       <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{offer.valid_until ? t('perks.offer.validUntil', { date: new Date(offer.valid_until).toLocaleDateString() }) : t('perks.offer.validNoLimit')}</Text>
-
-      <MembershipSheet visible={membershipOpen} onClose={() => setMembershipOpen(false)} offerLocked />
 
       <BottomSheet visible={insufficientOpen} onClose={() => setInsufficientOpen(false)} title={t('perks.offer.insufficientPointsTitle')} subtitle={t('perks.offer.insufficientPointsMessage', { points: offer.points_required, balance: balanceQuery.data?.balance ?? 0 })} />
 
