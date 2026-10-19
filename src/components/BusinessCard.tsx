@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { Tag } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
+import { localizeContent, BUSINESS_TEXT_FIELDS } from '../../shared/contentTranslations'
 import { businessCategoryIcons } from '../lib/businessCategories'
 import { colors, font, radius, shadow, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
@@ -16,7 +17,7 @@ import { Tactile } from './Tactile'
 // system. `row` stays a dense horizontal line, kept for filtered/search
 // results where scanning many hits matters more than browsing.
 export function BusinessCard({
-  business,
+  business: originalBusiness,
   rating,
   hasOffer,
   variant = 'grid',
@@ -28,7 +29,8 @@ export function BusinessCard({
   variant?: 'grid' | 'row'
   onPress: () => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const business = localizeContent(originalBusiness, i18n.language, BUSINESS_TEXT_FIELDS)
   const dir = dirStyles(useIsRTL())
   const Icon = businessCategoryIcons[business.category]
 

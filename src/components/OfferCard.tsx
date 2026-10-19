@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { localizeContent, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
+import { localizeContent, BUSINESS_TEXT_FIELDS, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
 import { colors, font, radius, shadow, space } from '../lib/theme'
 import { dirStyles, useIsRTL } from '../lib/direction'
 import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '../lib/offerPricing'
@@ -11,7 +11,7 @@ import { Tactile } from './Tactile'
 
 export function OfferCard({
   offer: originalOffer,
-  business,
+  business: originalBusiness,
   rating,
   variant = 'rail',
   onPress
@@ -24,6 +24,7 @@ export function OfferCard({
 }) {
   const { i18n } = useTranslation()
   const offer = localizeContent(originalOffer, i18n.language, OFFER_TEXT_FIELDS)
+  const business = originalBusiness ? localizeContent(originalBusiness, i18n.language, BUSINESS_TEXT_FIELDS) : undefined
   const dir = dirStyles(useIsRTL())
   const price = computeOfferPriceDisplay(offer)
   const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url ?? null

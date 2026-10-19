@@ -26,3 +26,4 @@ export function localizeContent<T extends { translations?: ContentTranslations }
 
 export const OFFER_TEXT_FIELDS = ['title', 'description', 'terms', 'offer_type_label'] as const
 export const ANNOUNCEMENT_TEXT_FIELDS = ['title', 'body', 'details'] as const
+export const BUSINESS_TEXT_FIELDS = ['name', 'description', 'address', 'service_area'] as const

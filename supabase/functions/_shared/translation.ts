@@ -3,6 +3,7 @@ import type { ContentTranslations } from '../../../shared/contentTranslations.ts
 const fieldsByKind = {
   offer: ['title', 'description', 'terms', 'offer_type_label'],
   announcement: ['title', 'body', 'details'],
+  business: ['name', 'description', 'address', 'service_area'],
   support: ['body']
 } as const
 

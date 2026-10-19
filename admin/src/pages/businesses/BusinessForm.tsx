@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ContentTranslationNotice } from '@/components/ContentTranslationNotice'
 import { BUSINESS_CATEGORIES, BUSINESS_CATEGORY_LABEL_KEYS } from '@/lib/categories'
 import { uploadBusinessImage, ImageValidationError } from '@/lib/storage'
 import type { Business, OpeningHours } from '@/types'
@@ -61,6 +62,7 @@ export function BusinessForm({ business }: { business?: Business }) {
     try {
       const result = await upsert.mutateAsync({
         id: business?.id ?? null,
+        existingTranslations: business?.translations,
         payload: {
           name,
           category,
@@ -86,6 +88,7 @@ export function BusinessForm({ business }: { business?: Business }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <ContentTranslationNotice />
       <Card>
         <CardContent className="flex flex-col gap-4 p-4">
           <h2 className="text-sm font-semibold text-foreground">{t('businesses.form.sections.general')}</h2>
