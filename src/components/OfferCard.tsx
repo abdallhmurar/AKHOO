@@ -7,7 +7,6 @@ import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '.
 import { CURRENT_MARKET } from '../lib/market'
 import type { BusinessRating, Partner, PartnerOffer } from '../types'
 import { RatingStars } from './RatingStars'
-import { PlusBadge } from './PlusBadge'
 import { Tactile } from './Tactile'
 
 export function OfferCard({
@@ -33,7 +32,6 @@ export function OfferCard({
     <Tactile onPress={onPress} style={[styles.card, variant === 'rail' ? styles.railCard : styles.listCard]} scaleTo={0.97}>
       <View style={styles.imageWrap}>
         {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" /> : <View style={[styles.image, styles.imageFallback]} />}
-        {offer.member_only ? <View style={styles.badgeWrap}><PlusBadge /></View> : null}
         {/* Business logo overlaps the image's bottom corner (delivery-app
             card anatomy from the reference board's discount/deals research)
             instead of the business name only appearing as plain text below -

@@ -671,12 +671,6 @@
     "rating": {
       "new": "جديد"
     },
-    "plusBadge": "PLUS",
-    "hero": {
-      "title": "AKHOO+",
-      "subtitle": "بيفتح استخدام عروض الأعضاء عند شركاء أخوو.",
-      "cta": "تعرف على AKHOO+"
-    },
     "empty": {
       "offersTitle": "ما في عروض حالياً",
       "offersMessage": "بنشتغل على ضم شركاء جدد، رجعلنا بعد شوي.",
@@ -684,19 +678,6 @@
       "businessesMessage": "قريباً رح تلاقي هون شركاء موثوقين قريبين منك.",
       "searchTitle": "ما لقينا نتائج",
       "searchMessage": "جرب كلمة بحث ثانية أو تصنيف مختلف."
-    },
-    "membershipSheet": {
-      "offerLockedTitle": "هاد العرض متاح لأعضاء AKHOO+",
-      "offerLockedMessage": "اشترك حتى تستفيد من هاد العرض وباقي عروض AKHOO+.",
-      "genericTitle": "AKHOO+",
-      "genericMessage": "مساعدة المتطوعين بتضل مجانية دائماً. AKHOO+ بيفتح استخدام عروض حقيقية عند شركائنا.",
-      "benefitDiscounts": "خصومات حقيقية عند شركاء أخوو الموثوقين",
-      "benefitPriority": "أولوية عند توفر خدمات احترافية بالمستقبل",
-      "benefitSupport": "دعم مخصص لأعضاء AKHOO+",
-      "learnMore": "تعرف على AKHOO+",
-      "notNow": "ليس الآن",
-      "comingSoon": "الاشتراك جوا التطبيق رح يتوفر قريباً.",
-      "notAvailableInMarket": "تفعيل عضوية AKHOO+ مش متاح لسا بمنطقتك."
     },
     "offer": {
       "title": "تفاصيل العرض",

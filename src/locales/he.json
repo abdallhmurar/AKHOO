@@ -671,12 +671,6 @@
     "rating": {
       "new": "חדש"
     },
-    "plusBadge": "PLUS",
-    "hero": {
-      "title": "AKHOO+",
-      "subtitle": "פותח שימוש במבצעים לחברים אצל השותפים של סָנָד.",
-      "cta": "מידע על AKHOO+"
-    },
     "empty": {
       "offersTitle": "אין מבצעים כרגע",
       "offersMessage": "אנחנו מצרפים שותפים חדשים - בדקו שוב בקרוב.",
@@ -684,19 +678,6 @@
       "businessesMessage": "שותפים אמינים לידך יופיעו כאן בקרוב.",
       "searchTitle": "לא נמצאו תוצאות",
       "searchMessage": "נסו מונח חיפוש אחר או קטגוריה אחרת."
-    },
-    "membershipSheet": {
-      "offerLockedTitle": "מבצע זה מיועד לחברי AKHOO+",
-      "offerLockedMessage": "הצטרפו כדי להשתמש במבצע הזה ובמבצעי AKHOO+ נוספים.",
-      "genericTitle": "AKHOO+",
-      "genericMessage": "עזרת המתנדבים תמיד תישאר חינמית. AKHOO+ פותחת שימוש במבצעים אמיתיים אצל השותפים שלנו.",
-      "benefitDiscounts": "הנחות אמיתיות אצל שותפים אמינים של סָנָד",
-      "benefitPriority": "עדיפות כאשר שירותי גיבוי מקצועי ייכנסו לפעולה",
-      "benefitSupport": "תמיכה ייעודית לחברי AKHOO+",
-      "learnMore": "מידע על AKHOO+",
-      "notNow": "לא עכשיו",
-      "comingSoon": "הרשמה בתוך האפליקציה תהיה זמינה בקרוב.",
-      "notAvailableInMarket": "הפעלת חברות AKHOO+ עדיין לא זמינה באזור שלך."
     },
     "offer": {
       "title": "פרטי המבצע",
@@ -707,7 +688,7 @@
       "validNoLimit": "ללא תאריך תפוגה",
       "viewBusiness": "הצג עסק",
       "contactTitle": "צרו קשר עם העסק כדי להשתמש במבצע",
-      "contactMessage": "סָנָד לא מזמינה עבורכם את המבצע - פנו ישירות לעסק כדי להשתמש בו.",
+      "contactMessage": "אחוו לא מזמינה עבורכם את המבצע - פנו ישירות לעסק כדי להשתמש בו.",
       "notFound": "מבצע זה כבר לא זמין.",
       "insufficientPointsTitle": "אין עדיין מספיק נקודות",
       "insufficientPointsMessage": "המבצע הזה דורש {{points}} נקודות - יש לך כרגע {{balance}}.",

@@ -671,12 +671,6 @@
     "rating": {
       "new": "New"
     },
-    "plusBadge": "PLUS",
-    "hero": {
-      "title": "AKHOO+",
-      "subtitle": "Unlocks using member offers with AKHOO's partners.",
-      "cta": "Learn about AKHOO+"
-    },
     "empty": {
       "offersTitle": "No offers right now",
       "offersMessage": "We're onboarding new partners — check back soon.",
@@ -684,19 +678,6 @@
       "businessesMessage": "Trusted partners near you will show up here soon.",
       "searchTitle": "No results",
       "searchMessage": "Try a different search term or category."
-    },
-    "membershipSheet": {
-      "offerLockedTitle": "This offer is for AKHOO+ members",
-      "offerLockedMessage": "Subscribe to use this offer and other AKHOO+ offers.",
-      "genericTitle": "AKHOO+",
-      "genericMessage": "Volunteer help always stays free. AKHOO+ unlocks using real offers with our partners.",
-      "benefitDiscounts": "Real discounts with AKHOO's trusted partners",
-      "benefitPriority": "Priority when professional backup services launch",
-      "benefitSupport": "Dedicated support for AKHOO+ members",
-      "learnMore": "Learn about AKHOO+",
-      "notNow": "Not now",
-      "comingSoon": "In-app subscription is coming soon.",
-      "notAvailableInMarket": "AKHOO+ membership activation isn't available in your region yet."
     },
     "offer": {
       "title": "Offer details",
