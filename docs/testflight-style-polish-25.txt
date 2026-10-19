@@ -1,0 +1,42 @@
+AKHOO — visual polish / TestFlight 2.0.2 (25)
+2026-10-19
+
+Requested release
+Publish the approved layout, media, icon, button and gallery changes to
+TestFlight only. The detailed change report is style-polish-2026-10-19.txt.
+
+Source
+https://github.com/abdallhmurar/AKHOO/commit/de31ff27197ba798a26568812fac549bbf6e4065
+Visual changes: 48142fd3cc22836c8a9c0bb07b79412de0ec4c14.
+Only the TestFlight build number changed from 24 to 25 for this release.
+
+Validation
+- 25 tests across seven files passed, including TestFlight release isolation,
+  gallery navigation, translations/RTL, playback lifecycle and scene protocol.
+- Prior typecheck, targeted ESLint, CSS checks and iOS/web exports passed.
+- Prior local browser visual checks covered Arabic, English and Hebrew at
+  narrow widths, plus dark mode and gallery touch navigation.
+- Browser adapters do not certify physical iPhone playback, WKWebView behavior
+  or Dynamic Type. No physical iPhone runtime test was performed here.
+- Signed IPA: app.akhoo.help, 2.0.2 (25), iOS 16.4 minimum, 92,803,409 bytes.
+- OTA disabled; 18 video files and four Tajawal font hashes verified.
+- Offline 3D scene bridge, native WebView and MaskedView verified in the IPA.
+- No temporary style-audit route or old icon-credit footer in the IPA.
+  The dedicated licenses entry remains present.
+
+Delivery
+- EAS build e04ccb34-88e6-4fad-a8f8-420a4e49e4ce: FINISHED.
+  https://expo.dev/accounts/abad003/projects/sanad/builds/e04ccb34-88e6-4fad-a8f8-420a4e49e4ce
+- Submission 14cd3d58-c623-467d-bd80-791b315ca061: uploaded to Apple.
+- Apple build f2b44df9-6534-4b13-ac0a-231b02939e8c: VALID,
+  IN_BETA_TESTING, available to the existing internal group Test.
+- Apple upload COMPLETE with no errors, warnings or informational issues.
+- Arabic (ar-SA) What to Test notes saved and read back through Apple's API.
+- Final API comparison confirms the published App Store version and build IDs
+  and version attributes match the pre-submission baseline.
+- Xcode emitted a non-fatal Metal toolchain search-path warning; signing and
+  archive export completed successfully. Apple upload has no reported warnings.
+
+Release boundaries
+The App Store baseline remains 2.0.1 (17), READY_FOR_SALE. No App Store review,
+public release, Google Play operation or OTA publish was requested or performed.
