@@ -25,6 +25,7 @@ export function MotionScene(props: MotionSceneProps) {
 }
 
 function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps & { media: { video: number; poster: number } }) {
+  const theme = useSanadTheme()
   const ref = useRef<View>(null)
   const { height: viewportHeight, width: viewportWidth } = useWindowDimensions()
   const [focused, setFocused] = useState(false)
@@ -77,7 +78,7 @@ function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps
     {!ready || failed || reduced ? <Image source={media.poster} style={styles.fill} resizeMode="cover" /> : null}
   </>
   return <View ref={ref} collapsable={false} style={[styles.scene, frame]} onLayout={event => setSize(event.nativeEvent.layout)}>
-    <View pointerEvents="none" accessible={false} accessibilityElementsHidden style={[styles.artwork, artwork]}>
+    <View pointerEvents="none" accessible={false} accessibilityElementsHidden style={[styles.artwork, artwork, theme.isDark && { opacity: name === 'perks' ? 0.62 : 0.72 }]}>
       {fit === 'contain' && name !== 'perks' ? <BlendedArt edge="soft">{content}</BlendedArt> : content}
     </View>
     {children}
@@ -95,10 +96,17 @@ export function PerksHeader() {
   const isRTL = useIsRTL()
   const typography = useAppTypography()
   const theme = useSanadTheme()
+  const { fontScale } = useWindowDimensions()
   const [width, setWidth] = useState(0)
-  return <View style={[styles.perks, { backgroundColor: theme.isDark ? '#153347' : '#eefaff', minHeight: width * 3 / 7 }]} onLayout={event => setWidth(event.nativeEvent.layout.width)}>
-    <View style={styles.perksArt} pointerEvents="none"><BlendedArt start={0.84}><MotionScene name="perks" style={{ width, aspectRatio: 7 / 3, borderRadius: 0 }} fit="contain" /></BlendedArt></View>
-    <View style={styles.perksCopy}>
+  const stacked = fontScale >= 1.3
+  // Keep the two people and logo intact; the rightmost third contains baked-in Arabic.
+  const artWidth = stacked ? Math.min(width, 260) : width * (width < 350 ? 0.48 : 0.54)
+  const videoWidth = artWidth / 0.66
+  return <View style={[styles.perks, { backgroundColor: theme.isDark ? '#153347' : '#eefaff', minHeight: 150 }]} onLayout={event => setWidth(event.nativeEvent.layout.width)}>
+    <View style={[styles.perksArt, { width: artWidth }, stacked && { position: 'relative', height: videoWidth * 3 / 7, alignSelf: 'center' }]} pointerEvents="none">
+      <View style={{ height: videoWidth * 3 / 7, overflow: 'hidden' }}><BlendedArt edge="soft"><MotionScene name="perks" style={{ width: videoWidth, aspectRatio: 7 / 3, borderRadius: 0 }} fit="contain" /></BlendedArt></View>
+    </View>
+    <View style={[styles.perksCopy, { marginLeft: stacked ? 0 : artWidth }]}>
       <Text accessibilityRole="header" style={[typography.h2, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.title')}</Text>
       <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.hubSubtitle')}</Text>
     </View>
@@ -115,6 +123,6 @@ const styles = StyleSheet.create({
   header: { minHeight: 130, marginHorizontal: -20, marginTop: -16, overflow: 'hidden' },
   headerCopy: { padding: 20, minHeight: 130, justifyContent: 'center', gap: 8 },
   perks: { position: 'relative', marginHorizontal: -16, marginTop: -16, overflow: 'hidden', justifyContent: 'center' },
-  perksArt: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '66%', overflow: 'hidden', justifyContent: 'center' },
-  perksCopy: { marginLeft: '66%', paddingHorizontal: 10, paddingVertical: 16, justifyContent: 'center', gap: 6 },
+  perksArt: { position: 'absolute', left: 0, top: 0, bottom: 0, overflow: 'hidden', justifyContent: 'center' },
+  perksCopy: { paddingHorizontal: 14, paddingVertical: 20, justifyContent: 'center', gap: 6 },
 })

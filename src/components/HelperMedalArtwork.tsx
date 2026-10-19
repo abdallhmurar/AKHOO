@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { Platform } from 'react-native'
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg'
 import { ACTIVITY_LEVEL_COLORS, type ActivityLevel } from '../lib/activityLevel'
 import { palette } from '../lib/theme'
@@ -9,7 +10,7 @@ export function HelperMedalArtwork({ level, size = 52 }: { level: ActivityLevel;
   const metal = level === 'none' ? palette.slate300 : ACTIVITY_LEVEL_COLORS[level]
   const emblem = level === 'gold' || level === 'bronze' ? palette.goldPressed : level === 'green' ? palette.tealPressed : palette.slate600
   return (
-    <Svg width={size} height={size * 1.25} viewBox="0 0 64 80" accessible={false}>
+    <Svg width={size} height={size * 1.25} viewBox="0 0 64 80" {...(Platform.OS === 'web' ? { 'aria-hidden': true } : { accessible: false })}>
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor={palette.white} />

@@ -757,8 +757,10 @@
     "gallery": {
       "imageNumber": "תמונה {{number}}",
       "enlarge": "הגדלת התמונה של {{title}}",
-      "hint": "{{current}} / {{total}} • לחצו על התמונה להגדלה",
-      "close": "סגירת התמונה"
+      "hint": "⁦{{current}} / {{total}}⁩ • לחצו על התמונה להגדלה",
+      "close": "סגירת התמונה",
+      "previous": "הקודמת",
+      "next": "הבאה"
     }
   },
   "navigation": {

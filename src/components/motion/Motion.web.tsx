@@ -4,6 +4,7 @@ import { useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import type { MotionSceneProps } from './Motion.types'
 import { useGuide } from '../../features/guide/GuideProvider'
+import { useIsRTL } from '../../lib/direction'
 import './motion.css'
 
 export function MotionScene({ name, className = '', style, fit = 'cover', children }: MotionSceneProps) {
@@ -45,11 +46,11 @@ export function MotionHeader({ children, kind = 'details' }: { children?: ReactN
 }
 
 export function PerksHeader() {
-  const { t, i18n } = useTranslation()
-  const arabic = i18n.language.startsWith('ar')
-  return <header className={`akhoo-motion perks-motion-header ${arabic ? '' : 'translated'}`}>
-    <MotionScene name="perks" fit="contain" />
-    {arabic ? <h1 className="motion-sr-only">{t('perks.title')}</h1> : <div className="perks-translated-copy"><h1>{t('perks.title')}</h1><p>{t('perks.hubSubtitle')}</p></div>}
+  const { t } = useTranslation()
+  const isRTL = useIsRTL()
+  return <header className="akhoo-motion perks-motion-header" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="perks-header-art"><div className="perks-header-feather"><div className="perks-header-clip"><MotionScene name="perks" fit="contain" /></div></div></div>
+    <div className="perks-header-copy"><h1>{t('perks.title')}</h1><p>{t('perks.hubSubtitle')}</p></div>
   </header>
 }
 

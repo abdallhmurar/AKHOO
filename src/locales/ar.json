@@ -757,8 +757,10 @@
     "gallery": {
       "imageNumber": "الصورة {{number}}",
       "enlarge": "تكبير صورة {{title}}",
-      "hint": "{{current}} / {{total}} • اضغط على الصورة لتكبيرها",
-      "close": "إغلاق الصورة"
+      "hint": "⁦{{current}} / {{total}}⁩ • اضغط على الصورة لتكبيرها",
+      "close": "إغلاق الصورة",
+      "previous": "السابقة",
+      "next": "التالية"
     }
   },
   "navigation": {

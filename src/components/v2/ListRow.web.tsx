@@ -1,4 +1,4 @@
-import { ArtIcon } from '../motion/Motion'
+import { SettingsIcon } from './SettingsIcon'
 import type { Icon } from 'phosphor-react-native'
 import { CaretLeft, CaretRight, UserCircle, Globe, Compass, Moon } from 'phosphor-react-native'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
@@ -17,14 +17,14 @@ export function ListRow({ title, subtitle, Icon, tone = 'primary', onPress, trai
   const artwork = Icon === UserCircle ? 'person' : Icon === Globe ? 'globe' : Icon === Compass ? 'compass' : Icon === Moon ? 'moon' : null
   return (
     <Pressable accessibilityRole={onPress ? 'button' : undefined} disabled={!onPress} onPress={onPress} style={({ pressed }) => [styles.row, { ...dirStyles(isRTL).row, borderColor: theme.colors.border }, pressed && styles.pressed]}>
-      {Icon ? <View style={[styles.icon, { backgroundColor: destructive ? theme.colors.dangerSoft : `${color}12` }]}>{artwork ? <ArtIcon name={artwork} size={28} /> : <Icon size={23} color={color} weight="duotone" />}</View> : null}
+      {({ pressed }) => <>{Icon ? <SettingsIcon Icon={Icon} artwork={artwork} color={color} pressed={pressed} /> : null}
       <View style={styles.copy}>
         <Text style={[typography.bodyMedium, { color: destructive ? theme.colors.danger : theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
         {subtitle ? <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{subtitle}</Text> : null}
       </View>
       {trailing ?? (onPress ? <Arrow size={17} color={theme.colors.textMuted} /> : null)}
-    </Pressable>
+    </>}</Pressable>
   )
 }
 
-const styles = StyleSheet.create({ row: { minHeight: 58, alignItems: 'center', gap: space.md, paddingVertical: 9, borderBottomWidth: StyleSheet.hairlineWidth }, icon: { width: 37, height: 37, borderRadius: 13, alignItems: 'center', justifyContent: 'center' }, copy: { flex: 1, gap: 2 }, pressed: { opacity: 0.68 } })
+const styles = StyleSheet.create({ row: { minHeight: 64, alignItems: 'center', gap: space.md, paddingVertical: 9, borderBottomWidth: StyleSheet.hairlineWidth }, copy: { flex: 1, gap: 2 }, pressed: { opacity: 0.88 } })

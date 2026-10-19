@@ -46,6 +46,7 @@ describe('locale key parity (ar/en/he)', () => {
   it('isolates signed numbers and phone numbers from RTL surrounding text', () => {
     for (const locale of [ar, en, he]) {
       expect(locale.perks.helpProgress).toContain('\u2066{{count}} / {{target}}\u2069')
+      expect(locale.perks.gallery.hint).toContain('\u2066{{current}} / {{total}}\u2069')
       expect(locale.activity.pointsEarned).toContain('\u2066+{{points}}\u2069')
       expect(locale.volunteerJob.completion.pointsEarned).toContain('\u2066+{{points}}\u2069')
       expect(locale.activeRequest.callButton).toContain('\u2066{{phone}}\u2069')

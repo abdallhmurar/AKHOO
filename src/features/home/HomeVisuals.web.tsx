@@ -10,7 +10,7 @@ function assetUri(asset: unknown): string {
 
 const media = {
   header: assetUri(require('./web-assets/road-header.png')),
-  artwork: assetUri(require('./web-assets/home-art.png')),
+  artwork: assetUri(require('../../components/dock-assets/gift.png')),
   help: assetUri(require('./web-assets/help-3d.mp4')),
   helpPoster: assetUri(require('./web-assets/help-3d-poster.png')),
   helper: assetUri(require('./web-assets/helper-3d.mp4')),
@@ -89,15 +89,16 @@ export function HomeVisualActions({ copy, active, onRequest, onHelp, onPerks }: 
         <div className="akh-home-helper-copy">
           <span className="akh-home-points">{copy.points}</span>
           <h2 id="akh-helper-title">{copy.helperTitle}</h2>
-          <button className="akh-home-action akh-home-helper-button" onClick={onHelp} type="button"><span>{copy.helperAction}</span><Arrow /></button>
         </div>
+        <button className="akh-home-action akh-home-helper-button" onClick={onHelp} type="button"><span>{copy.helperAction}</span><Arrow /></button>
       </section>
     </GuideTarget>
     <GuideTarget id="home.perks">
       <section className="akh-home-rewards" aria-labelledby="akh-rewards-title">
         <RewardsGift active={active} label={copy.giftAction} artwork={media.artwork} onFallback={onPerks} />
-        <div className="akh-home-rewards-copy"><h2 id="akh-rewards-title">{copy.rewardsTitle}</h2><p>{copy.rewardsText}</p></div>
-        <button className="akh-home-action akh-home-rewards-button" onClick={onPerks} type="button"><span>{copy.rewardsAction}</span><Arrow /></button>
+        <div className="akh-home-rewards-copy"><h2 id="akh-rewards-title">{copy.rewardsTitle}</h2><p>{copy.rewardsText}</p>
+          <button className="akh-home-action akh-home-rewards-button" onClick={onPerks} type="button"><span>{copy.rewardsAction}</span><Arrow /></button>
+        </div>
       </section>
     </GuideTarget>
   </>

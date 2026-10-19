@@ -757,8 +757,10 @@
     "gallery": {
       "imageNumber": "Photo {{number}}",
       "enlarge": "Enlarge photo of {{title}}",
-      "hint": "{{current}} / {{total}} • Tap the photo to enlarge",
-      "close": "Close photo"
+      "hint": "⁦{{current}} / {{total}}⁩ • Tap the photo to enlarge",
+      "close": "Close photo",
+      "previous": "Previous",
+      "next": "Next"
     }
   },
   "navigation": {

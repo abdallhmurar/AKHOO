@@ -216,9 +216,7 @@ function RealOfferCard({ offer, business, onUse }: { offer: PartnerOffer; busine
           <Ticket size={21} color={theme.colors.textMuted} weight="fill" />
           <Text style={[typography.smallMedium, { color: theme.colors.textSecondary, flexShrink: 1 }]}>{(offer.points_required ?? 0) > 0 ? t('perks.weeklyOffers.pointsCost', { points: offer.points_required }) : t('perks.noPoints')}</Text>
         </View>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} style={({ pressed }) => [styles.detailsButton, { backgroundColor: pressed ? theme.colors.primaryPressed : theme.colors.primary }]}>
-          <Text style={[typography.smallMedium, { color: theme.colors.onPrimary, textAlign: 'center' }]}>{t('perks.offerDetails')}</Text>
-        </Pressable>
+        <Button label={t('perks.offerDetails')} accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} fullWidth={false} style={styles.detailsButton} />
       </View>
     </View>
   )
@@ -256,7 +254,7 @@ export function BusinessDetailScreen() {
   return (
     <AppScreen header={<ScreenHeader title={business.name} subtitle={t('perks.business.verified')} back />} contentStyle={styles.content}>
       {gallery.length > 0 ? (
-        <View style={styles.gallery}>{gallery.map((url, index) => <Image key={`${url}-${index}`} source={{ uri: url }} style={styles.galleryImage} resizeMode="cover" />)}</View>
+        <OfferGallery images={gallery} title={business.name} aspectRatio={1.8} />
       ) : (
         <View style={[styles.gallery, styles.galleryFallback, { backgroundColor: theme.colors.primarySoft }]}><Icon size={40} color={theme.colors.primary} weight="duotone" /></View>
       )}
@@ -487,7 +485,6 @@ const styles = StyleSheet.create({
   row: { alignItems: 'center', gap: space.sm, justifyContent: 'space-between' },
   quickButtons: { gap: space.sm, flexWrap: 'wrap', marginTop: space.md },
   gallery: { flexDirection: 'row', width: '100%', height: 200, borderRadius: 20, overflow: 'hidden' },
-  galleryImage: { width: '100%', height: '100%' },
   galleryFallback: { alignItems: 'center', justifyContent: 'center' },
   hoursRow: { justifyContent: 'space-between', paddingVertical: 4 },
   offerHero: { width: '100%', height: 220, borderRadius: 20 },
@@ -522,5 +519,5 @@ const styles = StyleSheet.create({
   pointsCostRow: { alignItems: 'center', gap: 4 },
   offerFooter: { borderTopWidth: StyleSheet.hairlineWidth, marginTop: space.sm, paddingTop: space.sm, alignItems: 'center', gap: space.sm },
   offerCost: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  detailsButton: { minHeight: 44, width: '40%', justifyContent: 'center', alignItems: 'center', borderRadius: radius.md, paddingHorizontal: space.sm, paddingVertical: space.sm }
+  detailsButton: { flex: 1, paddingHorizontal: space.md }
 })

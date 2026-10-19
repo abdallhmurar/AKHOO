@@ -43,7 +43,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
     ghost: theme.colors.primary,
     danger: theme.colors.onEmergency
   }
-  const heights = { sm: 40, md: 50, lg: 58 }
+  const heights = { sm: 44, md: 50, lg: 58 }
   const blocked = disabled || loading
   return (
     <Pressable
@@ -55,7 +55,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
       style={({ pressed }) => [
         styles.base,
         { minHeight: heights[size], backgroundColor: blocked ? theme.colors.disabledBackground : fills[variant], borderColor: variant === 'outline' ? theme.colors.borderStrong : 'transparent' },
-        !blocked && (variant === 'primary' || variant === 'community') && { experimental_backgroundImage: variant === 'primary' ? 'linear-gradient(110deg, #086bf2, #09aeb0)' : 'linear-gradient(110deg, #078f83, #117d68)' },
+        !blocked && (variant === 'primary' || variant === 'community') && { experimental_backgroundImage: variant === 'primary' ? `linear-gradient(110deg, ${theme.colors.primary}, ${theme.isDark ? theme.colors.primaryPressed : '#087f85'})` : `linear-gradient(110deg, ${theme.colors.community}, ${theme.colors.communityPressed})` },
         fullWidth && styles.full,
         variant === 'outline' && styles.outline,
         pressed && !blocked && styles.pressed,
@@ -72,7 +72,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingVertical: space.sm, borderWidth: 0 },
+  base: { borderRadius: 16, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingVertical: space.sm, borderWidth: 0 },
   full: { alignSelf: 'stretch' },
   outline: { borderWidth: 1 },
   content: { maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: space.sm },

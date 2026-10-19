@@ -104,10 +104,12 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
               accessibilityRole="button"
               accessibilityState={{ selected: isFocused }}
               accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
-              style={styles.tab}
+              style={({ pressed }) => [styles.tab, pressed && { opacity: 0.85 }, pressed && !reducedMotion && { transform: [{ scale: 0.95 }] }]}
             >
               <Animated.View style={[styles.tabContent, { transform: [{ translateY }, { scale }] }]}>
-                {route.name === 'community' ? <RewardsGift label={label} size={32} interactive={false} active={isFocused} interaction={giftPress} idle={false} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 24 })}
+                <View style={[styles.iconFrame, { backgroundColor: isFocused ? '#ffffff20' : theme.colors.primarySoft }]}>
+                  {route.name === 'community' ? <RewardsGift label={label} size={44} interactive={false} active={isFocused} interaction={giftPress} idle={false} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
+                </View>
                 <Text style={[styles.label, { color, fontFamily: isFocused ? activeFont : inactiveFont }]} numberOfLines={1}>
                   {label}
                 </Text>
@@ -126,5 +128,6 @@ const styles = StyleSheet.create({
   indicator: { position: 'absolute', top: 6, bottom: 6, left: 6, borderRadius: radius.pill },
   tab: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 8 },
   tabContent: { alignItems: 'center', gap: 3 },
+  iconFrame: { width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   label: { fontSize: 10.5 }
 })

@@ -31,23 +31,31 @@ export function HomeScreen() {
   const align = { textAlign: isRTL ? 'right' as const : 'left' as const }
   return <AppScreen contentStyle={styles.content} scrollProps={{ contentContainerStyle: { paddingBottom: 12 } }}>
     <View style={[styles.header, { height: frameWidth / 3 }]} accessibilityLabel={copy.heading}>
-      <BlendedArt edge="bottom" start={0.86}><Image source={motionImages.road} accessible={false} style={styles.fill} resizeMode="cover" /></BlendedArt>
+      <BlendedArt edge="bottom" start={0.86}><Image source={motionImages.road} accessible={false} style={[styles.fill, theme.isDark && { opacity: 0.72 }]} resizeMode="cover" /></BlendedArt>
       <View style={styles.bell}><AnnouncementBell /></View>
     </View>
     <View style={styles.stack}>
       {activeKind ? <Card tone="primary" bordered={false} elevation="soft" onPress={resume}><StatusBadge label={t('home.liveNow')} tone="success" dot /><Text style={[type.bodyMedium, align, { color: theme.colors.textPrimary }]}>{t(activeKind === 'request' ? 'home.resumeRequest' : 'home.resumeJob')}</Text></Card> : null}
-      <GuideTarget id="home.request"><View style={[styles.request, { minHeight: Math.max(250, (frameWidth - 28) * 67 / 93) }]}>
+      <GuideTarget id="home.request"><View style={[styles.request, { minHeight: Math.max(218, (frameWidth - 28) * 0.61), backgroundColor: theme.isDark ? '#124276' : '#2386ff' }]}>
         <View style={StyleSheet.absoluteFill}><MotionScene name="help" style={{ height: '100%', borderRadius: 22 }} /></View>
-        <LinearGradient pointerEvents="none" colors={['#1c7bfa00', '#1c7bfaf0']} start={{ x: 0.35, y: 0 }} end={{ x: 1, y: 0 }} style={styles.requestShade} />
+        <LinearGradient pointerEvents="none" colors={theme.isDark ? ['#12427600', '#124276f0'] : ['#1c7bfa00', '#1c7bfaf0']} start={{ x: 0.35, y: 0 }} end={{ x: 1, y: 0 }} style={styles.requestShade} />
         <View style={[styles.requestCopy, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}><Text style={[type.h2, align, { color: '#fff', fontSize: Math.min(20, frameWidth * 0.055), alignSelf: 'stretch' }]}>{copy.requestTitle}</Text><Text style={[type.small, align, { color: '#fff', alignSelf: 'stretch' }]}>{copy.requestText}</Text></View>
-        <View style={styles.requestButton}><Button label={copy.requestAction} variant="outline" labelColor="#1768E5" onPress={() => activeKind === 'request' ? resume() : router.push('/requester')} style={{ backgroundColor: '#fff', borderRadius: 30, borderWidth: 0 }} /></View>
+        <View style={styles.requestButton}><Button label={copy.requestAction} variant="outline" labelColor="#1768E5" onPress={() => activeKind === 'request' ? resume() : router.push('/requester')} style={{ backgroundColor: '#fff', borderWidth: 0 }} /></View>
       </View></GuideTarget>
-      <GuideTarget id="home.help"><View style={[styles.helper, { backgroundColor: theme.colors.surface }]}>
-        <View style={styles.helperArt}><BlendedArt start={0.86}><MotionScene name="helper-home" style={{ height: '100%', borderRadius: 0 }} /></BlendedArt></View>
-        <View style={styles.helperCopy}><Text style={[type.caption, align, { color: theme.colors.community }]}>{copy.points}</Text><Text style={[type.h3, align, { color: theme.colors.community }]}>{copy.helperTitle}</Text><Button label={copy.helperAction} variant="community" size="sm" onPress={() => activeKind ? resume() : router.push('/helper')} style={{ paddingHorizontal: 10, borderRadius: 22 }} /></View>
+      <GuideTarget id="home.help"><View style={[styles.helper, { backgroundColor: theme.colors.surface, borderColor: theme.isDark ? theme.colors.border : '#91e7d8' }]}>
+        <View style={styles.helperBody}>
+          <View style={styles.helperArt}><BlendedArt start={0.74}><MotionScene name="helper-home" fit="contain" style={{ height: '100%', borderRadius: 0 }} /></BlendedArt></View>
+          <View style={styles.helperCopy}><Text style={[type.caption, align, { color: theme.colors.community }]}>{copy.points}</Text><Text style={[type.h3, align, { color: theme.colors.community }]}>{copy.helperTitle}</Text></View>
+        </View>
+        <View style={styles.cardAction}><Button label={copy.helperAction} variant="community" onPress={() => activeKind ? resume() : router.push('/helper')} /></View>
       </View></GuideTarget>
-      <GuideTarget id="home.perks"><LinearGradient colors={theme.isDark ? ['#253640', '#3a3528'] : ['#fffdf7', '#fff4d9']} style={[styles.rewards, dirStyles(isRTL).row]}>
-        <RewardsGift label={copy.giftAction} onFallback={() => router.push('/(tabs)/community')} /><View style={styles.rewardCopy}><Text style={[type.bodyMedium, align, { color: theme.colors.textPrimary }]}>{copy.rewardsTitle}</Text><Text style={[type.caption, align, { color: theme.colors.textSecondary }]}>{copy.rewardsText}</Text></View><Button label={copy.rewardsAction} size="sm" variant="outline" onPress={() => router.push('/(tabs)/community')} fullWidth={false} style={{ paddingHorizontal: 12, borderRadius: 22 }} />
+      <GuideTarget id="home.perks"><LinearGradient colors={theme.isDark ? ['#253640', '#3a3528'] : ['#fffdf7', '#fff4d9']} style={[styles.rewards, dirStyles(isRTL).row, { borderColor: theme.isDark ? theme.colors.border : '#ffedc5' }]}>
+        <RewardsGift label={copy.giftAction} onFallback={() => router.push('/(tabs)/community')} />
+        <View style={styles.rewardCopy}>
+          <Text style={[type.bodyMedium, align, { color: theme.colors.textPrimary }]}>{copy.rewardsTitle}</Text>
+          <Text style={[type.caption, align, { color: theme.colors.textSecondary }]}>{copy.rewardsText}</Text>
+          <Button label={copy.rewardsAction} size="sm" variant="outline" onPress={() => router.push('/(tabs)/community')} fullWidth={false} style={{ alignSelf: isRTL ? 'flex-end' : 'flex-start', paddingHorizontal: 20, marginTop: 4 }} />
+        </View>
       </LinearGradient></GuideTarget>
     </View>
   </AppScreen>
@@ -59,8 +67,10 @@ const styles = StyleSheet.create({
   stack: { paddingHorizontal: 14, gap: 12 }, request: { borderRadius: 22, overflow: 'hidden', backgroundColor: '#2386ff' },
   requestShade: { ...StyleSheet.absoluteFill, bottom: '28%' }, requestCopy: { marginLeft: '50%', marginRight: '4%', paddingTop: 16, paddingBottom: 18, gap: 5 },
   requestButton: { marginTop: 'auto', marginHorizontal: 12, marginBottom: 12 },
-  helper: { borderWidth: 1, borderColor: '#91e7d8', borderRadius: 20, minHeight: 150, overflow: 'hidden' },
-  helperArt: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '60%' },
-  helperCopy: { width: '42%', marginLeft: 'auto', padding: 10, gap: 8 },
-  rewards: { borderWidth: 1, borderColor: '#ffedc5', borderRadius: 18, padding: 10, gap: 8, alignItems: 'center' }, rewardCopy: { flex: 1, minWidth: 0, gap: 3 },
+  helper: { borderWidth: 1, borderRadius: 22, overflow: 'hidden' },
+  helperBody: { minHeight: 116, justifyContent: 'center' },
+  helperArt: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '58%' },
+  helperCopy: { width: '46%', marginLeft: 'auto', padding: 12, gap: 8 },
+  cardAction: { marginHorizontal: 12, marginBottom: 12, marginTop: 4 },
+  rewards: { borderWidth: 1, borderRadius: 22, padding: 12, gap: 12, alignItems: 'center' }, rewardCopy: { flex: 1, minWidth: 0, gap: 3 },
 })

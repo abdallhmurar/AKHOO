@@ -45,7 +45,7 @@ export function Button({ label, variant = 'primary', size = 'md', loading = fals
     ghost: theme.colors.primary,
     danger: theme.colors.onEmergency
   }
-  const heights = { sm: 40, md: 50, lg: 58 }
+  const heights = { sm: 44, md: 50, lg: 58 }
   const blocked = disabled || loading
   return (
     <Pressable
