@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { contentText, localizeContent, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
+import { BUSINESS_TEXT_FIELDS, contentText, localizeContent, OFFER_TEXT_FIELDS } from '../../shared/contentTranslations'
 import { translateArabic, translationFields } from '../../supabase/functions/_shared/translation'
 
 describe('localized published content', () => {
@@ -14,7 +14,25 @@ describe('localized published content', () => {
     expect(contentText('هدية', translations, 'title', 'ar')).toBe('هدية')
     expect(contentText('هدية', translations, 'title', 'fr')).toBe('هدية')
   })
+  it('localizes business name, description, address and service area and ignores stale text', () => {
+    const business = {
+      name: 'المحامي موطي أورنج', description: 'محامي سير', address: null, service_area: 'القدس',
+      translations: {
+        ar: { name: 'المحامي موطي أورنج', description: 'محامي سير', address: '', service_area: 'القدس' },
+        he: { name: 'עו"ד מוטי אורנג\'', description: 'עורך דין תעבורה', address: '', service_area: 'ירושלים' },
+        en: { name: 'Attorney Moti Orange', description: 'Traffic lawyer', address: '', service_area: 'Jerusalem' }
+      }
+    }
+    expect(localizeContent(business, 'he', BUSINESS_TEXT_FIELDS)).toMatchObject({ name: 'עו"ד מוטי אורנג\'', service_area: 'ירושלים', address: null })
+    expect(localizeContent(business, 'en-US', BUSINESS_TEXT_FIELDS).name).toBe('Attorney Moti Orange')
+    expect(localizeContent(business, 'ar', BUSINESS_TEXT_FIELDS).name).toBe('المحامي موطي أورنج')
+    expect(localizeContent({ ...business, name: 'اسم جديد' }, 'he', BUSINESS_TEXT_FIELDS).name).toBe('اسم جديد')
+    expect(localizeContent({ ...business, translations: undefined }, 'he', BUSINESS_TEXT_FIELDS).name).toBe('المحامي موطي أورنج')
+    const once = localizeContent(business, 'he', BUSINESS_TEXT_FIELDS)
+    expect(localizeContent(once, 'he', BUSINESS_TEXT_FIELDS).name).toBe(once.name)
+  })
   it('restricts input fields and sizes before calling a provider', () => {
+    expect(translationFields({ kind: 'business', fields: { name: 'مطعم', phone: '0501234567' } })).toEqual({ name: 'مطعم', description: '', address: '', service_area: '' })
     expect(translationFields({ kind: 'offer', fields: { title: 'هدية', user_id: 'private' } })).toEqual({ title: 'هدية', description: '', terms: '', offer_type_label: '' })
     expect(() => translationFields({ kind: 'unknown', fields: {} })).toThrow()
     expect(() => translationFields({ kind: 'support', fields: { body: 3 } })).toThrow()

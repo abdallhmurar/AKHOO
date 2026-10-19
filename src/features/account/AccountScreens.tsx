@@ -334,7 +334,8 @@ export function AccountDeleteConfirmScreen() {
   const [error, setError] = useState<string | null>(null)
 
   const requiredPhrase = t('account.delete.confirm.phrase')
-  const canDelete = phrase.trim() === requiredPhrase && (!!oauthProvider || password.length > 0)
+  // Phone keyboards capitalise the first letter, so the Latin phrase is compared case-insensitively.
+  const canDelete = phrase.trim().toLowerCase() === requiredPhrase.toLowerCase() && (!!oauthProvider || password.length > 0)
   useEffect(() => { setPhrase(''); setPassword('') }, [session?.user.id])
 
   async function reauthenticate() {

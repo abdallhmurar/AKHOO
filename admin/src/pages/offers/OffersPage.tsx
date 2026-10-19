@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
 import { TablePagination } from '@/components/DataTable'
+import { TranslateAllButton } from '@/components/TranslateAllButton'
 import { useOffers } from './useOffers'
 import type { OfferFilters } from './useOffers'
 import { OffersFiltersBar } from './OffersFilters'
@@ -31,10 +32,13 @@ export function OffersPage() {
           <h1 className="text-2xl font-extrabold text-foreground">{t('offers.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('offers.subtitle')}</p>
         </div>
-        <Button onClick={() => navigate('/offers/new')}>
-          <Plus className="size-4" />
-          {t('offers.create')}
-        </Button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <TranslateAllButton />
+          <Button onClick={() => navigate('/offers/new')}>
+            <Plus className="size-4" />
+            {t('offers.create')}
+          </Button>
+        </div>
       </div>
       <OffersFiltersBar filters={filters} onChange={handleFiltersChange} />
       <OffersTable rows={query.data?.rows ?? []} isLoading={query.isPending} isError={query.isError} />

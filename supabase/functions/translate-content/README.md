@@ -1,6 +1,6 @@
 # Published content translation
 
-Admin-only endpoint. Arabic originals are stored alongside English/Hebrew translations for offers, announcements and support replies. Images and text embedded in images are not translated. Internal support notes and user-authored chat messages are not sent to the provider.
+Admin-only endpoint. Arabic originals are stored alongside English/Hebrew translations for offers, businesses (name, description, address, service area), announcements and support replies. Images and text embedded in images are not translated. Internal support notes and user-authored chat messages are not sent to the provider.
 
 ## Activate
 
@@ -18,6 +18,7 @@ The server sends only the selected text fields, not identifiers, emails, image U
 
 - Without a configured credential, the admin sees a setup notice and a warning when saving; publishing continues with the original text. This is not a successful translation.
 - With a configured key, translation finishes before approving an offer, saving edits to an approved offer, or sending a message. Draft saves do not call the provider. Support pushes and in-app messages use the same stored text. Provider failures prevent that new publication and preserve the composer for retry.
+- Businesses are translated on every save (they are visible as soon as they are saved); if translation fails the business is still saved with its Arabic text and the admin is warned. The **Translate all content** button on the Businesses and Offers pages fills in any published business or approved offer that has no complete translation yet.
 - Editing source text invalidates old translations. Unchanged offer text reuses its translations, including image-only edits. Reapproving an older offer generates its translations. Older announcements and replies are not backfilled automatically.
 - The app selects translations on every language change. The source is always the fallback. Push language belongs to each installation, updated at sign-in and language changes; devices that have not received this app update still default to Arabic.
 - `get_push_recipients` and the original text fields remain backward compatible. The new localized recipients RPC is service-role-only.

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
 import { TablePagination } from '@/components/DataTable'
+import { TranslateAllButton } from '@/components/TranslateAllButton'
 import { useBusinesses } from './useBusinesses'
 import type { BusinessFilters } from './useBusinesses'
 import { BusinessesFiltersBar } from './BusinessesFilters'
@@ -31,10 +32,13 @@ export function BusinessesPage() {
           <h1 className="text-2xl font-extrabold text-foreground">{t('businesses.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('businesses.subtitle')}</p>
         </div>
-        <Button onClick={() => navigate('/businesses/new')}>
-          <Plus className="size-4" />
-          {t('businesses.create')}
-        </Button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <TranslateAllButton />
+          <Button onClick={() => navigate('/businesses/new')}>
+            <Plus className="size-4" />
+            {t('businesses.create')}
+          </Button>
+        </div>
       </div>
       <BusinessesFiltersBar filters={filters} onChange={handleFiltersChange} />
       <BusinessesTable rows={query.data?.rows ?? []} isLoading={query.isPending} isError={query.isError} />

@@ -551,7 +551,7 @@
       "confirm": {
         "title": "Confirm Deletion",
         "instruction": "To confirm deleting your account, type the following phrase exactly:",
-        "phrase": "أريد حذف حسابي",
+        "phrase": "Delete my account",
         "phraseLabel": "Type the phrase above",
         "passwordLabel": "Current Password",
         "deleteButton": "Permanently Delete My Account",
