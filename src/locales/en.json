@@ -1,4 +1,13 @@
 {
+  "userTranslate": {
+    "action": "Translate",
+    "loading": "Translating…",
+    "showOriginal": "Show original",
+    "showTranslation": "Show translation",
+    "same": "This is already in your language.",
+    "failed": "Couldn't translate. Tap to try again.",
+    "limited": "Too many translations. Try again later."
+  },
   "common": {
     "back": "Back",
     "next": "Next",

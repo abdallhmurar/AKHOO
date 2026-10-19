@@ -29,6 +29,7 @@ import { AppScreen, ScreenHeader } from '../../components/v2'
 import { Button, Card, IconButton, StatusBadge, Surface, useToast } from '../../components/ui'
 import { HelperSheet } from './HelperSheet.web'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
+import { TranslatableText } from '../../components/TranslatableText'
 import { SanadMap } from '../../components/SanadMap'
 import type { SanadMapRef } from '../../components/SanadMap.types'
 
@@ -363,7 +364,7 @@ export function HelperHomeScreen() {
         {selectedRequest ? (
           <>
             <RequestSummary request={selectedRequest} now={now} />
-            {selectedRequest.note ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{selectedRequest.note}</Text> : null}
+            {selectedRequest.note ? <TranslatableText text={selectedRequest.note} style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]} /> : null}
             {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} resizeMode="contain" /> : null}
           </>
         ) : null}
