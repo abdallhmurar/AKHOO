@@ -5,11 +5,6 @@ export function setupBrandMotion() {
   const running = new Map();
   const sections = [...document.querySelectorAll('.hero,.route-section,.how,.community,.perks,.download-section')];
   const visible = new Set();
-  const decorations = document.createElement('div');
-  decorations.className = 'brand-orbs';
-  decorations.setAttribute('aria-hidden', 'true');
-  decorations.innerHTML = '<i></i><i></i><i></i><i></i>';
-  document.querySelector('.journey-art').append(decorations);
   const stage = document.querySelector('.journey-stage');
   const float = document.createElement('div');
   float.className = 'stage-float';
@@ -44,7 +39,7 @@ export function setupBrandMotion() {
   document.addEventListener('visibilitychange', sync);
 
   function onClick(event) {
-    const button = event.target.closest('.button,.scenario-options button,.route-actions button,.tabs button,.demo-issues button,.demo-back');
+    const button = event.target.closest('.button,.journey-try,.scenario-options button,.tabs button,.demo-issues button,.demo-back');
     if (!button || button.disabled || preference.matches || document.hidden) return;
     animate(button, [
       {transform:'scale(.95) translateY(2px)'},

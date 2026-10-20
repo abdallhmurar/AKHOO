@@ -81,6 +81,35 @@ retains its gold treatment.
 visibility observer enables only visible sections; page visibility and reduced
 motion suspend or cancel animations. Floating and pointer-tilt transforms use
 separate wrappers, so they do not overwrite each other. Scene switches use
-perspective/opacity, buttons use a short press response, and the route animates
-in reading order in both horizontal and mobile vertical layouts. No animation
-controls or autoplay scene rotation were added.
+perspective/opacity and buttons use a short press response. No animation controls
+or autoplay scene rotation were added.
+
+## Clearer narrative and purposeful icons — 2026-10-21
+
+The latest pass responds to unclear storytelling and misplaced icons. Research:
+
+- [NN/g: Homepage design principles](https://www.nngroup.com/articles/homepage-design-principles/)
+  recommends explaining the offering immediately, using concrete examples and
+  making the next action clear. Applied here: a direct explanation of roadside
+  requests and nearby helpers, download as the primary action, then benefits,
+  a hands-on walkthrough, the helper role, rewards and partnership information.
+- [NN/g: Icon usability](https://www.nngroup.com/articles/icon-usability/)
+  explains why icons need recognizable meaning and nearby text. Applied here:
+  one stroke-based family, labeled service selectors attached to the scene they
+  control, and location/chat/status icons next to their respective benefits.
+- [Be My Eyes](https://www.bemyeyes.com/) puts a plain explanation of who it
+  connects and how directly beneath its emotional headline. This informed the
+  balance of human tone and concrete explanation, not any copied text, artwork,
+  availability promises or statistics.
+
+Removed floating heart/star/check decorations, ornamental orbs, giant wordmarks,
+duplicate section labels and the repeated three-step introduction. The blue
+section now explains three actual benefits; the phone alone teaches the steps.
+The existing app illustrations, videos, interactive gift and blue/teal palette
+remain. Motion is concentrated on scene changes, small illustration movement and
+button feedback. Arabic, English and Hebrew carry the same factual meaning.
+Scene controls inherit the document direction, including Arabic/Hebrew RTL.
+
+The rewrite also removes superseded hero/service DOM construction and unused
+journey/motion CSS. No new MCP integration, subscription or external imagery was
+needed for this pass. The website stays local; only the source branch is pushed.

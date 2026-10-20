@@ -127,3 +127,21 @@ the phone preview. Language changes create exactly one animation wrapper and one
 decoration group. Offscreen animations pause, reduced motion stops all new CSS
 animations and videos, and no application errors were captured. Visual proof:
 `test-results/website-local/app-colors-motion-ar.png`.
+
+The subsequent storytelling pass replaces decorative icon clusters with labeled,
+consistent service symbols placed inside their illustrated example. The hero
+explains what AKHOO does and prioritizes download; the following section explains
+benefits instead of duplicating the interactive steps. Helper, rewards, business
+and download copy has been revised in Arabic, English and Hebrew. Decorative
+orbs, floating badges and duplicate labels are removed; the app's media and
+interactive 3D gift are retained. Research is recorded in `DESIGN-NOTES.md`.
+
+Validation: build and JavaScript syntax checks passed. Browser checks covered
+320px in all three languages, Arabic at 390px and 767px, and desktop. No horizontal
+overflow, broken images or JavaScript errors were observed. Scene selection
+carried the chosen issue into the phone, requester and helper flows worked,
+the gift reached its WebGL celebration state, and the rewards link reached the
+download section. Reduced motion paused all videos and disabled continuous scene
+animation. The scene's inherited RTL alignment was corrected. Local proof:
+`test-results/website-local/story-mobile-ar.png` and
+`test-results/website-local/story-desktop-ar.png`.

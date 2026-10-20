@@ -1,38 +1,57 @@
 import { journeyCopy } from "./journey-copy.js";
 const escape = (value) => String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const kinds = ["battery", "fuel", "tire", "other"];
-const arrow = '<svg class="icon directional" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
+// One icon family; functional symbols always have an adjacent visible label.
+const paths = {
+  battery: '<rect x="3" y="6" width="16" height="12" rx="2"/><path d="M22 10v4M7 12h4m-2-2v4m5-2h2"/>',
+  fuel: '<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M2 21h14M4 10h10m0 3h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V8l-4-4m1 1v4h3"/>',
+  tire: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="m6 6 4 4m4 4 4 4m0-12-4 4m-4 4-4 4"/>',
+  other: '<path d="M14 4a6 6 0 0 0-7 7l-4 4a3 3 0 0 0 4 4l4-4a6 6 0 0 0 7-7l-4 4-3-3 3-4Z"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  chat: '<path d="M21 11a8 8 0 0 1-8 8H6l-4 3V11a9 9 0 0 1 9-9h2a8 8 0 0 1 8 9Z M7 8h9M7 12h6"/>',
+  progress: '<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/>',
+  arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>'
+};
+const icon = (kind, extra = "") => `<svg class="story-icon ${extra}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[kind]}</svg>`;
+const arrow = icon("arrow", "directional");
+
 export function createJourney(t, lang, art) {
   const c = journeyCopy[lang], hero = document.querySelector(".hero");
   document.body.dataset.experience = "journey";
-  hero.innerHTML = `<div class="container hero-grid"><div class="hero-copy"><span class="journey-eyebrow"><i></i>${escape(c.eyebrow)}</span><h1>${escape(c.title)}<br><span>${escape(c.accent)}</span></h1><p class="hero-description">${escape(c.intro)}</p><div class="scenario-picker"><p id="scenario-label">${escape(c.select)}</p><div class="scenario-options" role="group" aria-labelledby="scenario-label">${t.services.map(([name], i) => `<button type="button" data-scene="${i}" aria-pressed="${i === 0}" aria-controls="journey-scene"><img src="./assets/${kinds[i]}.png" alt="" width="42" height="32"><span>${escape(name)}</span></button>`).join("")}</div></div><div class="actions"><button type="button" class="button journey-try" data-service="0">${escape(c.demo)}${arrow}</button><a class="text-link" href="#download">${escape(t.download)}${arrow}</a></div></div><div class="hero-art journey-art"><div class="journey-watermark" aria-hidden="true">AKHOO</div><div class="journey-halo" aria-hidden="true"></div><div class="journey-stage" data-tilt><span class="scene-corner" aria-hidden="true">✦</span><div class="journey-scene" id="journey-scene">${kinds.map((kind, i) => `<div class="journey-slide" data-slide="${i}" ${i ? "hidden" : ""}>${i === 0 ? art("help", t.heroAlt) : `<img class="journey-still" src="./assets/${kind}.png" alt="${escape(t.services[i][0])}" width="640" height="430">`}</div>`).join("")}<span class="scene-caption">${escape(c.sceneLabel)}</span></div><div class="journey-caption" aria-live="polite"><span class="scene-count" dir="ltr">01 <small>/ 04</small></span><div><h2>${escape(c.questions[0])}</h2><p>${escape(c.descriptions[0])}</p></div><span class="scene-check" aria-hidden="true">✓</span></div></div><svg class="connection-path" viewBox="0 0 600 480" aria-hidden="true"><path d="M480 330C600 420 420 490 330 415S120 350 90 270"/><path class="connection-beam" d="M480 330C600 420 420 490 330 415S120 350 90 270"/></svg><div class="helper-token"><img src="./assets/hands.png" alt="" width="48" height="48"><span>${escape(c.helper)}</span><i></i></div><span class="journey-note">${escape(c.sceneNote)}</span></div></div><div class="journey-bottom"><span>${escape(c.connection)}</span><i></i><a href="#services">${escape(t.scroll)}<span>↓</span></a></div>`;
+  hero.innerHTML = `<div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="journey-eyebrow">${escape(c.eyebrow)}</span>
+      <h1>${escape(c.title)}<br><span>${escape(c.accent)}</span></h1>
+      <p class="hero-description">${escape(c.intro)}</p>
+      <div class="actions"><a class="button" href="#download">${escape(t.download)}${arrow}</a><button class="text-link journey-try" type="button" data-service="0">${escape(c.demo)}${arrow}</button></div>
+      <p class="hero-availability">${escape(c.availability)}</p>
+    </div>
+    <div class="hero-art journey-art">
+      <div class="journey-stage" data-tilt>
+        <div class="scenario-picker"><p id="scenario-label">${escape(c.select)}</p><div class="scenario-options" role="group" aria-labelledby="scenario-label">${t.services.map(([name], i) => `<button type="button" data-scene="${i}" aria-pressed="${i === 0}" aria-controls="journey-scene">${icon(kinds[i])}<span>${escape(name)}</span></button>`).join("")}</div></div>
+        <div class="journey-scene" id="journey-scene">${kinds.map((kind, i) => `<div class="journey-slide" data-slide="${i}" ${i ? "hidden" : ""}>${i === 0 ? art("help", t.heroAlt) : `<img class="journey-still" src="./assets/${kind}.png" alt="${escape(t.services[i][0])}" width="640" height="430">`}</div>`).join("")}<span class="scene-caption">${escape(c.sceneLabel)}</span></div>
+        <div class="journey-caption" aria-live="polite"><div><h2>${escape(c.questions[0])}</h2><p>${escape(c.descriptions[0])}</p></div><span class="scene-count" dir="ltr" aria-hidden="true">01 <small>/ 04</small></span></div>
+      </div>
+    </div>
+  </div>`;
   const services = document.querySelector("#services");
   services.className = "services route-section";
-  services.innerHTML = `<div class="container"><div class="route-intro"><span class="eyebrow">${escape(c.roadEyebrow)}</span><h2>${escape(c.roadTitle)}</h2><p>${escape(c.roadText)}</p></div><div class="route-moments">${c.moments.map(([title, body], i) => `<article class="route-moment"><div class="route-symbol"><img src="./assets/${["person", "hands", "accepted"][i]}.png" alt="" width="64" height="64"><span>0${i + 1}</span></div><h3>${escape(title)}</h3><p>${escape(body)}</p></article>`).join("")}</div><div class="route-actions"><button type="button" data-journey-mode="need">${escape(c.need)}${arrow}</button><button type="button" data-journey-mode="help">${escape(c.help)}${arrow}</button></div></div>`;
-  document.querySelector(".community-copy .section-number").textContent = c.communityLabel;
-  document.querySelector(".partner-copy .section-number").textContent = c.smallLabel;
+  services.innerHTML = `<div class="container"><div class="route-intro"><span class="eyebrow">${escape(c.roadEyebrow)}</span><h2>${escape(c.roadTitle)}</h2></div><div class="route-moments">${c.moments.map(([title, body], i) => `<article class="route-moment"><span class="route-symbol">${icon(["pin", "chat", "progress"][i])}</span><h3>${escape(title)}</h3><p>${escape(body)}</p></article>`).join("")}</div></div>`;
+  document.querySelectorAll(".section-number,.community-sticker,.partner-symbol").forEach(element => element.remove());
   document.querySelector(".community").classList.add("journey-community");
-  document.querySelector(".rewards-action").insertAdjacentHTML("afterend", `<span class="perks-watermark" aria-hidden="true">${escape(c.perksLabel)}</span>`);
 }
+
 export function setupJourney(t, lang) {
   const c = journeyCopy[lang], buttons = [...document.querySelectorAll("[data-scene]")];
-  const preference = matchMedia("(prefers-reduced-motion: reduce)");
   buttons.forEach((button) => button.addEventListener("click", () => {
     const selected = Number(button.dataset.scene);
     buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
-    document.querySelectorAll("[data-slide]").forEach((slide) => {
-      slide.hidden = Number(slide.dataset.slide) !== selected;
-    });
+    document.querySelectorAll("[data-slide]").forEach((slide) => { slide.hidden = Number(slide.dataset.slide) !== selected; });
     document.querySelector(".journey-caption h2").textContent = c.questions[selected];
     document.querySelector(".journey-caption p").textContent = c.descriptions[selected];
     document.querySelector(".scene-count").innerHTML = `0${selected + 1} <small>/ 04</small>`;
     document.querySelector(".journey-try").dataset.service = String(selected);
     document.querySelector(".journey-stage").dataset.scene = kinds[selected];
     if (selected !== 0) document.querySelector(".journey-slide video")?.pause();
-  }));
-  document.querySelectorAll("[data-journey-mode]").forEach((button) => button.addEventListener("click", () => {
-    document.querySelector(`#tab-${button.dataset.journeyMode}`).click();
-    document.querySelector("#how").scrollIntoView({ behavior: preference.matches ? "instant" : "smooth", block: "start" });
-    document.querySelector(`#tab-${button.dataset.journeyMode}`).focus({ preventScroll: true });
   }));
 }
