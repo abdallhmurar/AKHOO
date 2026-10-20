@@ -155,3 +155,16 @@ and reduced motion. The old CSS still-image zoom has been removed.
 Verified all four MP4 responses, decoded playback and increasing playback time,
 hidden-video pause, mobile layout at 390px, reduced-motion pause and an empty
 browser error log. Screenshot: `test-results/website-local/service-videos-ar.png`.
+
+The benefits section now uses a light background, a short centered heading and
+three illustrated cards: location, chat and request status. The illustrations
+are local CSS/SVG examples, labeled as illustrative and hidden from assistive
+technology because the adjacent text explains the same benefits. They make no
+network requests. Route, typing and status accents animate only while the
+section is visible and respect reduced motion. All text has Arabic, English
+and Hebrew versions.
+
+Verified three-language layouts at 320px, the 767px two-column card layout,
+desktop rendering, reduced-motion cancellation and an empty browser error log.
+No page or card overflow was observed. Screenshot:
+`test-results/website-local/benefits-cards-ar.png`.

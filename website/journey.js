@@ -15,6 +15,14 @@ const paths = {
 const icon = (kind, extra = "") => `<svg class="story-icon ${extra}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[kind]}</svg>`;
 const arrow = icon("arrow", "directional");
 
+function benefitPreviews(c) {
+  return [
+    `<div class="benefit-map"><svg class="benefit-streets" viewBox="0 0 340 200" preserveAspectRatio="none" aria-hidden="true"><path class="map-green" d="M0 0h85l40 62-55 42H0Z M260 135l80-30v95h-85Z"/><path class="map-street-edge" d="M-20 120 370 20M60-20 125 220M245-20 190 220"/><path class="map-street" d="M-20 120 370 20M60-20 125 220M245-20 190 220"/><path class="map-trip" d="M64 167 106 155 82 94 183 68"/></svg><span class="benefit-origin"></span><span class="benefit-pin">${icon("pin")}</span><span class="benefit-location">${escape(c.location)}</span><span class="benefit-issue">${icon("battery")}${escape(c.issue)}</span></div>`,
+    `<div class="benefit-chat"><div class="chat-example chat-in"><span class="chat-avatar">${icon("chat")}</span><span>${escape(c.chat[0])}</span></div><div class="chat-example chat-out"><span>${escape(c.chat[1])}</span><svg viewBox="0 0 24 16" aria-hidden="true"><path d="m2 8 4 4 8-8m-3 8 8-8"/></svg></div><span class="chat-typing" aria-hidden="true"><i></i><i></i><i></i></span></div>`,
+    `<div class="benefit-status"><div class="status-example">${c.status.map((label,i)=>`<div class="status-line ${i === 2 ? "status-current" : ""}"><span class="status-dot">${i < 2 ? icon("progress") : '<i></i>'}</span><span>${escape(label)}</span></div>`).join("")}</div></div>`
+  ];
+}
+
 export function createJourney(t, lang, art) {
   const c = journeyCopy[lang], hero = document.querySelector(".hero");
   document.body.dataset.experience = "journey";
@@ -36,7 +44,8 @@ export function createJourney(t, lang, art) {
   </div>`;
   const services = document.querySelector("#services");
   services.className = "services route-section";
-  services.innerHTML = `<div class="container"><div class="route-intro"><span class="eyebrow">${escape(c.roadEyebrow)}</span><h2>${escape(c.roadTitle)}</h2></div><div class="route-moments">${c.moments.map(([title, body], i) => `<article class="route-moment"><span class="route-symbol">${icon(["pin", "chat", "progress"][i])}</span><h3>${escape(title)}</h3><p>${escape(body)}</p></article>`).join("")}</div></div>`;
+  const previews = benefitPreviews(c.previews);
+  services.innerHTML = `<div class="container"><div class="route-intro"><span class="eyebrow">${escape(c.roadEyebrow)}</span><h2>${escape(c.roadTitle)}</h2><p>${escape(c.roadText)}</p></div><div class="route-moments">${c.moments.map(([title, body], i) => `<article class="route-moment"><div class="benefit-visual" aria-hidden="true">${previews[i]}</div><div class="benefit-copy"><h3>${escape(title)}</h3><p>${escape(body)}</p></div></article>`).join("")}</div><p class="benefits-note">${escape(c.previews.note)}</p></div>`;
   document.querySelectorAll(".section-number,.community-sticker,.partner-symbol").forEach(element => element.remove());
   document.querySelector(".community").classList.add("journey-community");
 }

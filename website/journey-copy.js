@@ -10,9 +10,11 @@ export const journeyCopy = {
     sceneLabel: "مشهد توضيحي من أخوو",
     questions: ["البطارية ما بتشتغل؟", "خلص الوقود؟", "عندك بنشر؟", "مشكلة ثانية بالطريق؟"],
     descriptions: ["اطلب مساعدة لتشغيل السيارة بوصلة بطارية.", "وضّح مكانك واطلب المساعدة بتأمين الوقود.", "اطلب إيد تساعدك بتغيير العجل.", "اشرح اللي صار حتى يعرف المساعد شو بتحتاج."],
-    roadEyebrow: "شو بيسهّل عليك أخوو؟",
-    roadTitle: "طلبك، وتواصلك، وكل التفاصيل. بمكان واحد.",
-    moments: [["المشكلة والموقع واضحين", "بتحدد نوع المساعدة ومكانك، حتى يفهم الشخص القريب شو محتاج."], ["بتحكي مع اللي رح يساعدك", "بعد قبول الطلب، بتنسّقوا التفاصيل من المحادثة داخل التطبيق."], ["بتعرف وين وصل طلبك", "بتتابع الحالة، وبتأكد النتيجة وبتقيّم التجربة لما تخلص المساعدة."]]
+    roadEyebrow: "أخوو معك عالطريق",
+    roadTitle: "كل التفاصيل قدّامك.",
+    roadText: "مكانك، محادثتك وحالة طلبك. بتتابعهم كلهم من أخوو.",
+    moments: [["حدّد مكانك بوضوح.", "اختار المشكلة وثبّت موقعك، حتى يعرف الشخص القريب شو بتحتاج ووين."], ["احكوا مباشرة.", "لما ينقبل طلبك، بتنسّق مع المساعد من المحادثة داخل التطبيق."], ["تابع كل تحديث.", "من قبول الطلب لتمام المساعدة، بتشوف الحالة وبتأكد النتيجة."]],
+    previews: { location: "موقع الطلب", issue: "مساعدة بطارية", chat: ["معي وصلة بطارية.", "ممتاز، بننسّق هون."], status: ["تم إرسال الطلب", "مساعد قبل طلبك", "المساعد بالطريق"], note: "أمثلة توضيحية من تجربة أخوو" }
   },
   en: {
     eyebrow: "AKHOO · People helping people",
@@ -25,9 +27,11 @@ export const journeyCopy = {
     sceneLabel: "An illustrative AKHOO scene",
     questions: ["Battery won’t start?", "Out of fuel?", "Got a flat tire?", "Another roadside issue?"],
     descriptions: ["Ask for a hand jump-starting your car.", "Share your location and ask for help getting fuel.", "Ask someone to help you change the wheel.", "Explain what happened so a helper knows what you need."],
-    roadEyebrow: "What does AKHOO make easier?",
-    roadTitle: "Your request, your conversation, all in one place.",
-    moments: [["The issue and location are clear", "Choose the help you need and set your location so people nearby understand."], ["Talk to the person helping", "Once someone accepts, coordinate the details in the app’s chat."], ["Follow your request", "Check its status, confirm the outcome and rate the experience when it’s done."]]
+    roadEyebrow: "AKHOO, along the way",
+    roadTitle: "Know what’s happening.",
+    roadText: "Your location, conversation and request status. Together in AKHOO.",
+    moments: [["Make your location clear.", "Choose the issue and set your location so people nearby know what you need and where."], ["Talk directly.", "Once someone accepts, coordinate with your helper in the app’s chat."], ["Follow each update.", "From acceptance to completion, see the status and confirm the outcome."]],
+    previews: { location: "Request location", issue: "Battery help", chat: ["I have jumper cables.", "Great, let’s coordinate here."], status: ["Request sent", "A helper accepted", "Helper on the way"], note: "Illustrative examples of the AKHOO experience" }
   },
   he: {
     eyebrow: "אח׳ו · אנשים עוזרים לאנשים",
@@ -40,8 +44,10 @@ export const journeyCopy = {
     sceneLabel: "המחשה מתוך אח׳ו",
     questions: ["הרכב לא מניע?", "נגמר הדלק?", "יש פנצ׳ר?", "בעיה אחרת בדרך?"],
     descriptions: ["בקשו עזרה בהתנעת הרכב עם כבלים.", "שתפו את המיקום ובקשו עזרה בהשגת דלק.", "בקשו עזרה בהחלפת הגלגל.", "הסבירו מה קרה כדי שהמסייע יבין מה אתם צריכים."],
-    roadEyebrow: "איך אח׳ו מקל עליכם?",
-    roadTitle: "הבקשה, השיחה וכל הפרטים. במקום אחד.",
-    moments: [["הבעיה והמיקום ברורים", "בוחרים את סוג העזרה ואת המיקום כדי שאנשים בסביבה יבינו מה צריך."], ["מדברים עם מי שעוזר", "לאחר קבלת הבקשה, מתאמים את הפרטים בצ׳אט באפליקציה."], ["עוקבים אחר הבקשה", "רואים את המצב, מאשרים את התוצאה ומדרגים את החוויה בסיום."]]
+    roadEyebrow: "אח׳ו איתכם בדרך",
+    roadTitle: "כל הפרטים מולכם.",
+    roadText: "המיקום, השיחה ומצב הבקשה. הכל יחד באח׳ו.",
+    moments: [["המיקום שלכם ברור.", "בוחרים את הבעיה ומסמנים את המיקום, כדי שידעו מה צריך ואיפה."], ["מדברים ישירות.", "לאחר קבלת הבקשה, מתאמים עם המסייע בצ׳אט באפליקציה."], ["עוקבים אחרי כל עדכון.", "מקבלת הבקשה ועד לסיום העזרה, רואים את המצב ומאשרים את התוצאה."]],
+    previews: { location: "מיקום הבקשה", issue: "עזרה עם מצבר", chat: ["יש לי כבלי התנעה.", "מצוין, נתאם כאן."], status: ["הבקשה נשלחה", "מסייע קיבל את הבקשה", "המסייע בדרך"], note: "דוגמאות להמחשת השימוש באח׳ו" }
   }
 };

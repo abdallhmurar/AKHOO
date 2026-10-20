@@ -229,69 +229,319 @@ body[data-experience=journey] .hero-art {
   color: #64788b;
 }
 body[data-experience=journey] .route-section {
-  padding: 64px 0 68px;
+  padding: 76px 0 44px;
   margin: 0;
   overflow: hidden;
 }
 .route-intro {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 60px;
-  align-items: start;
-  margin-bottom: 42px;
-  text-align: start;
+  max-width: 720px;
+  margin: 0 auto 38px;
+  text-align: center;
 }
 .route-intro .eyebrow {
-  margin: 10px 0 0;
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 7px 14px;
+  border: 1px solid #cbe7ec;
+  border-radius: 50px;
+  background: #edf9f8;
+  font-size: 12px;
 }
 .route-intro h2 {
-  color: inherit;
+  color: #0b1f33;
   margin: 0;
-  max-width: 740px;
-  font-size: 38px;
-  line-height: 1.4;
+  font-size: 46px;
+  line-height: 1.3;
   letter-spacing: -.02em;
+}
+.route-intro > p {
+  margin: 16px auto 0;
+  color: #526b80;
+  font-size: 16px;
+  line-height: 1.8;
 }
 .route-moments {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 44px;
+  gap: 22px;
 }
 .route-moment {
-  border-top: 1px solid #ffffff52;
-  padding-top: 25px;
-  display: grid;
-  grid-template-columns: 42px 1fr;
-  gap: 8px 16px;
-  align-content: start;
+  padding: 12px;
+  border: 1px solid #dae8f4;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 12px 32px #1c64850a;
+  min-width: 0;
   text-align: start;
 }
-.route-symbol {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  background: #ffffff1c;
-  border: 1px solid #ffffff38;
-  border-radius: 12px;
-  grid-row: 1 / 3;
+.benefit-visual {
+  height: 202px;
+  border-radius: 17px;
+  overflow: hidden;
+  pointer-events: none;
 }
-.route-symbol .story-icon {
-  width: 23px;
-  height: 23px;
+.benefit-copy {
+  padding: 25px 15px 17px;
 }
 .route-moment h3 {
-  color: inherit;
-  font-size: 19px;
+  color: #0b1f33;
+  font-size: 23px;
   line-height: 1.45;
-  margin: 2px 0 0;
+  margin: 0 0 9px;
 }
 .route-moment p {
-  color: #edf8ff;
+  color: #526b80;
   font-size: 14px;
   line-height: 1.85;
   margin: 0;
-  grid-column: 2;
+}
+.benefits-note {
+  margin: 22px 0 0;
+  color: #607c91;
+  font-size: 11px;
+  text-align: center;
+}
+.benefit-map {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #eaf3f7;
+}
+.benefit-streets {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.map-green {
+  fill: #d3eae3;
+}
+.map-street-edge {
+  fill: none;
+  stroke: #dbe5ec;
+  stroke-width: 22px;
+}
+.map-street {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 17px;
+}
+.map-trip {
+  fill: none;
+  stroke: #1768e5;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-dasharray: 5 7;
+}
+.benefit-origin {
+  position: absolute;
+  left: 19%;
+  top: 81%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1768e5;
+  box-shadow: 0 0 0 5px #1768e520;
+}
+.benefit-pin {
+  position: absolute;
+  left: 54%;
+  top: 17%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 8px 5px #1768e538);
+}
+.benefit-pin .story-icon {
+  width: 51px;
+  height: 60px;
+  stroke-width: 1.3;
+  stroke: #fff;
+}
+.benefit-pin path {
+  fill: #1768e5;
+}
+.benefit-pin circle {
+  fill: #fff;
+}
+.benefit-location {
+  position: absolute;
+  top: 51%;
+  left: 54%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: #fff;
+  border: 1px solid #e1ebf2;
+  border-radius: 8px;
+  padding: 7px 11px;
+  color: #183b5d;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 6px 12px #2644600b;
+}
+.benefit-issue {
+  position: absolute;
+  bottom: 15px;
+  inset-inline-end: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1768e5;
+  background: #ffffffed;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+}
+.benefit-issue .story-icon {
+  width: 16px;
+  height: 16px;
+}
+.benefit-chat {
+  height: 100%;
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      #d7f4ea,
+      #edf9f6 72%);
+  padding: 28px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+.chat-example {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 1px solid #fff;
+  background: #cae9e2;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #087f83;
+}
+.chat-avatar .story-icon {
+  width: 17px;
+  height: 17px;
+}
+.chat-in > span:last-child {
+  background: #fff;
+  padding: 11px 13px;
+  border-radius: 13px 13px 5px 13px;
+  color: #36576a;
+  box-shadow: 0 8px 16px #376a6610;
+}
+.chat-out {
+  align-self: flex-end;
+  max-width: 90%;
+  background:
+    linear-gradient(
+      115deg,
+      #1768e5,
+      #087f83);
+  color: #fff;
+  border: 1px solid #ffffff70;
+  padding: 11px 13px;
+  border-radius: 13px 13px 13px 5px;
+  box-shadow: 0 8px 20px #1768e51c;
+}
+html[dir=rtl] .chat-in > span:last-child {
+  border-radius: 13px 13px 13px 5px;
+}
+html[dir=rtl] .chat-out {
+  border-radius: 13px 13px 5px 13px;
+}
+.chat-out svg {
+  width: 18px;
+  height: 14px;
+  stroke: #c7f3e8;
+  fill: none;
+  stroke-width: 1.5;
+  flex: none;
+}
+.chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 12px;
+  background: #ffffffc9;
+  border-radius: 10px;
+  width: max-content;
+  margin-inline-start: 41px;
+}
+.chat-typing i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #7fada5;
+}
+.benefit-status {
+  height: 100%;
+  background:
+    radial-gradient(
+      ellipse at 30% 40%,
+      #dceaff,
+      #f0f5fd 80%);
+  padding: 20px 28px;
+  display: grid;
+  align-items: center;
+}
+.status-example {
+  background: #ffffffed;
+  border: 1px solid #fff;
+  border-radius: 17px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 25px #244f8010;
+}
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #577181;
+  font-size: 11px;
+  min-height: 38px;
+  position: relative;
+}
+.status-line:not(:last-child):after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 17px;
+  top: 28px;
+  inset-inline-start: 11px;
+  background: #cce4df;
+}
+.status-dot {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #0b8c71;
+}
+.status-dot .story-icon {
+  width: 21px;
+  height: 21px;
+}
+.status-current {
+  color: #1768e5;
+  font-weight: 700;
+}
+.status-current .status-dot {
+  background: #e7f0ff;
+  border-radius: 50%;
+}
+.status-current .status-dot i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1768e5;
+  box-shadow: 0 0 0 4px #1768e51a;
 }
 body[data-experience=journey] .how {
   background: #fff;
@@ -344,17 +594,16 @@ body[data-experience=journey] .partner-form {
     font-size: 20px;
   }
   .route-moments {
-    gap: 26px;
+    gap: 16px;
   }
-  .route-moment {
-    grid-template-columns: 1fr;
+  .benefit-chat {
+    padding-inline: 14px;
   }
-  .route-symbol {
-    grid-row: auto;
-    margin-bottom: 8px;
+  .benefit-status {
+    padding-inline: 17px;
   }
-  .route-moment p {
-    grid-column: auto;
+  .route-moment h3 {
+    font-size: 21px;
   }
 }
 @media (max-width: 900px) {
@@ -380,14 +629,22 @@ body[data-experience=journey] .partner-form {
     flex-direction: row;
     font-size: 12px;
   }
-  .route-intro {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 32px;
-  }
   .route-intro h2 {
-    font-size: 34px;
-    max-width: 600px;
+    font-size: 38px;
+  }
+  .route-moments {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+    margin: auto;
+  }
+  .route-moment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 15px;
+  }
+  .benefit-copy {
+    padding: 15px 10px;
   }
   body[data-experience=journey] .community h2 {
     font-size: 36px;
@@ -480,30 +737,40 @@ body[data-experience=journey] .partner-form {
     font-size: 8px;
   }
   body[data-experience=journey] .route-section {
-    padding: 40px 0;
+    padding: 48px 0 32px;
   }
   .route-intro h2 {
-    font-size: 28px;
+    font-size: 31px;
+  }
+  .route-intro {
+    margin-bottom: 27px;
+  }
+  .route-intro > p {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  .route-intro .eyebrow {
+    font-size: 11px;
   }
   .route-moments {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 18px;
   }
   .route-moment {
-    grid-template-columns: 42px 1fr;
-    gap: 6px 15px;
-    padding-top: 20px;
+    display: block;
+    padding: 10px;
+    border-radius: 23px;
   }
-  .route-symbol {
-    grid-row: 1 / 3;
-    margin: 0;
+  .benefit-visual {
+    height: 180px;
+  }
+  .benefit-copy {
+    padding: 20px 12px 15px;
   }
   .route-moment h3 {
-    font-size: 18px;
+    font-size: 22px;
   }
   .route-moment p {
-    grid-column: 2;
-    font-size: 13px;
+    font-size: 14px;
   }
   body[data-experience=journey] .community {
     border-radius: 22px;

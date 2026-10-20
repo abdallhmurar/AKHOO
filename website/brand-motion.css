@@ -5,6 +5,7 @@ body[data-experience=journey] {
   --ice:#f2fbff;
   --muted:#52657a;
   --brand-gradient:linear-gradient(
+
       115deg,#1768e5,#087f83);
 }
 body[data-experience=journey] .header {
@@ -67,14 +68,15 @@ body[data-experience=journey] .hero .text-link {
 body[data-experience=journey] .route-section {
   background:
     linear-gradient(
-      115deg,
-      #1768e5,
-      #117dc6 48%,
-      #087f83);
-  color: #fff;
+      #f7fcff,
+      #edf6fc 55%,
+      #f7fcff);
+  color: #0b1f33;
+  border-top: 1px solid #dfedf5;
+  border-bottom: 1px solid #dfedf5;
 }
 .route-intro .eyebrow {
-  color: #d5fcf2;
+  color: #087f83;
 }
 body[data-experience=journey] .community {
   background:
@@ -124,6 +126,52 @@ body[data-experience=journey] .download-copy .store-button {
 .motion-active .stage-float {
   animation-play-state: running;
 }
+.map-trip {
+  animation: benefit-route 3s linear infinite;
+  animation-play-state: paused;
+}
+.chat-typing i {
+  animation: benefit-typing 1.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.chat-typing i:nth-child(2) {
+  animation-delay: .18s;
+}
+.chat-typing i:nth-child(3) {
+  animation-delay: .36s;
+}
+.status-current .status-dot i {
+  animation: benefit-status 2.5s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.route-section.motion-active .map-trip,
+.route-section.motion-active .chat-typing i,
+.route-section.motion-active .status-current .status-dot i {
+  animation-play-state: running;
+}
+@keyframes benefit-route {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes benefit-typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: .6;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+@keyframes benefit-status {
+  0%, 100% {
+    box-shadow: 0 0 0 3px #1768e51a;
+  }
+  50% {
+    box-shadow: 0 0 0 6px #1768e505;
+  }
+}
 @keyframes brand-float {
   0%, 100% {
     transform: translateY(0);
@@ -165,7 +213,10 @@ body[data-experience=journey] .download-copy .store-button {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .stage-float {
+  .stage-float,
+  .map-trip,
+  .chat-typing i,
+  .status-current .status-dot i {
     animation: none !important;
   }
   .journey-stage,
