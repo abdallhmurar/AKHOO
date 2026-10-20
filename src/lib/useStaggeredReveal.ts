@@ -9,12 +9,13 @@ import { Animated, Easing } from 'react-native'
 // interpolation. Built on the plain Animated API rather than
 // react-native-reanimated - see theme.ts's motion section for why.
 //
-// The animation runs on the JS driver on purpose. With the native driver, a
-// re-render after the animation (for example when the offers query finishes
-// loading) re-attaches the animated props and the native value can fall back to
-// its initial 0, leaving the content laid out but invisible. The JS value stays
-// authoritative here, and the style objects are created once so a re-render does
-// not even re-attach them.
+// Every stage runs on its own. Animated.stagger() is a parallel group that stops
+// all stages as soon as one is stopped, and a stage is stopped whenever its view
+// unmounts mid-animation (the perks points card is swapped for another panel when
+// its data arrives). That froze the later stages at their current, often fully
+// transparent, value and left the weekly offers laid out but invisible. Here a
+// stopped stage does not affect the others, and whatever way the reveal ends every
+// stage is finished at 1. The JS driver keeps each value authoritative on re-render.
 export function useStaggeredReveal(stageCount: number, staggerMs = 140) {
   const stages = useRef(Array.from({ length: stageCount }, () => new Animated.Value(0))).current
   const styles = useMemo(() => stages.map(value => ({
@@ -23,12 +24,15 @@ export function useStaggeredReveal(stageCount: number, staggerMs = 140) {
   })), [stages])
 
   useEffect(() => {
-    const animation = Animated.stagger(
-      staggerMs,
-      stages.map(value => Animated.timing(value, { toValue: 1, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: false }))
+    const reveal = Animated.parallel(
+      stages.map((value, index) => Animated.sequence([
+        Animated.delay(staggerMs * index),
+        Animated.timing(value, { toValue: 1, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: false })
+      ])),
+      { stopTogether: false }
     )
-    animation.start()
-    return () => animation.stop()
+    reveal.start(() => stages.forEach(value => value.setValue(1)))
+    return () => reveal.stop()
   }, [stages, staggerMs])
 
   function stageStyle(index: number) {
