@@ -1,8 +1,9 @@
 import { motionImages } from '../../components/motion/media.ios'
 import { MotionScene } from '../../components/motion/Motion'
+import { BlendedArt } from '../../components/motion/BlendedArt.ios'
 import { GuideTarget, useGuidePage, GuideScrollView } from '../guide/GuideProvider'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, AppState, Image, Linking, Pressable, SafeAreaView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, BatteryWarning, CaretLeft, CaretRight, Clock, GasPump, GpsFix, Lock, MapPin, Minus, Plus, Tire, Wrench } from 'phosphor-react-native'
@@ -285,9 +286,11 @@ export function HelperHomeScreen() {
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.colors.background }]}>
       <GuideScrollView contentContainerStyle={styles.pageContent} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <Image source={motionImages.details} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.3 }} resizeMode="cover" accessible={false} />
-        {/* Keep the back control in its familiar physical position. */}
-        <View style={[styles.headerTopRow, { flexDirection: isRTL && Platform.OS === 'web' ? 'row-reverse' : 'row' }]}>
+        {/* The art fills the whole header box; "100%" sizes resolve against the padded content box and left it short of the right and bottom edges. It fades into the page so dark mode shows no grey rectangle. */}
+        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+          <BlendedArt edge="bottom" start={0.55}><Image source={motionImages.details} accessible={false} style={[StyleSheet.absoluteFill, { opacity: theme.isDark ? 0.16 : 0.3 }]} resizeMode="cover" /></BlendedArt>
+        </View>
+        <View style={[styles.headerTopRow, dirStyles(isRTL).row]}>
           <IconButton label={t('common.back')} size={44} icon={<BackIcon size={21} color={theme.colors.textPrimary} />} onPress={() => router.back()} />
           <GuideTarget id="helper.availability"><StatusBadge tone="success" dot label={t('volunteer.availableNow')} /></GuideTarget>
         </View>
@@ -456,7 +459,7 @@ const styles = StyleSheet.create({
 
   pageContent: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingBottom: space.lg },
   pageTitle: { fontSize: 23 },
-  header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.lg, gap: 4 },
+  header: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.lg, gap: 4, overflow: 'hidden' },
   headerTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
 
   mapCard: { marginHorizontal: space.lg, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden', position: 'relative' },
