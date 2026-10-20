@@ -56,3 +56,6 @@ public/
 previews/**/*.html
 previews/**/*.css
 previews/**/*.js
+
+# Local marketing website, independent from the mobile application.
+website/

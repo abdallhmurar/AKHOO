@@ -1,0 +1,6 @@
+{
+  "name": "akhoo-website",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs", "start": "node server.mjs" }
+}
