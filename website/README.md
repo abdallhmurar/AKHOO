@@ -114,3 +114,16 @@ away from the battery scene paused its video; returning resumed it. Reduced moti
 stopped the beam, scene-entry animation and videos. No horizontal overflow or
 JavaScript errors were observed. Screenshot evidence includes
 `test-results/website-local/journey-route-ar.jpg`.
+
+The app-color pass restores the actual project's signal blue (`#1768E5`),
+home background (`#F2FBFF`) and blue/teal dock gradient. It adds scene floating,
+decorative orbiting accents, button press responses, perspective scene changes
+and a sequenced connection path. Continuous effects pause outside the visible
+section and in background tabs. Reduced motion disables these effects.
+
+Browser checks verified the color pass at 320px in Arabic, English and Hebrew,
+390px in Arabic and desktop. Scene selection still reaches the correct issue in
+the phone preview. Language changes create exactly one animation wrapper and one
+decoration group. Offscreen animations pause, reduced motion stops all new CSS
+animations and videos, and no application errors were captured. Visual proof:
+`test-results/website-local/app-colors-motion-ar.png`.

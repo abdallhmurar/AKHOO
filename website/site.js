@@ -1,6 +1,7 @@
 import {content,languages} from './content.js';
 import {upgradeExperience,setupWalkthrough,setupEditorialMotion} from './experience.js';
 import {createJourney,setupJourney} from './journey.js';
+import {setupBrandMotion} from './brand-motion.js';
 
 const root=document.querySelector('#site');
 const store='https://apps.apple.com/app/id6809610412';
@@ -84,7 +85,7 @@ function render() {
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
   document.querySelectorAll('[data-android]').forEach(b=>b.addEventListener('click',()=>document.querySelector('#android-dialog').showModal()));
-  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());}
+  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());}
 }
 function setupForm(t) {
   const form=document.querySelector('#partner-form');

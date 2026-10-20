@@ -68,3 +68,19 @@ updates the artwork and caption, and carries the issue into the phone preview.
 A contrasting three-step section explains the connection from requester to
 helper to completing the help. Buttons jump to either demo role. The new text is
 translated into Arabic, English and Hebrew, with reduced-motion behavior.
+
+## App colors and stronger animation
+
+At the user's request, the muted green direction was replaced with the approved
+app palette. Sources: `src/lib/theme.ts`, `src/features/home/HomeScreen.web.tsx`
+and `previews/home-motion/styles.css`. Primary blue is `#1768E5`, the home surface
+is `#F2FBFF`, and blue-to-teal controls follow the app's dock. The reward panel
+retains its gold treatment.
+
+`brand-motion.js` owns the new interaction animations and their cleanup. Its
+visibility observer enables only visible sections; page visibility and reduced
+motion suspend or cancel animations. Floating and pointer-tilt transforms use
+separate wrappers, so they do not overwrite each other. Scene switches use
+perspective/opacity, buttons use a short press response, and the route animates
+in reading order in both horizontal and mobile vertical layouts. No animation
+controls or autoplay scene rotation were added.
