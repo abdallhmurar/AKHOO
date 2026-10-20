@@ -514,7 +514,6 @@
     "language": "اللغة",
     "memberSince": "عضو منذ {{date}}",
     "viewActivity": "عرض نشاطي",
-    "comingSoon": "قريبًا",
     "navigationApp": {
       "title": "تطبيق الملاحة",
       "google": "خرائط جوجل",
@@ -524,7 +523,6 @@
       "profile": "الملف الشخصي",
       "notifications": "الإشعارات",
       "darkMode": "الوضع الليلي",
-      "billing": "الفوترة",
       "privacy": "الخصوصية والأمان",
       "help": "المساعدة والدعم",
       "privacyPolicy": "سياسة الخصوصية",

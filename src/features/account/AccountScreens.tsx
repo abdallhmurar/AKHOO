@@ -6,7 +6,7 @@ import { Alert, Image, Linking, Platform, Pressable, StyleSheet, Switch, Text, V
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import * as Clipboard from 'expo-clipboard'
-import { ArrowLeft, ArrowRight, Bell, CaretLeft, CaretRight, ChatCircleDots, Camera, Check, Compass, CreditCard, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Bell, CaretLeft, CaretRight, ChatCircleDots, Camera, Check, Compass, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -170,7 +170,6 @@ export function AccountHomeScreen() {
           try { await guide?.restart(); router.replace('/(tabs)') } catch { toast.show(guideCopy.error, 'error') } finally { setGuideStarting(false) }
         }} /></GuideTarget>
         <PartnerToolsEntry />
-        <ListRow Icon={CreditCard} tone="neutral" title={t('account.menu.billing')} subtitle={t('account.comingSoon')} />
         <ListRow Icon={ShieldCheck} title={t('account.menu.privacy')} onPress={() => router.push('/(tabs)/account/privacy')} />
         <ListRow
           Icon={Lifebuoy}

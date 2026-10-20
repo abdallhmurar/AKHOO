@@ -514,7 +514,6 @@
     "language": "שפה",
     "memberSince": "חבר/ה מאז {{date}}",
     "viewActivity": "צפייה בפעילות שלי",
-    "comingSoon": "בקרוב",
     "navigationApp": {
       "title": "אפליקציית ניווט",
       "google": "Google Maps",
@@ -524,7 +523,6 @@
       "profile": "פרופיל",
       "notifications": "התראות",
       "darkMode": "מצב כהה",
-      "billing": "חיוב",
       "privacy": "פרטיות ואבטחה",
       "help": "עזרה ותמיכה",
       "privacyPolicy": "מדיניות פרטיות",

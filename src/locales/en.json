@@ -514,7 +514,6 @@
     "language": "Language",
     "memberSince": "Member since {{date}}",
     "viewActivity": "View my activity",
-    "comingSoon": "Coming soon",
     "navigationApp": {
       "title": "Navigation App",
       "google": "Google Maps",
@@ -524,7 +523,6 @@
       "profile": "Profile",
       "notifications": "Notifications",
       "darkMode": "Dark Mode",
-      "billing": "Billing",
       "privacy": "Privacy & Security",
       "help": "Help & Support",
       "privacyPolicy": "Privacy Policy",
