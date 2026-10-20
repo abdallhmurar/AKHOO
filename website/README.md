@@ -6,9 +6,11 @@ authenticated Expo application and is not deployed by this task.
 ## Run locally
 
 Use Node.js 24 (for the existing app's TypeScript legal-content source) and the
-repository's installed dependencies. No additional package installation is needed.
+repository's installed dependencies. Install the website's pinned Motion library
+once (or after its lockfile changes):
 
 ```powershell
+npm.cmd ci --prefix website --ignore-scripts
 node website/build.mjs
 node website/server.mjs
 ```
@@ -30,7 +32,10 @@ the ignored `dist/` directory. `website/` is excluded from future EAS uploads.
 ## Visitor flow
 
 - Introduction and four roadside-help categories.
-- Requester/helper tabs explaining the three steps.
+- Interactive phone preview with requester/helper tabs, selectable issue cards,
+  three navigable steps, an optional local note and an illustrative map. It never
+  creates requests, reads a real location or uploads photos. Notes last only for
+  the current demonstration and are cleared when the page or language changes.
 - Helper community, animated perks artwork, and the app's real Three.js gift.
 - Partnership form with local validation and a review dialog. It only prepares a
   WhatsApp message. Nothing is submitted or stored by this website; visitors send
@@ -51,6 +56,12 @@ The build copies the existing assets rather than generating replacement artwork:
 - `src/components/dock-assets`: existing person/handshake/gift images.
 - `src/features/home/rewardsGiftScene.web.ts`: the interactive gift engine.
 - Existing Tajawal, Inter and Noto Sans Hebrew font packages and their licenses.
+
+The second design edition adds a larger hero scene and phone mockup, selectable
+service cards, a phone walkthrough and a dedicated interactive gift panel. Motion
+14.4.0 handles reveal animations and reading progress; reduced-motion preferences
+disable the decorative transitions. Motion's MIT license is included in the build.
+Research sources and the MCP investigation are recorded in `DESIGN-NOTES.md`.
 
 The right third of the gift-exchange movie contains baked Arabic copy. The website
 crops that area and renders its own translated text outside the artwork. Videos
@@ -84,3 +95,12 @@ path-traversal attempt (`403`). Translation dictionaries have matching keys.
 Screenshots and local server logs are stored under ignored
 `test-results/website-local/`. The local server is intentionally left running for
 the requested review; no website deployment is part of this work.
+
+The second edition was checked at 320 CSS pixels in all three languages, at 390
+in Arabic, at approximately 768 and 1024 in English/Hebrew, and at 1440 in Arabic.
+The phone's issue selection, next/back/restart, helper flow and local note
+retention were exercised. Gift interaction reached its WebGL celebrating state.
+The three videos paused under reduced motion, and hidden sections remained
+readable. Partnership validation/draft generation, the Android information dialog,
+mobile navigation and the Motion license link passed. No JavaScript errors were
+captured by the browser during these checks.

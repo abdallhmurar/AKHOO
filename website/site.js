@@ -1,4 +1,5 @@
 import {content,languages} from './content.js';
+import {upgradeExperience,setupWalkthrough,setupEditorialMotion} from './experience.js';
 
 const root=document.querySelector('#site');
 const store='https://apps.apple.com/app/id6809610412';
@@ -64,6 +65,7 @@ function render() {
   document.title=isLegal?`${legalTitle(t)} · ${t.brand}`:t.title;
   document.querySelector('meta[name="description"]').content=t.description;
   root.innerHTML=header(t)+(isLegal?legal(t):landing(t))+footer(t)+dialogs(t);
+  if(!isLegal)upgradeExperience(t,lang,art);
   document.querySelector('#language').addEventListener('change',event=>{
     const form=document.querySelector('#partner-form');
     if(form) formValues=Object.fromEntries(new FormData(form));
@@ -81,17 +83,7 @@ function render() {
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
   document.querySelectorAll('[data-android]').forEach(b=>b.addEventListener('click',()=>document.querySelector('#android-dialog').showModal()));
-  if(isLegal) loadLegal(t,generation); else {setupSteps(t);setupForm(t);setupMotion();setupGift(t);}
-}
-function setupSteps(t) {
-  const buttons=[...document.querySelectorAll('[data-mode]')];
-  function update() {
-    buttons.forEach(b=>{const selected=b.dataset.mode===currentMode;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;});
-    const panel=document.querySelector('#step-panel');panel.setAttribute('aria-labelledby',`tab-${currentMode}`);
-    panel.innerHTML=`<ol class="steps">${t[currentMode+'Steps'].map(([h,p],i)=>`<li><span class="step-number">${i+1}</span><div><h3>${e(h)}</h3><p>${e(p)}</p></div></li>`).join('')}</ol>`;
-    document.querySelector('.how-art').src=`./assets/${currentMode==='need'?'battery':'helpers'}.png`;
-  }
-  buttons.forEach(b=>{b.addEventListener('click',()=>{currentMode=b.dataset.mode;update();});b.addEventListener('keydown',ev=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(ev.key)){ev.preventDefault();currentMode=ev.key==='Home'?'need':ev.key==='End'?'help':currentMode==='need'?'help':'need';update();buttons.find(x=>x.dataset.mode===currentMode).focus();}});});update();
+  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());}
 }
 function setupForm(t) {
   const form=document.querySelector('#partner-form');
@@ -148,7 +140,7 @@ function setupGift(t) {
 async function loadLegal(t,version) {
   const article=document.querySelector('#legal-body');
   if(page==='licenses') {
-    article.innerHTML=`<p>${e(t.licensesIntro)}</p><ul dir="ltr"><li><a href="https://www.flaticon.com/free-icon/user_1077012" target="_blank" rel="noopener noreferrer">Magnific (Freepik) — Flaticon</a></li><li><a href="https://www.flaticon.com/free-icon/holding-hands_3131389" target="_blank" rel="noopener noreferrer">Smashicons — Flaticon</a></li><li><a href="https://www.flaticon.com/media/license/license.pdf" target="_blank" rel="noopener noreferrer">Flaticon license</a></li><li><a href="./assets/TAJAWAL-LICENSE.txt">Tajawal — SIL Open Font License</a></li><li><a href="./assets/INTER-LICENSE.txt">Inter — SIL Open Font License</a></li><li><a href="./assets/HEBREW-LICENSE.txt">Noto Sans Hebrew — SIL Open Font License</a></li><li><a href="./assets/THREE-LICENSE.txt">Three.js — MIT</a></li></ul>`;article.setAttribute('aria-busy','false');return;
+    article.innerHTML=`<p>${e(t.licensesIntro)}</p><ul dir="ltr"><li><a href="https://www.flaticon.com/free-icon/user_1077012" target="_blank" rel="noopener noreferrer">Magnific (Freepik) — Flaticon</a></li><li><a href="https://www.flaticon.com/free-icon/holding-hands_3131389" target="_blank" rel="noopener noreferrer">Smashicons — Flaticon</a></li><li><a href="https://www.flaticon.com/media/license/license.pdf" target="_blank" rel="noopener noreferrer">Flaticon license</a></li><li><a href="./assets/TAJAWAL-LICENSE.txt">Tajawal — SIL Open Font License</a></li><li><a href="./assets/INTER-LICENSE.txt">Inter — SIL Open Font License</a></li><li><a href="./assets/HEBREW-LICENSE.txt">Noto Sans Hebrew — SIL Open Font License</a></li><li><a href="./assets/THREE-LICENSE.txt">Three.js — MIT</a></li><li><a href="./assets/MOTION-LICENSE.txt">Motion — MIT</a></li></ul>`;article.setAttribute('aria-busy','false');return;
   }
   if(page==='delete-account') {
     article.innerHTML=`<p>${e(t.deleteIntro)}</p><ol>${t.deleteSteps.map(v=>`<li>${e(v)}</li>`).join('')}</ol><p>${e(t.deleteHelp)}</p><a class="button" href="${whatsapp}" target="_blank" rel="noopener noreferrer">${e(t.whatsapp)}${icon('message')}</a><p>${e(t.deletePolicy)} <a href="${legalLink('privacy')}">${e(t.privacy)}</a></p>`;article.setAttribute('aria-busy','false');return;

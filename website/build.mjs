@@ -5,7 +5,7 @@ import {build} from 'esbuild';
 import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} from '../src/features/account/legalContent.ts';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','site.js','content.js']) await copyFile(resolve(base,file),resolve(out,file));
+for(const file of ['index.html','site.css','editorial.css','site.js','content.js']) await copyFile(resolve(base,file),resolve(out,file));
 const assets={
  'brand.png':'previews/home-motion/assets/brand.png',
  'road.png':'previews/home-motion/assets/road-header.png',
@@ -22,6 +22,8 @@ const assets={
  'fuel.png':'previews/home-motion/requester/assets/fuel.png',
  'tire.png':'previews/home-motion/requester/assets/tire.png',
  'other.png':'previews/home-motion/requester/assets/other.png',
+ 'camera.png':'previews/home-motion/requester/assets/details-camera.png',
+ 'accepted.png':'previews/home-motion/requester/assets/accepted.png',
  'ar-regular.ttf':'node_modules/@expo-google-fonts/tajawal/400Regular/Tajawal_400Regular.ttf',
  'ar-bold.ttf':'node_modules/@expo-google-fonts/tajawal/700Bold/Tajawal_700Bold.ttf',
  'ar-extra.ttf':'node_modules/@expo-google-fonts/tajawal/800ExtraBold/Tajawal_800ExtraBold.ttf',
@@ -38,6 +40,8 @@ const assets={
 await Promise.all(Object.entries(assets).map(([to,from])=>copyFile(resolve(root,from),resolve(out,'assets',to))));
 await writeFile(resolve(out,'legal.json'),JSON.stringify({contact:LEGAL_CONTACT,updated:LEGAL_LAST_UPDATED,privacy:privacyPolicyBlocks,terms:termsOfUseBlocks}));
 await build({entryPoints:[resolve(root,'src/features/home/rewardsGiftScene.web.ts')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,legalComments:'eof',outfile:resolve(out,'gift-scene.js')});
+await build({entryPoints:[resolve(base,'experience.js')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'eof',outfile:resolve(out,'experience.js')});
+await copyFile(resolve(base,'node_modules/motion/LICENSE.md'),resolve(out,'assets/MOTION-LICENSE.txt'));
 const html=await readFile(resolve(base,'index.html'),'utf8');
 for(const page of ['privacy','terms','delete-account','licenses']) await writeFile(resolve(out,page+'.html'),html);
 console.log('AKHOO website ready: '+out+' — approved app assets and three languages.');
