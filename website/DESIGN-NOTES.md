@@ -37,3 +37,34 @@ interactive phone walkthrough, stronger section hierarchy, a larger real Three.j
 gift and gentle section reveals. The demonstration is explicitly labeled and
 does not submit requests or access location. Existing contact and download flows
 are preserved. Approved app videos and images are reused without redesigning them.
+
+## Further exploration requested by the user
+
+The user asked for sources outside the existing MCP tools, and for new ideas.
+This pass researched different products rather than repeating 21st/Figma:
+
+- [Magic UI MCP](https://magicui.design/docs/mcp) is an official component-context
+  server. Its [Animated Beam](https://magicui.design/docs/components/animated-beam)
+  demonstration suggested a visual connection between people. The website uses
+  its own SVG/CSS implementation; no Magic UI source was copied.
+- [React Bits](https://reactbits.dev/components/circular-gallery) suggested
+  browsing scenes through an interactive gallery. AKHOO uses explicit accessible
+  scenario buttons instead of an infinite gallery.
+- [React Bits MCP setup](https://reactbits.dev/get-started/mcp) documents registry
+  access via the shadcn MCP server, rather than a separate unofficial server.
+- [Mobbin MCP](https://mobbin.com/mcp) offers real product design references and
+  requires a Pro or Team plan. No plan was purchased or account connected.
+- [Gojek](https://www.gojek.com/en-id) was visually reviewed for its large service
+  imagery and high-contrast transitions between sections. No Gojek assets,
+  statistics or text were copied.
+
+The registry precheck for `@magicuidesign/mcp` returned
+`{"status":"error","error":"terminated"}`. The check did not complete, and no
+verdict is claimed. No new MCP server was connected or configuration changed.
+Public documentation and demos supplied the references directly.
+
+The new local direction puts four selectable situations in the hero. Selection
+updates the artwork and caption, and carries the issue into the phone preview.
+A contrasting three-step section explains the connection from requester to
+helper to completing the help. Buttons jump to either demo role. The new text is
+translated into Arabic, English and Hebrew, with reduced-motion behavior.

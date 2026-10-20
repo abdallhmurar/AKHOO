@@ -57,8 +57,9 @@ The build copies the existing assets rather than generating replacement artwork:
 - `src/features/home/rewardsGiftScene.web.ts`: the interactive gift engine.
 - Existing Tajawal, Inter and Noto Sans Hebrew font packages and their licenses.
 
-The second design edition adds a larger hero scene and phone mockup, selectable
-service cards, a phone walkthrough and a dedicated interactive gift panel. Motion
+The current design adds a selectable hero scene, a three-part connection story,
+a phone walkthrough and a dedicated interactive gift panel. Selecting an issue
+in the hero carries that choice into the phone preview. Motion
 14.4.0 handles reveal animations and reading progress; reduced-motion preferences
 disable the decorative transitions. Motion's MIT license is included in the build.
 Research sources and the MCP investigation are recorded in `DESIGN-NOTES.md`.
@@ -104,3 +105,12 @@ The three videos paused under reduced motion, and hidden sections remained
 readable. Partnership validation/draft generation, the Android information dialog,
 mobile navigation and the Motion license link passed. No JavaScript errors were
 captured by the browser during these checks.
+
+The subsequent journey design was checked at 320 CSS pixels in all three
+languages, around 768 and 1024 in Arabic/English, and on the desktop viewport.
+Scenario buttons showed exactly one scene, changed the translated caption and
+carried the selected issue into the phone. Both role shortcuts worked. Switching
+away from the battery scene paused its video; returning resumed it. Reduced motion
+stopped the beam, scene-entry animation and videos. No horizontal overflow or
+JavaScript errors were observed. Screenshot evidence includes
+`test-results/website-local/journey-route-ar.jpg`.

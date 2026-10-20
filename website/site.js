@@ -1,5 +1,6 @@
 import {content,languages} from './content.js';
 import {upgradeExperience,setupWalkthrough,setupEditorialMotion} from './experience.js';
+import {createJourney,setupJourney} from './journey.js';
 
 const root=document.querySelector('#site');
 const store='https://apps.apple.com/app/id6809610412';
@@ -65,7 +66,7 @@ function render() {
   document.title=isLegal?`${legalTitle(t)} · ${t.brand}`:t.title;
   document.querySelector('meta[name="description"]').content=t.description;
   root.innerHTML=header(t)+(isLegal?legal(t):landing(t))+footer(t)+dialogs(t);
-  if(!isLegal)upgradeExperience(t,lang,art);
+  if(!isLegal){upgradeExperience(t,lang,art);createJourney(t,lang,art);}
   document.querySelector('#language').addEventListener('change',event=>{
     const form=document.querySelector('#partner-form');
     if(form) formValues=Object.fromEntries(new FormData(form));
@@ -83,7 +84,7 @@ function render() {
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
   document.querySelectorAll('[data-android]').forEach(b=>b.addEventListener('click',()=>document.querySelector('#android-dialog').showModal()));
-  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());}
+  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());}
 }
 function setupForm(t) {
   const form=document.querySelector('#partner-form');

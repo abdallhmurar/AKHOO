@@ -5,7 +5,7 @@ import {build} from 'esbuild';
 import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} from '../src/features/account/legalContent.ts';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','editorial.css','site.js','content.js']) await copyFile(resolve(base,file),resolve(out,file));
+for(const file of ['index.html','site.css','editorial.css','journey.css','site.js','content.js','journey.js','journey-copy.js']) await copyFile(resolve(base,file),resolve(out,file));
 const assets={
  'brand.png':'previews/home-motion/assets/brand.png',
  'road.png':'previews/home-motion/assets/road-header.png',
