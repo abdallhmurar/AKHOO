@@ -110,7 +110,7 @@ function setupMotion() {
   const preference=matchMedia('(prefers-reduced-motion: reduce)'), videos=[...document.querySelectorAll('video[data-src]')], visible=new Set();
   let disposed=false;
   const sync=()=>videos.forEach(video=>{
-    if(preference.matches||document.hidden||!visible.has(video)){video.pause();return;}
+    if(preference.matches||document.hidden||video.closest('[hidden]')||!visible.has(video)){video.pause();return;}
     if(!video.src){video.src=video.dataset.src;video.load();}
     video.muted=true;video.play().catch(()=>{});
   });

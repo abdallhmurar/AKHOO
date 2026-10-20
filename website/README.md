@@ -145,3 +145,13 @@ download section. Reduced motion paused all videos and disabled continuous scene
 animation. The scene's inherited RTL alignment was corrected. Local proof:
 `test-results/website-local/story-mobile-ar.png` and
 `test-results/website-local/story-desktop-ar.png`.
+
+The hero's four service scenes now play their existing requester MP4s (battery,
+fuel, tire and other) rather than still illustrations. Assets load when visible;
+switching the selected service immediately pauses hidden clips. Videos loop
+silently inline with no playback controls. Posters remain for loading failures
+and reduced motion. The old CSS still-image zoom has been removed.
+
+Verified all four MP4 responses, decoded playback and increasing playback time,
+hidden-video pause, mobile layout at 390px, reduced-motion pause and an empty
+browser error log. Screenshot: `test-results/website-local/service-videos-ar.png`.

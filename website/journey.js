@@ -29,7 +29,7 @@ export function createJourney(t, lang, art) {
     <div class="hero-art journey-art">
       <div class="journey-stage" data-tilt>
         <div class="scenario-picker"><p id="scenario-label">${escape(c.select)}</p><div class="scenario-options" role="group" aria-labelledby="scenario-label">${t.services.map(([name], i) => `<button type="button" data-scene="${i}" aria-pressed="${i === 0}" aria-controls="journey-scene">${icon(kinds[i])}<span>${escape(name)}</span></button>`).join("")}</div></div>
-        <div class="journey-scene" id="journey-scene">${kinds.map((kind, i) => `<div class="journey-slide" data-slide="${i}" ${i ? "hidden" : ""}>${i === 0 ? art("help", t.heroAlt) : `<img class="journey-still" src="./assets/${kind}.png" alt="${escape(t.services[i][0])}" width="640" height="430">`}</div>`).join("")}<span class="scene-caption">${escape(c.sceneLabel)}</span></div>
+        <div class="journey-scene" id="journey-scene">${kinds.map((kind, i) => `<div class="journey-slide" data-slide="${i}" ${i ? "hidden" : ""}>${art(kind, t.services[i][0])}</div>`).join("")}<span class="scene-caption">${escape(c.sceneLabel)}</span></div>
         <div class="journey-caption" aria-live="polite"><div><h2>${escape(c.questions[0])}</h2><p>${escape(c.descriptions[0])}</p></div><span class="scene-count" dir="ltr" aria-hidden="true">01 <small>/ 04</small></span></div>
       </div>
     </div>
@@ -46,12 +46,14 @@ export function setupJourney(t, lang) {
   buttons.forEach((button) => button.addEventListener("click", () => {
     const selected = Number(button.dataset.scene);
     buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
-    document.querySelectorAll("[data-slide]").forEach((slide) => { slide.hidden = Number(slide.dataset.slide) !== selected; });
+    document.querySelectorAll("[data-slide]").forEach((slide) => {
+      slide.hidden = Number(slide.dataset.slide) !== selected;
+      if (slide.hidden) slide.querySelector("video")?.pause();
+    });
     document.querySelector(".journey-caption h2").textContent = c.questions[selected];
     document.querySelector(".journey-caption p").textContent = c.descriptions[selected];
     document.querySelector(".scene-count").innerHTML = `0${selected + 1} <small>/ 04</small>`;
     document.querySelector(".journey-try").dataset.service = String(selected);
     document.querySelector(".journey-stage").dataset.scene = kinds[selected];
-    if (selected !== 0) document.querySelector(".journey-slide video")?.pause();
   }));
 }

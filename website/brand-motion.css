@@ -121,13 +121,7 @@ body[data-experience=journey] .download-copy .store-button {
   animation: brand-float 7s ease-in-out infinite;
   animation-play-state: paused;
 }
-.journey-still {
-  animation: scene-drift 9s ease-in-out infinite alternate;
-  animation-play-state: paused;
-  transform-origin: 50% 65%;
-}
-.motion-active .stage-float,
-.motion-active .journey-still {
+.motion-active .stage-float {
   animation-play-state: running;
 }
 @keyframes brand-float {
@@ -136,14 +130,6 @@ body[data-experience=journey] .download-copy .store-button {
   }
   50% {
     transform: translateY(-5px);
-  }
-}
-@keyframes scene-drift {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.045) translateY(-2px);
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -179,8 +165,7 @@ body[data-experience=journey] .download-copy .store-button {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .stage-float,
-  .journey-still {
+  .stage-float {
     animation: none !important;
   }
   .journey-stage,
