@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles } from 'lucide-react'
 import { DataTable } from '@/components/DataTable'
 import type { Column } from '@/components/DataTable'
 import { OfferStatusBadge } from '@/components/StatusBadge'
@@ -15,12 +14,7 @@ export function OffersTable({ rows, isLoading, isError }: { rows: OfferRow[]; is
     {
       key: 'title',
       header: t('offers.table.title'),
-      cell: row => (
-        <span className="inline-flex items-center gap-1.5">
-          {row.member_only ? <Sparkles className="size-3.5 shrink-0 text-sanad-forest" aria-label={t('offers.detail.memberOnlyBadge')} /> : null}
-          {row.title}
-        </span>
-      )
+      cell: row => row.title
     },
     { key: 'business', header: t('offers.table.business'), cell: row => row.business_name || t('offers.form.noBusiness') },
     { key: 'points', header: t('offers.table.points'), cell: row => (row.points_required != null ? <span dir="ltr">{row.points_required}</span> : '—') },

@@ -22,8 +22,6 @@ import { MissionRatingsPage } from '@/pages/missionRatings/MissionRatingsPage'
 import { ReportsPage } from '@/pages/reports/ReportsPage'
 import { ReportDetailPage } from '@/pages/reports/ReportDetailPage'
 import { NotificationsPage } from '@/pages/notifications/NotificationsPage'
-import { ContentPage } from '@/pages/content/ContentPage'
-import { ProMaxPage } from '@/pages/proMax/ProMaxPage'
 import { SupportPage } from '@/pages/support/SupportPage'
 
 export default function App() {
@@ -53,8 +51,6 @@ export default function App() {
           <Route path="support" element={<SupportPage />} />
           <Route path="support/:id" element={<SupportPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="content" element={<ContentPage />} />
-          <Route path="pro-max" element={<ProMaxPage />} />
           <Route path="map" element={<OperationsMapPage />} />
         </Route>
       </Route>

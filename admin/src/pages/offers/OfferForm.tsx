@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
@@ -48,7 +47,6 @@ export function OfferForm({ offer }: { offer?: Offer }) {
   const [offerTypeLabel, setOfferTypeLabel] = useState(offer?.offer_type_label ?? '')
   const [validFrom, setValidFrom] = useState(toDateInputValue(offer?.valid_from ?? null))
   const [validUntil, setValidUntil] = useState(toDateInputValue(offer?.valid_until ?? null))
-  const [memberOnly, setMemberOnly] = useState(offer?.member_only ?? false)
   const [pointsRequired, setPointsRequired] = useState(offer?.points_required?.toString() ?? '')
   const [imageUploading, setImageUploading] = useState(false)
 
@@ -94,7 +92,7 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           translations: offer?.translations,
           valid_from: validFrom ? new Date(validFrom).toISOString() : null,
           valid_until: validUntil ? new Date(validUntil).toISOString() : null,
-          member_only: memberOnly,
+          member_only: false,
           points_required: pointsRequired ? Number(pointsRequired) : null
         }
       })
@@ -235,19 +233,6 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="flex flex-col gap-3 p-4">
-            <h2 className="text-sm font-semibold text-foreground">{t('offers.form.sections.membership')}</h2>
-            <div className="flex items-start gap-2">
-              <Checkbox id="memberOnly" checked={memberOnly} onCheckedChange={checked => setMemberOnly(checked === true)} className="mt-0.5" />
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="memberOnly" className="cursor-pointer font-normal">{t('offers.form.memberOnly')}</Label>
-                <p className="text-xs text-muted-foreground">{t('offers.form.memberOnlyHint')}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             {t('common.cancel')}
@@ -272,7 +257,6 @@ export function OfferForm({ offer }: { offer?: Offer }) {
           originalPrice={originalPrice ? Number(originalPrice) : null}
           offerPrice={offerPrice ? Number(offerPrice) : null}
           validUntil={validUntil || null}
-          memberOnly={memberOnly}
         />
       </div>
     </div>

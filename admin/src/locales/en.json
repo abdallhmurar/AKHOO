@@ -46,8 +46,6 @@
     "reviews": "Reviews",
     "reports": "Reports",
     "notifications": "Notifications",
-    "content": "Content",
-    "proMax": "AKHOO Pro Max",
     "map": "Map",
     "support": "Support inbox"
   },
@@ -61,14 +59,14 @@
     "invalidCredentials": "Incorrect email or password.",
     "genericError": "Couldn't sign in. Please try again.",
     "accessDeniedTitle": "Access denied",
-    "accessDeniedMessage": "Your account doesn't have admin access to SANAD.",
+    "accessDeniedMessage": "Your account doesn't have admin access to AKHOO.",
     "networkErrorTitle": "Connection problem",
     "networkErrorMessage": "Couldn't reach the server. Check your connection and try again.",
     "sessionExpired": "Your session expired. Please sign in again."
   },
   "dashboard": {
     "title": "Dashboard",
-    "subtitle": "A live snapshot of SANAD's operations.",
+    "subtitle": "A live snapshot of AKHOO's operations.",
     "stats": {
       "totalUsers": "Registered users",
       "openRequests": "Open requests",
@@ -93,7 +91,7 @@
   },
   "requests": {
     "title": "Requests",
-    "subtitle": "All help requests across SANAD.",
+    "subtitle": "All help requests across AKHOO.",
     "filters": {
       "status": "Status",
       "allStatuses": "All statuses",
@@ -159,7 +157,7 @@
   },
   "users": {
     "title": "Users",
-    "subtitle": "Everyone registered on SANAD.",
+    "subtitle": "Everyone registered on AKHOO.",
     "table": {
       "name": "Name",
       "email": "Email",
@@ -212,7 +210,7 @@
       "banConfirmTitle": "Ban this user?",
       "banConfirmMessage": "They'll no longer be able to create requests or help others.",
       "unbanConfirmTitle": "Unban this user?",
-      "unbanConfirmMessage": "They'll regain full access to SANAD.",
+      "unbanConfirmMessage": "They'll regain full access to AKHOO.",
       "noHistory": "No admin actions recorded for this user.",
       "assists": {
         "completedAssists": "confirmed assists",
@@ -234,7 +232,7 @@
           "bronze": "Bronze",
           "silver": "Silver",
           "gold": "Gold",
-          "green": "SANAD Green"
+          "green": "AKHOO Green"
         }
       }
     }
@@ -258,7 +256,7 @@
   },
   "businesses": {
     "title": "Businesses",
-    "subtitle": "Independent roadside-related businesses shown to SANAD users.",
+    "subtitle": "Independent roadside-related businesses shown to AKHOO users.",
     "create": "Add business",
     "edit": "Edit business",
     "categories": {
@@ -341,9 +339,9 @@
       "activate": "Activate",
       "hide": "Hide",
       "activateConfirmTitle": "Activate this business?",
-      "activateConfirmMessage": "It will become visible to SANAD users again.",
+      "activateConfirmMessage": "It will become visible to AKHOO users again.",
       "hideConfirmTitle": "Hide this business?",
-      "hideConfirmMessage": "It will no longer be visible to SANAD users, but its data (offers, reviews, history) is preserved.",
+      "hideConfirmMessage": "It will no longer be visible to AKHOO users, but its data (offers, reviews, history) is preserved.",
       "noReviews": "No reviews yet.",
       "statusLabel": "Partner status",
       "statusHint": "Independent from Active/Hidden above - this is the partner's verification lifecycle.",
@@ -353,7 +351,7 @@
   },
   "offers": {
     "title": "Offers",
-    "subtitle": "Real offers from SANAD's business partners.",
+    "subtitle": "Real offers from AKHOO's business partners.",
     "create": "Add offer",
     "edit": "Edit offer",
     "status": {
@@ -384,12 +382,11 @@
       "sections": {
         "general": "General",
         "pricing": "Pricing",
-        "validity": "Validity",
-        "membership": "SANAD+"
+        "validity": "Validity"
       },
       "business": "Business",
       "selectBusiness": "Select a business",
-      "noBusiness": "No partner (general SANAD offer)",
+      "noBusiness": "No partner (general AKHOO offer)",
       "title": "Offer title",
       "description": "Description",
       "terms": "Terms",
@@ -400,8 +397,6 @@
       "offerPrice": "Offer price",
       "uploadImage": "Upload image",
       "previewLabel": "Live preview",
-      "memberOnly": "Exclusive to SANAD+ members",
-      "memberOnlyHint": "The offer stays visible to everyone - only using it (the \"Use offer\" button) requires an active SANAD+ membership.",
       "pointsRequired": "Points required",
       "pointsRequiredHint": "Leave empty if the offer doesn't cost points to use.",
       "savedCreate": "Offer created.",
@@ -423,8 +418,7 @@
       "businessPlaceholder": "Business name",
       "titlePlaceholder": "Offer title",
       "freeBenefit": "Free",
-      "validUntil": "Valid until {{date}}",
-      "memberOnlyBadge": "SANAD+ exclusive"
+      "validUntil": "Valid until {{date}}"
     },
     "detail": {
       "approve": "Approve",
@@ -438,7 +432,6 @@
       "pauseConfirmMessage": "It will stop being publicly visible until reactivated.",
       "calculatedDiscount": "Calculated discount",
       "noneForBusiness": "No offers for this business yet.",
-      "memberOnlyBadge": "SANAD+ exclusive",
       "weeklyRotationTitle": "Weekly rotation",
       "weeklyRotationHint": "Only approved offers can be assigned a weekly slot.",
       "weeklySlotNone": "Not in weekly rotation",
@@ -448,7 +441,7 @@
   },
   "reviews": {
     "title": "Reviews",
-    "subtitle": "User reviews of SANAD's business partners.",
+    "subtitle": "User reviews of AKHOO's business partners.",
     "hide": "Hide",
     "restore": "Restore",
     "hideConfirmTitle": "Hide this review?",
@@ -671,29 +664,6 @@
       "retry": "Retry delivery",
       "incomplete": "The notification was saved but delivery is incomplete. Check history; uncertain delivery attempts are not automatically repeated."
     }
-  },
-  "content": {
-    "title": "Content",
-    "subtitle": "Manage the Perks screen's banner images per language, without an app update.",
-    "slots": {
-      "perks_header": "Perks header banner",
-      "perks_promax": "AKHOO Pro Max banner"
-    },
-    "languages": {
-      "ar": "Arabic",
-      "he": "Hebrew",
-      "en": "English"
-    },
-    "upload": "Upload image",
-    "active": "Active",
-    "inactive": "Inactive",
-    "fallbackHint": "When inactive or not set, the app shows its built-in default image instead - never a blank banner.",
-    "saved": "Banner updated."
-  },
-  "proMax": {
-    "title": "AKHOO Pro Max",
-    "comingSoonTitle": "Coming soon",
-    "comingSoonMessage": "AKHOO Pro Max management will land here once the membership tier itself ships. Nothing to configure yet."
   },
   "partnerAccess": {
     "title": "Partner access",

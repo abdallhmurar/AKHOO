@@ -46,8 +46,6 @@
     "reviews": "ביקורות",
     "reports": "תלונות",
     "notifications": "התראות",
-    "content": "תוכן",
-    "proMax": "אחוו פרו מקס",
     "map": "מפה",
     "support": "תיבת תמיכה"
   },
@@ -61,14 +59,14 @@
     "invalidCredentials": "אימייל או סיסמה שגויים.",
     "genericError": "ההתחברות נכשלה, נסה שוב.",
     "accessDeniedTitle": "הגישה נדחתה",
-    "accessDeniedMessage": "לחשבון שלך אין הרשאות ניהול בסָנָד.",
+    "accessDeniedMessage": "לחשבון שלך אין הרשאות ניהול באחוו.",
     "networkErrorTitle": "בעיית חיבור",
     "networkErrorMessage": "לא ניתן להתחבר לשרת. בדוק את החיבור שלך ונסה שוב.",
     "sessionExpired": "פג תוקף החיבור, יש להתחבר מחדש."
   },
   "dashboard": {
     "title": "לוח בקרה",
-    "subtitle": "תמונת מצב חיה של פעילות סָנָד.",
+    "subtitle": "תמונת מצב חיה של פעילות אחוו.",
     "stats": {
       "totalUsers": "משתמשים רשומים",
       "openRequests": "בקשות פתוחות",
@@ -93,7 +91,7 @@
   },
   "requests": {
     "title": "בקשות",
-    "subtitle": "כל בקשות הסיוע בסָנָד.",
+    "subtitle": "כל בקשות הסיוע באחוו.",
     "filters": {
       "status": "סטטוס",
       "allStatuses": "כל הסטטוסים",
@@ -159,7 +157,7 @@
   },
   "users": {
     "title": "משתמשים",
-    "subtitle": "כל הרשומים בסָנָד.",
+    "subtitle": "כל הרשומים באחוו.",
     "table": {
       "name": "שם",
       "email": "אימייל",
@@ -212,7 +210,7 @@
       "banConfirmTitle": "לחסום את המשתמש?",
       "banConfirmMessage": "הוא לא יוכל עוד ליצור בקשות או לסייע לאחרים.",
       "unbanConfirmTitle": "לבטל את חסימת המשתמש?",
-      "unbanConfirmMessage": "הגישה המלאה שלו לסָנָד תוחזר.",
+      "unbanConfirmMessage": "הגישה המלאה שלו לאחוו תוחזר.",
       "noHistory": "לא נרשמו פעולות ניהול עבור משתמש זה.",
       "assists": {
         "completedAssists": "סיוע מאושר",
@@ -234,7 +232,7 @@
           "bronze": "ברונזה",
           "silver": "כסף",
           "gold": "זהב",
-          "green": "סָנָד ירוק"
+          "green": "אחוו ירוק"
         }
       }
     }
@@ -258,7 +256,7 @@
   },
   "businesses": {
     "title": "עסקים",
-    "subtitle": "עסקים עצמאיים הקשורים לדרך, המוצגים למשתמשי סָנָד.",
+    "subtitle": "עסקים עצמאיים הקשורים לדרך, המוצגים למשתמשי אחוו.",
     "create": "הוספת עסק",
     "edit": "עריכת עסק",
     "categories": {
@@ -341,9 +339,9 @@
       "activate": "הפעלה",
       "hide": "הסתרה",
       "activateConfirmTitle": "להפעיל את העסק?",
-      "activateConfirmMessage": "הוא יוצג שוב למשתמשי סָנָד.",
+      "activateConfirmMessage": "הוא יוצג שוב למשתמשי אחוו.",
       "hideConfirmTitle": "להסתיר את העסק?",
-      "hideConfirmMessage": "הוא לא יוצג עוד למשתמשי סָנָד, אך הנתונים שלו (מבצעים, ביקורות, היסטוריה) יישמרו.",
+      "hideConfirmMessage": "הוא לא יוצג עוד למשתמשי אחוו, אך הנתונים שלו (מבצעים, ביקורות, היסטוריה) יישמרו.",
       "noReviews": "אין עדיין ביקורות.",
       "statusLabel": "סטטוס השותף",
       "statusHint": "בלתי תלוי בפעיל/מוסתר לעיל - זהו מחזור אימות השותף.",
@@ -353,7 +351,7 @@
   },
   "offers": {
     "title": "מבצעים",
-    "subtitle": "מבצעים אמיתיים משותפי העסקים של סָנָד.",
+    "subtitle": "מבצעים אמיתיים משותפי העסקים של אחוו.",
     "create": "הוספת מבצע",
     "edit": "עריכת מבצע",
     "status": {
@@ -384,12 +382,11 @@
       "sections": {
         "general": "כללי",
         "pricing": "תמחור",
-        "validity": "תוקף",
-        "membership": "SANAD+"
+        "validity": "תוקף"
       },
       "business": "עסק",
       "selectBusiness": "בחר עסק",
-      "noBusiness": "בלי שותף (מבצע כללי של סָנָד)",
+      "noBusiness": "בלי שותף (מבצע כללי של אחוו)",
       "title": "כותרת המבצע",
       "description": "תיאור",
       "terms": "תנאים",
@@ -400,8 +397,6 @@
       "offerPrice": "מחיר המבצע",
       "uploadImage": "העלאת תמונה",
       "previewLabel": "תצוגה מקדימה חיה",
-      "memberOnly": "בלעדי לחברי SANAD+",
-      "memberOnlyHint": "המבצע נשאר גלוי לכולם - רק השימוש בו (כפתור \"השתמש במבצע\") דורש חברות SANAD+ פעילה.",
       "pointsRequired": "נקודות נדרשות",
       "pointsRequiredHint": "השאר ריק אם השימוש במבצע אינו עולה נקודות.",
       "savedCreate": "המבצע נוצר.",
@@ -423,8 +418,7 @@
       "businessPlaceholder": "שם העסק",
       "titlePlaceholder": "כותרת המבצע",
       "freeBenefit": "חינם",
-      "validUntil": "בתוקף עד {{date}}",
-      "memberOnlyBadge": "בלעדי ל-SANAD+"
+      "validUntil": "בתוקף עד {{date}}"
     },
     "detail": {
       "approve": "אישור",
@@ -438,7 +432,6 @@
       "pauseConfirmMessage": "הוא יפסיק להיות מוצג לציבור עד להפעלה מחדש.",
       "calculatedDiscount": "הנחה מחושבת",
       "noneForBusiness": "אין עדיין מבצעים לעסק זה.",
-      "memberOnlyBadge": "בלעדי ל-SANAD+",
       "weeklyRotationTitle": "סבב שבועי",
       "weeklyRotationHint": "אפשר להקצות מיקום שבועי רק למבצעים מאושרים.",
       "weeklySlotNone": "לא בסבב השבועי",
@@ -448,7 +441,7 @@
   },
   "reviews": {
     "title": "ביקורות",
-    "subtitle": "ביקורות משתמשים על שותפי העסקים של סָנָד.",
+    "subtitle": "ביקורות משתמשים על שותפי העסקים של אחוו.",
     "hide": "הסתרה",
     "restore": "שחזור",
     "hideConfirmTitle": "להסתיר את הביקורת?",
@@ -671,29 +664,6 @@
       "retry": "ניסיון שליחה חוזר",
       "incomplete": "ההודעה נשמרה אך השליחה לא הושלמה. בדקו את ההיסטוריה; שליחות שתוצאתן אינה ידועה לא יחזרו אוטומטית."
     }
-  },
-  "content": {
-    "title": "תוכן",
-    "subtitle": "ניהול תמונות הבאנר במסך המבצעים לכל שפה, בלי עדכון לאפליקציה.",
-    "slots": {
-      "perks_header": "באנר עליון במסך המבצעים",
-      "perks_promax": "באנר אחוו פרו מקס"
-    },
-    "languages": {
-      "ar": "ערבית",
-      "he": "עברית",
-      "en": "אנגלית"
-    },
-    "upload": "העלאת תמונה",
-    "active": "פעיל",
-    "inactive": "לא פעיל",
-    "fallbackHint": "כשלא פעיל או לא מוגדר, האפליקציה מציגה את תמונת המחדל המובנית שלה - לעולם לא באנר ריק.",
-    "saved": "הבאנר עודכן."
-  },
-  "proMax": {
-    "title": "אחוו פרו מקס",
-    "comingSoonTitle": "בקרוב",
-    "comingSoonMessage": "ניהול אחוו פרו מקס יגיע לכאן ברגע שמסלול החברות עצמו ישוק. אין עדיין מה להגדיר."
   },
   "partnerAccess": {
     "title": "הרשאות שותף",
