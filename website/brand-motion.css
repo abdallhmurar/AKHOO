@@ -144,10 +144,19 @@ body[data-experience=journey] .download-copy .store-button {
   animation: benefit-status 2.5s ease-in-out infinite;
   animation-play-state: paused;
 }
+.benefit-pin {
+  animation: benefit-pin-lift 4s ease-in-out infinite;
+  animation-play-state: paused;
+}
 .route-section.motion-active .map-trip,
 .route-section.motion-active .chat-typing i,
-.route-section.motion-active .status-current .status-dot i {
+.route-section.motion-active .status-current .status-dot i,
+.route-section.motion-active .benefit-pin {
   animation-play-state: running;
+}
+@keyframes benefit-pin-lift {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
 }
 @keyframes benefit-route {
   to {
@@ -216,7 +225,8 @@ body[data-experience=journey] .download-copy .store-button {
   .stage-float,
   .map-trip,
   .chat-typing i,
-  .status-current .status-dot i {
+  .status-current .status-dot i,
+  .benefit-pin {
     animation: none !important;
   }
   .journey-stage,

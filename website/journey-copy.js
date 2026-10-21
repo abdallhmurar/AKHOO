@@ -13,8 +13,9 @@ export const journeyCopy = {
     roadEyebrow: "أخوو معك عالطريق",
     roadTitle: "كل التفاصيل قدّامك.",
     roadText: "مكانك، محادثتك وحالة طلبك. بتتابعهم كلهم من أخوو.",
+    roadDemo: "جرّب كيف بيشتغل",
     moments: [["حدّد مكانك بوضوح.", "اختار المشكلة وثبّت موقعك، حتى يعرف الشخص القريب شو بتحتاج ووين."], ["احكوا مباشرة.", "لما ينقبل طلبك، بتنسّق مع المساعد من المحادثة داخل التطبيق."], ["تابع كل تحديث.", "من قبول الطلب لتمام المساعدة، بتشوف الحالة وبتأكد النتيجة."]],
-    previews: { location: "موقع الطلب", issue: "مساعدة بطارية", chat: ["معي وصلة بطارية.", "ممتاز، بننسّق هون."], status: ["تم إرسال الطلب", "مساعد قبل طلبك", "المساعد بالطريق"], note: "أمثلة توضيحية من تجربة أخوو" }
+    previews: { location: "موقع الطلب", request: "طلب المساعدة", issue: "مساعدة بطارية", helper: "مساعدك", chatLabel: "محادثة داخل أخوو", tracking: "متابعة طلبك", chat: ["معي وصلة بطارية.", "ممتاز، بننسّق هون."], status: ["تم إرسال الطلب", "مساعد قبل طلبك", "المساعد بالطريق"], note: "أمثلة توضيحية من تجربة أخوو" }
   },
   en: {
     eyebrow: "AKHOO · People helping people",
@@ -30,8 +31,9 @@ export const journeyCopy = {
     roadEyebrow: "AKHOO, along the way",
     roadTitle: "Know what’s happening.",
     roadText: "Your location, conversation and request status. Together in AKHOO.",
+    roadDemo: "Try how it works",
     moments: [["Make your location clear.", "Choose the issue and set your location so people nearby know what you need and where."], ["Talk directly.", "Once someone accepts, coordinate with your helper in the app’s chat."], ["Follow each update.", "From acceptance to completion, see the status and confirm the outcome."]],
-    previews: { location: "Request location", issue: "Battery help", chat: ["I have jumper cables.", "Great, let’s coordinate here."], status: ["Request sent", "A helper accepted", "Helper on the way"], note: "Illustrative examples of the AKHOO experience" }
+    previews: { location: "Request location", request: "Help request", issue: "Battery help", helper: "Your helper", chatLabel: "Chat in AKHOO", tracking: "Your request", chat: ["I have jumper cables.", "Great, let’s coordinate here."], status: ["Request sent", "A helper accepted", "Helper on the way"], note: "Illustrative examples of the AKHOO experience" }
   },
   he: {
     eyebrow: "אח׳ו · אנשים עוזרים לאנשים",
@@ -47,7 +49,8 @@ export const journeyCopy = {
     roadEyebrow: "אח׳ו איתכם בדרך",
     roadTitle: "כל הפרטים מולכם.",
     roadText: "המיקום, השיחה ומצב הבקשה. הכל יחד באח׳ו.",
+    roadDemo: "נסו איך זה עובד",
     moments: [["המיקום שלכם ברור.", "בוחרים את הבעיה ומסמנים את המיקום, כדי שידעו מה צריך ואיפה."], ["מדברים ישירות.", "לאחר קבלת הבקשה, מתאמים עם המסייע בצ׳אט באפליקציה."], ["עוקבים אחרי כל עדכון.", "מקבלת הבקשה ועד לסיום העזרה, רואים את המצב ומאשרים את התוצאה."]],
-    previews: { location: "מיקום הבקשה", issue: "עזרה עם מצבר", chat: ["יש לי כבלי התנעה.", "מצוין, נתאם כאן."], status: ["הבקשה נשלחה", "מסייע קיבל את הבקשה", "המסייע בדרך"], note: "דוגמאות להמחשת השימוש באח׳ו" }
+    previews: { location: "מיקום הבקשה", request: "בקשת עזרה", issue: "עזרה עם מצבר", helper: "המסייע שלכם", chatLabel: "צ׳אט באח׳ו", tracking: "מעקב הבקשה", chat: ["יש לי כבלי התנעה.", "מצוין, נתאם כאן."], status: ["הבקשה נשלחה", "מסייע קיבל את הבקשה", "המסייע בדרך"], note: "דוגמאות להמחשת השימוש באח׳ו" }
   }
 };

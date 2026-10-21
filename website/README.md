@@ -168,3 +168,17 @@ Verified three-language layouts at 320px, the 767px two-column card layout,
 desktop rendering, reduced-motion cancellation and an empty browser error log.
 No page or card overflow was observed. Screenshot:
 `test-results/website-local/benefits-cards-ar.png`.
+
+The benefits composition now gives location a large card beside two smaller
+chat and status cards. The map uses a raised CSS surface and glossy animated pin;
+its request card reuses the app's battery artwork. Chat reuses the existing hands
+icon and status uses the AKHOO logo. All examples remain decorative, translated
+and labeled as illustrative. A new link leads to the existing interactive demo.
+No additional assets, dependencies or backend calls were introduced.
+
+Validation: build and JavaScript syntax checks passed. Browser checks covered
+320px in Arabic, English and Hebrew, Arabic at 390px, Hebrew at 767px and English
+at 1024px, plus the normal desktop view. No page/card overflow or clipped copy
+was observed. The new link reached the demo, whose next-step control worked.
+Reduced motion disabled all benefit animations and paused videos; the browser
+error log was empty. Screenshot: `test-results/website-local/benefits-depth-ar.png`.
