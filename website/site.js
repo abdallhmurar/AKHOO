@@ -33,7 +33,28 @@ function footer(t) {
   return `<footer class="footer"><div class="container footer-top"><a class="brand" href="${home()}"><img src="./assets/brand.png" alt="${e(t.brand)}" width="54" height="54"><span>${e(t.brand)}<small>${e(t.footerTag)}</small></span></a><nav aria-label="${e(t.supportTitle)}"><a href="${legalLink('privacy')}">${e(t.privacy)}</a><a href="${legalLink('terms')}">${e(t.terms)}</a><a href="${legalLink('delete-account')}">${e(t.deletion)}</a><a href="${section('contact')}">${e(t.whatsapp)}</a></nav></div><div class="container footer-bottom"><span>${e(t.rights)}</span><span dir="ltr">© ${new Date().getFullYear()} AKHOO</span></div></footer>`;
 }
 function fields(t) {
-  return ['business','person','city','details'].map(name=>`<div class="field ${name==='details'?'wide':''}"><label for="${name}">${e(t.form[name])}</label>${name==='details'?`<textarea id="${name}" name="${name}" rows="3" maxlength="1500" required placeholder="${e(t.form.detailsHint)}" aria-describedby="${name}-error">${e(formValues[name]||'')}</textarea>`:`<input id="${name}" name="${name}" value="${e(formValues[name]||'')}" maxlength="120" required autocomplete="${name==='business'?'organization':name==='person'?'name':'address-level2'}" placeholder="${e(t.form[name+'Hint'])}" aria-describedby="${name}-error">`}<span class="field-error" id="${name}-error"></span></div>`).join('');
+  return ['business','person','city','details'].map(name=>`<div class="field ${name==='business'||name==='details'?'wide':''}"><label for="${name}">${e(t.form[name])}${name==='details'?` <span class="field-optional">${e(t.partnerOptional)}</span>`:''}</label>${name==='details'?`<textarea id="${name}" name="${name}" rows="3" maxlength="1500" placeholder="${e(t.form.detailsHint)}" aria-describedby="${name}-error">${e(formValues[name]||'')}</textarea>`:`<input id="${name}" name="${name}" value="${e(formValues[name]||'')}" maxlength="120" required autocomplete="${name==='business'?'organization':name==='person'?'name':'address-level2'}" placeholder="${e(t.form[name+'Hint'])}" aria-describedby="${name}-error">`}<span class="field-error" id="${name}-error"></span></div>`).join('');
+}
+function partnership(t) {
+  return `<section id="partners" class="section partners" aria-labelledby="partnership-heading">
+    <div class="container partner-grid">
+      <div class="partner-copy">
+        <span class="eyebrow">${e(t.partnerEyebrow)}</span>
+        <h2 id="partnership-heading">${e(t.partnerTitle)} <span>${e(t.partnerAccent)}</span></h2>
+        <p class="partner-intro">${e(t.partnerText)}</p>
+        <ul class="partner-benefits">${t.partnerBenefits.map(([title,text])=>`<li><span class="partner-benefit-mark">${icon('check')}</span><div><h3>${e(title)}</h3><p>${e(text)}</p></div></li>`).join('')}</ul>
+        <figure class="partner-example">
+          <div class="partner-offer"><div class="partner-offer-copy"><small>${e(t.partnerExampleLabel)}</small><strong>${e(t.partnerExampleTitle)}</strong><p>${e(t.partnerExampleText)}</p><div class="partner-offer-types">${t.partnerExampleOffers.map(text=>`<span>${e(text)}</span>`).join('')}</div></div><div class="partner-offer-art"><img src="./assets/gift.png" alt="" width="100" height="100" loading="lazy"></div></div>
+          <figcaption>${e(t.partnerExampleNote)}</figcaption>
+        </figure>
+      </div>
+      <form id="partner-form" class="partner-form" aria-labelledby="partner-form-heading" novalidate>
+        <div class="partner-form-heading wide"><span class="partner-form-icon">${icon('message')}</span><h3 id="partner-form-heading">${e(t.partnerFormTitle)}</h3><p>${e(t.partnerFormText)}</p></div>
+        ${fields(t)}
+        <div class="partner-form-action wide"><button type="submit" class="button">${e(t.form.submit)}${icon('arrow','directional')}</button><p class="partner-submit-note">${e(t.partnerNote)}</p></div>
+      </form>
+    </div>
+  </section>`;
 }
 function landing(t) {
   return `<main id="main">
@@ -44,7 +65,7 @@ function landing(t) {
     <section id="how" class="section how"><div class="container"><div class="section-heading"><span class="eyebrow">${e(t.howEyebrow)}</span><h2>${e(t.howTitle)}</h2><p>${e(t.howText)}</p></div><div class="how-grid"><div class="how-visual"><div class="how-visual-dots"></div><img class="how-art" src="./assets/battery.png" alt="" width="600" height="400" loading="lazy"><span class="how-art-note">${icon('check')} ${e(t.howCaption)}</span></div><div class="how-content"><div class="tabs" role="tablist" aria-label="${e(t.nav[0])}"><button role="tab" id="tab-need" aria-controls="step-panel" data-mode="need">${e(t.needTab)}</button><button role="tab" id="tab-help" aria-controls="step-panel" data-mode="help">${e(t.helpTab)}</button></div><div id="step-panel" role="tabpanel" tabindex="0"></div><p class="quiet-note">${e(t.howNote)}</p></div></div></div></section>
     <section id="community" class="section community"><div class="container community-grid"><div class="community-copy"><span class="eyebrow">${e(t.communityEyebrow)}</span><h2>${e(t.communityTitle)}<br><span>${e(t.communityAccent)}</span></h2><p>${e(t.communityText)}</p><ul class="check-list">${t.communityList.map(v=>`<li>${icon('check')} ${e(v)}</li>`).join('')}</ul><a class="button teal" href="#download">${e(t.communityAction)}${icon('arrow','directional')}</a></div><div class="community-art">${art('helpers',t.communityAlt)}<div class="community-sticker"><img src="./assets/hands.png" alt="" width="64" height="64"><span>${e(t.artTop)}</span></div></div></div></section>
     <section id="perks" class="section perks"><div class="container perks-panel"><div class="perks-copy"><span class="eyebrow">${e(t.perksEyebrow)}</span><h2>${e(t.perksTitle)}</h2><p>${e(t.perksText)}</p><a class="text-link" href="#download">${e(t.perksAction)}${icon('arrow','directional')}</a></div><div class="perks-art">${art('perks',t.perksAlt,'cropped-art')}</div><div class="gift-wrap"><button class="gift" aria-label="${e(t.giftLabel)}" data-ready="false"><img class="gift-fallback" src="./assets/gift.png" alt="" width="160" height="160"><canvas aria-hidden="true"></canvas></button><span class="gift-hint" aria-live="polite">${e(t.giftHint)}</span></div></div></section>
-    <section id="partners" class="section partners"><div class="container partner-grid"><div class="partner-copy"><span class="eyebrow">${e(t.partnerEyebrow)}</span><h2>${e(t.partnerTitle)}</h2><p>${e(t.partnerText)}</p><div class="partner-symbol"><img src="./assets/hands.png" alt="" width="72" height="72"><span>AKHOO <b>+</b> YOU</span></div><p class="quiet-note">${e(t.partnerNote)}</p></div><form id="partner-form" class="partner-form" novalidate>${fields(t)}<button type="submit" class="button wide">${e(t.form.submit)}${icon('message')}</button></form></div></section>
+    ${partnership(t)}
     <section class="section faq" id="faq"><div class="container faq-grid"><div><span class="eyebrow">${e(t.faqEyebrow)}</span><h2>${e(t.faqTitle)}</h2><a class="text-link" href="#contact">${e(t.supportTitle)}${icon('arrow','directional')}</a></div><div class="faq-list">${t.faqs.map(([q,a])=>`<details><summary>${e(q)}${icon('plus')}</summary><p>${e(a)}</p></details>`).join('')}</div></div></section>
     <section id="download" class="download-section"><div class="container download-panel"><div class="download-copy"><span class="eyebrow">${e(t.downloadEyebrow)}</span><h2>${e(t.downloadTitle)}</h2><p>${e(t.downloadText)}</p><div class="actions"><a class="button store-button" href="${store}" target="_blank" rel="noopener noreferrer">${icon('device')}${e(t.apple)}</a><button class="button android-button" data-android>${icon('device')}${e(t.android)}</button></div></div><div class="download-art"><img src="./assets/road.png" alt="" width="800" height="400" loading="lazy"><div class="download-brand"><img src="./assets/brand.png" alt="${e(t.brand)}" width="82" height="82"></div><div class="road-line"></div></div></div></section>
     <section id="contact" class="contact container"><div><h2>${e(t.supportTitle)}</h2><p>${e(t.supportText)}</p></div><div class="actions"><a class="button outline" href="${whatsapp}" target="_blank" rel="noopener noreferrer">${icon('message')}${e(t.whatsapp)}</a><a class="text-link" href="tel:0509956406">${e(t.phone)}<bdi>050-995-6406</bdi></a></div></section>
@@ -93,13 +114,13 @@ function setupForm(t) {
   form.addEventListener('submit',ev=>{
     ev.preventDefault();let firstInvalid;
     formValues=Object.fromEntries(new FormData(form));
-    for(const name of ['business','person','city','details']) {
+    for(const name of ['business','person','city']) {
       const field=form.elements[name], invalid=!String(formValues[name]).trim();
       field.setAttribute('aria-invalid',String(invalid));document.querySelector(`#${name}-error`).textContent=invalid?t.form.required:'';
       if(invalid&&!firstInvalid)firstInvalid=field;
     }
     if(firstInvalid){firstInvalid.focus();return;}
-    const draft=t.form.intro+'\n\n'+['business','person','city','details'].map(k=>`${t.form[k]}: ${formValues[k].trim()}`).join('\n');
+    const draft=t.form.intro+'\n\n'+['business','person','city','details'].filter(k=>formValues[k].trim()).map(k=>`${t.form[k]}: ${formValues[k].trim()}`).join('\n');
     document.querySelector('#message-draft').value=draft;
     document.querySelector('#whatsapp-draft').href=whatsapp+'?text='+encodeURIComponent(draft);
     document.querySelector('#copy-status').textContent='';document.querySelector('#partner-dialog').showModal();

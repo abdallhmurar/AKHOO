@@ -182,3 +182,19 @@ at 1024px, plus the normal desktop view. No page/card overflow or clipped copy
 was observed. The new link reached the demo, whose next-step control worked.
 Reduced motion disabled all benefit animations and paused videos; the browser
 error log was empty. Screenshot: `test-results/website-local/benefits-depth-ar.png`.
+
+The partnership section now introduces the business value of an AKHOO offer:
+business-name visibility in perks, an offer discussed with the business and
+appreciation for helpers. A clearly labeled sample offer reuses the existing gift
+art; no partner names, audience statistics or sales guarantees are invented.
+The refreshed form has its own introduction and review-before-send note.
+Offer details are optional, so a business can start a conversation before it has
+an offer ready. Required name/business/city validation and the local WhatsApp
+review dialog are retained; an empty optional detail is omitted from the draft.
+
+Validated the build, JavaScript syntax, CSS parsing and browser error log. Checked
+320px layouts in Arabic, English and Hebrew, 1024px English and desktop Arabic
+with no overflow. Empty required fields focus the first error; valid submissions
+with and without offer details produce the correct local draft. Language changes
+preserve entries and translate labels. No WhatsApp message was sent. Visual proof:
+`test-results/website-local/partners-business-ar.jpg`.
