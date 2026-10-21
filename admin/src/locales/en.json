@@ -200,7 +200,12 @@
         "success": "Points updated. New balance: {{balance}}.",
         "history": "Points history",
         "empty": "No points activity yet.",
-        "kinds": { "mission": "Completed mission", "adjustmentAdd": "Added by admin", "adjustmentRemove": "Removed by admin", "redemption": "Offer: {{title}}" }
+        "kinds": {
+          "mission": "Completed mission",
+          "adjustmentAdd": "Added by admin",
+          "adjustmentRemove": "Removed by admin",
+          "redemption": "Offer: {{title}}"
+        }
       },
       "memberSince": "Member since",
       "noRequests": "No requests yet.",
@@ -347,6 +352,25 @@
       "statusHint": "Independent from Active/Hidden above - this is the partner's verification lifecycle.",
       "statusChangeConfirmTitle": "Change partner status?",
       "statusChangeConfirmMessage": "The business's status will change to \"{{status}}\"."
+    },
+    "website": {
+      "title": "Website partner strip",
+      "hint": "Choose whether this business appears in the partner strip. Its existing image is used, and changes appear on the website within a minute.",
+      "enabled": "Show this business in the strip",
+      "showName": "Show the name below the image",
+      "noImage": "Add a logo or photo using Edit before showing this business in the strip.",
+      "inactive": "Only active, verified businesses appear to website visitors.",
+      "preview": "Card preview",
+      "order": "Position in the strip",
+      "orderHint": "Lower numbers appear first.",
+      "name_ar": "Arabic name",
+      "name_en": "English name",
+      "name_he": "Hebrew name",
+      "save": "Save strip settings",
+      "saving": "Saving?",
+      "saved": "Strip settings saved",
+      "loadError": "Could not load the strip settings. Please try again.",
+      "saveError": "Could not save your changes. Please try again."
     }
   },
   "offers": {
@@ -632,7 +656,13 @@
       "duration": "How long it stays visible (days)",
       "durationHint": "After this many days, the notification disappears from inside the app automatically (1 to 90 days). Doesn't affect the phone push, which is delivered once at send time."
     },
-    "preview": { "titlePlaceholder": "Notification title", "bodyPlaceholder": "Your message appears here.", "viewNow": "View now", "later": "Later", "detailsLabel": "After tapping “View now”" },
+    "preview": {
+      "titlePlaceholder": "Notification title",
+      "bodyPlaceholder": "Your message appears here.",
+      "viewNow": "View now",
+      "later": "Later",
+      "detailsLabel": "After tapping “View now”"
+    },
     "table": {
       "title": "Title",
       "audience": "Audience",
@@ -691,8 +721,17 @@
     "title": "Support inbox",
     "subtitle": "Conversations between users and the AKHOO team. You answer them from here.",
     "search": "Search by name…",
-    "filters": { "all": "All", "open": "Needs reply", "waiting_user": "Waiting for user", "resolved": "Resolved" },
-    "status": { "open": "Needs reply", "waiting_user": "Waiting for user", "resolved": "Resolved" },
+    "filters": {
+      "all": "All",
+      "open": "Needs reply",
+      "waiting_user": "Waiting for user",
+      "resolved": "Resolved"
+    },
+    "status": {
+      "open": "Needs reply",
+      "waiting_user": "Waiting for user",
+      "resolved": "Resolved"
+    },
     "emptyList": "No conversations yet. When a user writes from the app, it will show up here.",
     "emptyFiltered": "No conversations match.",
     "selectPrompt": "Select a conversation to read and reply.",

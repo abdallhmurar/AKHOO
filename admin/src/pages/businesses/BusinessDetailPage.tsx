@@ -23,6 +23,7 @@ import { useSetBusinessActive } from './useSetBusinessActive'
 import { useSetBusinessStatus } from './useSetBusinessStatus'
 import { BusinessLocationMap } from './BusinessLocationMap'
 import { BusinessPhotosManager } from './BusinessPhotosManager'
+import { WebsitePartnerCard } from './WebsitePartnerCard'
 
 const BUSINESS_STATUSES: BusinessStatus[] = ['pending', 'verified', 'suspended', 'rejected']
 
@@ -109,6 +110,8 @@ export function BusinessDetailPage() {
         confirmLabel={t('common.confirm')}
         onConfirm={() => setStatus.mutateAsync({ id: business.id, status: pendingStatus! })}
       />
+
+      <WebsitePartnerCard business={business} />
 
       <Tabs defaultValue="overview">
         <TabsList>
