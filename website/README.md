@@ -220,8 +220,8 @@ The browser error log was empty; no message was sent. Visual proof:
 ## Admin-managed partner strip
 
 The website reads the approved display list from the public Supabase RPC
-`get_website_partners`. Admins manage each business from Businesses ? business
-page ? Website partner strip: visibility, order, optional name and names in
+`get_website_partners`. Admins manage each business from Businesses > business
+page > Website partner strip: visibility, order, optional name and names in
 Arabic/English/Hebrew. The image follows the business's existing logo/photo.
 Only selected, active, verified businesses with an HTTPS image are returned.
 
@@ -252,3 +252,9 @@ write denial, hidden/pending/missing-image filtering, localized labels, audit
 logging, invalid settings and removal from the public feed. Admin type checking,
 changed-component lint, locale parity and production build passed. Website feed
 tests cover empty/error responses, display-field filtering and unsafe URLs.
+
+Published verification: hid the lawyer through the admin form, confirmed that
+the anonymous API and website showed only the store, then restored the lawyer.
+All original selections, position 20 and localized names were preserved. Arabic,
+English and Hebrew admin labels/previews and 320px website layouts passed.
+Admin visual proof: `test-results/website-local/admin-partner-controls-ar.jpg`.
