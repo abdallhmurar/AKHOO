@@ -198,3 +198,18 @@ with no overflow. Empty required fields focus the first error; valid submissions
 with and without offer details produce the correct local draft. Language changes
 preserve entries and translate labels. No WhatsApp message was sent. Visual proof:
 `test-results/website-local/partners-business-ar.jpg`.
+
+The Arabic copy now uses a consistent conversational Palestinian voice across
+the hero, service scenes, benefits, walkthrough, helper/rewards sections,
+partnership form and review dialog, FAQs, downloads and support. Descriptive
+metadata, accessible labels and error messages use the same tone. The app's
+legal policy and terms bodies are unchanged, as are the English and Hebrew copy.
+
+Validation: JavaScript syntax and the local build passed. Compared all three
+copy modules against the previous commit: English/Hebrew values and Arabic keys
+are unchanged. Browser checks covered Arabic at 320px, 390px and desktop with no
+horizontal overflow or clipped text. Required-field errors, the local partnership
+message preview and the walkthrough's details step display the revised wording.
+The browser error log was empty; no message was sent. Visual proof:
+`test-results/website-local/colloquial-mobile-ar.jpg` and
+`test-results/website-local/colloquial-partners-ar.jpg`.
