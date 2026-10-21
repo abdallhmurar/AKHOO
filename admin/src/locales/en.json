@@ -367,7 +367,7 @@
       "name_en": "English name",
       "name_he": "Hebrew name",
       "save": "Save strip settings",
-      "saving": "Saving?",
+      "saving": "Saving…",
       "saved": "Strip settings saved",
       "loadError": "Could not load the strip settings. Please try again.",
       "saveError": "Could not save your changes. Please try again."

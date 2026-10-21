@@ -9,6 +9,13 @@ function flattenKeys(obj: unknown, prefix = ''): string[] {
 }
 
 describe('locale key parity', () => {
+  it('partner strip labels retain Arabic and Hebrew characters', () => {
+    expect(ar.businesses.website.title).toMatch(/[\u0600-\u06ff]/)
+    expect(he.businesses.website.title).toMatch(/[\u0590-\u05ff]/)
+    for (const locale of [ar, en, he]) {
+      expect(Object.values(locale.businesses.website).every(value => !/\?{2}/.test(value))).toBe(true)
+    }
+  })
   it('ar/en/he have exactly the same set of translation keys', () => {
     const arKeys = flattenKeys(ar).sort()
     const enKeys = flattenKeys(en).sort()
