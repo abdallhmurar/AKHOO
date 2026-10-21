@@ -9,10 +9,14 @@ const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;',
 
 export function partnerStrip(lang) {
   const t=copy[lang]||copy.ar;
+  const cards=partnerLogos.map(partner=>{
+    const caption=partner.caption?.[lang]||partner.caption?.ar;
+    return `<li class="partner-logo${caption?' partner-portrait':''}"><img src="${escape(partner.image)}" alt="${caption?'':escape(partner.name)}" width="${caption?80:184}" height="${caption?80:116}" loading="lazy" decoding="async">${caption?`<span class="partner-name" dir="auto">${escape(caption)}</span>`:''}</li>`;
+  }).join('');
   return `<section class="partner-showcase" id="our-partners" aria-labelledby="partner-strip-heading">
     <div class="container">
       <div class="partner-strip-heading"><span class="eyebrow">${escape(t.note)}</span><h2 id="partner-strip-heading">${escape(t.title)}</h2></div>
-      ${partnerLogos.length?`<div class="partner-marquee" tabindex="0" aria-labelledby="partner-strip-heading"><div class="partner-track"><ul class="partner-logo-group">${partnerLogos.map(partner=>`<li class="partner-logo"><img src="${escape(partner.image)}" alt="${escape(partner.name)}" width="184" height="116" loading="lazy" decoding="async"></li>`).join('')}</ul></div></div>`:''}
+      ${partnerLogos.length?`<div class="partner-marquee" tabindex="0" aria-labelledby="partner-strip-heading"><div class="partner-track"><ul class="partner-logo-group">${cards}</ul></div></div>`:''}
       <div class="partner-invitation">
         <div class="partner-invitation-copy"><span class="eyebrow">${escape(t.eyebrow)}</span><h3>${escape(t.titleInvite)}</h3><p>${escape(t.text)}</p></div>
         <a class="button partner-join" href="#partner-form"><span>${escape(t.action)}</span><svg class="icon directional" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a>

@@ -219,8 +219,8 @@ The browser error log was empty; no message was sent. Visual proof:
 
 ## Partner logo strip
 
-The strip between perks and the partnership section uses original business
-logos, followed by a translated invitation linking to the existing inquiry form.
+The strip between perks and the partnership section uses approved business
+images, followed by a translated invitation linking to the existing inquiry form.
 The repeating track respects RTL/LTR and pauses offscreen, in hidden tabs, on
 hover/focus and with reduced motion. Repeated items are hidden from assistive
 technology; reduced motion shows each logo once in a static layout.
@@ -228,8 +228,11 @@ technology; reduced motion shows each logo once in a static layout.
 `partner-logos.js` is a reviewed snapshot, not a live database integration.
 On 2026-10-22 the admin business list showed AKHOO Store and Moti Oreng active;
 Abu Najma and Al-Rajabi were hidden. The store's original public logo is included.
-Moti Oreng's current business image is a portrait, so it is excluded while the
-owner supplies a logo. No placeholder partners or portraits are published.
+The owner approved using Moti Oreng's existing public business portrait on
+2026-10-22. His name appears beneath it in the selected site language (Arabic,
+English or Hebrew). The Hebrew spelling was checked against his professional
+page at https://digital-cards.co.il/lowor/; English uses a transliteration.
+No placeholder or hidden partners are published.
 When business status or logos change, recheck the admin's Active list, update
 the manifest/assets and rebuild/redeploy this preview. No database policies,
 business records or administrative credentials are changed or shipped.
@@ -238,3 +241,7 @@ Validation: syntax and build passed; Arabic/English/Hebrew layouts at 320px,
 Arabic at 390px and desktop have no horizontal overflow. Logo images fit their
 cards. The invitation reaches `#partner-form`. Reduced motion removes duplicate
 logos and stops movement. No JavaScript errors were captured.
+
+Portrait follow-up: syntax/build passed; localized labels fit at 320px in all
+three languages and at 1200px in Arabic, with no horizontal overflow or browser
+errors. The approved public portrait loads alongside the store's original logo.

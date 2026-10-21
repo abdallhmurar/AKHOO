@@ -1,4 +1,4 @@
-/* Only the approved business marks move; the invitation stays easy to read. */
+/* Only approved partner images move; the invitation stays easy to read. */
 .partner-showcase { padding: 62px 0 68px; background: #fff; overflow: hidden; }
 .partner-strip-heading { text-align: center; }
 .partner-strip-heading .eyebrow { color: #567386; font-size: 12px; }
@@ -9,6 +9,9 @@
 .partner-logo-group { display: flex; align-items: center; flex: none; gap: 24px; margin: 0; padding: 0 24px 0 0; list-style: none; }
 .partner-logo { display: flex; align-items: center; justify-content: center; width: 216px; height: 142px; padding: 12px 16px; background: #fff; border: 1px solid #e2ecf3; border-radius: 21px; box-shadow: 0 5px 0 #f0f5f9,0 12px 24px #23456606; }
 .partner-logo img { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; }
+.partner-portrait { flex-direction: column; gap: 8px; }
+.partner-portrait img { flex: none; width: 80px; height: 80px; border-radius: 16px; object-fit: cover; }
+.partner-name { max-width: 100%; color: #13334b; font-size: 13px; font-weight: 700; line-height: 1.5; text-align: center; }
 .partner-invitation { display: flex; justify-content: space-between; align-items: center; gap: 34px; margin-top: 13px; padding: 33px 38px; border: 1px solid #cce5ef; border-radius: 25px; background: radial-gradient(ellipse at 5% 100%,#d8f5ed,transparent 60%),linear-gradient(115deg,#f1fbff,#eaf4ff); }
 .partner-invitation-copy { max-width: 610px; }
 .partner-invitation .eyebrow { color: #087f83; font-size: 12px; }
@@ -20,12 +23,16 @@
   .partner-showcase { padding: 44px 0 46px; }
   .partner-strip-heading h2 { font-size: 29px; margin-bottom: 20px; }
   .partner-logo { width: 184px; height: 128px; }
+  .partner-portrait img { width: 70px; height: 70px; border-radius: 14px; }
   .partner-invitation { align-items: flex-start; flex-direction: column; gap: 23px; padding: 28px; }
   .partner-invitation h3 { font-size: 25px; }
 }
 @media (max-width:480px) {
   .partner-marquee { margin-inline: -12px; mask-image: linear-gradient(to right,transparent,#000 5%,#000 95%,transparent); }
   .partner-logo { width: 160px; height: 116px; border-radius: 16px; padding: 10px 14px; }
+  .partner-portrait { gap: 6px; }
+  .partner-portrait img { width: 64px; height: 64px; border-radius: 12px; }
+  .partner-name { font-size: 12px; }
   .partner-logo-group { gap: 16px; padding-right: 16px; }
   .partner-invitation { padding: 25px 21px; border-radius: 21px; }
   .partner-invitation h3 { font-size: 24px; }
