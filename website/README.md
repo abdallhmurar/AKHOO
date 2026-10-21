@@ -1,7 +1,10 @@
-# AKHOO marketing website — local preview
+# AKHOO marketing website — standalone preview
 
-This is a standalone public introduction to AKHOO. It is separate from the
-authenticated Expo application and is not deployed by this task.
+This is a standalone public introduction to AKHOO, separate from the
+authenticated Expo application. The mobile-accessible preview is
+https://dist-mu-lilac-59.vercel.app/?lang=ar . Its Vercel project is `dist`
+(`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`); do not deploy this static directory to the
+root repository's `akhoo` app project. Only `website/dist/` is uploaded.
 
 ## Run locally
 
@@ -213,3 +216,25 @@ message preview and the walkthrough's details step display the revised wording.
 The browser error log was empty; no message was sent. Visual proof:
 `test-results/website-local/colloquial-mobile-ar.jpg` and
 `test-results/website-local/colloquial-partners-ar.jpg`.
+
+## Partner logo strip
+
+The strip between perks and the partnership section uses original business
+logos, followed by a translated invitation linking to the existing inquiry form.
+The repeating track respects RTL/LTR and pauses offscreen, in hidden tabs, on
+hover/focus and with reduced motion. Repeated items are hidden from assistive
+technology; reduced motion shows each logo once in a static layout.
+
+`partner-logos.js` is a reviewed snapshot, not a live database integration.
+On 2026-10-22 the admin business list showed AKHOO Store and Moti Oreng active;
+Abu Najma and Al-Rajabi were hidden. The store's original public logo is included.
+Moti Oreng's current business image is a portrait, so it is excluded while the
+owner supplies a logo. No placeholder partners or portraits are published.
+When business status or logos change, recheck the admin's Active list, update
+the manifest/assets and rebuild/redeploy this preview. No database policies,
+business records or administrative credentials are changed or shipped.
+
+Validation: syntax and build passed; Arabic/English/Hebrew layouts at 320px,
+Arabic at 390px and desktop have no horizontal overflow. Logo images fit their
+cards. The invitation reaches `#partner-form`. Reduced motion removes duplicate
+logos and stops movement. No JavaScript errors were captured.

@@ -3,9 +3,12 @@ import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} from '../src/features/account/legalContent.ts';
+import {partnerLogos} from './partner-logos.js';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','site.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
+for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-logos.js','site.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
+await mkdir(resolve(out,'assets/partners'),{recursive:true});
+await Promise.all(partnerLogos.map(partner=>copyFile(resolve(base,partner.image),resolve(out,partner.image))));
 const assets={
  'brand.png':'previews/home-motion/assets/brand.png',
  'road.png':'previews/home-motion/assets/road-header.png',
