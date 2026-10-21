@@ -217,31 +217,38 @@ The browser error log was empty; no message was sent. Visual proof:
 `test-results/website-local/colloquial-mobile-ar.jpg` and
 `test-results/website-local/colloquial-partners-ar.jpg`.
 
-## Partner logo strip
+## Admin-managed partner strip
 
-The strip between perks and the partnership section uses approved business
-images, followed by a translated invitation linking to the existing inquiry form.
-The repeating track respects RTL/LTR and pauses offscreen, in hidden tabs, on
-hover/focus and with reduced motion. Repeated items are hidden from assistive
-technology; reduced motion shows each logo once in a static layout.
+The website reads the approved display list from the public Supabase RPC
+`get_website_partners`. Admins manage each business from Businesses ? business
+page ? Website partner strip: visibility, order, optional name and names in
+Arabic/English/Hebrew. The image follows the business's existing logo/photo.
+Only selected, active, verified businesses with an HTTPS image are returned.
 
-`partner-logos.js` is a reviewed snapshot, not a live database integration.
-On 2026-10-22 the admin business list showed AKHOO Store and Moti Oreng active;
-Abu Najma and Al-Rajabi were hidden. The store's original public logo is included.
-The owner approved using Moti Oreng's existing public business portrait on
-2026-10-22. His name appears beneath it in the selected site language (Arabic,
-English or Hebrew). The Hebrew spelling was checked against his professional
-page at https://digital-cards.co.il/lowor/; English uses a transliteration.
-No placeholder or hidden partners are published.
-When business status or logos change, recheck the admin's Active list, update
-the manifest/assets and rebuild/redeploy this preview. No database policies,
-business records or administrative credentials are changed or shipped.
+Migration `0045_website_partners.sql` creates separate admin-only settings;
+existing business RLS is unchanged. Public visitors receive only the ID, public
+name, image and optional localized caption. Changes go through an admin-checked
+RPC and append to the business audit trail. The two previously approved
+businesses are carried forward. No other businesses are enabled automatically.
 
-Validation: syntax and build passed; Arabic/English/Hebrew layouts at 320px,
-Arabic at 390px and desktop have no horizontal overflow. Logo images fit their
-cards. The invitation reaches `#partner-form`. Reduced motion removes duplicate
-logos and stops movement. No JavaScript errors were captured.
+The client refreshes on opening the page, returning to the tab and every minute
+while visible. An empty selection or failed request hides the strip without
+restoring outdated static partners; the business invitation remains available.
+The track handles RTL/LTR, reduced motion, hover/focus and offscreen pausing.
 
-Portrait follow-up: syntax/build passed; localized labels fit at 320px in all
-three languages and at 1200px in Arabic, with no horizontal overflow or browser
-errors. The approved public portrait loads alongside the store's original logo.
+The build reads only EXPO_PUBLIC_SUPABASE_URL and
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY from the environment or the ignored root
+.env.local. It rejects service-role keys and emits only public configuration.
+Never copy environment files or admin credentials into the static output.
+
+Admin implementation lives on `feat/admin-website-partners-20261022`, based on
+production admin commit `970c8b5` to preserve its newer changes. The marketing
+site remains on `web/marketing-local-20261021`. Deploy only the existing
+`akhoo-admin` project and the standalone `dist` website project for this feature.
+
+Validation: database migration and permission tests passed in a rolled-back
+transaction before applying the migration. Tests cover anonymous/non-admin
+write denial, hidden/pending/missing-image filtering, localized labels, audit
+logging, invalid settings and removal from the public feed. Admin type checking,
+changed-component lint, locale parity and production build passed. Website feed
+tests cover empty/error responses, display-field filtering and unsafe URLs.

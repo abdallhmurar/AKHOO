@@ -1,4 +1,5 @@
-import {partnerLogos} from './partner-logos.js';
+import {partnerConfig} from './partner-config.js';
+import {fetchWebsitePartners} from './partner-feed.js';
 
 const copy = {
   ar: {title:'شركاء أخوو', note:'ناس ومصالح، معنا عالطريق.', eyebrow:'في مكان لشعارك هون', titleInvite:'عندك مصلحة؟ خلّينا نكبّرها سوا.', text:'حاب تعلن عن شغلك وتقدّم عرض لأهل أخوو؟ ابعتلنا، واحكيلنا شو عندك. بنرتّبها سوا وبتصير واحد منّا.', action:'ابعتلنا وخلّيك معنا'},
@@ -7,27 +8,57 @@ const copy = {
 };
 const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
+function partnerCards(partners, lang) {
+  return partners.map(partner=>{
+    const caption=partner.caption?.[lang]||partner.caption?.ar;
+    return `<li class="partner-logo${caption?' partner-portrait':''}"><img src="${escape(partner.image)}" alt="${caption?'':escape(partner.name)}" width="${caption?80:184}" height="${caption?80:116}" loading="lazy" decoding="async">${caption?`<span class="partner-name" dir="auto" title="${escape(caption)}">${escape(caption)}</span>`:''}</li>`;
+  }).join('');
+}
+
 export function partnerStrip(lang) {
   const t=copy[lang]||copy.ar;
-  const cards=partnerLogos.map(partner=>{
-    const caption=partner.caption?.[lang]||partner.caption?.ar;
-    return `<li class="partner-logo${caption?' partner-portrait':''}"><img src="${escape(partner.image)}" alt="${caption?'':escape(partner.name)}" width="${caption?80:184}" height="${caption?80:116}" loading="lazy" decoding="async">${caption?`<span class="partner-name" dir="auto">${escape(caption)}</span>`:''}</li>`;
-  }).join('');
-  return `<section class="partner-showcase" id="our-partners" aria-labelledby="partner-strip-heading">
+  return `<section class="partner-showcase" id="our-partners" aria-labelledby="partner-invitation-heading">
     <div class="container">
-      <div class="partner-strip-heading"><span class="eyebrow">${escape(t.note)}</span><h2 id="partner-strip-heading">${escape(t.title)}</h2></div>
-      ${partnerLogos.length?`<div class="partner-marquee" tabindex="0" aria-labelledby="partner-strip-heading"><div class="partner-track"><ul class="partner-logo-group">${cards}</ul></div></div>`:''}
+      <div class="partner-strip-content" hidden>
+        <div class="partner-strip-heading"><span class="eyebrow">${escape(t.note)}</span><h2 id="partner-strip-heading">${escape(t.title)}</h2></div>
+        <div class="partner-marquee" tabindex="0" aria-labelledby="partner-strip-heading"><div class="partner-track"><ul class="partner-logo-group"></ul></div></div>
+      </div>
       <div class="partner-invitation">
-        <div class="partner-invitation-copy"><span class="eyebrow">${escape(t.eyebrow)}</span><h3>${escape(t.titleInvite)}</h3><p>${escape(t.text)}</p></div>
+        <div class="partner-invitation-copy"><span class="eyebrow">${escape(t.eyebrow)}</span><h3 id="partner-invitation-heading">${escape(t.titleInvite)}</h3><p>${escape(t.text)}</p></div>
         <a class="button partner-join" href="#partner-form"><span>${escape(t.action)}</span><svg class="icon directional" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a>
       </div>
     </div>
   </section>`;
 }
 
-export function setupPartnerStrip() {
+export function setupPartnerStrip(lang) {
   const section=document.querySelector('#our-partners');
-  const viewport=section?.querySelector('.partner-marquee');
+  const content=section?.querySelector('.partner-strip-content');
+  if(!content) return ()=>{};
+  let disposed=false, controller, stopMotion=()=>{}, last='';
+  function display(partners){
+    const signature=JSON.stringify(partners);
+    if(disposed||signature===last)return;
+    last=signature;stopMotion();
+    content.querySelector('.partner-track').innerHTML=`<ul class="partner-logo-group">${partnerCards(partners,lang)}</ul>`;
+    content.hidden=partners.length===0;
+    stopMotion=partners.length?mountPartnerMarquee(content.querySelector('.partner-marquee')):()=>{};
+  }
+  async function refresh(){
+    if(disposed||controller||document.hidden)return;
+    controller=new AbortController();
+    const timeout=setTimeout(()=>controller?.abort(),10000);
+    try{display(await fetchWebsitePartners(partnerConfig,controller.signal));}
+    catch{if(!disposed)display([]);}
+    finally{clearTimeout(timeout);controller=undefined;}
+  }
+  const interval=setInterval(refresh,60000);
+  document.addEventListener('visibilitychange',refresh);
+  refresh();
+  return ()=>{disposed=true;clearInterval(interval);controller?.abort();stopMotion();document.removeEventListener('visibilitychange',refresh);};
+}
+
+function mountPartnerMarquee(viewport) {
   if(!viewport) return ()=>{};
   const track=viewport.querySelector('.partner-track'), group=track.querySelector('.partner-logo-group');
   const originals=[...group.children];

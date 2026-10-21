@@ -3,12 +3,21 @@ import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} from '../src/features/account/legalContent.ts';
-import {partnerLogos} from './partner-logos.js';
+import {parseEnv} from 'node:util';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-logos.js','site.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
-await mkdir(resolve(out,'assets/partners'),{recursive:true});
-await Promise.all(partnerLogos.map(partner=>copyFile(resolve(base,partner.image),resolve(out,partner.image))));
+for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-feed.js','site.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
+// Only public connection settings are emitted. No session or service-role key.
+let localEnv={};
+try{localEnv=parseEnv(await readFile(resolve(root,'.env.local'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+const env={...localEnv,...process.env};
+const partnerConfig={url:env.EXPO_PUBLIC_SUPABASE_URL,key:env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY};
+if(!partnerConfig.url?.startsWith('https://')||!partnerConfig.key)throw new Error('Public Supabase website configuration missing');
+let publicKey=partnerConfig.key.startsWith('sb_publishable_');
+if(!publicKey){try{publicKey=JSON.parse(Buffer.from(partnerConfig.key.split('.')[1],'base64url').toString()).role==='anon';}catch{}}
+if(!publicKey)throw new Error('Website requires a publishable or anon key');
+partnerConfig.url=partnerConfig.url.replace(/\/$/,'');
+await writeFile(resolve(out,'partner-config.js'),`export const partnerConfig=${JSON.stringify(partnerConfig)};\n`);
 const assets={
  'brand.png':'previews/home-motion/assets/brand.png',
  'road.png':'previews/home-motion/assets/road-header.png',

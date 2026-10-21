@@ -108,7 +108,7 @@ function render() {
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
   document.querySelectorAll('[data-android]').forEach(b=>b.addEventListener('click',()=>document.querySelector('#android-dialog').showModal()));
-  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());cleanups.push(setupPartnerStrip());}
+  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());cleanups.push(setupPartnerStrip(lang));}
 }
 function setupForm(t) {
   const form=document.querySelector('#partner-form');
