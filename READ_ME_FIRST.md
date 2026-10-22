@@ -33,7 +33,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - **App Store (live)**: 2.0.1 build 17, `READY_FOR_SALE`. Gets iOS OTAs on channel `production`, runtime `2.0.1`, published from branch `ota/ios-2.0.1-translations` (latest OTA contains: AKHOO+ removal, Hebrew name fix, business/user-text translation, legal text, offers-list fix, billing row removed).
 - **TestFlight (owner's iPhone)**: 2.0.2 builds 18–28 exist; **latest is 28** (internal group "Test"). It is built from branch `ios/testflight-fixes-20261020` (Codex's design branch + fixes). TestFlight binaries have `updates.enabled: false`, so **an OTA can never reach them**; only a new build can. Builds 26 and 27 are superseded.
 - **Android**: build 7 (2.0.0, versionCode 7) in the closed test; **12 testers, day 10 of 14 on 2026-10-22** (confirmed from Play Console screenshots); "request production access" unlocks about 2026-10-26. Frozen (rule 2).
-- **Web** `akhoo.vercel.app` and **Admin** `akhoo-admin.vercel.app` deploy from `main` (Vercel). CI runs on `main`.
+- **Web** `akhoo.vercel.app` and **Admin** `akhoo-admin.vercel.app` deploy from `main` (Vercel; a third Vercel project named `dist` also builds from the repo and was created by Codex). Since 2026-10-22 the website runs the new design (build 28 source). CI runs on `main`.
 - **Marketing website (local, not deployed)**: folder `website/` on branch `web/marketing-local-20261021` (Codex). It reads the public partner feed `get_website_partners` with the anon key. Nothing is hosted yet.
 - **Admin "website partners" card**: lets an admin choose which businesses appear on the website and their display names (Codex, branch `feat/admin-website-partners-20261022`). Merged into `main` by Claude on 2026-10-22; the live admin shows it after the Vercel deploy.
 
@@ -48,7 +48,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Branches**
 | Branch | What it is | Owner |
 |---|---|---|
-| `main` | Web + admin + backend + shared fixes. **Cannot be bundled for native** (`app/mission/[missionId]/index.web.tsx` breaks the iOS bundle). | Claude |
+| `main` | Web + admin + backend + the iOS design + shared fixes. Since 2026-10-22 it contains the build 28 source (merge `a5c041d`), so it **can be bundled for native again** and the website shows the new design. | Claude |
 | `ota/ios-2.0.1-translations` | Hotfix line for the live App Store 2.0.1; the only base for production iOS OTAs. | Claude |
 | `ios/testflight-design-20261017` | The approved iOS design (builds 18–25). Do not push here except Codex. | Codex |
 | `ios/testflight-fixes-20261020` | Design branch + fixes (builds 26–28). Next TestFlight builds come from here. | Claude |
@@ -58,7 +58,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | `web/marketing-local-20261021` | The local marketing website (`website/`). Not deployed; not merged. | Codex |
 
 ## 4. How to ship (checked recipes)
-- **iOS OTA to the live App Store build**: cherry-pick the fix onto `ota/ios-2.0.1-translations` in a separate worktree with `npm ci`; run `npx expo export --platform ios`; then `eas update --branch production --platform ios --environment production`. Never from `main`.
+- **iOS OTA to the live App Store build**: cherry-pick the fix onto `ota/ios-2.0.1-translations` in a separate worktree with `npm ci`; run `npx expo export --platform ios`; then `eas update --branch production --platform ios --environment production`. Never from `main`: it now holds the 2.0.2 design and the live 2.0.1 binary must only receive the 2.0.1 hotfix line.
 - **TestFlight build**: new commit on `ios/testflight-fixes-20261020`, bump `AKHOO_IOS_BUILD_NUMBER` in `eas.json`, `eas build --platform ios --profile testflight`, then `eas submit --platform ios --profile testflight --id <build>` (needs `credentials/ios`).
 - **Supabase**: SQL through the Management API with the token in `credentials/supabase-token.txt`; functions with `supabase functions deploy <name> --project-ref zmpwdufahjmlxfwzafvr --use-api --no-verify-jwt`. Test risky DB behaviour inside a `DO` block that ends with `raise exception` so everything rolls back. Reads can lag a few seconds after a config PATCH.
 - **Admin/web**: push to `main`; Vercel deploys.
@@ -76,7 +76,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json`. Planned: `credentials/smtp-app-password.txt`.
 
 ## 7. Open items and decisions
-**Decisions waiting for the owner**: what to tell Android users about 27 October; whether the new design also goes on the application website; widen push notifications after launch or not; which Gmail account to use for app emails. The native release source decision is resolved: exact build 28 source, no blanket merge from `main`.
+**Decisions waiting for the owner**: what to tell Android users about 27 October; widen push notifications after launch or not; which Gmail account to use for app emails. The native release source decision is resolved: exact build 28 source, no blanket merge from `main`.
 **Work not done**: Apple review/approval of the submitted 2.0.2; refreshed store screenshots and additional English/Hebrew store listing localizations (current approved Arabic listing retained); custom SMTP; key manual QA on two real phones (request flow with push, delete account, password reset); make `request-photos` private (needs an Android release first because build 7 reads public URLs); human legal review of the English/Hebrew text (review file generated 2026-10-21, not committed); the minor icon duplication on the account screen; backlog: audit-log page and admin management in the admin panel, game file release, R8/DEX warning (deadline 2027).
 
 **Owner instructions on 2026-10-22**: (a) the owner cancels the in-app "27 October" announcement himself in the admin panel (the date is no longer valid because iOS ships right after Apple approves); (b) Codex has no credits left, so Claude replaces the 2.0.2 App Store screenshots (see the change log for status); (c) merge Codex's admin work into `main` and push this file.
@@ -84,6 +84,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first; append yours)
 Format: `date — who — what — where (branch/commit) — external effect — verified how`
 
+- 2026-10-22 — Claude — Merged the iOS 2.0.2 (build 28) design source into `main` at the owner's request (no conflicts) — `main` `a5c041d` — Vercel production deploy of the website (admin unchanged) — typecheck, edge typecheck, lint, 222 + 36 tests, production web build, iOS bundle export from `main`, local smoke test, then production smoke test (welcome, privacy, terms, reset-password, delete-confirm routes; no script errors); CI and the three Vercel projects green. Rollback: `git revert -m 1 a5c041d`.
 - 2026-10-22 — Claude — Read Codex's work from git, Apple and the production database (read-only), merged `feat/admin-website-partners-20261022` into `main`, renamed its migration file `0045` → `0048` (file only; the database already has the objects), reconciled this file (Codex's copy was the newer base) and added the coordination paragraph to `AGENTS.md` — `main` — Vercel redeploys admin and web — admin typecheck, lint, 36 tests, build; root 191 tests; grants and RLS of the website tables checked in the catalog.
 - 2026-10-21 to 2026-10-22 — Codex (recorded by Claude from git and the live database; Codex please correct) — Built the local marketing website, the admin website-partners card and its migration, applied the migration to production on 2026-10-21 (audit log shows the owner saving two partners from a local admin) — branches `web/marketing-local-20261021`, `feat/admin-website-partners-20261022` — production database only.
 - 2026-10-22 — Codex — Owner authorized immediate public iOS release and explicitly excluded Android. Submitted 2.0.2 (28) for App Store review with automatic release after approval and no scheduled date — `release/ios-appstore-20261022`, exact binary source `64dd4ec` — Apple App Store only; no new TestFlight upload, OTA, Play, backend or Vercel change — API read-back `WAITING_FOR_REVIEW`, typecheck, 27 tests, signed IPA identity and 18 bundled videos, inherited metadata and nine complete screenshots. No physical iPhone test performed in this task.
