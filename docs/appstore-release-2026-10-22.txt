@@ -1,0 +1,63 @@
+AKHOO — official iOS App Store submission
+2026-10-22
+
+Outcome
+The owner requested immediate public App Store release of all completed iOS
+updates, explicitly excluding Android and rejecting the earlier 27 October date.
+Version 2.0.2 (28) was submitted to Apple App Review at 10:10:09 UTC.
+Apple returned WAITING_FOR_REVIEW for the submission and App Store version.
+This is an official App Store submission, not a new TestFlight distribution.
+Public availability still requires Apple's approval; 2.0.1 remains live meanwhile.
+
+Release settings
+- Platform: IOS; bundle identifier: app.akhoo.help.
+- Release: AFTER_APPROVAL; earliestReleaseDate: null.
+- No phased release configured. No 27 October schedule.
+- Apple app ID: 6809610412.
+- App Store version ID: 4ded2e33-c382-493f-9d39-9a720fce5d17.
+- Apple build ID: aae47e0a-03e9-4a08-aea3-06aa507413db.
+- Review submission ID: 71dd1830-5b9e-4a31-bba4-b0e2d86e5d15.
+- Console: https://appstoreconnect.apple.com/apps/6809610412/distribution/ios/version/inflight
+- Store: https://apps.apple.com/app/id6809610412
+
+Binary and changes
+Reused the existing store-signed, VALID, APP_STORE_ELIGIBLE build 28.
+Source: https://github.com/abdallhmurar/AKHOO/commit/64dd4ecadfdc733dcaa22927e675b63c738ac1b4
+EAS: https://expo.dev/accounts/abad003/projects/sanad/builds/46c37d8c-7795-4134-8664-4a40a0389238
+IPA SHA256: 3d21ba864d044667bbbaabfce56eb2749757e24538f928b76e99a16bcaad01a4
+The binary contains the approved home/request/helper/account/activity/perks
+design, 3D scenes and video integration, Arabic/English/Hebrew and RTL fixes,
+gallery and playback fixes, centered request steps, removed redundant home
+content and icon-credit footer, translated business/user content, offers-list
+reveal fixes, billing-row removal and helper header/dark-mode fixes.
+See earlier TestFlight reports and source history for detailed changes.
+
+Metadata
+Updated the ar-SA What's New field from appstore-2.0.2-release-notes-ar.txt.
+Existing approved description, URLs, reviewer contact/demo account details and
+five iPhone / four iPad screenshots were inherited. All nine screenshot assets
+reported COMPLETE. No reviewer credentials or private API responses are in git.
+Store screenshots were retained; this task did not produce updated native
+screenshots or add English/Hebrew store listing localizations. The app itself
+continues to include all three languages.
+
+Validation
+- TypeScript no-emit check passed.
+- Eight targeted test files, 27 tests passed: release isolation, locales,
+  content and user-text translations, reveal lifecycle, video playback,
+  native scene protocol and offer gallery navigation.
+- Actual IPA Info.plist: app.akhoo.help, 2.0.2, build 28, minimum iOS 16.4.
+- Actual IPA contains 18 MP4 files.
+- Actual Expo.plist: updates disabled, runtime 2.0.2-testflight.
+  Despite that internal runtime name, Apple marks this binary App Store eligible
+  and accepted its association with the official version. Future client changes
+  require a new store binary; production OTA updates do not reach build 28.
+- Final preflight verified build, release notes, automatic release and no date.
+- Apple read-back confirmed submission and version WAITING_FOR_REVIEW.
+- No physical iPhone/iPad runtime test was possible in this task. Automated
+  source and archive checks do not certify all real-device interactions.
+
+Scope
+No app source/config edits, new EAS build, TestFlight upload or OTA publication.
+No Android source/config, Google Play, backend or Vercel changes.
+Build number 29 was not reserved or used.
