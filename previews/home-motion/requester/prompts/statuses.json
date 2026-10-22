@@ -1,0 +1,46 @@
+{
+  "mode": "built-in image generation and Grok Imagine browser UI",
+  "reference": "Approved accepted / confirmation comparison from the conversation",
+  "images": {
+    "accepted": "Use case: stylized-concept. Create a standalone 3D illustration animation keyframe extracted/recreated from the approved AKHOO UI design reference. No interface, no headings, no profile, no text except the requested symbol. Preserve the exact glossy cobalt-blue compact sedan seen in the reference, three-quarter front view facing right, soft studio daylight, a pale-blue circular radar base with thin white rings, soft blue miniature city, small green trees and white clouds behind fading into pure white at ALL outer edges. Premium friendly 3D render, stable crisp geometry, grounded shadows, all objects fully within safe margins. Wide 3:2 composition, scene centered, professional high resolution. Suitable as matching first and last frames for a six-second loop. Use ONLY the accepted-request illustration on the RIGHT screen as the subject reference. A large glossy TEAL round medallion stands next to the FRONT RIGHT of the parked blue car. The medallion contains a recognizable dimensional handshake of two blue hands, matching the reference. Both hands anatomically clean, each with correct fingers, no extra fingers. Car fully visible, badge not obscuring entire car. No question mark, no people, no logos, no UI.",
+    "confirmation": "Use case: stylized-concept. Create a standalone 3D illustration animation keyframe extracted/recreated from the approved AKHOO UI design reference. No interface, no headings, no profile, no text except the requested symbol. Preserve the exact glossy cobalt-blue compact sedan seen in the reference, three-quarter front view facing right, soft studio daylight, a pale-blue circular radar base with thin white rings, soft blue miniature city, small green trees and white clouds behind fading into pure white at ALL outer edges. Premium friendly 3D render, stable crisp geometry, grounded shadows, all objects fully within safe margins. Wide 3:2 composition, scene centered, professional high resolution. Suitable as matching first and last frames for a six-second loop. Use ONLY the pending-confirmation illustration on the LEFT screen as the subject reference. Beside and slightly behind the right side of the parked blue car, a large glossy blue-to-teal rounded speech bubble stands upright with a crisp raised WHITE QUESTION MARK '?' in its center. One question mark only, symbol facing viewer. Preserve the question shape in a solid stable 3D material, not lettering elsewhere. No handshake, no checkmark, no people, no logos, no UI."
+  },
+  "videos": {
+    "accepted": {
+      "prompt": "Animate this exact 3D roadside-assistance acceptance illustration into a calm seamless six-second loop. Lock the camera and preserve the blue car, teal handshake medallion, city, trees, white background and clean geometry. The two clasped blue hands perform one small natural handshake up and down with coherent finger anatomy while staying clasped. The teal medallion gently turns about its vertical axis by 15 degrees and back, with changing dimensional highlights. The parked car makes a subtle suspension settle and front wheels turn slightly and return. A soft light travels around the circular base once. Keep every element within the original frame, no camera motion, no zoom, no morphing, no new objects, no people, no text or sound. Return every object exactly to the supplied start pose at six seconds so the first and last frames match perfectly.",
+      "poster": "assets/accepted.png",
+      "output": "assets/accepted.mp4",
+      "settings": {
+        "duration": 6,
+        "resolution": "720p",
+        "aspect": "3:2",
+        "matchingFirstLastFrames": true
+      },
+      "actual": {
+        "width": 1168,
+        "height": 784,
+        "durationSeconds": 6.041667,
+        "bytes": 1609799,
+        "sha256": "bf9ef3b70d9a20139f3b560a2b81b81ab8130dcef211bccb72535fb8a5828000"
+      }
+    },
+    "confirmation": {
+      "prompt": "Animate this exact polished 3D roadside-help confirmation illustration into a seamless six-second loop. Keep the camera completely locked and preserve the blue car, city, trees, white edges, circular base, teal-blue speech bubble and raised white question mark. The large speech bubble gently floats up a few centimeters, rotates 15 degrees left and right around its vertical axis with changing 3D reflections, then returns to its starting pose. The white question mark stays rigidly attached to the bubble, perfectly legible and unchanged. The car makes a very small realistic suspension settling movement; headlights softly brighten and return once. Keep the city and background stable. A delicate ring moves outward across the base. All motions are slow, premium and independently animated, with coherent shadows and geometry. Exact matching first and last poses for continuous looping. No camera pan or zoom, no cuts, no morphing, no extra symbols, no checkmarks, no people, no text, no new objects, no sound.",
+      "poster": "assets/confirmation.png",
+      "output": "assets/confirmation.mp4",
+      "settings": {
+        "duration": 6,
+        "resolution": "720p",
+        "aspect": "3:2",
+        "matchingFirstLastFrames": true
+      },
+      "actual": {
+        "width": 1168,
+        "height": 784,
+        "durationSeconds": 6.041667,
+        "bytes": 1439261,
+        "sha256": "df34c41e8dde7b7842da5ffaccd203d3edf11e612dd0783286337ce11e2fd7ee"
+      }
+    }
+  }
+}

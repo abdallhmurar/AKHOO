@@ -6,11 +6,24 @@ const base = require('./app.json')
 // normal `expo start`/native builds are untouched since app.json itself
 // stays the single source of truth otherwise.
 module.exports = () => {
+  const testflight = process.env.AKHOO_BUILD_TARGET === 'testflight'
+  if (testflight && process.env.EAS_BUILD_PLATFORM === 'android') {
+    throw new Error('The TestFlight profile is restricted to iOS.')
+  }
+  const config = testflight ? {
+    ...base.expo,
+    version: process.env.AKHOO_IOS_VERSION || base.expo.version,
+    ios: { ...base.expo.ios, buildNumber: process.env.AKHOO_IOS_BUILD_NUMBER || base.expo.ios.buildNumber },
+    // The beta binary is self-contained: no production OTA update can reach it,
+    // and preparing this build never changes the production update channel.
+    updates: { ...base.expo.updates, enabled: false },
+    runtimeVersion: `${process.env.AKHOO_IOS_VERSION || base.expo.version}-testflight`
+  } : base.expo
   const baseUrl = process.env.EXPO_WEB_BASE_PATH
-  if (!baseUrl) return base.expo
+  if (!baseUrl) return config
 
   return {
-    ...base.expo,
-    experiments: { ...(base.expo.experiments ?? {}), baseUrl }
+    ...config,
+    experiments: { ...(config.experiments ?? {}), baseUrl }
   }
 }

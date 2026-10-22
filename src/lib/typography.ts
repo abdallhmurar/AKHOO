@@ -35,6 +35,9 @@ export function normalizeTypographyLanguage(value?: string): TypographyLanguage 
 }
 
 export function getFontFamily(language: string | undefined, weight: FontWeightName = 'regular') {
+  if (Platform.OS === 'ios' && normalizeTypographyLanguage(language) === 'ar') {
+    return { regular: 'Tajawal_400Regular', medium: 'Tajawal_500Medium', semibold: 'Tajawal_700Bold', bold: 'Tajawal_700Bold', extraBold: 'Tajawal_800ExtraBold' }[weight]
+  }
   return fontFamilies[normalizeTypographyLanguage(language)][weight]
 }
 
@@ -45,16 +48,18 @@ export function useAppFont(weight: FontWeightName = 'regular') {
 
 export function createTypography(language: string | undefined) {
   const isArabic = normalizeTypographyLanguage(language) === 'ar'
+  const isRTL = isArabic || normalizeTypographyLanguage(language) === 'he'
   const family = (weight: FontWeightName) => getFontFamily(language, weight)
   const text = (weight: FontWeightName, fontSize: number, lineHeight: number, extra?: TextStyle): TextStyle => {
     const style: TextStyle = { fontFamily: family(weight), fontSize, lineHeight, ...extra }
+    if (Platform.OS === 'ios') style.writingDirection = isRTL ? 'rtl' : 'ltr'
     if (isArabic) {
       // Arabic is a connected script: don't apply Latin tracking to its glyphs.
       delete style.letterSpacing
       style.writingDirection = 'rtl'
-      // Let iOS use the loaded Arabic font's own metrics, including Dynamic Type,
-      // rather than squeezing multiline glyphs into a fixed line box.
-      if (Platform.OS === 'ios') delete style.lineHeight
+      // Tajawal avoids Noto Arabic's very tall native line boxes. Keep enough
+      // room for connected glyphs/diacritics, and let Dynamic Type scale both.
+      if (Platform.OS === 'ios') style.lineHeight = Math.ceil(fontSize * 1.55)
     }
     return style
   }

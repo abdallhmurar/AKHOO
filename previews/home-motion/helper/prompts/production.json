@@ -1,0 +1,22 @@
+{
+  "mode": "built-in image generation and Grok Imagine browser UI",
+  "reference": "assets/approved.png",
+  "imagePrompt": "Use case: stylized-concept. Extract and faithfully recreate ONLY the lower 3D volunteer scene from the supplied AKHOO app mockup as a standalone high-resolution animation keyframe. No UI, no Arabic text, no map, no pills or heading. Wide 3:2 composition 1536x1024. Preserve the EXACT friendly young adult male character with olive skin, dark short styled hair and beard, teal hoodie over white T-shirt, navy trousers and white sneakers, casually standing leaning against the front-right side of the glossy cobalt-blue compact sedan. He looks at his smartphone held naturally in his left hand, with his right hand on the roof; coherent hands, exactly five fingers, natural arms. Same camera angle, character identity, proportions, car shape, stance and crossed ankles as the reference. Entire car and character fully visible within comfortable safe margins. A few small green trees, miniature soft blue city towers and soft white clouds behind, pale-blue circular base below. Pure white at ALL edges, soft pastel blue background fading to white. Premium polished 3D editorial illustration, coherent geometry, grounded shadows, soft daylight reflections, no visible car brand, no text or labels, no floating icons or map pins. Suitable as matching first and last frames of a gentle six-second loop.",
+  "motionPrompt": "Animate this exact premium 3D volunteer and blue sedan illustration into a calm seamless six-second loop. Lock the camera completely and preserve the exact character identity, face, teal hoodie, white shirt, dark trousers, white sneakers, crossed ankles, car geometry and miniature city. The man subtly breathes, blinks naturally once, lowers his gaze toward the phone and makes one small thumb scroll while keeping the phone firmly in his left hand. His right hand stays resting naturally on the car roof. He makes a tiny friendly head nod and returns to the original gaze and posture. Animate the actual face, shoulders and thumb with coherent anatomy and independent natural motion; do not simply slide or zoom the image. Keep the car parked, trees and buildings stable, all objects inside frame, white outer edges. No new objects, no extra fingers, no gestures toward the viewer, no notification, no text, no speech or sound. Exact matching first and last poses, stable lighting, no camera movement, no cuts or morphing.",
+  "poster": "assets/helper.png",
+  "video": "assets/helper.mp4",
+  "settings": {
+    "duration": 6,
+    "resolution": "720p",
+    "aspect": "3:2",
+    "sound": false,
+    "matchingFirstLastFrames": true
+  },
+  "actual": {
+    "width": 1168,
+    "height": 784,
+    "durationSeconds": 6.041667,
+    "bytes": 1153074,
+    "sha256": "8968904f52b19e2168b59d5aee8c9331d5e41d71002633320d9eead54890e658"
+  }
+}

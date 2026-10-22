@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#effaff">
+  <title>أخو — اختَر نوع المساعدة</title>
+  <link rel="icon" href="../assets/brand.png">
+  <link rel="preload" as="font" href="../assets/arabic-bold.ttf" type="font/ttf" crossorigin>
+  <link rel="preload" as="image" href="assets/header.png">
+  <link rel="stylesheet" href="../vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <aside class="preview-tools" aria-label="أدوات المعاينة">
+    <span class="preview-badge">معاينة محلية</span>
+    <h2>كل مساعدة، إلها حكاية.</h2>
+    <p>اختَر المشكلة، وبعدين جرّب التفاصيل وإضافة صورة.<br>هاي معاينة للتصميم، ما بتبعت طلبات حقيقية.</p>
+    <a href="../">الرجوع لمعاينة الرئيسية</a>
+    <a href="assets/approved.png" target="_blank" rel="noopener">تصميم اختيار المشكلة</a>
+    <a href="assets/approved-details.png" target="_blank" rel="noopener">تصميم تفاصيل المشكلة</a>
+    <a href="assets/approved-location.png" target="_blank" rel="noopener">تصميم تحديد الموقع</a>
+    <a href="assets/approved-waiting.png" target="_blank" rel="noopener">تصميم انتظار المساعد</a>
+    <a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">معاينة قبول الطلب</a>
+    <a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">معاينة تأكيد المساعدة</a>
+    <a href="?step=success&amp;problem=battery" data-preview-step="success">معاينة نجاح المساعدة</a>
+    <small>مشاهد 3D بفيديوهات قصيرة وصامتة.</small>
+  </aside>
+  <main class="request-page">
+    <img class="details-scenery" src="assets/details-header.png" alt="" width="2172" height="724" hidden>
+    <header class="topbar">
+      <a class="round-control back" href="../" aria-label="الرجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      <div class="progress" aria-label="الخطوة ١ من ٣">
+        <div class="progress-segments" aria-hidden="true"><i class="current"></i><i></i><i></i></div>
+        <span>الخطوة ١ من ٣</span>
+      </div>
+      <img class="success-brand" src="../assets/brand.png" alt="أخو" width="48" height="48" hidden>
+      <button id="motion-toggle" class="round-control motion" type="button" aria-label="إيقاف الحركة" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 6v12M15 6v12"/><path class="play-mark" d="m9 5 10 7-10 7Z"/></svg></button>
+    </header>
+    <section id="selection-step" class="step-panel" aria-labelledby="page-title">
+    <div class="hero">
+      <img src="assets/header.png" alt="" width="2172" height="724" fetchpriority="high">
+      <div class="hero-copy">
+        <h1 id="page-title" tabindex="-1">شو المشكلة<br>اللي بتواجهك؟</h1>
+        <p>اختَر نوع المساعدة اللي بتحتاجها</p>
+      </div>
+    </div>
+    <form id="problem-form">
+      <fieldset class="options">
+        <legend class="sr-only">نوع المساعدة</legend>
+        <label class="problem-card" data-kind="battery">
+          <input type="radio" name="problem" value="battery" aria-labelledby="battery-title" aria-describedby="battery-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="battery-title">شحن بطارية</strong><span id="battery-description">مساعدة لتشغيل السيارة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/battery.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/battery.png" data-src="assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="fuel">
+          <input type="radio" name="problem" value="fuel" aria-labelledby="fuel-title" aria-describedby="fuel-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="fuel-title">وقود</strong><span id="fuel-description">بنزينك خلص؟<br>بنوصلك مساعدة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/fuel.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/fuel.png" data-src="assets/fuel.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="other">
+          <input type="radio" name="problem" value="other" aria-labelledby="other-title" aria-describedby="other-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="other-title">شيء آخر</strong><span id="other-description">مساعدة لمشكلة ثانية<br>بالطريق</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/other.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/other.png" data-src="assets/other.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+        <label class="problem-card" data-kind="tire">
+          <input type="radio" name="problem" value="tire" aria-labelledby="tire-title" aria-describedby="tire-description" required>
+          <span class="radio-mark" aria-hidden="true"></span>
+          <span class="card-copy"><strong id="tire-title">بنشر</strong><span id="tire-description">مساعدة لتبديل<br>إطار السيارة</span></span>
+          <span class="scene" aria-hidden="true"><img src="assets/tire.png" alt="" width="1536" height="1024"><video muted loop playsinline preload="none" poster="assets/tire.png" data-src="assets/tire.mp4" tabindex="-1" disablepictureinpicture></video></span>
+        </label>
+      </fieldset>
+      <footer class="action-footer">
+        <button id="next-button" class="next-button" type="submit" disabled><span>التالي</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+      </footer>
+    </form>
+    </section>
+    <section id="details-step" class="step-panel" aria-labelledby="details-title" hidden>
+      <div class="details-heading">
+        <h1 id="details-title" tabindex="-1">تفاصيل المشكلة</h1>
+        <p>وصف بسيط بيساعدنا نساعدك أسرع</p>
+      </div>
+      <form id="details-form">
+        <div class="details-content">
+          <div class="selected-problem" data-kind="battery">
+            <div class="selected-copy"><span>المشكلة المختارة</span><strong id="selected-title">شحن بطارية</strong></div>
+            <div class="scene" aria-hidden="true"><img id="selected-poster" src="assets/battery.png" alt="" width="1536" height="1024"><video id="selected-video" muted loop playsinline preload="none" poster="assets/battery.png" data-src="assets/battery.mp4" tabindex="-1" disablepictureinpicture></video></div>
+          </div>
+          <div class="note-card">
+            <div class="field-heading"><label for="problem-note">ملاحظة إضافية</label><span id="note-optional" class="optional-badge">اختياري</span></div>
+            <textarea id="problem-note" name="note" rows="4" maxlength="500" aria-describedby="note-optional note-limit" placeholder="مثال: السيارة ما بتشتغل وبحتاج وصلة بطارية."></textarea>
+            <span id="note-limit" class="sr-only">بحد أقصى ٥٠٠ حرف</span>
+            <div id="note-count" class="note-count" dir="ltr" aria-hidden="true">0/500</div>
+          </div>
+          <div class="upload-card">
+            <div class="upload-copy">
+              <h2 id="upload-title">أضف صورة للمشكلة</h2>
+              <p id="upload-description">اختياري، الصورة بتوضّح أكثر</p>
+              <input id="problem-photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" aria-labelledby="upload-title" aria-describedby="upload-description" hidden>
+              <button id="add-photo" class="outline-button" type="button">إضافة صورة</button>
+              <button id="remove-photo" class="remove-photo" type="button" hidden>إزالة الصورة</button>
+            </div>
+            <img id="camera-art" class="camera-art" src="assets/details-camera.png" alt="" width="1254" height="1254">
+            <img id="photo-preview" class="photo-preview" alt="معاينة الصورة المضافة للمشكلة" hidden>
+          </div>
+          <p id="photo-feedback" class="photo-feedback" role="status" aria-live="polite" hidden></p>
+        </div>
+        <footer class="action-footer">
+          <button id="location-button" class="next-button" type="submit"><span>التالي: تحديد الموقع</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        </footer>
+      </form>
+    </section>
+    <section id="location-step" class="step-panel" aria-labelledby="location-title" hidden>
+      <div class="details-heading">
+        <h1 id="location-title" tabindex="-1">حدّد موقعك</h1>
+        <p>تأكد من موقعك عشان نوصلّك أسرع</p>
+      </div>
+      <form id="location-form">
+        <div class="location-content">
+          <div class="location-card">
+            <div id="location-map-slot">
+            <div class="map-frame">
+              <div id="location-map" aria-label="خريطة الموقع المحدد"></div>
+              <div id="manual-pin" class="map-center-pin" aria-hidden="true" hidden><span class="pin-halo"></span><span class="map-pin"></span></div>
+              <button id="recenter-map" class="round-control map-recenter" type="button" aria-label="الرجوع للنقطة المحددة" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg></button>
+              <div id="map-status" class="map-status" role="status">
+                <span id="map-status-text">جارٍ تحميل الخريطة…</span>
+                <button id="retry-map" class="outline-button" type="button" hidden>إعادة المحاولة</button>
+              </div>
+            </div>
+            </div>
+            <div class="location-summary">
+              <span class="summary-pin" aria-hidden="true"></span>
+              <div>
+                <h2 id="selected-location-title">الموقع المحدد</h2>
+                <p id="selected-location-label">القدس · موقع تجريبي للمعاينة</p>
+                <p class="location-privacy">بنشارك موقعك مع مقدم المساعدة فقط</p>
+              </div>
+            </div>
+            <div id="manual-instructions" class="manual-instructions" hidden>
+              <p id="manual-help">حرّك الخريطة لحد ما الدبوس يصير فوق المكان، وبعدين أكّد الموقع.</p>
+              <button id="cancel-location" type="button">إلغاء التحديد</button>
+            </div>
+            <div class="location-actions">
+              <button id="refresh-location" class="outline-button" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الموقع</span></button>
+              <button id="manual-location" class="outline-button" type="button" aria-pressed="false" aria-describedby="manual-help" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>تحديد يدوي</span></button>
+            </div>
+            <p id="location-feedback" class="location-feedback" role="status" aria-live="polite" hidden></p>
+          </div>
+          <div class="safety-banner"><img src="assets/location-safety.png" alt="حاول الوقوف في مكان آمن إن أمكن. سلامتك هي الأهم بالنسبة لنا." width="900" height="300"></div>
+        </div>
+        <footer class="action-footer">
+          <button id="send-request" class="next-button" type="submit" disabled><span>إرسال طلب المساعدة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        </footer>
+      </form>
+    </section>
+    <section id="waiting-step" class="step-panel" aria-labelledby="waiting-title" hidden>
+      <div class="details-heading waiting-heading">
+        <h1 id="waiting-title" tabindex="-1">طلب المساعدة</h1>
+        <p>طلبك وصل، وبنبحث عن مساعد قريب</p>
+      </div>
+      <div class="waiting-content">
+        <div id="waiting-map-slot" class="waiting-map"></div>
+        <article class="waiting-card" aria-labelledby="search-title">
+          <div class="waiting-scene" aria-hidden="true">
+            <img src="assets/waiting.png" alt="" width="1536" height="1024">
+            <video id="waiting-video" muted loop playsinline preload="none" poster="assets/waiting.png" data-src="assets/waiting.mp4" tabindex="-1" disablepictureinpicture></video>
+          </div>
+          <h2 id="search-title">جاري العثور على مساعد</h2>
+          <p class="search-description">رح يوصلك إشعار أول ما ينقبل طلبك</p>
+          <ol class="request-timeline" aria-label="حالة الطلب">
+            <li class="is-complete"><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>تم الإرسال</span></li>
+            <li class="is-current" aria-current="step"><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg></span><span>البحث عن مساعد</span></li>
+            <li><span class="timeline-icon"></span><span>قبول الطلب</span></li>
+          </ol>
+          <span class="waiting-pill"><i aria-hidden="true"></i>بانتظار القبول</span>
+          <p id="waiting-feedback" role="status" aria-live="polite" hidden></p>
+        </article>
+        <details class="tracking-preview-tools"><summary>معاينة محلية · حالات الطلب</summary><nav class="preview-state-links" aria-label="معاينة حالات الطلب"><a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">معاينة قبول الطلب</a><a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">معاينة التأكيد</a></nav></details>
+      </div>
+      <footer class="action-footer waiting-actions">
+        <button id="refresh-request" class="next-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الحالة</span></button>
+        <button id="cancel-request" class="outline-button" type="button">إلغاء الطلب</button>
+      </footer>
+    </section>
+    <section id="tracking-step" class="step-panel" aria-labelledby="tracking-title" hidden>
+      <div class="details-heading tracking-heading">
+        <h1 id="tracking-title" tabindex="-1">المساعد استلم طلبك</h1>
+        <p id="tracking-description">تابع حالته وتواصل معه من هون</p>
+      </div>
+      <div class="tracking-content">
+        <div id="tracking-map-slot" class="waiting-map"></div>
+        <article class="tracking-card" aria-labelledby="tracking-status-title">
+          <div class="tracking-overview">
+            <div class="tracking-copy"><h2 id="tracking-status-title">تم قبول طلبك</h2><p id="tracking-status-description">مساعدك جاهز يساعدك</p></div>
+            <div class="tracking-scene" aria-hidden="true">
+              <img id="tracking-poster" src="assets/accepted.png" alt="" width="1536" height="1024">
+              <video id="tracking-video" muted loop playsinline preload="none" poster="assets/accepted.png" data-src="assets/accepted.mp4" tabindex="-1" disablepictureinpicture></video>
+            </div>
+          </div>
+          <ol id="tracking-timeline" class="request-timeline" aria-label="حالة الطلب">
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>تم القبول</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>بالطريق</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>وصل</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>التأكيد</span></li>
+            <li><span class="timeline-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span><span>اكتمل</span></li>
+          </ol>
+          <p id="tracking-caption" class="tracking-caption">تم قبول الطلب · معاينة</p>
+        </article>
+        <section id="confirmation-card" class="confirmation-card" aria-labelledby="confirmation-question" hidden>
+          <h2 id="confirmation-question">هل تمت المساعدة بنجاح؟</h2>
+          <div class="confirmation-actions">
+            <button id="confirm-success" type="button">تمت المساعدة بنجاح</button>
+            <button id="confirm-incomplete" type="button">المساعدة لم تكتمل</button>
+          </div>
+          <p id="confirmation-result" role="status" aria-live="polite" hidden></p>
+          <button id="reset-confirmation" class="text-button" type="button" hidden>إعادة تجربة التأكيد</button>
+        </section>
+        <section class="helper-card" aria-labelledby="helper-name">
+          <div class="helper-profile">
+            <span class="helper-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22v-2a8 8 0 0 1 16 0v2Z"/></svg></span>
+            <div><h2 id="helper-name">مساعد تجريبي</h2><p>٣ مساعدات مكتملة · بيانات للمعاينة</p></div>
+          </div>
+          <button id="open-chat" class="next-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-9 9 10 10 0 0 1-4-.9L3 21l1.4-4.7A9 9 0 1 1 21 11.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg><span>المحادثة</span></button>
+        </section>
+        <p id="tracking-feedback" class="tracking-feedback" role="status" aria-live="polite" hidden></p>
+        <details class="tracking-preview-tools">
+          <summary>معاينة محلية · حالات الطلب</summary>
+          <nav class="preview-state-links" aria-label="معاينة حالات الطلب"><a href="?step=waiting&amp;problem=battery" data-preview-step="waiting">الانتظار</a><a href="?step=accepted&amp;problem=battery" data-preview-step="accepted">القبول</a><a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">التأكيد</a></nav>
+        </details>
+      </div>
+      <footer class="action-footer tracking-actions">
+        <button id="refresh-tracking" class="outline-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 7.5a8 8 0 0 1 13-1L20 9M4 15l1.5 2.5a8 8 0 0 0 13-1"/></svg><span>تحديث الحالة</span></button>
+      </footer>
+    </section>
+    <section id="success-step" class="step-panel" aria-labelledby="success-title" hidden>
+      <div class="success-hero" aria-hidden="true">
+        <img src="assets/success.png" alt="" width="1536" height="1024">
+        <video id="success-video" muted loop playsinline preload="none" poster="assets/success.png" data-src="assets/success.mp4" tabindex="-1" disablepictureinpicture></video>
+      </div>
+      <div class="success-heading">
+        <h1 id="success-title" tabindex="-1">تمت المساعدة بنجاح</h1>
+        <p>شكرًا لاستخدام أخو، طريقك آمن دايمًا</p>
+      </div>
+      <div class="success-content">
+        <section class="success-summary" aria-labelledby="success-summary-title">
+          <h2 id="success-summary-title">ملخص المساعدة</h2>
+          <dl>
+            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2Z"/></svg>اسم المساعد</dt><dd>مساعد تجريبي</dd></div>
+            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="16" height="12" rx="2"/><path d="M22 10v4M11 9l-2 3h4l-2 3"/></svg>نوع الخدمة</dt><dd id="success-service">شحن بطارية</dd></div>
+            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>مدة المساعدة</dt><dd>أقل من دقيقة</dd></div>
+            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>رقم الطلب</dt><dd><bdi>#DEMO</bdi></dd></div>
+          </dl>
+        </section>
+        <form id="rating-form" class="rating-card">
+          <h2 id="rating-title">كيف كانت تجربتك؟</h2>
+          <p>رأيك بيساعدنا نقدم خدمة أفضل</p>
+          <fieldset class="rating-stars" aria-labelledby="rating-title" aria-describedby="rating-hint">
+            <legend class="sr-only">تقييم المساعدة من نجمة إلى خمس نجوم</legend>
+            <label><input type="radio" name="rating" value="1" required aria-label="نجمة واحدة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z"/></svg></label>
+            <label><input type="radio" name="rating" value="2" aria-label="نجمتان"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z"/></svg></label>
+            <label><input type="radio" name="rating" value="3" aria-label="ثلاث نجوم"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z"/></svg></label>
+            <label><input type="radio" name="rating" value="4" aria-label="أربع نجوم"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z"/></svg></label>
+            <label><input type="radio" name="rating" value="5" aria-label="خمس نجوم"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z"/></svg></label>
+          </fieldset>
+          <p id="rating-hint" role="status" aria-live="polite">اختر عدد النجوم</p>
+          <button id="submit-rating" class="next-button" type="submit" disabled>إرسال التقييم</button>
+          <button id="edit-rating" class="text-button" type="button" hidden>تعديل التقييم</button>
+        </form>
+        <nav class="success-actions" aria-label="بعد اكتمال المساعدة">
+          <a class="next-button" href="../"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8v10h-6v-7H9v7H3Z"/></svg>العودة للرئيسية</a>
+          <a id="new-request" class="outline-button" href="./">طلب مساعدة جديدة</a>
+          <button id="share-app" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m9 10 6-3M9 14l6 3"/></svg>مشاركة التطبيق</button>
+        </nav>
+        <details class="tracking-preview-tools">
+          <summary>معاينة محلية · بيانات تجريبية</summary>
+          <p>التقييم محفوظ مؤقتًا في المعاينة، ولا يُرسل للمساعد.</p>
+          <nav class="preview-state-links" aria-label="معاينة حالات الطلب"><a href="?step=confirmation&amp;problem=battery" data-preview-step="confirmation">الرجوع للتأكيد</a></nav>
+        </details>
+      </div>
+    </section>
+  </main>
+  <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <h2 id="demo-title">بدك تلغي الطلب؟</h2>
+    <p id="demo-description">بنرجعك لتحديد الموقع، وبتضل تفاصيلك محفوظة بهالمعاينة.</p>
+    <button id="return-button" class="next-button" type="button" autofocus>خلّيني أستنى</button>
+    <button id="confirm-cancel" class="outline-button" type="button">إلغاء الطلب</button>
+  </dialog>
+  <dialog id="chat-preview" class="demo-sheet" aria-labelledby="chat-preview-title" aria-describedby="chat-preview-description">
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <h2 id="chat-preview-title">معاينة المحادثة</h2>
+    <p id="chat-preview-description">بالتطبيق، هذا الزر بيفتح المحادثة مع المساعد. هاي معاينة للتصميم، وما بنرسل منها رسائل.</p>
+    <button id="close-chat" class="next-button" type="button" autofocus>رجوع للطلب</button>
+  </dialog>
+  <dialog id="share-preview" class="demo-sheet" aria-labelledby="share-title" aria-describedby="share-description">
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <h2 id="share-title">مشاركة أخو</h2>
+    <p id="share-description">انسخ رابط التطبيق وشاركه مع اللي بتحب.</p>
+    <label class="sr-only" for="share-url">رابط التطبيق</label>
+    <input id="share-url" type="url" dir="ltr" readonly value="https://akhoo-abad003-6200s-projects.vercel.app/">
+    <p id="share-feedback" role="status" aria-live="polite" hidden></p>
+    <button id="copy-share" class="next-button" type="button" autofocus>نسخ الرابط</button>
+    <button id="close-share" class="outline-button" type="button">رجوع</button>
+  </dialog>
+</body>
+</html>

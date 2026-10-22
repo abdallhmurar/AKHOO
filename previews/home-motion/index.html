@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1faff">
+  <title>أخو — معاينة الرئيسية المتحركة</title>
+  <link rel="icon" href="assets/brand.png">
+  <link rel="preload" as="image" href="assets/home-art.png">
+  <link rel="preload" as="image" href="assets/road-header.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="arrow" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+      <symbol id="bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM9 21h6"/></symbol>
+      <symbol id="home" viewBox="0 0 24 24">
+        <path d="m3 10 7.7-6.2a2.1 2.1 0 0 1 2.6 0L21 10" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M5 10.4 12 5l7 5.4V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" fill="currentColor" fill-opacity=".25" stroke="none"/>
+        <path d="M5 12v7a2 2 0 0 0 2 2h3v-5a2 2 0 0 1 4 0v5h3a2 2 0 0 0 2-2v-7l-7-5.4Z" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="history" viewBox="0 0 24 24">
+        <rect x="1" y="1" width="22" height="22" rx="7" fill="var(--nav-soft)" stroke="none"/>
+        <circle cx="12" cy="12" r="7" fill="currentColor" fill-opacity=".16" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 7.8v4.6l3 1.8" fill="none" stroke="currentColor" stroke-width="2"/>
+      </symbol>
+      <symbol id="person" viewBox="0 0 24 24">
+        <rect x="1" y="1" width="22" height="22" rx="7" fill="var(--nav-soft)" stroke="none"/>
+        <circle cx="12" cy="8.1" r="3.3" fill="currentColor" stroke="none"/>
+        <path d="M5.5 18.4c0-3.3 2.6-5.4 6.5-5.4s6.5 2.1 6.5 5.4c0 1.3-2.8 2.1-6.5 2.1s-6.5-.8-6.5-2.1Z" fill="currentColor" fill-opacity=".32" stroke="none"/>
+      </symbol>
+      <symbol id="gift" viewBox="0 0 24 24">
+        <rect x="1" y="1" width="22" height="22" rx="7" fill="var(--nav-soft)" stroke="none"/>
+        <path d="M5 11h14v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" fill="currentColor" fill-opacity=".24" stroke="none"/>
+        <rect x="4" y="8" width="16" height="4" rx="1.5" fill="currentColor" stroke="none"/>
+        <path d="M12 8H8.7A2.2 2.2 0 1 1 11 5.2L12 8Zm0 0h3.3A2.2 2.2 0 1 0 13 5.2L12 8Zm0 4v8" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      </symbol>
+      <symbol id="shield" viewBox="0 0 24 24"><path d="M12 2 3 5v7c0 5 9 10 9 10s9-5 9-10V5Z M7 11l4 4 6-7"/></symbol>
+      <symbol id="car-help" viewBox="0 0 80 70"><path d="M6 34h39l-6-13H15ZM5 34v22h8v-8h23M13 42h4m13 0h4M23 10V3M9 14l-5-5m34 4 5-6M58 24 38 59h40ZM58 37v9m0 6v1"/></symbol>
+    </defs>
+  </svg>
+
+  <aside class="preview-tools" aria-label="أدوات المعاينة">
+    <span class="preview-badge">معاينة محلية</span>
+    <h2>أخو، بحلّته الجديدة.</h2>
+    <p>جرّب الحركة واضغط الأزرار.<br>هاي معاينة، ما بتبعت طلبات حقيقية.</p>
+    <button id="motion-toggle" type="button" aria-pressed="true">إيقاف الحركة</button>
+    <button id="reference-toggle" type="button" aria-pressed="false">شوف الصورة المعتمدة</button>
+    <small>شخصيات 3D متحركة بفيديوهات صامتة، وأزرار قابلة للتجربة.</small>
+  </aside>
+
+  <main class="phone" aria-label="معاينة الصفحة الرئيسية لأخو">
+    <div class="home-screen" id="home-screen">
+      <div class="artwork" aria-hidden="true"></div>
+      <div class="character-scene help-scene" aria-hidden="true">
+        <video class="character-video" muted loop playsinline preload="metadata" poster="assets/help-3d-poster.png" tabindex="-1" disablepictureinpicture>
+          <source src="assets/help-3d.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="character-scene helper-scene" aria-hidden="true">
+        <video class="character-video" muted loop playsinline preload="metadata" poster="assets/helper-3d-poster.png" tabindex="-1" disablepictureinpicture>
+          <source src="assets/helper-3d.mp4" type="video/mp4">
+        </video>
+      </div>
+      <header class="landscape-header">
+        <img class="header-art" src="assets/road-header.png" alt="" aria-hidden="true" width="2172" height="724" fetchpriority="high">
+        <h1 class="visually-hidden">أخو — المساعدة على الطريق</h1>
+        <button class="notification" type="button" data-demo="notifications" aria-label="الإشعارات"><svg><use href="#bell"/></svg></button>
+      </header>
+
+      <section class="help-content" aria-labelledby="help-title">
+        <svg class="help-icon" aria-hidden="true"><use href="#car-help"/></svg>
+        <h2 id="help-title">محتاج مساعدة؟</h2>
+        <p>خلّينا نوصلك بحدا قريب</p>
+      </section>
+      <button class="primary-action action" data-demo="request" type="button"><span>بدي مساعدة</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+
+      <section class="volunteer-content" aria-labelledby="volunteer-title">
+        <span class="points-tag">ساعد واكسب نقاط</span>
+        <h2 id="volunteer-title">في حدا محتاجك</h2>
+        <button class="volunteer-action action" data-demo="help" type="button"><span>بدي أساعد</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+      </section>
+
+      <section class="rewards-copy" aria-labelledby="rewards-title">
+        <h2 id="rewards-title">مساعدتك إلها قيمة</h2>
+        <p>بدّل نقاطك بعروض مزايا أخو</p>
+      </section>
+      <button class="discover-action action" data-demo="perks" type="button"><span>اكتشف</span><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+
+      <p class="reassurance"><span>طلبك بيوصل لشخص قريب يقدر يساعدك</span><svg aria-hidden="true"><use href="#shield"/></svg></p>
+
+      <nav class="bottom-nav" aria-label="القائمة الرئيسية">
+        <button class="nav-item active" type="button" data-demo="home" aria-current="page"><svg aria-hidden="true"><use href="#home"/></svg><span>الرئيسية</span></button>
+        <button class="nav-item" type="button" data-demo="perks"><svg aria-hidden="true"><use href="#gift"/></svg><span>مزايا أخو</span></button>
+        <button class="nav-item" type="button" data-demo="activity"><svg aria-hidden="true"><use href="#history"/></svg><span>نشاطي</span></button>
+        <button class="nav-item" type="button" data-demo="account"><svg aria-hidden="true"><use href="#person"/></svg><span>حسابي</span></button>
+      </nav>
+      <img class="reference" id="reference" src="assets/approved-road-header.png" alt="التصميم المعتمد مع هيدر الطريق والسيارة بدون كتابة" hidden>
+    </div>
+  </main>
+
+  <dialog class="demo-sheet" aria-labelledby="demo-title" aria-describedby="demo-description">
+    <button class="sheet-close" type="button" aria-label="إغلاق">×</button>
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <span class="sheet-icon" aria-hidden="true"><svg><use href="#shield"/></svg></span>
+    <h2 id="demo-title"></h2>
+    <p id="demo-description"></p>
+    <button class="sheet-return" type="button">رجوع للرئيسية</button>
+  </dialog>
+</body>
+</html>

@@ -297,7 +297,7 @@
     "volunteerSince": "Helping you since",
     "volunteerLabel": "Helper",
     "defaultVolunteerName": "Helper",
-    "callButton": "Call {{phone}}",
+    "callButton": "Call ⁦{{phone}}⁩",
     "chatButton": "Chat",
     "backToHome": "Back to role selection",
     "cancel": "Cancel Request",
@@ -306,7 +306,9 @@
     "elapsed": {
       "lessThanMinute": "less than a minute",
       "minutes": "{{count}} min",
+      "minutes_one": "{{count}} min",
       "hours": "{{count}} hr",
+      "hours_one": "{{count}} hr",
       "hoursAndMinutes": "{{hours}} hr {{minutes}} min"
     },
     "completion": {
@@ -366,7 +368,7 @@
     "requestId": "Request ID",
     "requesterLabel": "Requester",
     "defaultRequesterName": "User",
-    "callButton": "Call {{phone}}",
+    "callButton": "Call ⁦{{phone}}⁩",
     "chatButton": "Chat",
     "openInGoogleMaps": "Open location in Google Maps",
     "openInWaze": "Open location in Waze",
@@ -390,7 +392,7 @@
     "completion": {
       "title": "Help completed successfully",
       "message": "Thank you for being AKHOO for someone today 💚",
-      "pointsEarned": "+{{points}} points",
+      "pointsEarned": "⁦+{{points}}⁩ points",
       "balanceLabel": "Your balance now: {{balance}} points",
       "helpedCount": "You've helped {{count}} people so far",
       "rateExperienceTitle": "How was your experience helping?",
@@ -454,7 +456,7 @@
     "subtitle": "All your requests and the missions you've helped with.",
     "empty": "No activity yet",
     "emptyMessage": "Requests you send and missions you help with will show up here.",
-    "pointsEarned": "+{{points}} points",
+    "pointsEarned": "⁦+{{points}}⁩ points",
     "all": "All",
     "filters": {
       "received": "Received",
@@ -524,7 +526,8 @@
       "privacy": "Privacy & Security",
       "help": "Help & Support",
       "privacyPolicy": "Privacy Policy",
-      "termsOfUse": "Terms of Use"
+      "termsOfUse": "Terms of Use",
+      "licenses": "Licenses"
     },
     "sections": {
       "personalInfo": "Personal info",
@@ -562,6 +565,11 @@
         "reauthenticate": "Verify identity by signing in",
         "reauthenticateHint": "Sign in to the same account again, then confirm account deletion within ten minutes."
       }
+    },
+    "licenses": {
+      "description": "Sources of the icons used in AKHOO.",
+      "author": "Designed by {{author}} from Flaticon",
+      "viewLicense": "View icon license"
     },
     "legal": {
       "lastUpdated": "Last updated"
@@ -624,7 +632,11 @@
     "levelUpMessage": "🎉 You've reached {{levelName}}"
   },
   "map": {
-    "loading": "Loading map..."
+    "loading": "Loading map...",
+    "title": "Map",
+    "marker": "Map marker",
+    "attribution": "Map credits",
+    "feedback": "Map feedback"
   },
   "perks": {
     "title": "AKHOO Perks",
@@ -723,9 +735,9 @@
     },
     "hubSubtitle": "Offers and rewards for you",
     "pointsUnit": "points",
-    "helpProgress": "{{count}} / {{target}} helps",
+    "helpProgress": "⁦{{count}} / {{target}}⁩ helps",
     "weeklyHeading": "This week’s offers",
-    "availableOffers": "{{count}} available offers",
+    "availableOffers": "Available offers: {{count}}",
     "noPoints": "No points needed",
     "offerDetails": "Offer details",
     "offerDetailsFor": "Offer details: {{title}}",
@@ -733,8 +745,10 @@
     "gallery": {
       "imageNumber": "Photo {{number}}",
       "enlarge": "Enlarge photo of {{title}}",
-      "hint": "{{current}} / {{total}} • Tap the photo to enlarge",
-      "close": "Close photo"
+      "hint": "⁦{{current}} / {{total}}⁩ • Tap the photo to enlarge",
+      "close": "Close photo",
+      "previous": "Previous",
+      "next": "Next"
     }
   },
   "navigation": {

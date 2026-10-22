@@ -26,11 +26,15 @@ function applyWebDocumentDirection(language: AppLanguage) {
   document.documentElement.lang = language
 }
 
-export async function initI18n() {
+export async function getPreferredAppLanguage(): Promise<AppLanguage> {
   const stored = await AsyncStorage.getItem(STORAGE_KEY)
-  const initialLanguage: AppLanguage = (stored && SUPPORTED_LANGUAGES.includes(stored as AppLanguage))
+  return (stored && SUPPORTED_LANGUAGES.includes(stored as AppLanguage))
     ? (stored as AppLanguage)
     : detectDeviceLanguage()
+}
+
+export async function initI18n() {
+  const initialLanguage = await getPreferredAppLanguage()
 
   await i18next.use(initReactI18next).init({
     resources: { ar: { translation: ar }, he: { translation: he }, en: { translation: en } },

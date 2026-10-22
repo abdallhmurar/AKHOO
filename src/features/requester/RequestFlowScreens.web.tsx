@@ -1,9 +1,10 @@
+import { FlowHeader, RequestHeading, RequestChoice, SelectedProblem } from '../../components/motion/RequestPresentation.web'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
-import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, Check, CheckCircle, Crosshair, GasPump, Images, MapPin, Pencil, Plus, Tire, Warning, Wrench } from 'phosphor-react-native'
+import { ArrowClockwise, ArrowLeft, ArrowRight, BatteryWarning, CheckCircle, Crosshair, GasPump, MapPin, Tire, Warning, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { getActivePilotZones, getCurrentCoords, isWithinAnyZone } from '../../lib/location'
 import type { PilotZone } from '../../lib/location'
@@ -69,22 +70,12 @@ const LOCATION_COPY = {
   he: { subtitle: 'בדקו את המיקום כדי שיוכלו להגיע אליכם בקלות', manual: 'בחירה ידנית', recenter: 'מרכוז המפה מחדש', privacy: 'המיקום משותף רק עם מי שמגיע לעזור' }
 } as const
 
-// Show only the illustration region of the original artwork. Text is rendered
-// by the app, so all languages share the same art without embedded Arabic.
-const SERVICES = [
-  { key: 'battery', source: require('../../../assets/images/service-battery-ar.png'), crop: { x: 0, y: 0, width: 540, height: 289, sourceWidth: 900, sourceHeight: 289 } },
-  { key: 'fuel', source: require('../../../assets/images/service-fuel-ar.png'), crop: { x: 24, y: 65, width: 530, height: 265, sourceWidth: 900, sourceHeight: 390 } },
-  { key: 'other', source: require('../../../assets/images/service-other-ar.png'), crop: { x: 24, y: 65, width: 530, height: 265, sourceWidth: 900, sourceHeight: 390 } },
-  { key: 'tire', source: require('../../../assets/images/service-tire-ar.png'), crop: { x: 0, y: 0, width: 580, height: 309, sourceWidth: 900, sourceHeight: 309 } }
-] as const
-
-function ServiceIllustration({ item }: { item: typeof SERVICES[number] }) {
-  const [width, setWidth] = useState(0)
-  const scale = width / item.crop.width
-  return <View accessible={false} onLayout={event => setWidth(event.nativeEvent.layout.width)} style={{ width: '100%', height: width * item.crop.height / item.crop.width, overflow: 'hidden', direction: 'ltr' }}>
-    {width > 0 ? <Image accessible={false} source={item.source} resizeMode="stretch" style={{ position: 'absolute', left: -item.crop.x * scale, top: -item.crop.y * scale, width: item.crop.sourceWidth * scale, height: item.crop.sourceHeight * scale }} /> : null}
-  </View>
-}
+const SERVICES = [{ key: 'battery' }, { key: 'fuel' }, { key: 'other' }, { key: 'tire' }] as const
+const APPROVED_DESCRIPTIONS = {
+  ar: { battery: 'مساعدة لتشغيل السيارة', fuel: 'بنزينك خلص؟ بنوصلك مساعدة', other: 'مساعدة لمشكلة ثانية بالطريق', tire: 'مساعدة لتبديل إطار السيارة' },
+  en: { battery: 'Help starting your car', fuel: 'Out of fuel? Get help nearby', other: 'Help with another road issue', tire: 'Help changing a flat tire' },
+  he: { battery: 'עזרה בהתנעת הרכב', fuel: 'נגמר הדלק? עזרה בקרבתך', other: 'עזרה בבעיה אחרת בדרך', tire: 'עזרה בהחלפת גלגל' }
+} as const
 
 // Small icon + label shown in the details step's "selected problem" summary
 // card, separate from the illustrated selection cards.
@@ -304,38 +295,6 @@ export function RequestFlowScreen() {
     }
   }
 
-  function renderServiceBanner(item: typeof SERVICES[number]) {
-    const selected = service === item.key
-    return (
-      <Pressable key={item.key} accessibilityRole="radio" accessibilityState={{ checked: selected }} accessibilityLabel={t(`request.serviceCards.${item.key}.title`)} accessibilityHint={t(`request.serviceCards.${item.key}.description`)} onPress={() => selectService(item.key)} style={({ pressed }) => [styles.serviceBanner, dirStyles(isRTL).row, { backgroundColor: selected || pressed ? theme.colors.primarySoft : theme.colors.surface, borderColor: selected ? theme.colors.primary : theme.colors.border }]}>
-        <View style={[styles.serviceRadio, { borderColor: selected ? theme.colors.primary : theme.colors.borderStrong, backgroundColor: selected ? theme.colors.primary : theme.colors.surface }]}>{selected ? <CheckCircle size={24} color={theme.colors.onPrimary} weight="bold" /> : null}</View>
-        <View style={styles.serviceCopy}>
-          <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`request.serviceCards.${item.key}.title`)}</Text>
-          <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t(`request.serviceCards.${item.key}.description`)}</Text>
-        </View>
-        <View style={styles.serviceArt}><ServiceIllustration item={item} /></View>
-      </Pressable>
-    )
-  }
-
-  function renderStepCircles() {
-    const current = stepIndex + 1
-    const nodes = []
-    for (let n = 1; n <= STEPS.length; n++) {
-      if (n > 1) {
-        nodes.push(<View key={`line-${n}`} style={[styles.stepLine, { backgroundColor: current >= n ? theme.colors.primary : theme.colors.border }]} />)
-      }
-      const isCurrent = current === n
-      const isComplete = n < current
-      nodes.push(
-        <View key={`circle-${n}`} style={[styles.stepCircle, { backgroundColor: isCurrent || isComplete ? theme.colors.primary : theme.colors.surface, borderColor: isCurrent || isComplete ? theme.colors.primary : theme.colors.border }]}>
-          {isComplete ? <Check size={16} color={theme.colors.onPrimary} weight="bold" /> : <Text style={[typography.smallMedium, { color: isCurrent ? theme.colors.onPrimary : theme.colors.textMuted }]}>{n}</Text>}
-        </View>
-      )
-    }
-    return nodes
-  }
-
   if (manualLocationOpen) {
     return (
       <AppScreen
@@ -383,7 +342,7 @@ export function RequestFlowScreen() {
   return (
     <AppScreen
       key={step}
-      header={<ScreenHeader title="" back onBack={back} />}
+      header={<FlowHeader onBack={back} step={stepIndex + 1} />}
       footer={step === 'location'
         ? <Button label={t('request.submit')} onPress={submit} loading={loading} disabled={!activeCoords || outsideZone} style={styles.footerAction} />
         : step === 'details'
@@ -394,15 +353,9 @@ export function RequestFlowScreen() {
     >
       {step === 'type' ? (
         <>
-          <View style={[styles.typeHeader, dirStyles(isRTL).row]}>
-            <View style={styles.typeCopy}>
-              <Text accessibilityRole="header" style={[typography.h1, styles.typeHeading, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.title')}</Text>
-              <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.type.subtitle')}</Text>
-            </View>
-            <View style={styles.headerArt}><ServiceIllustration item={SERVICES[0]} /></View>
-          </View>
+          <RequestHeading selection title={t('request.step.type.title')} subtitle={t('request.step.type.subtitle')} />
           <GuideTarget id="request.services"><View accessibilityRole="radiogroup" accessibilityLabel={t('request.step.type.title')} style={styles.list}>
-            {SERVICES.map(item => renderServiceBanner(item))}
+            {SERVICES.map(item => <RequestChoice key={item.key} kind={item.key} title={t(`request.serviceCards.${item.key}.title`)} description={APPROVED_DESCRIPTIONS[locale][item.key]} selected={service === item.key} onSelect={() => selectService(item.key)} />)}
           </View></GuideTarget>
           {/* Hidden on iOS only; Android keeps the SAND rescue contact card. */}
         </>
@@ -410,28 +363,9 @@ export function RequestFlowScreen() {
 
       {step === 'details' ? (
         <View style={styles.detailsGroup}>
-          <View style={styles.detailsHeader}>
-            <Text accessibilityRole="header" style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{detailsCopy.title}</Text>
-            <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{detailsCopy.subtitle}</Text>
-            <View style={styles.detailsProgress}>
-              <View accessible={false} style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
-              <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>
-                {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
-              </Text>
-            </View>
-          </View>
+          <RequestHeading title={detailsCopy.title} subtitle={detailsCopy.subtitle} />
 
-          {selectedSummary ? (
-            <View style={[styles.summaryCard, styles.detailsSummary, dirStyles(isRTL).row, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-              <View style={[styles.summaryIconCircle, { backgroundColor: theme.colors.primarySoft }]}>
-                <selectedSummary.Icon size={24} color={theme.colors.primary} weight="duotone" />
-              </View>
-              <View style={styles.summaryTextWrap}>
-                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('request.step.details.selectedProblem')}</Text>
-                <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(selectedSummary.labelKey)}</Text>
-              </View>
-            </View>
-          ) : null}
+          {selectedSummary && service ? <SelectedProblem kind={service} title={t(selectedSummary.labelKey)} label={t('request.step.details.selectedProblem')} /> : null}
 
           <GuideTarget id="details.note"><View style={[styles.noteCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
             <View style={[styles.noteLabelRow, dirStyles(isRTL).row]}>
@@ -443,34 +377,19 @@ export function RequestFlowScreen() {
           </View></GuideTarget>
 
           <GuideTarget id="details.photo"><Pressable accessibilityRole="button" accessibilityLabel={photoUri ? detailsCopy.changePhoto : t('request.step.details.addPhotoTitle')} accessibilityHint={photoUri ? detailsCopy.photoReady : detailsCopy.photoHint} onPress={pickPhoto} style={({ pressed }) => [styles.photoPicker, dirStyles(isRTL).row, { borderColor: theme.colors.border, backgroundColor: pressed ? theme.colors.primarySoft : theme.colors.surface }]}>
-            {photoUri ? <Image accessible={false} source={{ uri: photoUri }} style={styles.photoPreview} /> : (
-              <View style={[styles.photoIconWrap, { backgroundColor: theme.colors.primarySoft }]}>
-                <Images size={24} color={theme.colors.primary} weight="duotone" />
-              </View>
-            )}
             <View style={styles.photoCopy}>
               <Text style={[typography.bodyMedium, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{photoUri ? detailsCopy.changePhoto : t('request.step.details.addPhotoTitle')}</Text>
               <Text style={[typography.small, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{photoUri ? detailsCopy.photoReady : detailsCopy.photoHint}</Text>
+              <View style={{ marginTop: 10, paddingVertical: 7, paddingHorizontal: 14, borderRadius: 24, borderWidth: 1, borderColor: theme.colors.primary, alignSelf: 'flex-start' }}><Text style={[typography.smallMedium, { color: theme.colors.primary }]}>{photoUri ? detailsCopy.changePhoto : locale === 'ar' ? 'إضافة صورة' : locale === 'he' ? 'הוספת תמונה' : 'Add photo'}</Text></View>
             </View>
-            <View style={[styles.photoAction, { backgroundColor: theme.colors.primarySoft }]}>
-              {photoUri ? <Pencil size={18} color={theme.colors.primary} /> : <Plus size={20} color={theme.colors.primary} />}
-            </View>
+            <Image accessible={false} source={{ uri: photoUri || '/motion/requester/assets/details-camera.png' }} style={{ width: 116, height: 116, borderRadius: photoUri ? 17 : 0 }} resizeMode={photoUri ? 'cover' : 'contain'} />
           </Pressable></GuideTarget>
         </View>
       ) : null}
 
       {step === 'location' ? (
         <View style={styles.detailsGroup}>
-          <View style={styles.detailsHeader}>
-            <Text accessibilityRole="header" style={[typography.h1, { color: theme.colors.textPrimary, textAlign: 'center' }]}>{t('request.step.location.title')}</Text>
-            <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{locationCopy.subtitle}</Text>
-            <View style={styles.detailsProgress}>
-              <View accessible={false} style={[styles.stepCirclesRow, dirStyles(isRTL).row]}>{renderStepCircles()}</View>
-              <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: 'center' }]}>
-                {t('request.step.details.stepOf', { current: stepIndex + 1, total: STEPS.length })}
-              </Text>
-            </View>
-          </View>
+          <RequestHeading title={t('request.step.location.title')} subtitle={locationCopy.subtitle} />
 
           {locating ? (
             <View style={styles.locationState}>
@@ -515,7 +434,7 @@ export function RequestFlowScreen() {
             </View>
           ) : null}
 
-          <Image source={LOCATION_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
+          <Image source={locale === 'ar' ? { uri: '/motion/requester/assets/location-safety.png' } : LOCATION_BANNER_BY_LOCALE[locale]} style={styles.serviceBannerImage} resizeMode="cover" />
         </View>
       ) : null}
     </AppScreen>
@@ -549,7 +468,7 @@ const styles = StyleSheet.create({
   noteLabelRow: { alignItems: 'center', gap: 6 },
   noteInput: { minHeight: 100, height: 100 },
   charCounter: { writingDirection: 'ltr' },
-  photoPicker: { minHeight: 88, gap: space.md, padding: space.lg, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', overflow: 'hidden', ...shadow.soft },
+  photoPicker: { minHeight: 146, borderStyle: 'dashed', gap: space.md, padding: space.lg, borderRadius: radius.lg, borderWidth: 1, alignItems: 'center', overflow: 'hidden', ...shadow.soft },
   photoIconWrap: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   photoAction: { width: 30, height: 30, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   photoCopy: { flex: 1, minWidth: 0, gap: 4 },

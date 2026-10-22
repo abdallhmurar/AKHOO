@@ -1,3 +1,4 @@
+import { MotionScene } from '../../components/motion/Motion'
 import { useCallback, useEffect, useState } from 'react'
 import { Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
@@ -151,6 +152,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
 
         <View style={styles.body}>
           <Surface elevation="soft" style={styles.statusCard}>
+            <MotionScene name={awaitingConfirmation ? 'confirmation' : 'accepted'} style={{ height: 155, aspectRatio: 'auto' }} fit="contain" />
             <Text accessibilityRole="header" style={[typography.h1, styles.centerText, { color: theme.colors.textPrimary }]}>{t(`volunteerJob.status.${titleStatus}`)}</Text>
             <Text style={[typography.small, styles.centerText, { color: theme.colors.textSecondary }]}>{awaitingConfirmation ? t('volunteerJob.awaitingConfirmationText') : copy.subtitle}</Text>
             <HelperTimeline status={mission.status} />
@@ -261,7 +263,7 @@ function HelperTimeline({ status }: { status: MissionStatus }) {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  page: { width: '100%', maxWidth: 620, alignSelf: 'center', paddingBottom: space.xxl },
+  page: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingBottom: space.xxl },
   mapArea: { position: 'relative', overflow: 'hidden' },
   map: { flex: 1, marginTop: 0, borderRadius: 0, borderWidth: 0 },
   backButton: { position: 'absolute', top: space.lg },

@@ -11,6 +11,7 @@ module.exports = defineConfig([
       '.expo/**',
       'playwright-report/**',
       'test-results/**',
+      'src/components/motion/generated/**',
       '.baseline-dist/**',
       '.gh-pages-worktree/**',
       'node_modules/**',
@@ -19,6 +20,8 @@ module.exports = defineConfig([
       // Vendored third-party maplibre-gl worker chunks (see SanadMap.web.tsx)
       // - minified, not our code, not meant to be linted.
       'public/**',
+      // Pinned Three.js distribution used only by the isolated local preview.
+      'previews/home-motion/assets/perks/vendor/**',
       // Separate web-only admin project with its own toolchain/eslint
       // config - not part of the Expo app, not meant to be picked up here.
       'admin/**'

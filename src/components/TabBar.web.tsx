@@ -116,12 +116,6 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
             </DockTab>
           })}
         </nav>
-        <footer className="akh-dock-credits" dir="ltr" lang="en">
-          Icons by <a href="https://www.flaticon.com/free-icon/home_10307931" target="_blank" rel="noreferrer">Fathema Khanom</a>,{' '}
-          <a href="https://www.flaticon.com/free-icon/user_1077012" target="_blank" rel="noreferrer">Magnific</a> &amp;{' '}
-          <a href="https://www.flaticon.com/free-icon/holding-hands_3131389" target="_blank" rel="noreferrer">Smashicons</a> —{' '}
-          <a href="https://www.flaticon.com/" target="_blank" rel="noreferrer">Flaticon</a>
-        </footer>
       </div>
     </View>
   </GuideTarget>

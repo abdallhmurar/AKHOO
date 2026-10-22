@@ -4,13 +4,15 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
+    "postinstall": "node scripts/sync-native-scenes.cjs",
+    "native:scenes": "node scripts/sync-native-scenes.cjs",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
+    "web": "node scripts/sync-approved-motion.cjs && expo start --web",
     "typecheck": "tsc --noEmit",
     "typecheck:edge": "tsc -p supabase/functions/tsconfig.json",
-    "build:web": "expo export --platform web",
+    "build:web": "node scripts/sync-approved-motion.cjs && expo export --platform web",
     "lint": "eslint .",
     "test": "vitest run",
     "e2e": "playwright test"
@@ -24,6 +26,7 @@
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@maplibre/maplibre-react-native": "^11.3.6",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-masked-view/masked-view": "0.3.2",
     "@supabase/supabase-js": "^2.112.3",
     "@tanstack/react-query": "^5.102.4",
     "babel-preset-expo": "~57.0.0",
@@ -66,6 +69,7 @@
     "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
     "react-native-web": "^0.21.2",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.10.1",
     "three": "0.186.1"
   },
@@ -76,10 +80,13 @@
     "@types/node": "^26.6.1",
     "@types/react": "latest",
     "@types/react-dom": "^19.3.0",
+    "@types/react-test-renderer": "19.1.0",
     "@types/three": "0.186.0",
+    "esbuild": "0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-expo": "^57.0.1",
     "playwright": "^1.62.1",
+    "react-test-renderer": "19.2.3",
     "typescript": "latest",
     "vitest": "^4.1.11"
   }

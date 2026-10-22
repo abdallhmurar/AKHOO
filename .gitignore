@@ -35,3 +35,9 @@ credentials/
 .env.local
 
 .claude/settings.local.json
+
+# Generated from approved, tracked prototype assets before web builds
+/public/motion/
+/src/components/motion/generated/
+
+.env*

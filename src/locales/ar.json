@@ -297,7 +297,7 @@
     "volunteerSince": "بيساعدك منذ",
     "volunteerLabel": "الشخص المساعد",
     "defaultVolunteerName": "مساعد",
-    "callButton": "اتصل بـ {{phone}}",
+    "callButton": "اتصل بـ ⁦{{phone}}⁩",
     "chatButton": "المحادثة",
     "backToHome": "العودة لاختيار الدور",
     "cancel": "إلغاء الطلب",
@@ -306,7 +306,9 @@
     "elapsed": {
       "lessThanMinute": "أقل من دقيقة",
       "minutes": "{{count}} دقيقة",
+      "minutes_one": "{{count}} دقيقة",
       "hours": "{{count}} ساعة",
+      "hours_one": "{{count}} ساعة",
       "hoursAndMinutes": "{{hours}} ساعة و{{minutes}} دقيقة"
     },
     "completion": {
@@ -366,7 +368,7 @@
     "requestId": "رقم الطلب",
     "requesterLabel": "صاحب الطلب",
     "defaultRequesterName": "مستخدم",
-    "callButton": "اتصل بـ {{phone}}",
+    "callButton": "اتصل بـ ⁦{{phone}}⁩",
     "chatButton": "المحادثة",
     "openInGoogleMaps": "افتح الموقع بخرائط جوجل",
     "openInWaze": "افتح الموقع بتطبيق ويز",
@@ -390,7 +392,7 @@
     "completion": {
       "title": "تمت المساعدة بنجاح",
       "message": "شكراً لأنك كنت أخوو لحدا اليوم 💚",
-      "pointsEarned": "+{{points}} نقاط",
+      "pointsEarned": "⁦+{{points}}⁩ نقاط",
       "balanceLabel": "رصيدك الآن: {{balance}} نقطة",
       "helpedCount": "ساعدت {{count}} شخصاً حتى الآن",
       "rateExperienceTitle": "كيف كانت تجربتك بالمساعدة؟",
@@ -454,7 +456,7 @@
     "subtitle": "كل طلباتك والمهام اللي ساعدت فيها.",
     "empty": "ما في شي بالسجل لسا",
     "emptyMessage": "الطلبات اللي بترسلها والمهام اللي بتساعد فيها بتظهر هون.",
-    "pointsEarned": "+{{points}} نقاط",
+    "pointsEarned": "⁦+{{points}}⁩ نقاط",
     "all": "الكل",
     "filters": {
       "received": "تلقيت",
@@ -524,7 +526,8 @@
       "privacy": "الخصوصية والأمان",
       "help": "المساعدة والدعم",
       "privacyPolicy": "سياسة الخصوصية",
-      "termsOfUse": "شروط الاستخدام"
+      "termsOfUse": "شروط الاستخدام",
+      "licenses": "التراخيص"
     },
     "sections": {
       "personalInfo": "المعلومات الشخصية",
@@ -562,6 +565,11 @@
         "reauthenticate": "تأكيد الهوية بتسجيل الدخول",
         "reauthenticateHint": "سجّل الدخول مجدداً بالحساب نفسه، ثم أكّد حذف الحساب خلال عشر دقائق."
       }
+    },
+    "licenses": {
+      "description": "مصادر الأيقونات المستخدمة في أخوو.",
+      "author": "تصميم {{author}} من Flaticon",
+      "viewLicense": "عرض ترخيص الأيقونات"
     },
     "legal": {
       "lastUpdated": "آخر تحديث"
@@ -624,7 +632,11 @@
     "levelUpMessage": "🎉 وصلت لدرجة {{levelName}}"
   },
   "map": {
-    "loading": "جارٍ تحميل الخريطة..."
+    "loading": "جارٍ تحميل الخريطة...",
+    "title": "الخريطة",
+    "marker": "علامة الموقع",
+    "attribution": "مصادر الخريطة",
+    "feedback": "ملاحظات على الخريطة"
   },
   "perks": {
     "title": "مزايا أخوو",
@@ -723,9 +735,9 @@
     },
     "hubSubtitle": "عروض ومكافآت إلك",
     "pointsUnit": "نقطة",
-    "helpProgress": "{{count}} / {{target}} مساعدة",
+    "helpProgress": "⁦{{count}} / {{target}}⁩ مساعدة",
     "weeklyHeading": "عروض هذا الأسبوع",
-    "availableOffers": "{{count}} عروض متاحة",
+    "availableOffers": "العروض المتاحة: {{count}}",
     "noPoints": "بدون نقاط",
     "offerDetails": "تفاصيل العرض",
     "offerDetailsFor": "تفاصيل العرض: {{title}}",
@@ -733,8 +745,10 @@
     "gallery": {
       "imageNumber": "الصورة {{number}}",
       "enlarge": "تكبير صورة {{title}}",
-      "hint": "{{current}} / {{total}} • اضغط على الصورة لتكبيرها",
-      "close": "إغلاق الصورة"
+      "hint": "⁦{{current}} / {{total}}⁩ • اضغط على الصورة لتكبيرها",
+      "close": "إغلاق الصورة",
+      "previous": "السابقة",
+      "next": "التالية"
     }
   },
   "navigation": {

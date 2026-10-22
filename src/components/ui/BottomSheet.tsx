@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Modal, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useIsRTL } from '../../lib/direction'
 import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
@@ -30,7 +30,7 @@ export function BottomSheet({ visible, onClose, title, subtitle, scrollable = tr
   )
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={dismissible ? onClose : undefined} statusBarTranslucent>
-      <View style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
+      <View style={[styles.overlay, Platform.OS === 'ios' && { direction: 'ltr' }, { backgroundColor: theme.colors.overlay }]}>
         <Pressable accessibilityRole="button" accessibilityLabel={closeLabel} disabled={!dismissible} onPress={onClose} style={StyleSheet.absoluteFill} />
         <SafeAreaView accessibilityViewIsModal style={[styles.sheet, shadow.floating, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           {scrollable ? <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>{body}</ScrollView> : <View style={styles.content}>{body}</View>}

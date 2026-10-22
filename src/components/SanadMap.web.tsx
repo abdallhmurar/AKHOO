@@ -2,6 +2,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { ActivityIndicator, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import { Map as MaplibreMap, Marker, setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import './SanadMap.web.css'
 import { useTranslation } from 'react-i18next'
 import { colors, radius } from '../lib/theme'
 import { MAP_DEFAULT_ZOOM, MAP_FALLBACK_CENTER, MAP_FIT_BOUNDS_MAX_ZOOM, MAP_FIT_BOUNDS_PADDING, MAP_STYLE_URL } from '../lib/mapProvider'
@@ -70,7 +71,13 @@ export function SanadMap({
       style: MAP_STYLE_URL,
       center: [resolved.longitude, resolved.latitude],
       zoom,
-      interactive
+      interactive,
+      locale: {
+        'Map.Title': t('map.title'),
+        'Marker.Title': t('map.marker'),
+        'AttributionControl.ToggleAttribution': t('map.attribution'),
+        'AttributionControl.MapFeedback': t('map.feedback')
+      }
     })
     mapRef.current = map
     markerRef.current = new Marker({ color: colors.forest }).setLngLat([resolved.longitude, resolved.latitude]).addTo(map)
@@ -189,7 +196,7 @@ export function SanadMap({
 
   return (
     <View style={[styles.wrap, { height }, style]}>
-      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <div className="akhoo-map" ref={containerRef} style={{ width: '100%', height: '100%' }} />
       {!styleLoaded ? (
         <View style={styles.loadingOverlay} pointerEvents="none">
           <ActivityIndicator color={colors.forest} />

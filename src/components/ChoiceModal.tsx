@@ -43,7 +43,8 @@ export function ChoiceModal<T extends string>({
               <Pressable
                 onPress={() => { onSelect(option.value); onClose() }}
                 accessibilityRole="radio"
-                accessibilityState={{ selected }}
+                accessibilityState={{ checked: selected }}
+                aria-checked={selected}
                 style={[styles.row, dirStyles(isRTL).row, { backgroundColor: selected ? theme.colors.primarySoft : 'transparent' }]}
               >
                 <View style={[styles.radio, { borderColor: selected ? theme.colors.primary : theme.colors.borderStrong, backgroundColor: selected ? theme.colors.primary : 'transparent' }]}>

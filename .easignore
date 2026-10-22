@@ -1,0 +1,58 @@
+node_modules/
+.expo/
+expo-env.d.ts
+dist/
+dist-v2-check/
+dist-v2-android-check/
+dist-v2-all-check/
+.env
+*.log
+.DS_Store
+desktop.ini
+supabase/.temp/
+playwright-report/
+test-results/
+coverage/
+admin/node_modules/
+admin/dist/
+admin/.env
+admin/.env.e2e
+admin/playwright-report/
+admin/test-results/
+admin/*.tsbuildinfo
+
+# Firebase service account key (FCM push credential) - local/EAS-upload
+# only, must never be committed.
+akhoo-firebase-adminsdk-fbsvc-eea0d25588.json
+*firebase-adminsdk*.json
+
+# App Store Connect API key (EAS build/submit credential) - local/EAS-upload
+# only, must never be committed.
+credentials/
+*.p8
+
+.vercel
+.env.local
+
+.claude/settings.local.json
+
+# Generated from approved, tracked prototype assets before web builds
+/public/motion/
+/src/components/motion/generated/
+
+.env*
+
+# EAS uploads contain only application source and required artwork.
+.git
+.21st/
+.claude/
+.codex-remote-attachments/
+admin/
+docs/
+e2e/
+.github/
+.vercel/
+public/
+previews/**/*.html
+previews/**/*.css
+previews/**/*.js

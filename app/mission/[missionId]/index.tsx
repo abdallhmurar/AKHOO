@@ -1,1 +1,1 @@
-export { LiveMissionScreen as default } from '../../../src/features/mission/MissionScreens'
+export { default } from '../../../src/features/mission/MissionRoute'

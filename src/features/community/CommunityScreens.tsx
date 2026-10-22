@@ -1,7 +1,9 @@
+import { PerksHeader } from '../../components/motion/Motion'
+import { PointsPanel } from '../../components/motion/ApprovedPanels'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { localizeContent, BUSINESS_TEXT_FIELDS, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useEffect, useState } from 'react'
-import { Animated, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Animated, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import QRCode from 'react-native-qrcode-svg'
@@ -127,15 +129,15 @@ export function CommunityHubScreen() {
 
   return (
     <AppScreen contentStyle={styles.hubContent}>
-      <View style={[styles.hubHeader, dirStyles(isRTL).row]}>
+      {Platform.OS !== 'android' ? <PerksHeader /> : <View style={[styles.hubHeader, dirStyles(isRTL).row]}>
         <View style={styles.headerCopy}>
           <Text accessibilityRole="header" style={[typography.h1, styles.hubTitle, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.title')}</Text>
           <Text style={[typography.body, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.hubSubtitle')}</Text>
         </View>
         <Image source={require('../../../assets/images/perks-coupon-icon.png')} style={styles.headerCoupon} resizeMode="cover" accessible={false} />
-      </View>
+      </View>}
 
-      <GuideTarget id="perks.points"><Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <GuideTarget id="perks.points">{Platform.OS !== 'android' && statsReady ? <PointsPanel balance={balance} count={completedCount} target={nextThreshold ?? TOP_THRESHOLD} level={level} levelLabel={t(levelLabelKey)} remainingLabel={nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')} /> : <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         {!statsReady ? (
           pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
         ) : <>
@@ -159,13 +161,13 @@ export function CommunityHubScreen() {
           </View>
           <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: completedCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
         </>}
-      </Animated.View></GuideTarget>
+      </Animated.View>}</GuideTarget>
 
-      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, stageStyle(1)]}>
+      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, Platform.OS !== 'web' && stageStyle(1)]}>
         <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
         {offersQuery.isSuccess ? <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.availableOffers', { count: offers.length })}</Text> : null}
       </Animated.View>
-      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, stageStyle(2)]}>
+      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, Platform.OS !== 'web' && stageStyle(2)]}>
         {offersQuery.isLoading ? <><Skeleton width="100%" height={190} /><Skeleton width="100%" height={190} /></> : offersQuery.isError ? (
           <Button label={t('perks.retry')} variant="outline" onPress={() => { void offersQuery.refetch() }} />
         ) : offers.length === 0 ? (
@@ -189,12 +191,12 @@ function RealOfferCard({ offer, business: originalBusiness, onUse }: { offer: Pa
   const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url
   const textAlign = isRTL ? 'right' : 'left'
   return (
-    <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row]}>
-        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }]}>
+    <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }, Platform.OS !== 'android' && { padding: 8, borderRadius: 24 }]}>
+      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row, Platform.OS !== 'android' && { flexDirection: 'column', alignItems: 'stretch' }]}>
+        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted }, Platform.OS !== 'android' && { width: '100%', height: undefined, aspectRatio: 1.95, borderRadius: 18 }]}>
           {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="contain" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
         </View>
-        <View style={styles.realOfferBody}>
+        <View style={[styles.realOfferBody, Platform.OS !== 'android' && { padding: 10, gap: 6 }]}>
           <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
           {offer.offer_type_label ? <Text style={[typography.smallMedium, { color: theme.colors.community, textAlign }]}>{offer.offer_type_label}</Text> : null}
           {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
@@ -212,9 +214,7 @@ function RealOfferCard({ offer, business: originalBusiness, onUse }: { offer: Pa
           <Ticket size={21} color={theme.colors.textMuted} weight="fill" />
           <Text style={[typography.smallMedium, { color: theme.colors.textSecondary, flexShrink: 1 }]}>{(offer.points_required ?? 0) > 0 ? t('perks.weeklyOffers.pointsCost', { points: offer.points_required }) : t('perks.noPoints')}</Text>
         </View>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} style={({ pressed }) => [styles.detailsButton, { backgroundColor: pressed ? theme.colors.primaryPressed : theme.colors.primary }]}>
-          <Text style={[typography.smallMedium, { color: theme.colors.onPrimary, textAlign: 'center' }]}>{t('perks.offerDetails')}</Text>
-        </Pressable>
+        <Button label={t('perks.offerDetails')} accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} fullWidth={false} style={styles.detailsButton} />
       </View>
     </View>
   )
@@ -253,7 +253,7 @@ export function BusinessDetailScreen() {
   return (
     <AppScreen header={<ScreenHeader title={business.name} subtitle={t('perks.business.verified')} back />} contentStyle={styles.content}>
       {gallery.length > 0 ? (
-        <View style={styles.gallery}>{gallery.map((url, index) => <Image key={`${url}-${index}`} source={{ uri: url }} style={styles.galleryImage} resizeMode="cover" />)}</View>
+        <OfferGallery images={gallery} title={business.name} aspectRatio={1.8} />
       ) : (
         <View style={[styles.gallery, styles.galleryFallback, { backgroundColor: theme.colors.primarySoft }]}><Icon size={40} color={theme.colors.primary} weight="duotone" /></View>
       )}
@@ -479,7 +479,6 @@ const styles = StyleSheet.create({
   row: { alignItems: 'center', gap: space.sm, justifyContent: 'space-between' },
   quickButtons: { gap: space.sm, flexWrap: 'wrap', marginTop: space.md },
   gallery: { flexDirection: 'row', width: '100%', height: 200, borderRadius: 20, overflow: 'hidden' },
-  galleryImage: { width: '100%', height: '100%' },
   galleryFallback: { alignItems: 'center', justifyContent: 'center' },
   hoursRow: { justifyContent: 'space-between', paddingVertical: 4 },
   offerHero: { width: '100%', height: 220, borderRadius: 20 },
@@ -514,5 +513,5 @@ const styles = StyleSheet.create({
   pointsCostRow: { alignItems: 'center', gap: 4 },
   offerFooter: { borderTopWidth: StyleSheet.hairlineWidth, marginTop: space.sm, paddingTop: space.sm, alignItems: 'center', gap: space.sm },
   offerCost: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  detailsButton: { minHeight: 44, width: '40%', justifyContent: 'center', alignItems: 'center', borderRadius: radius.md, paddingHorizontal: space.sm, paddingVertical: space.sm }
+  detailsButton: { flex: 1, paddingHorizontal: space.md }
 })
