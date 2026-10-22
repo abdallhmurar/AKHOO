@@ -1,4 +1,4 @@
--- Run after 0045 inside BEGIN/ROLLBACK. Uses only temporary fixture rows.
+-- Run after 0048 inside BEGIN/ROLLBACK. Uses only temporary fixture rows.
 insert into public.partners (id, name, slug, category, status, is_active, logo_url) values
   ('b4500000-0000-0000-0000-000000000001','Website test A','website-test-a','other','verified',true,'https://example.com/a.png'),
   ('b4500000-0000-0000-0000-000000000002','Website test hidden','website-test-hidden','other','verified',false,'https://example.com/b.png'),
