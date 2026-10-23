@@ -9,6 +9,7 @@ import { AppScreen, ScreenHeader } from '../../components/v2'
 import { Skeleton } from '../../components/ui'
 import { EmptyState } from '../../components/EmptyState'
 import { PosterImage } from './PosterImage'
+import { AnnouncementVideo } from './AnnouncementVideo'
 import { useAnnouncements, useMarkAnnouncementsRead } from './useAnnouncements'
 import type { Announcement } from '../../types'
 
@@ -21,7 +22,7 @@ function AnnouncementCard({ announcement, isNew }: { announcement: Announcement;
 
   return (
     <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: isNew ? theme.colors.emergency : theme.colors.border }]}>
-      {announcement.image_urls.map(uri => <PosterImage key={uri} uri={uri} />)}
+      {announcement.video_url ? <AnnouncementVideo uri={announcement.video_url} height={340} /> : announcement.image_urls.map(uri => <PosterImage key={uri} uri={uri} />)}
       <View style={[styles.meta, dirStyles(isRTL).row]}>
         <Text style={[typography.caption, { color: theme.colors.textMuted }]}>{new Date(announcement.created_at).toLocaleDateString(i18n.language, { dateStyle: 'medium' })}</Text>
         {isNew ? (

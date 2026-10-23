@@ -7,8 +7,10 @@ import { radius, shadow, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { Button, IconButton } from '../../components/ui'
 import type { Announcement } from '../../types'
+import { AnnouncementVideo } from './AnnouncementVideo'
 
 const POSTER_HEIGHT = 220
+const VIDEO_HEIGHT = 260
 
 // Swipeable posters with dots. Direction is pinned to ltr: the pager's page
 // math (offset / width) and the dots must not be mirrored by an rtl language.
@@ -62,7 +64,8 @@ export function AnnouncementPopup({ announcement, onViewNow, onLater }: { announ
         <Pressable accessibilityRole="button" accessibilityLabel={t('announcements.close')} onPress={onLater} style={StyleSheet.absoluteFill} />
         <View accessibilityViewIsModal style={[styles.card, shadow.floating, { backgroundColor: theme.colors.surface }]}>
           <ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerStyle={styles.cardContent}>
-            {announcement.image_urls.length > 0 ? <PosterPager images={announcement.image_urls} /> : null}
+            {/* The video replaces the posters; app versions without video support show the posters. */}
+            {announcement.video_url ? <AnnouncementVideo uri={announcement.video_url} height={VIDEO_HEIGHT} /> : announcement.image_urls.length > 0 ? <PosterPager images={announcement.image_urls} /> : null}
 
             <View style={[styles.header, dirStyles(isRTL).row]}>
               <View style={[styles.headerMain, dirStyles(isRTL).row]}>

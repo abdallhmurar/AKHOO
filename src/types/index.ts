@@ -194,6 +194,8 @@ export type Announcement = {
   body: string
   details: string | null
   image_urls: string[]
+  // Optional MP4 (migration 0049). Missing on rows from before it and on older backends.
+  video_url?: string | null
   created_at: string
   popup_shown_at: string | null
   read_at: string | null
