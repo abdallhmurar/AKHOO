@@ -11,12 +11,15 @@ import { radius } from '../../lib/theme'
 export function AnnouncementVideo({ uri, aspectRatio = 16 / 9 }: { uri: string; aspectRatio?: number }) {
   const player = useVideoPlayer(uri, p => { p.loop = false })
   return (
-    <View style={[styles.frame, { aspectRatio }]}>
-      <VideoView player={player} style={StyleSheet.absoluteFill} nativeControls contentFit="contain" accessibilityLabel="video" />
+    <View style={[styles.frame, { aspectRatio, direction: 'ltr' }]}>
+      <VideoView player={player} style={styles.video} nativeControls contentFit="contain" accessibilityLabel="video" />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  frame: { width: '100%', borderRadius: radius.lg, overflow: 'hidden', backgroundColor: '#000', direction: 'ltr' }
+  frame: { width: '100%', borderRadius: radius.lg, overflow: 'hidden', backgroundColor: '#000' },
+  // width/height 100%, not absoluteFill: on the web the <video> is a replaced element, so top/left/right/bottom do
+  // not stretch it and it showed at its natural size, cropped to the top-left corner of the box.
+  video: { width: '100%', height: '100%' }
 })
