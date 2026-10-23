@@ -23,7 +23,7 @@ describe('push body trimming', () => {
   })
 })
 describe('browser Edge access', () => {
-  it.each(['delete-account','send-broadcast-notification','geocode','notify-new-message','notify-new-request','notify-support-reply'])('%s rejects unauthenticated POST before accessing services', async name => {
+  it.each(['delete-account','send-broadcast-notification','geocode','notify-new-message','notify-new-request','notify-support-reply','notify-event'])('%s rejects unauthenticated POST before accessing services', async name => {
     const client = vi.fn(() => { throw new Error('Must not access database') })
     const response = await loadEdgeFunction(name, client)(new Request('https://test.invalid', { method: 'POST', body: '{}' }))
     expect(response.status).toBe(401)
@@ -89,7 +89,7 @@ describe('Expo delivery results', () => {
     expect(results.filter(r => r.error === 'DeviceNotRegistered')).toHaveLength(3)
   })
   it('names the high-importance Android channel and high priority on every message so it pops up', async () => {
-    const bodies: Array<Array<Record<string, unknown>>> = []
+    const bodies: Record<string, unknown>[][] = []
     const send = vi.fn(async (_url: unknown, init: RequestInit) => { bodies.push(JSON.parse(String(init.body))); return new Response(JSON.stringify({ data: [{ status: 'ok' }, { status: 'ok' }] })) }) as unknown as typeof fetch
     await sendPushMessages([{ to: 'a', title: 't', body: 'b' }, { to: 'b', title: 't', body: 'b', channelId: 'other', priority: 'normal' }], send)
     expect(bodies[0]![0]).toMatchObject({ channelId: 'default', priority: 'high' })

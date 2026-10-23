@@ -20,3 +20,5 @@ verify_jwt = false
 verify_jwt = false
 [functions.notify-support-reply]
 verify_jwt = false
+[functions.notify-event]
+verify_jwt = false

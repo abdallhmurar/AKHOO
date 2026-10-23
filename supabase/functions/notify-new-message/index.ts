@@ -1,6 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { sendPushMessages } from '../_shared/push.ts'
 import { readAll } from '../_shared/pagination.ts'
+import { usersAllowed } from '../_shared/notifications.ts'
 
 Deno.serve(async req => {
   const secret = req.headers.get('x-webhook-secret')
@@ -29,6 +30,9 @@ Deno.serve(async req => {
 
   const recipientId = message.sender_id === request.requester_id ? request.volunteer_id : request.requester_id
   if (!recipientId) return new Response('ok: no matched recipient yet')
+
+  // A user who switched "mission" notifications off in their settings gets no chat pushes.
+  if ((await usersAllowed(supabase, 'mission', [recipientId])).length === 0) return new Response('ok: muted by the recipient')
 
   const devices = await readAll<{ token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: [recipientId], p_peer_id: message.sender_id }).order('token').range(from, to))
   // Keep message text and identities off the lock screen.
