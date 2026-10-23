@@ -2,6 +2,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { sendPushMessages } from '../_shared/push.ts'
 import { readAll } from '../_shared/pagination.ts'
 import { usersAllowed } from '../_shared/notifications.ts'
+import { withSounds } from '../_shared/sounds.ts'
 
 Deno.serve(async req => {
   const secret = req.headers.get('x-webhook-secret')
@@ -36,10 +37,10 @@ Deno.serve(async req => {
 
   const devices = await readAll<{ token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: [recipientId], p_peer_id: message.sender_id }).order('token').range(from, to))
   // Keep message text and identities off the lock screen.
-  const results = await sendPushMessages((devices ?? []).map((device: { token: string }) => ({
+  const results = await sendPushMessages(await withSounds(supabase, (devices ?? []).map((device: { token: string }) => ({
     to: device.token, title: 'AKHOO', body: 'رسالة جديدة في محادثة المهمة', sound: 'default',
     data: { requestId: message.request_id, missionChat: true }
-  })))
+  })), 'messages'))
   const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
   if (invalid.length) await supabase.from('push_devices').delete().in('token', invalid)
   return new Response(JSON.stringify({ acceptedCount: results.filter(r => r.status === 'sent').length }))

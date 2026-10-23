@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { sendPushMessages, truncateForPush } from '../_shared/push.ts'
+import { withSounds } from '../_shared/sounds.ts'
 import { readAll } from '../_shared/pagination.ts'
 import { contentText } from '../../../shared/contentTranslations.ts'
 
@@ -26,10 +27,10 @@ Deno.serve(async req => {
 
   const devices = await readAll<{ token: string; language: string }>((from, to) => supabase.rpc('get_localized_push_recipients', { p_user_ids: [conversation.user_id] }).order('token').range(from, to))
   // An image-only reply has no text; a camera emoji reads the same in every language.
-  const results = await sendPushMessages((devices ?? []).map(device => ({
+  const results = await sendPushMessages(await withSounds(supabase, (devices ?? []).map(device => ({
     to: device.token, title: 'AKHOO', body: message.body ? truncateForPush(contentText(message.body, message.translations, 'body', device.language)) : '📷', sound: 'default',
     data: { supportConversationId: conversation.id }
-  })))
+  })), 'calm'))
   const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
   if (invalid.length) await supabase.from('push_devices').delete().in('token', invalid)
   return new Response(JSON.stringify({ acceptedCount: results.filter(r => r.status === 'sent').length }))

@@ -800,6 +800,12 @@
     "emptyTitle": "No notifications yet",
     "emptyMessage": "News and offers from AKHOO will show up here."
   },
+  "notificationChannels": {
+    "requests": "Nearby help requests",
+    "updates": "Updates on your requests and points",
+    "messages": "Messages",
+    "calm": "Support and announcements"
+  },
   "support": {
     "title": "Support",
     "teamName": "AKHOO team",

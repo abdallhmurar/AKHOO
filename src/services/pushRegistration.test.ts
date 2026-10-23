@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({ getItem: vi.fn(), setItem: vi.fn(), removeItem: vi.fn(), register: vi.fn(), enabled: vi.fn(), getSession: vi.fn(), rpc: vi.fn() }))
 vi.mock('@react-native-async-storage/async-storage', () => ({ default: mocks }))
-vi.mock('../lib/notifications', () => ({ registerForPushNotificationsAsync: mocks.register }))
+vi.mock('../lib/notifications', () => ({ registerForPushNotificationsAsync: mocks.register, DEVICE_SOUND_PACK: 1 }))
 vi.mock('../lib/notificationPreference', () => ({ getNotificationsEnabled: mocks.enabled }))
 vi.mock('../lib/supabase', () => ({ supabase: { rpc: mocks.rpc, auth: { getSession: mocks.getSession } } }))
 vi.mock('../lib/i18n', () => ({ i18next: { language: 'he' } }))
@@ -23,6 +23,17 @@ describe('device push lifecycle', () => {
     await syncPushRegistration('user')
     expect(mocks.register).not.toHaveBeenCalled()
     expect(mocks.rpc).toHaveBeenCalledWith('register_push_device', { p_token: 'ExpoPushToken[current]', p_enabled: false })
+  })
+  it('reports the notification sound pack after registering the token', async () => {
+    const { syncPushRegistration } = await import('./pushRegistration')
+    await syncPushRegistration('user')
+    expect(mocks.rpc).toHaveBeenCalledWith('set_push_device_sound_pack', { p_token: 'ExpoPushToken[current]', p_pack: 1 })
+  })
+  it('still registers the device and saves its language when reporting the sound pack fails', async () => {
+    const { syncPushRegistration } = await import('./pushRegistration')
+    mocks.rpc.mockImplementation(async (name: string) => name === 'set_push_device_sound_pack' ? Promise.reject(new Error('older backend')) : { error: null })
+    await expect(syncPushRegistration('user')).resolves.toBeUndefined()
+    expect(mocks.rpc).toHaveBeenCalledWith('set_push_device_language', { p_token: 'ExpoPushToken[current]', p_language: 'he' })
   })
   it('does not attach an old account registration to a new session', async () => {
     const { syncPushRegistration } = await import('./pushRegistration')
@@ -45,7 +56,7 @@ describe('device push lifecycle', () => {
     await vi.waitFor(() => expect(mocks.register).toHaveBeenCalled())
     finish('ExpoPushToken[current]')
     await Promise.all([registration, logout])
-    expect(mocks.rpc.mock.calls.map(call => call[0])).toEqual(['register_push_device','set_push_device_language','unregister_push_device'])
+    expect(mocks.rpc.mock.calls.map(call => call[0])).toEqual(['register_push_device','set_push_device_sound_pack','set_push_device_language','unregister_push_device'])
   })
   it('updates language on the current device without asking for notification permission', async () => {
     const { syncPushLanguage } = await import('./pushRegistration')

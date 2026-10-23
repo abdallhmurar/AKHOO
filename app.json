@@ -56,7 +56,13 @@
       [
         "expo-notifications",
         {
-          "color": "#1768E5"
+          "color": "#1768E5",
+          "sounds": [
+            "./assets/sounds/akhoo_request.wav",
+            "./assets/sounds/akhoo_update.wav",
+            "./assets/sounds/akhoo_message.wav",
+            "./assets/sounds/akhoo_calm.wav"
+          ]
         }
       ],
       [

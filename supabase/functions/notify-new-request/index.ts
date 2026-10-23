@@ -3,6 +3,7 @@ import { sendPushMessages } from '../_shared/push.ts'
 import { readAll } from '../_shared/pagination.ts'
 import { nearbyVolunteers } from '../_shared/nearby.ts'
 import { deliver, usersAllowed } from '../_shared/notifications.ts'
+import { withSounds } from '../_shared/sounds.ts'
 
 const serviceLabels: Record<string, string> = {
   battery: 'بطارية',
@@ -46,11 +47,11 @@ Deno.serve(async req => {
   // Volunteers who switched "requests" notifications off in their settings are skipped.
   const wanted = await usersAllowed(supabase, 'requests', nearby)
   const devices = await readAll<{ user_id: string; token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: wanted, p_peer_id: request.requester_id }).order('token').range(from, to))
-  const results = await sendPushMessages((devices ?? []).map((device: { token: string }) => ({
+  const results = await sendPushMessages(await withSounds(supabase, (devices ?? []).map((device: { token: string }) => ({
     to: device.token, title: 'طلب مساعدة قريب منك',
     body: serviceLabels[request.service_type] ?? 'مساعدة', sound: 'default',
     data: { requestId: request.id }
-  })))
+  })), 'requests'))
   const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
   if (invalid.length) await supabase.from('push_devices').delete().in('token', invalid)
 

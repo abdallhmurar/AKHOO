@@ -3,6 +3,11 @@ import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
 import { getNotificationsEnabled } from './notificationPreference'
+import { i18next } from './i18n'
+import { SOUND_CHANNELS, SOUND_PACK, type SoundCategory } from '../../shared/notificationSounds'
+
+// Reported to the server after the push token is registered, so it only names these channels and sounds for builds that have them.
+export const DEVICE_SOUND_PACK = SOUND_PACK
 
 Notifications.setNotificationHandler({
   handleNotification: async () => {
@@ -44,6 +49,15 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
       name: 'default',
       importance: Notifications.AndroidImportance.HIGH
     })
+    // One channel per sound: Android cannot change a channel's sound once it exists. The channel id is the category.
+    for (const category of Object.keys(SOUND_CHANNELS) as SoundCategory[]) {
+      const { sound, importance } = SOUND_CHANNELS[category]
+      await Notifications.setNotificationChannelAsync(category, {
+        name: i18next.t(`notificationChannels.${category}`),
+        importance: importance === 'high' ? Notifications.AndroidImportance.HIGH : Notifications.AndroidImportance.DEFAULT,
+        sound
+      })
+    }
   }
 
   const existing = await Notifications.getPermissionsAsync()

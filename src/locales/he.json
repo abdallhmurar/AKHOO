@@ -800,6 +800,12 @@
     "emptyTitle": "אין עדיין התראות",
     "emptyMessage": "חדשות ומבצעים מאחוו יופיעו כאן."
   },
+  "notificationChannels": {
+    "requests": "בקשות עזרה בסביבה",
+    "updates": "עדכונים על הבקשות והנקודות שלך",
+    "messages": "הודעות",
+    "calm": "תמיכה והודעות"
+  },
   "support": {
     "title": "תמיכה",
     "teamName": "צוות אחוו",

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { supabase } from '../lib/supabase'
-import { registerForPushNotificationsAsync } from '../lib/notifications'
+import { DEVICE_SOUND_PACK, registerForPushNotificationsAsync } from '../lib/notifications'
 import { getNotificationsEnabled } from '../lib/notificationPreference'
 import { throwIfError } from './errors'
 import { i18next } from '../lib/i18n'
@@ -37,6 +37,7 @@ export function syncPushRegistration(userId: string) {
     const { error } = await supabase.rpc('register_push_device', { p_token: token, p_enabled: enabled })
     throwIfError(error, { domain: 'profile', operation: 'register-push' })
     await AsyncStorage.setItem(TOKEN_KEY, token)
+    if (DEVICE_SOUND_PACK > 0) await supabase.rpc('set_push_device_sound_pack', { p_token: token, p_pack: DEVICE_SOUND_PACK }).then(() => {}, () => {})
     const { error: languageError } = await supabase.rpc('set_push_device_language', { p_token: token, p_language: contentLanguage(i18next.language) })
     throwIfError(languageError, { domain: 'profile', operation: 'push-language' })
   })

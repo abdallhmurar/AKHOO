@@ -1,6 +1,7 @@
 import { sendPushMessages, type PushMessage } from './push.ts'
 import { MILESTONES, asLang, levelFor, render, type EventKey, type Lang } from './notificationCopy.ts'
 import { readAll } from './pagination.ts'
+import { eventSound, withSounds } from './sounds.ts'
 
 // deno-lint-ignore no-explicit-any
 type Db = any
@@ -70,7 +71,7 @@ export async function deliver(db: Db, out: Outgoing, send: typeof sendPushMessag
     const text = render(out.event, language, vars)
     return { to: device.token, title: text.title, body: text.body, sound: 'default', data: { ...out.data, event: out.event } }
   })
-  const results = await send(messages)
+  const results = await send(await withSounds(db, messages, eventSound[out.event]))
   const invalid = results.filter(r => r.error === 'DeviceNotRegistered').map(r => r.token)
   if (invalid.length) await db.from('push_devices').delete().in('token', invalid)
   const sentTokens = new Set(results.filter(r => r.status === 'sent').map(r => r.token))

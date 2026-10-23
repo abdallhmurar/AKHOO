@@ -800,6 +800,12 @@
     "emptyTitle": "ما في إشعارات بعد",
     "emptyMessage": "أخبار وعروض أخوو رح تظهر هون."
   },
+  "notificationChannels": {
+    "requests": "طلبات المساعدة القريبة",
+    "updates": "تحديثات طلبك ونقاطك",
+    "messages": "الرسائل",
+    "calm": "الدعم والإعلانات"
+  },
   "support": {
     "title": "الدعم",
     "teamName": "فريق أخوو",
