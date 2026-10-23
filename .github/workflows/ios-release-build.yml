@@ -46,16 +46,21 @@ jobs:
 
       - run: npm ci
 
-      - name: Check who the Expo token belongs to
+      - name: Clean up the Expo token and report its length
         env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          RAW_EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          TOKEN=$(printf '%s' "$RAW_EXPO_TOKEN" | tr -d '[:space:]"')
+          echo "::add-mask::$TOKEN"
+          echo "EXPO_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+          echo "::notice title=EXPO_TOKEN length::raw ${#RAW_EXPO_TOKEN} characters, after cleaning ${#TOKEN} (a real Expo token has 40)"
+
+      - name: Check who the Expo token belongs to
         run: |
           npx --yes eas-cli@latest whoami
           npx --yes eas-cli@latest --version
 
       - name: Build the IPA
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           set -o pipefail
           DEBUG='eas:*' npx --yes eas-cli@latest build --platform ios --profile testflight --local --non-interactive --output "$RUNNER_TEMP/akhoo.ipa" 2>&1 | tee "$RUNNER_TEMP/eas-build.log"
