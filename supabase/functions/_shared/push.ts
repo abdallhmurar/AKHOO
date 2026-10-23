@@ -1,4 +1,4 @@
-export type PushMessage = { to: string; title: string; body: string; sound?: string; data?: Record<string, unknown> }
+export type PushMessage = { to: string; title: string; body: string; sound?: string; data?: Record<string, unknown>; channelId?: string; priority?: 'default' | 'normal' | 'high' }
 export type PushResult = { token: string; status: 'sent' | 'failed' | 'unknown'; error: string | null }
 
 // A phone notification shows only a few lines whatever is sent, and the push
@@ -14,12 +14,20 @@ export function truncateForPush(text: string, max = PUSH_BODY_MAX): string {
 // "sent" means Expo accepted a ticket, not that a handset displayed it.
 // Network failures after submission are uncertain and must not be treated
 // as definitely unsent by a retry loop.
+// Android shows a notification as a heads-up pop-up only when its channel has high importance. The app creates
+// a HIGH-importance channel called "default" before it asks for push permission (src/lib/notifications.native.ts,
+// present since the first push build), but a message without channelId goes to Expo's own fallback channel, which
+// has default importance: the notification arrives and sits in the shade without popping up. So every message
+// names that channel and asks for FCM high priority (which also lets it through Doze). iOS ignores both fields.
+export const ANDROID_CHANNEL_ID = 'default'
+const withAndroidDefaults = (messages: PushMessage[]) => messages.map(message => ({ channelId: ANDROID_CHANNEL_ID, priority: 'high' as const, ...message }))
+
 export async function sendPushBatch(messages: PushMessage[], send: typeof fetch = fetch): Promise<PushResult[]> {
   if (messages.length > 100) throw new Error('Expo batch limit exceeded')
   if (!messages.length) return []
   try {
     const response = await send('https://exp.host/--/api/v2/push/send', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(messages)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(withAndroidDefaults(messages))
     })
     if (!response.ok) return messages.map(m => ({ token: m.to, status: response.status >= 500 ? 'unknown' : 'failed', error: `expo_${response.status}` }))
     const payload = await response.json()

@@ -88,6 +88,13 @@ describe('Expo delivery results', () => {
     expect(results.filter(r => r.status === 'sent')).toHaveLength(202)
     expect(results.filter(r => r.error === 'DeviceNotRegistered')).toHaveLength(3)
   })
+  it('names the high-importance Android channel and high priority on every message so it pops up', async () => {
+    const bodies: Array<Array<Record<string, unknown>>> = []
+    const send = vi.fn(async (_url: unknown, init: RequestInit) => { bodies.push(JSON.parse(String(init.body))); return new Response(JSON.stringify({ data: [{ status: 'ok' }, { status: 'ok' }] })) }) as unknown as typeof fetch
+    await sendPushMessages([{ to: 'a', title: 't', body: 'b' }, { to: 'b', title: 't', body: 'b', channelId: 'other', priority: 'normal' }], send)
+    expect(bodies[0]![0]).toMatchObject({ channelId: 'default', priority: 'high' })
+    expect(bodies[0]![1]).toMatchObject({ channelId: 'other', priority: 'normal' })
+  })
   it('keeps ambiguous network outcomes distinct from safely retryable rejections', async () => {
     const messages = [{ to: 'test', title: 'test', body: 'test' }]
     expect((await sendPushMessages(messages, vi.fn().mockRejectedValue(new Error('timeout'))))[0]?.status).toBe('unknown')
