@@ -11,8 +11,8 @@
       "environment": "preview",
       "env": {
         "AKHOO_BUILD_TARGET": "testflight",
-        "AKHOO_IOS_VERSION": "2.0.2",
-        "AKHOO_IOS_BUILD_NUMBER": "28"
+        "AKHOO_IOS_VERSION": "2.0.3",
+        "AKHOO_IOS_BUILD_NUMBER": "29"
       },
       "ios": {
         "buildConfiguration": "Release"
