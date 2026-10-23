@@ -255,6 +255,7 @@ export type BroadcastNotification = {
   sent_count: number
   details: string | null
   image_urls: string[]
+  video_url: string | null
   show_in_app: boolean
   created_by: string | null
   created_at: string

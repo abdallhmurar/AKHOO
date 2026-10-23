@@ -7,7 +7,7 @@ import { useIsRTL } from '@/lib/direction'
 // message, then "View now" / "Later". It renders the same fields the admin is
 // typing, so what they see here is what users get. Colors are the app's
 // (emergency coral for the primary action), not the admin panel's teal.
-export function AnnouncementPreview({ title, body, details, images }: { title: string; body: string; details: string; images: string[] }) {
+export function AnnouncementPreview({ title, body, details, images, videoUrl = null }: { title: string; body: string; details: string; images: string[]; videoUrl?: string | null }) {
   const { t } = useTranslation()
   const isRTL = useIsRTL()
   const Chevron = isRTL ? ChevronLeft : ChevronRight
@@ -15,7 +15,10 @@ export function AnnouncementPreview({ title, body, details, images }: { title: s
   return (
     <div className="mx-auto flex w-full max-w-sm flex-col gap-3">
     <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-xl">
-      {images.length > 0 ? (
+      {videoUrl ? (
+        // Current apps play the video instead of the posters; older apps still show the posters.
+        <video src={videoUrl} controls playsInline preload="metadata" className="h-64 w-full bg-black object-contain" />
+      ) : images.length > 0 ? (
         <div className="relative flex h-48 items-center justify-center bg-secondary">
           <img src={images[0]} alt="" className="size-full object-contain" />
           {images.length > 1 ? (

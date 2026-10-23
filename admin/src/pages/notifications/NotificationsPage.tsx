@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Bell, ImagePlus, Trash2, X } from 'lucide-react'
+import { Bell, Film, ImagePlus, Trash2, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,7 @@ import { DataTable, TablePagination } from '@/components/DataTable'
 import type { Column } from '@/components/DataTable'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
-import { ImageValidationError, uploadContentImage, validateImageFile } from '@/lib/storage'
+import { ImageValidationError, VideoValidationError, uploadContentImage, uploadContentVideo, validateImageFile, validateVideoFile } from '@/lib/storage'
 import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
 import { useDeleteAllNotifications, useDeleteNotification, useRetryNotification, useSendNotification } from './useSendNotification'
@@ -26,6 +26,7 @@ const DEFAULT_DURATION_DAYS = 7
 const PUSH_PREVIEW_CHARS = 160
 
 type ImageDraft = { id: string; file: File; preview: string }
+type VideoDraft = { file: File; preview: string }
 
 function ComposeCard() {
   const { t } = useTranslation()
@@ -36,13 +37,43 @@ function ComposeCard() {
   const [durationDays, setDurationDays] = useState(String(DEFAULT_DURATION_DAYS))
   const [audience, setAudience] = useState<NotificationAudience>('all')
   const [images, setImages] = useState<ImageDraft[]>([])
-  const [uploading, setUploading] = useState(false)
+  const [video, setVideo] = useState<VideoDraft | null>(null)
+  const [uploading, setUploading] = useState<'images' | 'video' | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
+  const videoInput = useRef<HTMLInputElement>(null)
   const imagesRef = useRef(images)
   imagesRef.current = images
+  const videoRef = useRef(video)
+  videoRef.current = video
 
   // Object URLs are only for the local preview; release them on unmount.
-  useEffect(() => () => imagesRef.current.forEach(image => URL.revokeObjectURL(image.preview)), [])
+  useEffect(() => () => {
+    imagesRef.current.forEach(image => URL.revokeObjectURL(image.preview))
+    if (videoRef.current) URL.revokeObjectURL(videoRef.current.preview)
+  }, [])
+
+  function addVideo(files: FileList | null) {
+    const file = files?.[0]
+    if (videoInput.current) videoInput.current.value = ''
+    if (!file) return
+    try {
+      validateVideoFile(file)
+    } catch (error) {
+      if (error instanceof VideoValidationError) toast.error(`${file.name}: ${t(`notifications.compose.videoErrors.${error.message}`)}`)
+      return
+    }
+    setVideo(current => {
+      if (current) URL.revokeObjectURL(current.preview)
+      return { file, preview: URL.createObjectURL(file) }
+    })
+  }
+
+  function removeVideo() {
+    setVideo(current => {
+      if (current) URL.revokeObjectURL(current.preview)
+      return null
+    })
+  }
 
   function addFiles(files: FileList | null) {
     if (!files || files.length === 0) return
@@ -76,25 +107,31 @@ function ComposeCard() {
     event.preventDefault()
     if (!durationValid) return
 
-    // Upload first: if any image fails nothing has been created or sent yet.
+    // Upload first: if any file fails nothing has been created or sent yet.
     let imageUrls: string[] = []
-    if (images.length > 0) {
-      setUploading(true)
-      try {
+    let videoUrl: string | null = null
+    try {
+      if (images.length > 0) {
+        setUploading('images')
         imageUrls = await Promise.all(images.map(image => uploadContentImage(image.file, 'announcements', { optimize: true })))
-      } catch (error) {
-        toast.error((error as Error).message)
-        return
-      } finally {
-        setUploading(false)
       }
+      if (video) {
+        setUploading('video')
+        videoUrl = await uploadContentVideo(video.file, 'announcements-video')
+      }
+    } catch (error) {
+      toast.error((error as Error).message)
+      return
+    } finally {
+      setUploading(null)
     }
 
     try {
-      const result = await send.mutateAsync({ title, body, details, audience, imageUrls, durationDays: parsedDuration })
+      const result = await send.mutateAsync({ title, body, details, audience, imageUrls, videoUrl, durationDays: parsedDuration })
       if (result.deliveryComplete) toast.success(t('notifications.compose.sent'))
       else toast.warning(t('notifications.delivery.incomplete'))
       images.forEach(image => URL.revokeObjectURL(image.preview))
+      removeVideo()
       setImages([])
       setTitle('')
       setBody('')
@@ -105,7 +142,7 @@ function ComposeCard() {
     }
   }
 
-  const busy = uploading || send.isPending
+  const busy = uploading !== null || send.isPending
 
   return (
     <Card>
@@ -177,6 +214,33 @@ function ComposeCard() {
               </div>
             </div>
 
+            <div className="flex flex-col gap-2">
+              <Label>{t('notifications.compose.video')}</Label>
+              <p className="text-xs text-muted-foreground">{t('notifications.compose.videoHint')}</p>
+              {video ? (
+                <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-secondary p-2">
+                  <video src={video.preview} muted playsInline preload="metadata" className="h-20 w-14 rounded-md bg-black object-cover" />
+                  <div className="min-w-0 flex-1 text-xs">
+                    <p className="truncate font-semibold text-foreground" dir="ltr">{video.file.name}</p>
+                    <p className="text-muted-foreground" dir="ltr">{(video.file.size / (1024 * 1024)).toFixed(1)} MB</p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" disabled={busy} onClick={removeVideo}>
+                    <Trash2 className="size-4" />
+                    {t('notifications.compose.removeVideo')}
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button type="button" variant="outline" className="gap-2 border-dashed text-xs" disabled={busy} onClick={() => videoInput.current?.click()}>
+                    <Film className="size-4" />
+                    {t('notifications.compose.addVideo')}
+                  </Button>
+                  <input ref={videoInput} type="file" accept="video/mp4" className="hidden" onChange={e => addVideo(e.target.files)} />
+                </div>
+              )}
+              {video ? <p className="text-xs text-sanad-warning">{t('notifications.compose.videoAppVersionHint')}</p> : null}
+            </div>
+
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="flex flex-col gap-2 sm:w-64">
                 <Label>{t('notifications.compose.audience')}</Label>
@@ -198,7 +262,7 @@ function ComposeCard() {
             <p className="text-xs text-muted-foreground">{t('notifications.compose.durationHint')}</p>
             <div>
               <Button type="submit" disabled={busy || !title.trim() || !body.trim() || !durationValid}>
-                {uploading ? t('notifications.compose.uploading') : t('notifications.compose.send')}
+                {uploading === 'video' ? t('notifications.compose.uploadingVideo') : uploading ? t('notifications.compose.uploading') : t('notifications.compose.send')}
               </Button>
             </div>
           </form>
@@ -206,7 +270,7 @@ function ComposeCard() {
 
         <div className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase text-muted-foreground">{t('notifications.compose.previewTitle')}</p>
-          <AnnouncementPreview title={title} body={body} details={details} images={images.map(image => image.preview)} />
+          <AnnouncementPreview title={title} body={body} details={details} images={images.map(image => image.preview)} videoUrl={video?.preview ?? null} />
           <p className="text-xs text-muted-foreground">{t('notifications.compose.previewHint')}</p>
         </div>
       </CardContent>

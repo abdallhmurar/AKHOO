@@ -75,6 +75,32 @@ export async function uploadContentImage(file: File, folder: string, options: { 
   return supabase.storage.from('content').getPublicUrl(path).data.publicUrl
 }
 
+// Announcement videos: one MP4 per announcement in the same public `content`
+// bucket, under announcements-video/ (0049 caps the bucket at 25 MB and the
+// database only accepts URLs from that folder). MP4 only: it is the one format
+// iOS, Android and the web app all play without conversion.
+export const VIDEO_TYPE = 'video/mp4'
+export const MAX_VIDEO_BYTES = 25 * 1024 * 1024
+
+export class VideoValidationError extends Error {}
+
+export function validateVideoFile(file: File) {
+  if (file.type !== VIDEO_TYPE) {
+    throw new VideoValidationError('invalidType')
+  }
+  if (file.size > MAX_VIDEO_BYTES) {
+    throw new VideoValidationError('tooLarge')
+  }
+}
+
+export async function uploadContentVideo(file: File, folder: string) {
+  validateVideoFile(file)
+  const path = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.mp4`
+  const { error } = await supabase.storage.from('content').upload(path, file, { contentType: VIDEO_TYPE })
+  if (error) throw error
+  return supabase.storage.from('content').getPublicUrl(path).data.publicUrl
+}
+
 // Support chat images live in the private `support-chat` bucket (0035), under
 // <user_id>/ - the conversation's user, so that user can read what an admin
 // sends them. Returns the object path (never a URL: the bucket is private and

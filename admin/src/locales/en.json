@@ -647,6 +647,16 @@
       "removeImage": "Remove image",
       "maxImages": "You can add up to 5 images.",
       "uploading": "Uploading images…",
+      "video": "Video (optional)",
+      "videoHint": "An MP4 file, up to 25 MB (under 10 MB is better). Users see it inside the app with the message.",
+      "videoAppVersionHint": "The video shows on the website and in new app versions (after 2.0.2). Current app versions show the poster images instead, so add an image as a fallback. In new versions the video replaces the images.",
+      "addVideo": "Add video",
+      "removeVideo": "Remove video",
+      "uploadingVideo": "Uploading video…",
+      "videoErrors": {
+        "invalidType": "The video must be an MP4 file.",
+        "tooLarge": "The video must be smaller than 25 MB."
+      },
       "previewTitle": "How it will look in the app",
       "previewHint": "Shown as a popup the first time a user opens the app, and from the bell at the top of the home screen (it keeps shaking until it is read).",
       "bodyHint": "Shown in the phone notification (about {{max}} characters fit there) and at the top of the popup. No limit.",

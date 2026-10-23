@@ -70,7 +70,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|
 | iOS App Store | 2.0.0 (builds ≤16), 2.0.1 (17); 2.0.2 (28) live since 2026-10-22 | Build **29**, not reserved. Builds 18–28 already exist; build 28 reused without rebuilding. |
 | Android | versionCode 7 | 8 (do not build yet) |
-| Supabase SQL migrations | `0001`–`0048` (`0048` = website partners, applied under the name `0045`) | **0049** |
+| Supabase SQL migrations | `0001`–`0049` (`0048` = website partners, applied under the name `0045`; `0049` = announcement video) | **0050** |
 
 ## 6. Credentials map (never commit)
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json`. Planned: `credentials/smtp-app-password.txt`.
@@ -84,6 +84,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first; append yours)
 Format: `date — who — what — where (branch/commit) — external effect — verified how`
 
+- 2026-10-23 — Claude — Announcements can carry one MP4 video: admin panel (Notifications → new notification → Video, MP4 up to 25 MB, preview, uploads to `content/announcements-video/`), migration `0049` (`video_url` column, `admin_create_broadcast_notification` gained `p_video_url`, `get_my_announcements` returns `video_url`, bucket `content` limited to 25 MB and png/jpeg/webp/mp4), app + website player `AnnouncementVideo` (expo-video, native controls, no autoplay; the video replaces the posters) — `feat/announcement-video-20261023` → `main` — production DB (dry run rolled back first, then applied and read back) and Vercel admin + web. **The iOS 2.0.2 binary (build 28) and Android build 7 cannot play it** (no OTA on build 28); they keep showing the poster images, so always add a poster image as the fallback. Videos reach the app only with the next binary (build 29). Verified: 6 new database tests on the full migration chain, admin 39 tests, root 228 tests, both typechecks, lint, admin build, web export.
 - 2026-10-22/23 — Owner + Claude — iOS 2.0.2 (build 28) approved by Apple and released by the owner at 23:28 UTC (Claude's API release call was blocked by the permission system, so the owner pressed the button in App Store Connect) — App Store, all storefronts per the app's availability — read-back: version `READY_FOR_SALE`, iTunes lookup (Israel storefront) shows 2.0.2 updated 2026-10-22T23:28:05Z; the `us` and `ps` lookups returned no listing (cause not checked).
 - 2026-10-23 — Claude — Found why the marketing website (Vercel project `dist`) returned 404 and restored it at the owner's request: `vercel promote` of the last good production deployment (`dpl_Dqfoj9oeB5dQe2gnmhfXv7xJLBYe`, Codex CLI upload from `web/marketing-local-20261021` `191a30c`); the owner then set Ignored Build Step to "Don't build anything" in the Vercel dashboard (Claude was blocked from changing it) — Vercel project `dist` only — alias `dist-mu-lilac-59.vercel.app` back to HTTP 200, rendered in a headless browser at 390 px and 1440 px (no page errors, no failed requests); API read-back shows `commandForIgnoringBuildStep: exit 0` and the production deployment unchanged. Cause: the project was linked to the GitHub repo, so every push to `main` since 2026-10-22 10:33 UTC built the whole app there with no output directory.
 
