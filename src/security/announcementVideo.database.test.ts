@@ -48,9 +48,9 @@ describe('announcement video', () => {
     const logged = (await user(admin, "select metadata from admin_audit_log where action='broadcast_notification_sent' order by created_at desc limit 20")).rows
     expect(logged.map(r => r.metadata)).toContainEqual(expect.objectContaining({ has_video: true }))
   })
-  it('caps uploads to the content bucket at 25 MB and to images plus MP4', async () => {
+  it('caps uploads to the content bucket at 25 MB and to images (GIF included) plus MP4', async () => {
     const bucket = (await db.query<{ file_size_limit: string | number; allowed_mime_types: string[] }>("select file_size_limit, allowed_mime_types from storage.buckets where id='content'")).rows[0]!
     expect(Number(bucket.file_size_limit)).toBe(25 * 1024 * 1024)
-    expect(bucket.allowed_mime_types).toEqual(['image/jpeg', 'image/png', 'image/webp', 'video/mp4'])
+    expect(bucket.allowed_mime_types).toEqual(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4'])
   })
 })

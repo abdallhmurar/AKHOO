@@ -11,7 +11,7 @@ import { DataTable, TablePagination } from '@/components/DataTable'
 import type { Column } from '@/components/DataTable'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination'
-import { ImageValidationError, VideoValidationError, uploadContentImage, uploadContentVideo, validateImageFile, validateVideoFile } from '@/lib/storage'
+import { ImageValidationError, VideoValidationError, uploadContentImage, uploadContentVideo, validatePosterFile, validateVideoFile } from '@/lib/storage'
 import type { BroadcastNotification, NotificationAudience } from '@/types'
 import { useNotifications } from './useNotifications'
 import { useDeleteAllNotifications, useDeleteNotification, useRetryNotification, useSendNotification } from './useSendNotification'
@@ -82,7 +82,7 @@ function ComposeCard() {
     const accepted: ImageDraft[] = []
     for (const file of Array.from(files).slice(0, Math.max(room, 0))) {
       try {
-        validateImageFile(file)
+        validatePosterFile(file)
         accepted.push({ id: crypto.randomUUID(), file, preview: URL.createObjectURL(file) })
       } catch (error) {
         if (error instanceof ImageValidationError) toast.error(`${file.name}: ${t(`businesses.form.imageErrors.${error.message}`)}`)
@@ -113,7 +113,7 @@ function ComposeCard() {
     try {
       if (images.length > 0) {
         setUploading('images')
-        imageUrls = await Promise.all(images.map(image => uploadContentImage(image.file, 'announcements', { optimize: true })))
+        imageUrls = await Promise.all(images.map(image => uploadContentImage(image.file, 'announcements', { optimize: true, allowAnimated: true })))
       }
       if (video) {
         setUploading('video')
@@ -208,7 +208,7 @@ function ComposeCard() {
                       <ImagePlus className="size-5" />
                       {t('notifications.compose.addImages')}
                     </Button>
-                    <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
+                    <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
                   </>
                 ) : null}
               </div>

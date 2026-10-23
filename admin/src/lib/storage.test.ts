@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('./supabase', () => ({ supabase: {} }))
 
-const { MAX_VIDEO_BYTES, VideoValidationError, validateVideoFile } = await import('./storage')
+const { ANIMATED_POSTER_TYPE, ImageValidationError, MAX_VIDEO_BYTES, VideoValidationError, validatePosterFile, validateVideoFile } = await import('./storage')
 
 const file = (type: string, size: number) => ({ type, size, name: 'clip' }) as File
 
@@ -18,5 +18,20 @@ describe('validateVideoFile', () => {
   })
   it('rejects anything over 25 MB with the tooLarge message key', () => {
     expect(() => validateVideoFile(file('video/mp4', MAX_VIDEO_BYTES + 1))).toThrow('tooLarge')
+  })
+})
+
+describe('validatePosterFile', () => {
+  it('accepts the usual images and an animated GIF up to 5 MB', () => {
+    for (const type of ['image/jpeg', 'image/png', 'image/webp', ANIMATED_POSTER_TYPE]) {
+      expect(() => validatePosterFile(file(type, 1024 * 1024))).not.toThrow()
+    }
+    expect(() => validatePosterFile(file(ANIMATED_POSTER_TYPE, 5 * 1024 * 1024))).not.toThrow()
+  })
+  it('rejects an oversized GIF and other formats', () => {
+    expect(() => validatePosterFile(file(ANIMATED_POSTER_TYPE, 5 * 1024 * 1024 + 1))).toThrow('tooLarge')
+    for (const type of ['image/bmp', 'video/mp4', 'application/pdf']) {
+      expect(() => validatePosterFile(file(type, 1024))).toThrow(ImageValidationError)
+    }
   })
 })

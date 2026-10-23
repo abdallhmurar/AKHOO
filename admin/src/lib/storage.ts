@@ -64,9 +64,25 @@ async function optimizeImage(file: File): Promise<File> {
   }
 }
 
-export async function uploadContentImage(file: File, folder: string, options: { optimize?: boolean } = {}) {
+// Announcement posters may also be an animated GIF (0050 allows it in the bucket). Every app
+// version already shows posters with the plain Image component, which plays GIFs on iOS and
+// Android, so a GIF made from a video is the one way to show motion in builds that cannot
+// play the MP4 (0049). It is uploaded untouched: re-encoding would flatten it to one frame.
+export const ANIMATED_POSTER_TYPE = 'image/gif'
+
+export function validatePosterFile(file: File) {
+  if (file.type === ANIMATED_POSTER_TYPE) {
+    if (file.size > MAX_BYTES) throw new ImageValidationError('tooLarge')
+    return
+  }
   validateImageFile(file)
-  const upload = options.optimize ? await optimizeImage(file) : file
+}
+
+export async function uploadContentImage(file: File, folder: string, options: { optimize?: boolean; allowAnimated?: boolean } = {}) {
+  const animated = options.allowAnimated === true && file.type === ANIMATED_POSTER_TYPE
+  if (animated) validatePosterFile(file)
+  else validateImageFile(file)
+  const upload = options.optimize && !animated ? await optimizeImage(file) : file
   const ext = upload.name.split('.').pop() ?? 'jpg'
   // Random suffix: several images uploaded in the same millisecond must not collide.
   const path = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`
