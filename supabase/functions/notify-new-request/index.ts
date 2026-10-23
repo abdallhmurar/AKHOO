@@ -13,6 +13,8 @@ function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   return earth * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
+const PUSH_FRESHNESS_MS = 24 * 60 * 60 * 1000
+
 const serviceLabels: Record<string, string> = {
   battery: 'بطارية',
   tire: 'بنشر',
@@ -40,16 +42,19 @@ Deno.serve(async req => {
 
   if (!request || request.status !== 'open') return new Response('ok: request not found')
 
-  // Mirrors the 20-minute staleness bound the RLS "request read relevant"
-  // policy already applies (0007_volunteer_staleness.sql) - without it a
-  // volunteer whose app was killed/uninstalled without ever toggling
-  // availability off stays "available" forever and keeps getting a push
-  // attempted against a token that will never be delivered.
+  // Who counts as reachable for a push: a volunteer whose app refreshed their availability in the last
+  // 24 hours. This used to mirror the 20-minute bound of the "request read relevant" RLS policy
+  // (0007_volunteer_staleness.sql), but a volunteer's availability and position only refresh while the
+  // app is open (Android has no background location, see src/lib/location.ts), so with 20 minutes a
+  // push could only reach someone who was already looking at the helper screen, which defeats a push.
+  // Opening the app from the notification refreshes the volunteer's heartbeat, so the request is
+  // readable again by the time they see it. Stale rows beyond a day are still skipped (uninstalled
+  // apps that never switched availability off).
   const volunteers = await readAll<{ user_id: string; latitude: number | null; longitude: number | null }>((from, to) => supabase
     .from('volunteer_profiles')
     .select('user_id, latitude, longitude')
     .eq('is_available', true)
-    .gt('updated_at', new Date(Date.now() - 20 * 60 * 1000).toISOString())
+    .gt('updated_at', new Date(Date.now() - PUSH_FRESHNESS_MS).toISOString())
     .order('user_id').range(from, to))
 
   // This function always returns 200/"ok" once it runs at all (webhook auth
@@ -63,7 +68,7 @@ Deno.serve(async req => {
     if (v.user_id === request.requester_id) return false
     return distanceKm(request.latitude, request.longitude, v.latitude, v.longitude) <= 20
   })
-  console.log(`[notify-new-request] request ${request_id}: ${candidateCount} available+tokened+fresh volunteer(s), ${nearby.length} within 20km after excluding the requester`)
+  console.log(`[notify-new-request] request ${request_id}: ${candidateCount} available volunteer(s) seen in the last 24h, ${nearby.length} within 20km after excluding the requester`)
 
   const devices = await readAll<{ token: string }>((from, to) => supabase.rpc('get_request_push_recipients', { p_user_ids: nearby.map(v => v.user_id), p_peer_id: request.requester_id }).order('token').range(from, to))
   const results = await sendPushMessages((devices ?? []).map((device: { token: string }) => ({
