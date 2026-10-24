@@ -2,7 +2,7 @@
 
 Scope authorized by the owner: Apple TestFlight only, incorporating the approved local design. No App Store release, review, listing, Android build/update, OTA, database or admin operation.
 
-Source branch: `ios/testflight-partner-home-20261024`, based on `main` at `c22b3b6`. Version 2.0.3, reserved build 30. Profile `partner-testflight` extends the existing store-signed TestFlight profile, uses the preview environment and disables OTA. The new UI is selected only by `extra.partnerHomeBeta` in this profile and only imported by the iOS home entry. Normal app configuration is preserved.
+Source branch: `ios/testflight-partner-home-20261024`, based on `main` at `c22b3b6`. Version 2.0.4, reserved build 30; a separate version from the already-approved 2.0.3. Profile `partner-testflight` extends the existing store-signed TestFlight profile, uses the preview environment and disables OTA. The new UI is selected only by `extra.partnerHomeBeta` in this profile and only imported by the iOS home entry. Normal app configuration is preserved. Initial run `40094484990` was cancelled before the build to correct the version; nothing was uploaded from it.
 
 Included:
 

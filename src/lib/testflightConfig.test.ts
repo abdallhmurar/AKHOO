@@ -24,7 +24,7 @@ describe('TestFlight release isolation', () => {
     expect(profile.extends).toBe('testflight')
     expect(config.extra.partnerHomeBeta).toBe(true)
     expect(config.ios.buildNumber).toBe('30')
-    expect(config.version).toBe('2.0.3')
+    expect(config.version).toBe('2.0.4')
     expect(config.updates.enabled).toBe(false)
     expect(config.android).toEqual(app.android)
     expect(app.extra.partnerHomeBeta).toBeUndefined()
