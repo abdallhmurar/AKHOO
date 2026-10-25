@@ -3,7 +3,7 @@
     "name": "أخوو",
     "slug": "sanad",
     "scheme": "akhoo",
-    "version": "2.0.1",
+    "version": "2.0.3",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/icon.png",

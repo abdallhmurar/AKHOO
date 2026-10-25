@@ -1,0 +1,88 @@
+name: Android release build (GitHub runner, manual)
+
+# FALLBACK for when the Expo Free plan has no cloud Android builds left. Builds the Play bundle (.aab) with
+# `eas build --local` on GitHub's own Ubuntu machine; signing keys are fetched from EAS with the EXPO_TOKEN repository
+# secret. It NEVER runs by itself: it only starts when someone presses "Run workflow" and types BUILD-ANDROID, because
+# Android is frozen until Google Play approves production access and the owner says to build (see
+# docs/android-production-release-2.0.3.md). The bundle is kept for one day as an artifact and is uploaded to Play as a
+# DRAFT release from the owner's machine. This workflow has not been run yet.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type BUILD-ANDROID to confirm that Google approved production access and the owner asked for this build'
+        required: true
+
+concurrency:
+  group: android-release-build
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: ${{ inputs.confirm == 'BUILD-ANDROID' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check that the Expo token is configured
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::The EXPO_TOKEN repository secret is missing (Settings, Secrets and variables, Actions)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: npm ci
+
+      - name: Clean up the Expo token and report its length
+        env:
+          RAW_EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          TOKEN=$(printf '%s' "$RAW_EXPO_TOKEN" | tr -d '[:space:]"')
+          echo "::add-mask::$TOKEN"
+          echo "EXPO_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+          echo "::notice title=EXPO_TOKEN length::raw ${#RAW_EXPO_TOKEN} characters, after cleaning ${#TOKEN} (a real Expo token has 40)"
+
+      - name: Check who the Expo token belongs to
+        run: npx --yes eas-cli@latest whoami
+
+      - name: Build the Android bundle
+        run: |
+          set -o pipefail
+          npx --yes eas-cli@latest build --platform android --profile production --local --non-interactive --output "$RUNNER_TEMP/akhoo.aab" 2>&1 | tee "$RUNNER_TEMP/eas-build.log"
+
+      - name: Show the end of the build log when the build failed
+        if: failure()
+        run: |
+          if [ -f "$RUNNER_TEMP/eas-build.log" ]; then
+            tail -n 40 "$RUNNER_TEMP/eas-build.log" | grep -v -i -E 'token|password|secret' | sed 's/%/%25/g; s/\r//g' > "$RUNNER_TEMP/tail.txt"
+            split -l 12 "$RUNNER_TEMP/tail.txt" "$RUNNER_TEMP/chunk_"
+            for part in "$RUNNER_TEMP"/chunk_*; do
+              echo "::error title=EAS build log::$(awk '{printf "%s%%0A", $0}' "$part")"
+            done
+          fi
+
+      - name: Show the bundle
+        run: ls -la "$RUNNER_TEMP/akhoo.aab"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akhoo-android-aab
+          path: ${{ runner.temp }}/akhoo.aab
+          retention-days: 1
+          if-no-files-found: error
