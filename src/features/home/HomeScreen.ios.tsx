@@ -16,8 +16,14 @@ import { BlendedArt } from '../../components/motion/BlendedArt.ios'
 import { RewardsGift } from './RewardsGift.ios'
 import { motionImages } from '../../components/motion/media.ios'
 import { homeCopy } from './homeCopy.ios'
+import Constants from 'expo-constants'
+import { PartnerHomeScreen } from './PartnerHomeScreen.ios'
 
 export function HomeScreen() {
+  return Constants.expoConfig?.extra?.partnerHomeBeta === true ? <PartnerHomeScreen /> : <ExistingHomeScreen />
+}
+
+function ExistingHomeScreen() {
   const theme = useSanadTheme(), type = useAppTypography(), isRTL = useIsRTL()
   const { t, i18n } = useTranslation()
   const copy = homeCopy[normalizeTypographyLanguage(i18n.language)]

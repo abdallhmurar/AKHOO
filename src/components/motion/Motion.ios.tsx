@@ -19,12 +19,14 @@ function dimension(value: unknown): number | `${number}%` | undefined {
   return typeof value === 'number' ? value : typeof value === 'string' && /^\d+(\.\d+)?%$/.test(value) ? value as `${number}%` : undefined
 }
 
-export function MotionScene(props: MotionSceneProps) {
+type NativeMotionProps = MotionSceneProps & { paused?: boolean }
+
+export function MotionScene(props: NativeMotionProps) {
   const media = motionMedia[props.name]
   return media ? <Scene key={props.name} {...props} media={media} /> : null
 }
 
-function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps & { media: { video: number; poster: number } }) {
+function Scene({ media, name, style, fit = 'cover', children, paused = false }: NativeMotionProps & { media: { video: number; poster: number } }) {
   const theme = useSanadTheme()
   const ref = useRef<View>(null)
   const { height: viewportHeight, width: viewportWidth } = useWindowDimensions()
@@ -66,13 +68,13 @@ function Scene({ media, name, style, fit = 'cover', children }: MotionSceneProps
     const timer = setInterval(measure, 500)
     return () => { mounted = false; clearInterval(timer) }
   }, [focused, active, reduced, viewportHeight, viewportWidth])
-  useVideoPlayback(player, focused && active && visible && loaded && !reduced && !failed && !guide?.blocking)
+  useVideoPlayback(player, focused && active && visible && loaded && !reduced && !failed && !guide?.blocking && !paused)
   const frame: ViewStyle = {
     width: dimension(style?.width) ?? '100%', height: dimension(style?.height),
     aspectRatio: style?.height ? undefined : typeof style?.aspectRatio === 'number' ? style.aspectRatio : 1.5,
     borderRadius: typeof style?.borderRadius === 'number' ? style.borderRadius : 20,
   }
-  const artwork = mediaFrame(size.width, size.height, name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'helper-home' ? 'left' : 'center')
+  const artwork = mediaFrame(size.width, size.height, name === 'partner-home' ? 1648 / 544 : name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'helper-home' ? 'left' : 'center')
   const content = <>
     {!failed && !reduced ? <VideoView player={player} style={styles.fill} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
     {!ready || failed || reduced ? <Image source={media.poster} style={styles.fill} resizeMode="cover" /> : null}

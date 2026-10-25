@@ -1,4 +1,5 @@
 {
+  "git": { "deploymentEnabled": { "ios/testflight-partner-home-20261024": false } },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

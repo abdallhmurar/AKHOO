@@ -17,6 +17,7 @@ module.exports = () => {
     // The beta binary is self-contained: no production OTA update can reach it,
     // and preparing this build never changes the production update channel.
     updates: { ...base.expo.updates, enabled: false },
+    extra: { ...base.expo.extra, partnerHomeBeta: process.env.AKHOO_PARTNER_HOME_BETA === '1' },
     runtimeVersion: `${process.env.AKHOO_IOS_VERSION || base.expo.version}-testflight`
   } : base.expo
   const baseUrl = process.env.EXPO_WEB_BASE_PATH
