@@ -1,0 +1,240 @@
+body[data-experience=journey] {
+  --blue:#1768e5;
+  --teal:#087f83;
+  --navy:#0b1f33;
+  --ice:#f2fbff;
+  --muted:#52657a;
+  --brand-gradient:linear-gradient(
+
+      115deg,#1768e5,#087f83);
+}
+body[data-experience=journey] .header {
+  background: #f8fcffed;
+}
+body[data-experience=journey] .header .nav {
+  background:
+    linear-gradient(
+      110deg,
+      #e7f0ff,
+      #e7f8f6);
+  border-color: #d5e8f1;
+}
+body[data-experience=journey] .nav a.nav-current {
+  background: #fff;
+  color: #1768e5;
+}
+body[data-experience=journey] .hero {
+  background:
+    radial-gradient(
+      ellipse at 18% 38%,
+      #d8efff,
+      transparent 55%),
+    linear-gradient(
+      115deg,
+      #f2fbff,
+      #f2fbff 50%,
+      #eafbf7);
+}
+body[data-experience=journey] .hero h1 span {
+  color: #1768e5;
+  background: var(--brand-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.journey-eyebrow {
+  color: #087f83;
+}
+body[data-experience=journey] .hero-description {
+  color: #435d73;
+}
+body[data-experience=journey] .hero .button,
+.header-download {
+  background: var(--brand-gradient);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 20px #1768e525, inset 0 1px 0 #ffffff40;
+}
+body[data-experience=journey] .hero .button:hover {
+  background:
+    linear-gradient(
+      115deg,
+      #1157c4,
+      #076f73);
+}
+body[data-experience=journey] .hero .text-link {
+  color: #1768e5;
+}
+body[data-experience=journey] .route-section {
+  background:
+    linear-gradient(
+      #f7fcff,
+      #edf6fc 55%,
+      #f7fcff);
+  color: #0b1f33;
+  border-top: 1px solid #dfedf5;
+  border-bottom: 1px solid #dfedf5;
+}
+.route-intro .eyebrow {
+  color: #087f83;
+}
+body[data-experience=journey] .community {
+  background:
+    linear-gradient(
+      120deg,
+      #e3f3ee,
+      #e9f9fc);
+  border: 1px solid #c9e9e5;
+}
+body[data-experience=journey] .partners {
+  background:
+    linear-gradient(
+      120deg,
+      #f2fbff,
+      #f6faff);
+}
+body[data-experience=journey] .download-panel {
+  background: var(--brand-gradient);
+}
+.download-art:after {
+  background:
+    linear-gradient(
+      90deg,
+      #087f83,
+      transparent 40%);
+}
+html[dir=rtl] .download-art:after {
+  background:
+    linear-gradient(
+      270deg,
+      #087f83,
+      transparent 40%);
+}
+body[data-experience=journey] .download-copy .eyebrow,
+body[data-experience=journey] .download-copy p {
+  color: #e8f8ff;
+}
+body[data-experience=journey] .download-copy .store-button {
+  background: #fff;
+  color: #1768e5;
+}
+.stage-float {
+  position: relative;
+  animation: brand-float 7s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.motion-active .stage-float {
+  animation-play-state: running;
+}
+.map-trip {
+  animation: benefit-route 3s linear infinite;
+  animation-play-state: paused;
+}
+.chat-typing i {
+  animation: benefit-typing 1.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.chat-typing i:nth-child(2) {
+  animation-delay: .18s;
+}
+.chat-typing i:nth-child(3) {
+  animation-delay: .36s;
+}
+.status-current .status-dot i {
+  animation: benefit-status 2.5s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.benefit-pin {
+  animation: benefit-pin-lift 4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.route-section.motion-active .map-trip,
+.route-section.motion-active .chat-typing i,
+.route-section.motion-active .status-current .status-dot i,
+.route-section.motion-active .benefit-pin {
+  animation-play-state: running;
+}
+@keyframes benefit-pin-lift {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+@keyframes benefit-route {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes benefit-typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: .6;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+@keyframes benefit-status {
+  0%, 100% {
+    box-shadow: 0 0 0 3px #1768e51a;
+  }
+  50% {
+    box-shadow: 0 0 0 6px #1768e505;
+  }
+}
+@keyframes brand-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .button svg,
+  .journey-try svg {
+    transition: translate .22s;
+  }
+  .button:hover svg,
+  .journey-try:hover svg {
+    translate: 4px 0;
+  }
+  html[dir=rtl] .button:hover svg,
+  html[dir=rtl] .journey-try:hover svg {
+    translate: -4px 0;
+  }
+  .scenario-options button .story-icon {
+    transition: transform .25s;
+  }
+  .scenario-options button:hover .story-icon {
+    transform: translateY(-2px);
+  }
+  .rewards-story .cropped-art {
+    transition: translate .45s ease;
+  }
+  .rewards-story:hover .cropped-art {
+    translate: 0 -4px;
+  }
+}
+@media (max-width: 650px) {
+  .download-art:after,
+  html[dir=rtl] .download-art:after {
+    background: linear-gradient(#087f83, transparent 35%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-float,
+  .map-trip,
+  .chat-typing i,
+  .status-current .status-dot i,
+  .benefit-pin {
+    animation: none !important;
+  }
+  .journey-stage,
+  .button svg,
+  .journey-try svg,
+  .scenario-options button,
+  .scenario-options button .story-icon,
+  .rewards-story .cropped-art {
+    transition: none !important;
+  }
+}
