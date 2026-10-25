@@ -24,7 +24,10 @@ module.exports = defineConfig([
       'previews/home-motion/assets/perks/vendor/**',
       // Separate web-only admin project with its own toolchain/eslint
       // config - not part of the Expo app, not meant to be picked up here.
-      'admin/**'
+      'admin/**',
+      // The marketing website is plain browser/Node files with its own toolchain (website/package.json),
+      // not part of the Expo app.
+      'website/**'
     ]
   },
   expoConfig,
