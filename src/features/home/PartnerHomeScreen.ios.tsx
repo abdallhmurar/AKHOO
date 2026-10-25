@@ -54,18 +54,19 @@ export function PartnerHomeScreen() {
       </Pressable> : null}
 
       <GuideTarget id="home.request" style={styles.grow}>
-        <View style={[styles.helpCard, styles.grow]}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${home.requestTitle}. ${home.requestAction}`} onPress={request} style={({ pressed }) => [styles.helpCard, styles.grow, pressed && styles.pressed]}>
+          <LinearGradient pointerEvents="none" colors={['#ff504b', '#b20d4c', '#970d43']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
           {!layout.minimal ? <>
-            <View style={StyleSheet.absoluteFill}><MotionScene name="help" fit={layout.compact ? 'contain' : 'cover'} paused={partnerOpen} style={{ height: '100%', borderRadius: 22 }} /></View>
-            <LinearGradient pointerEvents="none" colors={['#187bfa00', '#187bfaf5']} start={{ x: .35, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
-            <View style={styles.helpCopy}><Text maxFontSizeMultiplier={1.25} style={[type.h2, styles.white, { textAlign, fontSize: layout.compact ? 17 : 20 }]}>{home.requestTitle}</Text>
+            <View pointerEvents="none" style={styles.requestArt}><MotionScene name="help-rose" fit="contain" paused={partnerOpen} style={{ height: '100%', borderRadius: 0 }} /></View>
+            <LinearGradient pointerEvents="none" colors={['#a90e4800', '#a90e48e6', '#9d1048']} locations={[0, .62, 1]} start={{ x: .5, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+            <View pointerEvents="none" style={styles.requestCopy}><Text maxFontSizeMultiplier={1.25} style={[type.h2, styles.white, { textAlign, fontSize: layout.compact ? 17 : 20 }]}>{home.requestTitle}</Text>
               {!layout.compact ? <Text maxFontSizeMultiplier={1.2} style={[type.small, styles.white, { textAlign }]}>{home.requestText}</Text> : null}
             </View>
           </> : null}
-          <Pressable accessibilityRole="button" onPress={request} style={({ pressed }) => [styles.action, styles.whiteAction, layout.minimal && styles.minimalAction, pressed && styles.pressed]}>
-            <Text maxFontSizeMultiplier={1.4} style={[type.button, { color: '#0065ee', textAlign: 'center' }]}>{home.requestAction}</Text>
-          </Pressable>
-        </View>
+          <View pointerEvents="none" style={[styles.action, !layout.minimal && styles.whiteAction, layout.minimal && styles.minimalAction]}>
+            <Text maxFontSizeMultiplier={1.4} style={[type.button, { color: layout.minimal ? '#fff' : '#a20c43', textAlign: 'center' }]}>{home.requestAction}</Text>
+          </View>
+        </Pressable>
       </GuideTarget>
 
       <GuideTarget id="home.help" style={styles.grow}>
@@ -114,7 +115,9 @@ const styles = StyleSheet.create({
   bell: { position: 'absolute', left: 8, top: 8 },
   join: { minHeight: 44, backgroundColor: '#fff', borderRadius: 22, paddingHorizontal: 5, justifyContent: 'center' },
   resume: { borderRadius: 16, paddingHorizontal: 12, justifyContent: 'center', borderWidth: 1 },
-  helpCard: { overflow: 'hidden', borderRadius: 22, backgroundColor: '#187bfa' },
+  helpCard: { overflow: 'hidden', borderRadius: 22, backgroundColor: '#a90e48' },
+  requestArt: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 48 },
+  requestCopy: { marginLeft: '55%', marginRight: 14, flex: 1, justifyContent: 'center', gap: 5, paddingTop: 6, paddingBottom: 58 },
   helpCopy: { marginLeft: '51%', marginRight: 12, flex: 1, justifyContent: 'center', gap: 4, paddingTop: 4, paddingBottom: 52 },
   action: { position: 'absolute', bottom: 10, left: 10, right: 10, borderRadius: 15, minHeight: 44, paddingVertical: 4, justifyContent: 'center' },
   whiteAction: { backgroundColor: '#fff' }, greenAction: { backgroundColor: '#087c69' },

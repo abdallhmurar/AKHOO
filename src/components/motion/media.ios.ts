@@ -1,5 +1,6 @@
 // The same approved artwork as the web app, bundled for offline iOS playback.
 export const motionMedia: Record<string, { video: number; poster: number }> = {
+  'help-rose': { video: require('../../../assets/help-rose/help-rose-loop.mp4'), poster: require('../../../assets/help-rose/help-rose-poster.jpg') },
   'partner-home': { video: require('../../../assets/partner-home/partner-approved-loop.mp4'), poster: require('../../../assets/partner-home/partner-approved-plate.png') },
   'help': { video: require('../../../previews/home-motion/assets/help-3d.mp4'), poster: require('../../../previews/home-motion/assets/help-3d-poster.png') },
   'helper-home': { video: require('../../../previews/home-motion/assets/helper-3d.mp4'), poster: require('../../../previews/home-motion/assets/helper-3d-poster.png') },

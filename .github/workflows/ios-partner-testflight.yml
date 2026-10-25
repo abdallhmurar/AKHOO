@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ios-partner-testflight-30
+  group: ios-partner-testflight-31
   cancel-in-progress: false
 permissions:
   contents: read
@@ -52,10 +52,10 @@ jobs:
           echo "::add-mask::$TOKEN"
           echo "EXPO_TOKEN=$TOKEN" >> "$GITHUB_ENV"
       - name: Build signed iOS beta with OTA disabled
-        run: npx --yes eas-cli@25.3.0 build --platform ios --profile partner-testflight --local --non-interactive --output "$RUNNER_TEMP/akhoo-testflight-30.ipa"
+        run: npx --yes eas-cli@25.3.0 build --platform ios --profile partner-testflight --local --non-interactive --output "$RUNNER_TEMP/akhoo-testflight-31.ipa"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: akhoo-testflight-30-ipa
-          path: ${{ runner.temp }}/akhoo-testflight-30.ipa
+          name: akhoo-testflight-31-ipa
+          path: ${{ runner.temp }}/akhoo-testflight-31.ipa
           retention-days: 1
           if-no-files-found: error
