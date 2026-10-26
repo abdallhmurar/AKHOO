@@ -645,6 +645,8 @@
     "pointsCard": {
       "balanceLabel": "יתרת הנקודות שלך",
       "levelLabel": "הדרגה הנוכחית שלך",
+      "topLevel": "הגעת לדרגה הגבוהה ביותר!",
+      "totalHelps": "עזרת {{count}} פעמים",
       "remainingToLevel": "עוד {{remaining}} עזרות ל-{{levelName}}"
     },
     "weeklyOffers": {

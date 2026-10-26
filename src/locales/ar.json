@@ -645,6 +645,8 @@
     "pointsCard": {
       "balanceLabel": "رصيدك من النقاط",
       "levelLabel": "مستواك الحالي",
+      "topLevel": "وصلت لأعلى مستوى، يا أخوو!",
+      "totalHelps": "قدّمت {{count}} مساعدة",
       "remainingToLevel": "باقي {{remaining}} مساعدة للوصول إلى {{levelName}}"
     },
     "weeklyOffers": {

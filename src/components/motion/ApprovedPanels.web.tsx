@@ -1,21 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { HelperMedal } from '../HelperMedal'
 import { ArtIcon } from './Motion'
 import { useIsRTL } from '../../lib/direction'
-import type { IdentityProps, PointsPanelProps } from './ApprovedPanels.types'
+import type { IdentityProps } from './ApprovedPanels.types'
 import './approved-perks.css'
 import './approved-account.css'
 
-export function PointsPanel({ balance, count, target, level, levelLabel, remainingLabel }: PointsPanelProps) {
-  const { t } = useTranslation()
-  return <div className="approved-perks"><section className="points-card">
-    <div className="balance-top"><div><h2>{t('perks.pointsCard.balanceLabel')}</h2><p className="balance"><bdi>{balance}</bdi><span>{t('perks.pointsUnit')}</span></p></div><HelperMedal level={level} size={96} /></div>
-    <div className="level-copy"><h3>{levelLabel}<span>{t('perks.pointsCard.levelLabel')}</span></h3><p>{remainingLabel}</p>
-      <div className="level-progress" role="progressbar" aria-label={t('perks.pointsCard.levelLabel')} aria-valuemin={0} aria-valuemax={target} aria-valuenow={Math.min(count, target)}><span style={{ width: `${Math.min(count / target, 1) * 100}%` }} /></div>
-      <div className="progress-caption"><span>{t('perks.helpProgress', { count, target })}</span></div>
-    </div>
-  </section></div>
-}
+export { LivePointsCard as PointsPanel } from './LivePointsCard'
 export function AccountIdentity({ name, email, avatar, busy, onPhoto, onEdit }: IdentityProps) {
   const { t } = useTranslation()
   const isRTL = useIsRTL()

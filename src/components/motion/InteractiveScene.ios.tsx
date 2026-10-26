@@ -11,7 +11,7 @@ import { isLocalSceneNavigation, isSceneMessage, sceneCommand, type NativeSceneS
 const SCENE_SOURCE = { html: sceneHtml }
 
 type Props = {
-  kind: 'gift' | 'medal'
+  kind: 'gift' | 'medal' | 'rewardMedal'
   width: number
   height: number
   label: string

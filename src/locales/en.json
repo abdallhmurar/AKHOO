@@ -645,6 +645,8 @@
     "pointsCard": {
       "balanceLabel": "Your points balance",
       "levelLabel": "Your current level",
+      "topLevel": "You've reached the highest level!",
+      "totalHelps": "{{count}} helps completed",
       "remainingToLevel": "{{remaining}} more helps to reach {{levelName}}"
     },
     "weeklyOffers": {

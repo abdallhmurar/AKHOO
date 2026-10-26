@@ -1,5 +1,5 @@
 export type NativeSceneState = {
-  kind: 'gift' | 'medal'
+  kind: 'gift' | 'medal' | 'rewardMedal'
   active: boolean
   reduced: boolean
   idle: boolean

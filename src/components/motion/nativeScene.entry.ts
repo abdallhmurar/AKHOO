@@ -9,7 +9,7 @@ declare global {
   }
 }
 let canvas = document.querySelector<HTMLCanvasElement>('canvas')!
-let scene: ReturnType<typeof createMedalScene> | null = null
+let scene: Pick<ReturnType<typeof createMedalScene>, 'resize' | 'setEnabled' | 'celebrate' | 'dispose'> | null = null
 let state: NativeSceneState | null = null
 let failed = false
 const post = (value: string) => window.ReactNativeWebView?.postMessage(value)
@@ -30,7 +30,7 @@ window.akhooScene = {
           replacement.setAttribute('aria-hidden', 'true')
           canvas.replaceWith(replacement); canvas = replacement
         }
-        scene = next.kind === 'gift' ? createRewardsGift(canvas, unavailable, () => {}, { idle: next.idle }) : createMedalScene(canvas, next.metal, unavailable)
+        scene = next.kind === 'gift' ? createRewardsGift(canvas, unavailable, () => {}, { idle: next.idle }) : createMedalScene(canvas, next.metal, unavailable, { hero: next.kind === 'rewardMedal' })
         resize(); post('ready')
       }
       sync()

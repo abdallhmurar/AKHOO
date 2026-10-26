@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "node scripts/sync-native-scenes.cjs",
     "native:scenes": "node scripts/sync-native-scenes.cjs",
+    "preview:rewards": "node scripts/preview-rewards.cjs",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
