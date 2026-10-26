@@ -77,7 +77,7 @@
       "android": {
         "serviceAccountKeyPath": "./credentials/android/ahkoo-507219-f9a58ea16565.json",
         "track": "production",
-        "releaseStatus": "draft"
+        "releaseStatus": "completed"
       }
     }
   }

@@ -5,12 +5,13 @@ const require = createRequire(import.meta.url)
 const app = require('../../app.json').expo
 const eas = require('../../eas.json')
 
-// The first Android production release must not ask for background location (that needs Google's declaration), must go
-// to Play as a draft, and must not be mistaken for the iOS versions.
+// The first Android production release must not ask for background location (that needs Google's declaration), is sent
+// to the Production track as a completed release (the owner asked for it to be published on 2026-10-27), and must not be
+// mistaken for the iOS versions.
 describe('Android 2.0.3 production release settings', () => {
-  it('uses version name 2.0.3 and keeps the last uploaded versionCode for autoIncrement to raise', () => {
+  it('uses version name 2.0.3 and the versionCode of the EAS build that was published (8)', () => {
     expect(app.version).toBe('2.0.3')
-    expect(app.android.versionCode).toBe(7)
+    expect(app.android.versionCode).toBe(8)
     expect(eas.build.production.autoIncrement).toBe(true)
   })
 
@@ -26,9 +27,9 @@ describe('Android 2.0.3 production release settings', () => {
     expect(location.isAndroidForegroundServiceEnabled).toBe(false)
   })
 
-  it('only ever uploads the production track as a draft', () => {
+  it('sends the production release as completed and keeps the old profile on the internal track', () => {
     expect(eas.submit['android-production'].android.track).toBe('production')
-    expect(eas.submit['android-production'].android.releaseStatus).toBe('draft')
+    expect(eas.submit['android-production'].android.releaseStatus).toBe('completed')
     expect(eas.submit.production.android.track).toBe('internal')
   })
 })
