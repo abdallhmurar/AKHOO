@@ -74,14 +74,14 @@ function Scene({ media, name, style, fit = 'cover', children, paused = false }: 
     aspectRatio: style?.height ? undefined : typeof style?.aspectRatio === 'number' ? style.aspectRatio : 1.5,
     borderRadius: typeof style?.borderRadius === 'number' ? style.borderRadius : 20,
   }
-  const artwork = mediaFrame(size.width, size.height, name === 'partner-home' ? 1648 / 544 : name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'helper-home' ? 'left' : 'center')
+  const artwork = mediaFrame(size.width, size.height, name === 'partner-home' ? 1648 / 544 : name === 'help-rose' ? 2 : name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'help-rose' || name === 'helper-home' ? 'left' : 'center')
   const content = <>
     {!failed && !reduced ? <VideoView player={player} style={styles.fill} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
     {!ready || failed || reduced ? <Image source={media.poster} style={styles.fill} resizeMode="cover" /> : null}
   </>
   return <View ref={ref} collapsable={false} style={[styles.scene, frame]} onLayout={event => setSize(event.nativeEvent.layout)}>
     <View pointerEvents="none" accessible={false} accessibilityElementsHidden style={[styles.artwork, artwork, theme.isDark && { opacity: name === 'perks' ? 0.62 : 0.72 }]}>
-      {fit === 'contain' && name !== 'perks' ? <BlendedArt edge="soft">{content}</BlendedArt> : content}
+      {fit === 'contain' && name !== 'perks' ? <BlendedArt edge={name === 'help-rose' ? 'right' : 'soft'}>{content}</BlendedArt> : content}
     </View>
     {children}
   </View>

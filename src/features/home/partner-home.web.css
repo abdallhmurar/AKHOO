@@ -1,0 +1,85 @@
+/* Partner / home layout of the iPhone TestFlight build 2.0.4 (31), for the web app. It lives inside .akh-home (home.web.css),
+   which supplies the colours, the font variables and the helper card styles reused below. Physical left/right on purpose:
+   art on the left, copy on the right, in every language. */
+.akh-ph{direction:ltr;display:flex;flex-direction:column;gap:10px;padding:4px 8px 2px}
+.akh-ph button{font-family:var(--akh-bold);font-weight:700}
+.akh-ph-banner{position:relative;display:flex;overflow:hidden;border-radius:22px;background:#0055b8;aspect-ratio:1648/544;min-height:156px;color:#fff}
+.akh-ph-banner-art{position:absolute;inset:0}
+.akh-ph-banner-art .akh-home-video{object-position:center center}
+.akh-ph-bell{position:absolute;left:8px;top:8px;z-index:2}
+.akh-ph-banner-copy{position:relative;z-index:1;width:47%;margin-left:auto;padding:8px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.akh-ph-brand{font-size:10px;line-height:15px}
+.akh-ph-banner-copy h2{font-family:var(--akh-extra);font-size:18px;line-height:26px;white-space:pre-line}
+.akh-ph-banner-copy p{font-size:10px;line-height:15px}
+.akh-ph-join{margin-top:6px;min-height:44px;border:0;border-radius:22px;background:#fff;color:#0056c9;font-size:12px;line-height:17px;padding:0 6px;cursor:pointer;touch-action:manipulation;outline-offset:3px}
+.akh-ph-join:focus-visible,.akh-ph-help:focus-visible,.akh-ph-ticket:focus-visible{outline:3px solid #d99b22}
+.akh-ph-help{position:relative;display:block;width:100%;min-height:196px;padding:0;border:0;border-radius:22px;overflow:hidden;color:#fff;background:linear-gradient(135deg,#ff504b,#b20d4c,#970d43);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left}
+.akh-ph-help:active{opacity:.9}
+.akh-ph-help-art{position:absolute;inset:0 0 54px;display:block;pointer-events:none}
+.akh-ph-help-art .akh-home-video{object-fit:contain;object-position:left center}
+.akh-ph-help:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#a90e4800,#a90e48e6 62%,#9d1048);pointer-events:none}
+.akh-ph-help-copy{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:5px;margin-left:55%;margin-right:14px;min-height:142px;padding:6px 0 4px}
+.akh-ph-help-title{font-family:var(--akh-extra);font-size:20px;line-height:1.4}
+.akh-ph-help-text{font-family:var(--akh-font);font-weight:400;font-size:12px;line-height:1.6}
+.akh-ph-help-action{position:absolute;z-index:1;left:10px;right:10px;bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:15px;background:#fff;color:#a20c43;font-size:14px}
+.akh-ph .akh-home-helper{min-height:176px}
+.akh-ph-ticket{position:relative;display:flex;align-items:center;gap:7px;width:100%;min-height:78px;padding:0 0 0 12px;border:0;border-radius:20px;overflow:hidden;color:#fff;background:linear-gradient(to top right,#064ca9,#0c7fff);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.akh-ph-ticket[dir=rtl]{padding:0 12px 0 0}
+.akh-ph-ticket:active{opacity:.9}
+.akh-ph-coupons{position:relative;flex:0 0 48px;width:48px;height:46px}
+.akh-ph-coupon{position:absolute;left:8px;top:3px;display:grid;place-items:center;width:32px;height:40px;border-radius:7px;background:#fff;color:#1372e8;font-size:23px;font-weight:800;transform:rotate(-12deg);box-shadow:0 3px 4px #002c7240}
+.akh-ph-coupon-back{background:#38dacb;transform:rotate(15deg) translateX(7px);top:0}
+.akh-ph-ticket-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:start}
+.akh-ph-ticket-title{font-family:var(--akh-bold);font-size:14px;line-height:1.5}
+.akh-ph-ticket-text{font-family:var(--akh-font);font-weight:400;font-size:11px;line-height:1.5;color:#d7eeff}
+.akh-ph-stub{align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;width:62px;padding:0 5px;border-inline-start:1px dashed #77b8f8;font-size:11px;line-height:1.4;text-align:center}
+.akh-ph-stub-arrow{font-size:22px;line-height:25px}
+.akh-home[data-dark=true] .akh-ph-banner .akh-home-video{opacity:1}
+.akh-home[data-dark=true] .akh-ph-help .akh-home-video{opacity:1}
+
+/* Partner application preview (full-screen dialog, portaled to <body>, so it carries its own fonts and colours). */
+.akh-pe{position:fixed;inset:0;z-index:2147483000;overflow-y:auto;overscroll-behavior:contain;background:var(--ph-bg);color:var(--ph-ink);font-family:var(--akh-font)}
+.akh-pe *{box-sizing:border-box}
+.akh-pe h1,.akh-pe h2,.akh-pe p{margin:0;letter-spacing:normal}
+.akh-pe h1{font-family:var(--akh-extra);font-size:26px;line-height:1.4}
+.akh-pe h2{font-family:var(--akh-bold);font-size:18px;line-height:1.5}
+.akh-pe button{font-family:var(--akh-bold);font-weight:700;cursor:pointer;touch-action:manipulation}
+.akh-pe-header{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--ph-bg);border-bottom:1px solid var(--ph-border)}
+.akh-pe-header strong{font-family:var(--akh-bold);font-size:18px}
+.akh-pe-back{width:44px;height:44px;border-radius:22px;border:1px solid var(--ph-border);background:var(--ph-surface);color:var(--ph-ink);font-size:22px}
+.akh-pe-body{display:flex;flex-direction:column;gap:20px;width:100%;max-width:560px;margin:0 auto;padding:16px 16px 40px}
+.akh-pe-hero{border-radius:20px;overflow:hidden;background:#0759ad}
+.akh-pe-hero img{display:block;width:100%;height:auto}
+.akh-pe-copy{display:flex;flex-direction:column;gap:7px}
+.akh-pe-intro,.akh-pe-label{font-size:13px;color:var(--ph-accent)}
+.akh-pe-copy p,.akh-pe-notice,.akh-pe-question p{font-size:15px;line-height:1.7;color:var(--ph-muted)}
+.akh-pe-panel{display:flex;flex-direction:column;gap:12px;padding:18px;border:1px solid var(--ph-border);border-radius:22px;background:var(--ph-surface)}
+.akh-pe-question{border-top:1px solid var(--ph-border)}
+.akh-pe-question button{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:48px;padding:8px 0;border:0;background:transparent;color:var(--ph-ink);font-size:16px;text-align:start}
+.akh-pe-question p{padding-bottom:12px}
+.akh-pe-steps{display:flex;justify-content:space-evenly;flex-wrap:wrap;gap:12px;font-size:14px}
+.akh-pe-steps strong{color:#146cf0}.akh-pe-steps span{color:var(--ph-muted)}
+.akh-pe-field{display:flex;flex-direction:column;gap:6px}
+.akh-pe-field label,.akh-pe-fieldlabel{font-family:var(--akh-bold);font-size:14px;color:var(--ph-ink)}
+.akh-pe-field input,.akh-pe-field textarea{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--ph-border);border-radius:12px;background:var(--ph-surface);color:var(--ph-ink);font-family:var(--akh-font);font-size:16px;line-height:1.5}
+.akh-pe-field textarea{min-height:100px;resize:vertical}
+.akh-pe-field input[aria-invalid=true]{border-color:#c33e3e}
+.akh-pe-field input:focus-visible,.akh-pe-field textarea:focus-visible,.akh-pe button:focus-visible{outline:3px solid #d99b22;outline-offset:2px}
+.akh-pe-error{font-size:13px;color:#e05a5a}
+.akh-pe-count{font-size:12px;color:var(--ph-muted)}
+.akh-pe-chips{display:flex;flex-wrap:wrap;gap:8px}
+.akh-pe-chips button{min-height:44px;padding:10px 12px;border:1px solid var(--ph-border);border-radius:12px;background:var(--ph-surface);color:var(--ph-ink);font-size:14px}
+.akh-pe-chips button[data-on=true]{border-color:#1671ee;background:#e7f2ff;color:#064fae}
+.akh-pe-primary,.akh-pe-secondary{min-height:50px;padding:12px;border-radius:15px;font-size:16px}
+.akh-pe-primary{border:0;background:#146cf0;color:#fff}
+.akh-pe-secondary{border:1px solid var(--ph-border);background:var(--ph-surface);color:var(--ph-ink)}
+.akh-pe-row{display:flex;flex-direction:column;gap:5px;padding-bottom:12px;border-bottom:1px solid var(--ph-border)}
+.akh-pe-row span{font-size:13px;color:var(--ph-muted)}.akh-pe-row strong{font-family:var(--akh-bold);font-size:16px;overflow-wrap:anywhere}
+.akh-pe-check{color:#087c69;font-size:40px;text-align:center}
+@media(prefers-reduced-motion:reduce){.akh-ph-help:active,.akh-ph-ticket:active{opacity:1}}
+.akh-ph .akh-home-resume{padding:0}
+/* Narrow phones drop the banner's second line (the iPhone app does the same on compact screens) and give the help card
+   room for its copy; wide screens get a taller banner so all the copy fits. */
+@container (max-width:420px){.akh-ph-banner-copy p{display:none}}
+@container (min-width:421px){.akh-ph-banner{min-height:176px}}
+@container (max-width:340px){.akh-ph-help{min-height:236px}.akh-ph-help-title{font-size:18px}.akh-ph-help-copy{min-height:178px}}
