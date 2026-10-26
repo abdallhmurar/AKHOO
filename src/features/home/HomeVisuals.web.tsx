@@ -27,7 +27,7 @@ type Copy = typeof homeWebCopy[keyof typeof homeWebCopy]
 
 // Decorative videos never handle input. Pause when hidden, offscreen, unfocused,
 // or covered by the usage guide, and respect changes to reduced-motion settings.
-function MotionVideo({ src, poster, active }: { src: string; poster: string; active: boolean }) {
+export function MotionVideo({ src, poster, active }: { src: string; poster: string; active: boolean }) {
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     const video = ref.current
@@ -59,7 +59,7 @@ function MotionVideo({ src, poster, active }: { src: string; poster: string; act
   return <video ref={ref} className="akh-home-video" src={src} poster={poster} muted loop playsInline preload="metadata" disablePictureInPicture tabIndex={-1} aria-hidden />
 }
 
-function Arrow() {
+export function Arrow() {
   return <svg className="akh-home-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
 }
 
