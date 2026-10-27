@@ -5,11 +5,11 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
-- **آيفون:** 2.0.3 حي عند الناس. 2.0.4 (التصميم الجديد: بانر الشركاء وكرت المساعدة الوردي) بمراجعة Apple من 27/10. أول ما توافق، Claude بينزّلها (إذنك الدائم من 27/10). إذا ما كان Claude شغّال، قول له "انزّلها".
+- **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 (رقم 8) أرسلتها لمراجعة Google لإسرائيل بتاريخ 27/10. لسا ما ظهرت على Play.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** Apple (2.0.4) وGoogle (أندرويد 2.0.3).
+- **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -40,8 +40,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
-- **2.0.4 (31): WAITING_FOR_REVIEW** since 2026-10-27, `releaseType: MANUAL`. Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, submission `cacd940f-c883-409a-9766-95d052145596`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary). It has the partner banner, rose help card and rewards ticket. The partner form is a labelled test that sends nothing, and the review notes say so. Store screenshots are still the 2.0.3 ones.
-- **2.0.3 (29): LIVE** since 2026-10-27 (video player in announcements, notification events and sounds). 2.0.2 (28) is the previous live version.
+- **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
+- 2.0.3 (29) and 2.0.2 (28) are the previous live versions; users update normally.
 - Users still on 2.0.1 (build 17) get iOS OTAs (channel `production`, runtime 2.0.1) from `ota/ios-2.0.1-translations`. **Builds 28 and later have OTA disabled** (built with the `testflight` profile), so only a new App Store version can change their screens.
 - TestFlight: latest 2.0.4 (31) in the internal group "Test"; TestFlight binaries never receive OTAs.
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
@@ -82,7 +82,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29, live), 2.0.4 (30 beta, 31 in review) | build **32** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, production) | **9** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
@@ -95,6 +95,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-27 — Claude — iOS 2.0.4 (31) approved by Apple and released through the API (`READY_FOR_SALE`) under the owner's standing OK. The release is public. Not verified: the public store page and an update on a real phone.
 
 - 2026-10-27 — Claude — Restructured this file (status board, shorter rules, claim table, trimmed log); the full old text is in `docs/archive/`. No external effect.
 - 2026-10-27 — Claude — iOS 2.0.4 (31) submitted to App Review (manual release, listing copied from 2.0.3, notes say the partner form is a test). The owner gave a standing OK to release it as soon as Apple approves. Verified: API read-back `WAITING_FOR_REVIEW`.
