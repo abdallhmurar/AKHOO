@@ -117,7 +117,9 @@ Visually inspected: legible Arabic, varied tile heights, one selected-tile callo
 
 Proposed interaction: a tile settles into place after confirmed progress, with restrained touch rotation and optional event details if authenticated data supports them. Existing thresholds and native/localized text remain required. Image-only, not imported into the application; no implementation or new animation started. Prior rejected drafts are preserved locally; no release, deployment or backend action.
 
-## Direction L — helper-led success stories, awaiting image review
+## Separate future page L — helper-led success stories, saved for later
+
+**Owner clarification, 2026-10-28:** this is a NEW SEPARATE PAGE to complete later, not a rewards-card replacement. Preserve the idea, image, both story sources and review/publication flow; do not begin implementation until the owner returns to it. The rewards-card direction remains unselected.
 
 `2026-10-28-l-success-stories.png`: “قصص الفزعة / ناس منّا، فزعات بتفرق”. The actual helper should be the protagonist: matching profile portrait, story photo, name, a short account of the completed assist and an invitation for others to help. Built-in ImageGen; exact prompt in `2026-10-28-l-prompt.txt`.
 

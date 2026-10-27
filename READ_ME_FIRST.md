@@ -10,7 +10,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
-- **التصميم عند Codex:** بدك قصص نجاح بتبرز نفس الشخص اللي ساعد. جهّزنا صورة «قصص الفزعة» للمراجعة. اخترت الطريقتين: قصص من المساعدات المكتملة، وقصص بيبعتها المساعد للمراجعة. لسا صورة فقط؛ المسودات السابقة محفوظة لوكل وما نُشرت.
+- **فكرة محفوظة لبعدين:** «قصص الفزعة» صفحة جديدة مستقلة، مش بديل لبطاقة النقاط. بتبرز نفس الشخص اللي ساعد، وبتجمع قصص من المساعدات المكتملة وقصص بيبعتها المساعد للمراجعة. الصورة محفوظة؛ التنفيذ مؤجّل بطلبك.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -53,7 +53,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local design review (Codex):** K is rejected. The owner now wants helper-led success stories to encourage others to help, supporting both curated completed-assist stories and helper submissions for review. Concept L (`previews/live-rewards/concepts/`) is a labelled illustrative screen with a synthetic helper photo and placeholder identity, awaiting visual selection; no real story or testimonial is published. Prior character/tree code remains uncommitted local drafts. No deployment, backend/store action or build/migration number consumed.
+**Local design review (Codex):** K is rejected; the rewards-card direction is still unresolved. The owner clarified that “قصص الفزعة” (concept L) is a **new separate page**, saved for later work, not a replacement for the points card. It features the actual helper and supports curated completed-assist stories plus helper submissions for review, with publication permission. The labelled illustrative image/prompt are preserved in `previews/live-rewards/concepts/`; implementation is deferred at the owner's request. No real story is published. Prior character/tree code remains uncommitted; no deployment, backend/store action or build/migration number consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -99,6 +99,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Codex — Owner clarified success stories are a new separate page to revisit later, not the rewards-card replacement. Recorded the deferred idea and both story sources in this notebook and the concepts README.
+  Documentation-only GitHub sync, deployment disabled; no implementation, image regeneration, publication or runtime change. Existing drafts preserved.
 
 - 2026-10-28 — Codex — Owner rejected K and chose helper-led success stories; confirmed both curated completed assists and helper submissions. Created image-only concept L with built-in ImageGen; visually inspected.
   PNG/prompt in `previews/live-rewards/concepts/`; clearly labelled synthetic example, placeholder name, no fabricated quote. GitHub sync only, deployment disabled; no implementation or real-story publication.
