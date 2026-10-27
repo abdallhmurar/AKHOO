@@ -65,13 +65,23 @@ Inspired by Duolingo's milestone-transformation principle and Apple's clear info
 
 The owner initially requested a local implementation. An ImageGen/Grok transparent-animation prototype was created and reviewed in the local browser, then rejected on 2026-10-28. That character code/assets and the earlier tree draft remain uncommitted locally and are not selected for release. No deployment, store, backend or production change.
 
-## Direction H — miniature AKHOO help station, awaiting image review
+## Direction H — miniature AKHOO help station, rejected
+
+Rejected by the owner on 2026-10-28; keep as image-only history.
 
 `2026-10-28-h-help-station.png`: “محطّتك بأخوو”, a premium isometric service-station miniature in cobalt/teal/pearl, with a blue car, tool case and three small progression studies. The idea represents a growing contribution to the community; it does not claim AKHOO owns physical garages. Built-in ImageGen, exact prompt in `2026-10-28-h-prompt.txt`.
 
 Sample values: 42 completed assists, 320 points, 18 remaining. Visually inspected for Arabic readability and a distinct architectural direction. This is only a review image, not imported by the app. The mockup's left-filled bar and three exploration scenes are illustrative; any selected implementation must use RTL progress, actual existing rank thresholds, live localized text and compact mobile spacing.
 
 Possible motion if selected: the service bay opens briefly on confirmed progress, a car arrives gently and the station gains a small detail at earned milestones. No implementation or new animation has started. G's rejected draft is preserved separately; no store, deployment or backend action.
+
+## Direction I — premium car key, awaiting image review
+
+`2026-10-28-i-help-key.png`: “مفتاح الخير بإيدك”, a tactile cobalt/teal car-key fob with chrome ring, woven loop and restrained gold accent. One object beside clear completed-assist totals, rank and a separate point balance; no scene or character. Built-in ImageGen; exact prompt in `2026-10-28-i-prompt.txt`.
+
+Visually inspected: legible Arabic, distinct materials, uncluttered composition, right-to-left progress fill. Sample values remain 42 completed assists, 320 points and 18 assists remaining. The rendered lock symbols are part of the illustration, not usable controls or a claim of remote car access. Any implementation would retain native/localized text and existing thresholds; no rank-gated benefits are invented.
+
+Possible motion if selected: small touch-responsive tilt and a restrained material highlight on a confirmed milestone, static with reduced motion. Image-only; no code or animation work started for I. Earlier rejected drafts remain uncommitted locally. No deployment or store action.
 
 ## Prompts
 

@@ -10,7 +10,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
-- **التصميم عند Codex:** اتجاه الشخصية مرفوض وتوقّف. جهّزنا صورة «محطّة أخوو» للمراجعة؛ لسا ما انعمل إلها كود أو حركة. المسودات السابقة محفوظة لوكل وما نُشرت.
+- **التصميم عند Codex:** الشخصية والمحطّة مرفوضين. جهّزنا صورة «مفتاح الخير بإيدك» للمراجعة؛ لسا ما انعمل إلها كود أو حركة. المسودات السابقة محفوظة لوكل وما نُشرت.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -53,7 +53,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local rewards review (Codex):** The owner rejected character concept G on 2026-10-28 after the local motion prototype. Character code/assets and the prior tree refinements remain uncommitted local drafts; do not release or treat them as selected. New concept H, the miniature AKHOO help station, is image-only and awaiting review in `previews/live-rewards/concepts/`. No deployment, backend or store action; no build/migration numbers consumed.
+**Local rewards review (Codex):** The owner rejected character G and station H on 2026-10-28. Character code/assets and the prior tree refinements remain uncommitted local drafts; do not release or treat them as selected. New concept I, a premium AKHOO car-key metaphor, is image-only and awaiting review in `previews/live-rewards/concepts/`. No deployment, backend or store action; no build/migration numbers consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -99,6 +99,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Codex — Owner rejected station H; prepared car-key rewards concept I with built-in ImageGen, visually inspected, awaiting image selection. Exact prompt and PNG in `previews/live-rewards/concepts/`.
+  Image/docs GitHub sync only with deployment disabled; no implementation, store, production or backend action. Existing uncommitted drafts preserved.
 
 - 2026-10-28 — Codex — Owner rejected character G after local prototyping; stopped it and prepared miniature-help-station concept H with built-in ImageGen for review. Image/prompt in `previews/live-rewards/concepts/`.
   Image/docs GitHub sync only, deployment disabled. Visually inspected; H has no implementation. Character/tree drafts remain uncommitted; no store, backend or production action.
