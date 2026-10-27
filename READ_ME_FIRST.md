@@ -10,7 +10,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
-- **التصميم عند Codex:** آخر فكرة (القلب) مرفوضة؛ طلبت نشوف أفكار من مواقع. جهّزنا بحث باتجاهات تفاعل جديدة من GitHub Skyline وSpotify وMonument Valley؛ لسا ما اخترنا تصميم جديد. المسودات محفوظة لوكل وما نُشرت.
+- **التصميم عند Codex:** بعد بحث الأفكار، جهّزنا صورة «بصمتك بأخوو»: قطع 3D بتمثّل المساعدات، للمراجعة فقط. لسا ما اعتمدناها أو عملنا كود إلها. المسودات السابقة محفوظة لوكل وما نُشرت.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -53,7 +53,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local rewards review (Codex):** Character G, station H, key I and heart J are rejected. The owner requested research before another concept. New interaction-pattern notes (GitHub Skyline, Spotify Wrapped Archive, Monument Valley) are in `previews/live-rewards/concepts/README.md`; no new design is selected. Character code/assets and tree refinements remain uncommitted local drafts; do not release them. No deployment, backend/store action or build/migration number consumed.
+**Local rewards review (Codex):** Character G, station H, key I and heart J are rejected. After research, the owner requested a visual preview; concept K shows an activity-driven 3D tile field inspired by the contribution-to-sculpture principle. Image/prompt in `previews/live-rewards/concepts/`, awaiting selection, no implementation. Character code/assets and tree refinements remain uncommitted local drafts; do not release them. No deployment, backend/store action or build/migration number consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -99,6 +99,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Codex — Created concept K, a personal 3D activity field, using built-in ImageGen after the owner requested a preview of the research recommendation. PNG/prompt in `previews/live-rewards/concepts/`; visually inspected.
+  Image/docs GitHub sync only, deployment disabled. No implementation, store, backend or production action; prior drafts preserved. Awaiting image selection.
 
 - 2026-10-28 — Codex — Owner rejected J and requested ideas research. Read official GitHub Skyline, Spotify Wrapped Archive/design, Strava and ustwo references; recorded three interaction directions in the concepts README.
   Research/docs GitHub sync only, deployment disabled; no new image or implementation. Sources reviewed as documentation, not installed-app tests; prior drafts preserved.

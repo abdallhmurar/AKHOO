@@ -107,6 +107,14 @@ Official documentation/product articles were read, not installed apps or their l
 
 Recommendation (design judgment): start with the **3D impact field**, or the **help-story stack** if the owner wants a warmer personal experience. Both make actual activity the visual subject instead of swapping a mascot/key/heart beside unchanged counters. No design is selected yet. A total-only prototype can preview an abstract field, but meaningful per-event cards/tiles require checking the authenticated activity data first. Keep rank thresholds, spendable points, RTL/localized native text and reduced-motion support unchanged. No location trails or other people's private details should be introduced.
 
+## Direction K — personal 3D impact field, awaiting image review
+
+`2026-10-28-k-impact-field.png`: “بصمتك بأخوو”, a blue/teal field of raised ceramic tiles with a newly completed tile joining its slot. The owner requested a preview after the interaction research; the recommended first direction was used. Built-in ImageGen; exact prompt in `2026-10-28-k-prompt.txt`.
+
+Visually inspected: legible Arabic, varied tile heights, one selected-tile callout, separate point balance and right-to-left progress fill. The generated tile arrangement is illustrative; a real implementation must derive the exact tile count from actual completed assists. Sample values: 42 completed assistance requests, 320 available points, 18 assists remaining. No distinct-people claim.
+
+Proposed interaction: a tile settles into place after confirmed progress, with restrained touch rotation and optional event details if authenticated data supports them. Existing thresholds and native/localized text remain required. Image-only, not imported into the application; no implementation or new animation started. Prior rejected drafts are preserved locally; no release, deployment or backend action.
+
 ## Prompts
 
 ### A
