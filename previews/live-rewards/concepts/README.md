@@ -5,7 +5,11 @@ Two review mock-ups, generated with the built-in ImageGen tool. Neither image is
 - A: `2026-10-27-a-navy.png` — uninterrupted navy/teal card, warm gold medal, integrated dark progress section.
 - B: `2026-10-27-b-pearl.png` — pearl/mint card, teal recessed medal area, warm gold medal.
 
-Awaiting the owner's choice before implementing either direction. The previous local live-card prototype remains available in this branch; its interrupted layout draft is preserved locally and is not part of this concept-review commit. No store upload, OTA, deployment or backend change.
+The owner rejected the medal direction (both A and B) on 2026-10-27. Keep those images as history, not approved designs. The interrupted medal-layout draft is archived in ignored `credentials/live-rewards-preview/rejected-medal-layout-20261027.patch`; the last committed prototype remains available. No store upload, OTA, deployment or backend change.
+
+## New direction C — impact and growth (awaiting review)
+
+`2026-10-27-c-impact-tree.png`: “أثر مساعدتك”, with help count as the main number, a symbolic growing tree and a separate compact points balance. The tree represents personal/community impact; it does not claim that any real trees have been planted. Illustration motion is proposed, not implemented. Existing reward thresholds and data meanings are unchanged. Sample count is 42 confirmed assists, not 42 distinct people.
 
 Both images use sample values: 320 points, 42 of 60 helps. On implementation, all text and progress must remain live, localized and accessible; the gold progress marker belongs at the leading edge of the fill. Generated artwork is a visual target, not proof that the current procedural renderer already matches it.
 

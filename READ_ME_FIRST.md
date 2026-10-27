@@ -10,7 +10,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
 - **بانتظار طرف ثالث:** Apple (2.0.4) وGoogle (أندرويد 2.0.3).
-- **معاينة محلية عند Codex:** خياران لبطاقة النقاط (A كحلي، B فاتح)، بانتظار اختيار المالك قبل التنفيذ. ما نُشر أي تحديث.
+- **معاينة محلية عند Codex:** المالك ألغى فكرة الميدالية؛ جهزت فكرة جديدة «أثر مساعدتك» بشجرة رمزية. بانتظار رأيه قبل التنفيذ. ما نُشر أي تحديث.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -53,7 +53,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local rewards review (Codex):** `ios/live-rewards-preview-20261026` holds the earlier live iOS/web card prototype (`c5988ad`, never deployed). Two new visual directions are saved under `previews/live-rewards/concepts/`; owner selection is required before implementing either. The interrupted local layout draft is preserved, not included in the concept-review commit. No build/migration numbers consumed.
+**Local rewards review (Codex):** `ios/live-rewards-preview-20261026` holds the earlier live iOS/web prototype (`c5988ad`, never deployed). Owner rejected medal concepts A/B; new impact/tree concept C is under `previews/live-rewards/concepts/`, awaiting review before implementation. The interrupted medal-layout draft is backed up in an ignored patch and removed from the working copy. No build/migration numbers consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -68,7 +68,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Branch | What it is | Owner |
 |---|---|---|
 | `main` | Everything shipped or shippable: web, admin, backend, apps, website source, build settings. Native exports (iOS, Android, web) pass. | Claude |
-| `ios/live-rewards-preview-20261026` | Local rewards-card prototype and two review mock-ups; not merged or deployed. | Codex |
+| `ios/live-rewards-preview-20261026` | Local rewards prototype; medal ideas rejected, impact/tree concept awaiting review. Not merged or deployed. | Codex |
 | `ota/ios-2.0.1-translations` | The only base for iOS OTAs to the live 2.0.1 users. Never merge it. | Claude |
 | `ios/testflight-partner-home-20261024` | Codex's TestFlight beta line (2.0.4 builds 30 and 31); its code is already in `main`, gated by `extra.partnerHomeBeta`. | Codex |
 | `android/release-2.0.3-20261025` | Source of the Android 2.0.3 build; merged into `main`. | Claude |
@@ -100,6 +100,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-27 — Codex — Owner rejected the medal direction. Prepared impact/tree concept C; archived the uncommitted medal-layout draft and kept A/B as rejected history.
+  Visual review only, built-in ImageGen, sample data; no application implementation, deployment, store/OTA or backend action. Awaiting owner feedback.
 - 2026-10-27 — Codex — Prepared two rewards-card mock-ups (navy / pearl) for owner selection, per the new review-first rule. Updated local main and this notebook; prior interrupted code draft preserved.
   Review files: `previews/live-rewards/concepts/`. GitHub branch sync only; no implementation of either proposal, deployment, store/OTA/backend action. Visually reviewed; no runtime tests needed for these image-only concepts.
 - 2026-10-27 — Claude — Restructured this file (status board, shorter rules, claim table, trimmed log); the full old text is in `docs/archive/`. No external effect.
