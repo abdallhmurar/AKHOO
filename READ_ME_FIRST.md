@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-28 — Codex — Continued rewards-card research at owner's request: mechanical-style rolling assist counter and personal helper membership card. Reviewed official NumberFlow, Revolut cards and Rive sources; notes in concepts README.
+  Research/docs GitHub sync only, deployment disabled. No new image, dependency, implementation or deployment; success-stories page stays deferred and prior drafts remain untouched.
+
 - 2026-10-28 — Codex — Owner clarified success stories are a new separate page to revisit later, not the rewards-card replacement. Recorded the deferred idea and both story sources in this notebook and the concepts README.
   Documentation-only GitHub sync, deployment disabled; no implementation, image regeneration, publication or runtime change. Existing drafts preserved.
 

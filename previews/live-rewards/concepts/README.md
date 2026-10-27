@@ -129,6 +129,16 @@ The owner selected **both** story sources: (1) editorial selection from complete
 
 Proposed interaction: a compact story selector opens a full story with factual helper-authored wording; “أنا كمان بدي أساعد” leads into the existing volunteer path. Any future implementation should show real approved identities/photos only, handle empty states and localization, and omit invented testimonials, response times, exact locations, or unique-person totals. Earlier rejected code drafts remain local and uncommitted. No app, backend, store or production change.
 
+## Further rewards-card ideas — 2026-10-28
+
+The owner asked to continue ideas after saving success stories as a separate future page. This research returns to the unresolved rewards card. Neither direction below is selected or implemented.
+
+1. **Rolling assist counter (“عدّاد الفزعات”).** Make the completed-assist total itself a tactile mechanism: large blue/ivory recessed number drums, like an odometer, rather than the earlier rejected needle gauge F. On an actual count change, only affected digits roll once; 42→43 is immediately understandable. Keep the 320 spendable balance separate and next-rank progress compact. Inspiration: [NumberFlow's official examples/docs](https://number-flow.barvian.me/) animate numerical value changes and support reduced motion. This is a motion reference, not a dependency choice: its docs currently list RTL locales and non-Latin digits as unsupported, so a selected AKHOO implementation must handle localization independently.
+
+2. **Personal helper card (“بطاقة مساعد أخوو”).** A compact digital membership-style card with the current user's identity, earned rank, assist total and point balance. Restrained material changes distinguish the existing bronze/silver/gold/green ranks. Tilt responds to touch; an intentional flip reveals next-rank requirements, and a confirmed rank-up changes the card's finish. [Revolut's official cards page](https://www.revolut.com/en-US/cards/) supplies a material/color/personalization design reference only; AKHOO gains no payment-card function, physical card, paid tier, guarantee or extra benefits from this metaphor. Proposed motion/flip is our adaptation, not a verified Revolut interaction.
+
+[Rive's official product page](https://rive.app/) was also reviewed for state-driven interactive art and runtime tooling. No CLI, app, account or package was installed, and no compatibility/performance claim has been validated for this project. If selected later, verify actual iOS/web support and Arabic rendering before choosing a renderer. The existing reward thresholds and data meanings remain authoritative. Suggested first visual comparison: these two genuinely different structures, rather than another decorative-object substitution. Success stories remain deferred.
+
 ## Prompts
 
 ### A
