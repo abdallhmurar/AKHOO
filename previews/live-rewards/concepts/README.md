@@ -25,11 +25,19 @@ Proposed interaction, pending owner selection: a marker advances only when the c
 
 On the owner's request to explore another idea, detailed tree-motion refinements were paused as an uncommitted local draft. Concept D is not imported by the app. No application change, store upload, deployment or backend write.
 
-## Direction E — solidarity sculpture, awaiting review
+## Direction E — solidarity sculpture, rejected
+
+The owner rejected E on 2026-10-27 and requested another stronger idea. Retained as review history only.
 
 `2026-10-27-e-solidarity.png`: “بصمتك بأخوو”, a blue/teal handshake sculpture and a tilted progress track, replacing the roadside scene. Built-in ImageGen; exact prompt in `2026-10-27-e-prompt.txt`. Sample numbers remain 42 assists, 320 points and 18 assists to the next level. Visually reviewed; image-only, not imported or implemented.
 
 Proposed motion: restrained touch tilt; the track gains progress when a confirmed assist is added, with a short handshake response at a milestone. A static presentation for reduced motion. Artwork ticks are illustrative; a later implementation must calculate progress and render localized text using live data. No release or deployment.
+
+## Direction F — automotive assist gauge, awaiting review
+
+`2026-10-27-f-assist-gauge.png`: “عدّاد الفزعات”, a tangible blue/teal automotive-style instrument measuring completed assists (not speed). Gold needle at 42 out of 60, separate 320-point balance and gold-helper status. Built-in ImageGen; exact prompt in `2026-10-27-f-prompt.txt`. Visually inspected; no app implementation. The rendered footer bar is LTR: a selected implementation must correct it to RTL and use live/native localized text instead of flattening this bitmap.
+
+Proposed motion: needle eases to the real count and advances on confirmed assists; touch tilt is restrained, with a static reduced-motion state. No continuously rising fake count. Existing reward thresholds/data remain unchanged. No deployment or store upload; tree-detail draft preserved.
 
 ## Prompts
 
