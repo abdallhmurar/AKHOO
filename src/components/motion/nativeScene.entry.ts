@@ -1,5 +1,6 @@
 import { createRewardsGift } from '../../features/home/rewardsGiftScene.web'
 import { createMedalScene } from './medalScene'
+import { createImpactTreeScene } from './impactTreeScene'
 import type { NativeSceneState } from './nativeSceneProtocol'
 
 declare global {
@@ -9,7 +10,7 @@ declare global {
   }
 }
 let canvas = document.querySelector<HTMLCanvasElement>('canvas')!
-let scene: Pick<ReturnType<typeof createMedalScene>, 'resize' | 'setEnabled' | 'celebrate' | 'dispose'> | null = null
+let scene: (Pick<ReturnType<typeof createMedalScene>, 'resize' | 'setEnabled' | 'celebrate' | 'dispose'> & { setCount?: (count: number) => void }) | null = null
 let state: NativeSceneState | null = null
 let failed = false
 const post = (value: string) => window.ReactNativeWebView?.postMessage(value)
@@ -30,10 +31,13 @@ window.akhooScene = {
           replacement.setAttribute('aria-hidden', 'true')
           canvas.replaceWith(replacement); canvas = replacement
         }
-        scene = next.kind === 'gift' ? createRewardsGift(canvas, unavailable, () => {}, { idle: next.idle }) : createMedalScene(canvas, next.metal, unavailable, { hero: next.kind === 'rewardMedal' })
+        scene = next.kind === 'tree' ? createImpactTreeScene(canvas, next.count ?? 0, unavailable)
+          : next.kind === 'gift' ? createRewardsGift(canvas, unavailable, () => {}, { idle: next.idle })
+            : createMedalScene(canvas, next.metal, unavailable, { hero: next.kind === 'rewardMedal' })
         resize(); post('ready')
       }
       sync()
+      scene?.setCount?.(next.count ?? 0)
       if (interactionChanged && next.active && !next.reduced) scene?.celebrate()
     } catch { unavailable() }
   },

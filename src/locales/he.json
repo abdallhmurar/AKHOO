@@ -642,6 +642,14 @@
     "title": "הטבות אחוו",
     "subtitle": "מבצעים בלעדיים כל שבוע",
     "searchPlaceholder": "חיפוש עסק או מבצע",
+    "impactTree": {
+      "title": "ההשפעה שלך",
+      "subtitle": "כל עזרה משאירה חותם",
+      "helpsLabel": "פעמים שעזרת",
+      "points": "הנקודות שלך",
+      "accessibility": "עץ ההשפעה שלך, {{count}} עזרות. סמל שגדל עם העזרה שלך",
+      "hint": "לחצו כדי להניע את העץ"
+    },
     "pointsCard": {
       "balanceLabel": "יתרת הנקודות שלך",
       "levelLabel": "הדרגה הנוכחית שלך",

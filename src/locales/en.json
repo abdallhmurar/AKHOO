@@ -642,6 +642,14 @@
     "title": "AKHOO Perks",
     "subtitle": "Exclusive offers every week",
     "searchPlaceholder": "Search a business or offer",
+    "impactTree": {
+      "title": "Your impact",
+      "subtitle": "Every helping hand matters",
+      "helpsLabel": "helps completed",
+      "points": "Your points",
+      "accessibility": "Your impact tree, {{count}} helps. A symbol that grows as you help",
+      "hint": "Tap to sway the tree"
+    },
     "pointsCard": {
       "balanceLabel": "Your points balance",
       "levelLabel": "Your current level",

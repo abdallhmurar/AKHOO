@@ -11,10 +11,11 @@ for (const [pack, family] of [['noto-sans-arabic', 'NotoSansArabic'], ['noto-san
     fonts[`${family}_${weight}${label}.ttf`] = path.join(root, `node_modules/@expo-google-fonts/${pack}/${weight}${label}/${family}_${weight}${label}.ttf`)
   }
 }
-const fontStyles = Object.keys(fonts).map(file => `@font-face{font-family:'${file.slice(0, -4)}';src:url('/fonts/${file}')}`).join('')
+const fontStyles = Object.keys(fonts).map(file => `@font-face{font-family:'${file.slice(0, -4)}';src:url('/fonts/${file}');font-display:swap}`).join('')
 const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>أخوو · بطاقة النقاط الحيّة</title><style>${fontStyles}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 15%,#dceff5,transparent 55%),#f1fafc;color:#153448;font-family:NotoSansArabic_400Regular,Arial,sans-serif}main{width:min(100%,490px);margin:0 auto;padding:36px 18px 40px}.preview-header{text-align:center;margin-bottom:24px}.preview-header span{font:600 10px Arial;letter-spacing:3px;color:#4e7f86}.preview-header h1{font-family:NotoSansArabic_700Bold;margin:10px 0 0;font-size:23px}.preview-header p{font-size:11px;margin:5px 0;color:#527780}.preview-controls{margin-top:24px;border:1px dashed #b5d1d8;border-radius:18px;padding:15px;background:#ffffff99}.preview-controls p{font-size:10px;color:#53747e;margin:0 0 12px;text-align:center}.controls-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:8px 0}button,select{font:inherit;font-size:11px;min-height:42px;cursor:pointer}aside button,select{border:1px solid #b5d1d8;background:white;color:#164c5b;border-radius:10px;padding:6px 12px}aside button:first-child{background:#0d716f;color:white;border-color:#0d716f}label{font-size:10px;display:flex;align-items:center;gap:5px}button:focus-visible,select:focus-visible{outline:3px solid #30c2cf;outline-offset:3px}
 @media(max-width:360px){main{padding:24px 12px}.preview-header h1{font-size:20px}}
+.growth-control{display:flex;gap:12px;margin:16px 0;justify-content:center}.growth-control input{flex:1;min-width:0;accent-color:#109f97;min-height:30px}
 </style></head><body><div id="root"></div><script type="module" src="/bundle/entry.js"></script></body></html>`
 async function start() {
   fs.mkdirSync(output, { recursive: true })

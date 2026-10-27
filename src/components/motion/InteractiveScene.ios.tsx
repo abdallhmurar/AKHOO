@@ -11,7 +11,8 @@ import { isLocalSceneNavigation, isSceneMessage, sceneCommand, type NativeSceneS
 const SCENE_SOURCE = { html: sceneHtml }
 
 type Props = {
-  kind: 'gift' | 'medal' | 'rewardMedal'
+  kind: NativeSceneState['kind']
+  count?: number
   width: number
   height: number
   label: string
@@ -25,7 +26,7 @@ type Props = {
   onFallback?: () => void
 }
 
-export function InteractiveScene({ kind, width, height, label, hint, fallback, metal = '#ced8e2', active = true, idle = true, interactive = true, interaction = 0, onFallback }: Props) {
+export function InteractiveScene({ kind, count, width, height, label, hint, fallback, metal = '#ced8e2', active = true, idle = true, interactive = true, interaction = 0, onFallback }: Props) {
   const ref = useRef<View>(null)
   const viewport = useWindowDimensions()
   const guide = useGuide()
@@ -51,7 +52,7 @@ export function InteractiveScene({ kind, width, height, label, hint, fallback, m
     return () => { mounted = false; clearInterval(timer) }
   }, [focused, foreground, viewport.width, viewport.height])
   const enabled = active && focused && foreground && visible && !guide?.blocking && !failed
-  const state = useMemo<NativeSceneState>(() => ({ kind, active: enabled, reduced, idle, metal, interaction: interaction + pressed }), [kind, enabled, reduced, idle, metal, interaction, pressed])
+  const state = useMemo<NativeSceneState>(() => ({ kind, count, active: enabled, reduced, idle, metal, interaction: interaction + pressed }), [kind, count, enabled, reduced, idle, metal, interaction, pressed])
   const activate = () => {
     if (failed) { onFallback?.(); return }
     if (!enabled) return

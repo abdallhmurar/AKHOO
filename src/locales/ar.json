@@ -642,6 +642,14 @@
     "title": "مزايا أخوو",
     "subtitle": "عروض حصرية كل أسبوع",
     "searchPlaceholder": "دوّر على عمل تجاري أو عرض",
+    "impactTree": {
+      "title": "أثر مساعدتك",
+      "subtitle": "كل مساعدة بتترك أثر",
+      "helpsLabel": "مساعدة عملتها",
+      "points": "نقاطك",
+      "accessibility": "شجرة أثر مساعدتك، {{count}} مساعدة. رمز بيكبر مع مساعداتك",
+      "hint": "اضغط لتتحرك الشجرة"
+    },
     "pointsCard": {
       "balanceLabel": "رصيدك من النقاط",
       "levelLabel": "مستواك الحالي",

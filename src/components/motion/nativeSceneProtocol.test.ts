@@ -20,4 +20,11 @@ describe('offline native 3D bridge', () => {
     expect(isSceneMessage('unavailable')).toBe(true)
     expect(isSceneMessage('{"navigate":"https://example.com"}')).toBe(false)
   })
+  it('delivers tree growth updates independently of tap interactions', () => {
+    const states: unknown[] = []
+    const window = { akhooScene: { setState: (value: unknown) => states.push(value) } }
+    const state: NativeSceneState = { kind: 'tree', count: 0, active: true, reduced: false, idle: true, metal: '', interaction: 0 }
+    for (const count of [0, 15, 42, 60]) new Function('window', sceneCommand({ ...state, count }))(window)
+    expect(states).toEqual([0, 15, 42, 60].map(count => ({ ...state, count })))
+  })
 })
