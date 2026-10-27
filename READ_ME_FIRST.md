@@ -5,12 +5,12 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
-- **آيفون:** 2.0.3 حي عند الناس. 2.0.4 (التصميم الجديد: بانر الشركاء وكرت المساعدة الوردي) بمراجعة Apple من 27/10. أول ما توافق، Claude بينزّلها (إذنك الدائم من 27/10). إذا ما كان Claude شغّال، قول له "انزّلها".
+- **آيفون:** حسب سجل `main` المحدّث: 2.0.4 (31) نزلت للناس بتاريخ 27/10 بعد موافقة Apple، مع بانر الشركاء وكرت المساعدة الوردي ونموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 (رقم 8) أرسلتها لمراجعة Google لإسرائيل بتاريخ 27/10. لسا ما ظهرت على Play.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** Apple (2.0.4) وGoogle (أندرويد 2.0.3).
-- **معاينة محلية عند Codex:** «أثر مساعدتك» صارت شجرة 3D بتكبر مع المساعدات، مع معاينة نمو محلية. لسا بدها رأيك وتجربة آيفون حقيقي؛ ما نُشر أي تحديث.
+- **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
+- **التصميم عند Codex:** اتجاه الشخصية مرفوض وتوقّف. جهّزنا صورة «محطّة أخوو» للمراجعة؛ لسا ما انعمل إلها كود أو حركة. المسودات السابقة محفوظة لوكل وما نُشرت.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -41,8 +41,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
-- **2.0.4 (31): WAITING_FOR_REVIEW** since 2026-10-27, `releaseType: MANUAL`. Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, submission `cacd940f-c883-409a-9766-95d052145596`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary). It has the partner banner, rose help card and rewards ticket. The partner form is a labelled test that sends nothing, and the review notes say so. Store screenshots are still the 2.0.3 ones.
-- **2.0.3 (29): LIVE** since 2026-10-27 (video player in announcements, notification events and sounds). 2.0.2 (28) is the previous live version.
+- **2.0.4 (31): LIVE** since 2026-10-27, per the fetched `main` status (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306`: partner banner, rose help card and rewards ticket. The partner form remains a labelled test. Store screenshots are still the 2.0.3 ones. This local design task made no store action.
+- 2.0.3 (29) and 2.0.2 (28) are the previous live versions.
 - Users still on 2.0.1 (build 17) get iOS OTAs (channel `production`, runtime 2.0.1) from `ota/ios-2.0.1-translations`. **Builds 28 and later have OTA disabled** (built with the `testflight` profile), so only a new App Store version can change their screens.
 - TestFlight: latest 2.0.4 (31) in the internal group "Test"; TestFlight binaries never receive OTAs.
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
@@ -53,7 +53,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local rewards review (Codex):** `ios/live-rewards-preview-20261026` now implements approved concept C as a procedural 3D impact tree with growth, native/localized text and the existing points/count data contract. Review at `http://127.0.0.1:4186/` via `npm run preview:rewards` (sample data, no writes). No deployment, backend or store action; no build/migration numbers consumed. Physical iPhone performance and real-account refresh are not verified in this isolated preview.
+**Local rewards review (Codex):** The owner rejected character concept G on 2026-10-28 after the local motion prototype. Character code/assets and the prior tree refinements remain uncommitted local drafts; do not release or treat them as selected. New concept H, the miniature AKHOO help station, is image-only and awaiting review in `previews/live-rewards/concepts/`. No deployment, backend or store action; no build/migration numbers consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -86,7 +86,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29, live), 2.0.4 (30 beta, 31 in review) | build **32** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, production) | **9** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
@@ -99,6 +99,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Codex — Owner rejected character G after local prototyping; stopped it and prepared miniature-help-station concept H with built-in ImageGen for review. Image/prompt in `previews/live-rewards/concepts/`.
+  Image/docs GitHub sync only, deployment disabled. Visually inspected; H has no implementation. Character/tree drafts remain uncommitted; no store, backend or production action.
 
 - 2026-10-27 — Codex — Created original evolving-helper character concept G after the reference research, with a compact card and four rank looks; built-in ImageGen, visually inspected, awaiting selection.
   Image/prompt/docs only, GitHub sync with deployment disabled. No application, store, backend or deployment change; interrupted tree draft preserved.

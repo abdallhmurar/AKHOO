@@ -57,13 +57,21 @@ Design recommendation (our judgment): a personal helper-achievement card combini
 
 No new design or implementation is selected. Proposed share/story/character behavior is not implemented. Existing thresholds and backend data remain unchanged. Reduced-motion presentation should be static and text/data must remain live, localized and accessible.
 
-## Direction G — evolving helper character, awaiting review
+## Direction G — evolving helper character, rejected after local prototype
 
 `2026-10-27-g-helper-character.png`: original AKHOO helper character with blue/teal clothing and gold details for the sample current level, under “أثرك بأخوو”. The separate strip beneath the card previews bronze, silver, gold and green appearance changes; it is a design exploration, not extra in-app UI. Built-in ImageGen; full prompt in `2026-10-27-g-prompt.txt`.
 
 Inspired by Duolingo's milestone-transformation principle and Apple's clear information hierarchy, without copying their characters or artwork. Sample values: 42 confirmed assists, 320 points, 18 assists remaining. Visual inspection confirmed readable Arabic and the intended RTL progress direction; final progress geometry/text would be data-driven if selected.
 
-Proposed animation remains unimplemented: subtle idle character life and a brief greeting on a confirmed milestone, static under reduced motion. The outfit progression is only a proposal and must not change existing rank thresholds or claim additional benefits. No production or app change.
+The owner initially requested a local implementation. An ImageGen/Grok transparent-animation prototype was created and reviewed in the local browser, then rejected on 2026-10-28. That character code/assets and the earlier tree draft remain uncommitted locally and are not selected for release. No deployment, store, backend or production change.
+
+## Direction H — miniature AKHOO help station, awaiting image review
+
+`2026-10-28-h-help-station.png`: “محطّتك بأخوو”, a premium isometric service-station miniature in cobalt/teal/pearl, with a blue car, tool case and three small progression studies. The idea represents a growing contribution to the community; it does not claim AKHOO owns physical garages. Built-in ImageGen, exact prompt in `2026-10-28-h-prompt.txt`.
+
+Sample values: 42 completed assists, 320 points, 18 remaining. Visually inspected for Arabic readability and a distinct architectural direction. This is only a review image, not imported by the app. The mockup's left-filled bar and three exploration scenes are illustrative; any selected implementation must use RTL progress, actual existing rank thresholds, live localized text and compact mobile spacing.
+
+Possible motion if selected: the service bay opens briefly on confirmed progress, a car arrives gently and the station gains a small detail at earned milestones. No implementation or new animation has started. G's rejected draft is preserved separately; no store, deployment or backend action.
 
 ## Prompts
 
