@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-27 — Codex — Owner rejected journey concept D; prepared solidarity-sculpture concept E (“بصمتك بأخوو”) using built-in ImageGen, visually reviewed, awaiting selection.
+  Image/prompt/docs only, GitHub sync with deployment disabled. Tree draft preserved; no app, store, deployment or backend changes.
+
 - 2026-10-27 — Codex — Owner requested a different idea: prepared roadside-help journey concept D with built-in ImageGen, visually reviewed; awaiting design selection.
   Review image only (`previews/live-rewards/concepts/`), GitHub sync with deployment disabled. Tree-detail draft paused and left uncommitted; no application, store or backend change.
 

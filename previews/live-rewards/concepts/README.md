@@ -15,13 +15,21 @@ Concepts use sample values: 320 points, 42 of 60 helps. Text/progress remain liv
 
 Run `npm run preview:rewards` and open `http://127.0.0.1:4186/` on this computer. The controls outside the card simulate growth from 0 to 60, sample levels, and ar/en/he. They never award points or write data. In-app count and spendable balance still come from existing queries. The standalone preview cannot validate real-account refresh. iOS uses the offline WebView scene, web loads the renderer lazily, Android keeps its old panel. No deployment or store upload. Physical iPhone graphics/performance still need review.
 
-## Direction D — alternative for review, not implemented
+## Direction D — rejected, not implemented
+
+The owner rejected D on 2026-10-27 and requested a stronger alternative. Retained as review history only.
 
 `2026-10-27-d-help-journey.png`: “مشوارك مع أخوو”, a miniature roadside help scene with a short road ribbon and a completion marker. Uses the same sample 42 assists, 320 points and 18 assists remaining; the count does not represent distinct people. Generated with built-in ImageGen and visually reviewed. Prompt: `2026-10-27-d-prompt.txt`.
 
 Proposed interaction, pending owner selection: a marker advances only when the confirmed-assist count increases, with a brief arrival/check gesture at milestones; subtle character motion and touch parallax, static under reduced motion. No play/pause UI or fake always-increasing points. The generated text is a visual reference only; any later implementation must retain real localized/native text and data.
 
 On the owner's request to explore another idea, detailed tree-motion refinements were paused as an uncommitted local draft. Concept D is not imported by the app. No application change, store upload, deployment or backend write.
+
+## Direction E — solidarity sculpture, awaiting review
+
+`2026-10-27-e-solidarity.png`: “بصمتك بأخوو”, a blue/teal handshake sculpture and a tilted progress track, replacing the roadside scene. Built-in ImageGen; exact prompt in `2026-10-27-e-prompt.txt`. Sample numbers remain 42 assists, 320 points and 18 assists to the next level. Visually reviewed; image-only, not imported or implemented.
+
+Proposed motion: restrained touch tilt; the track gains progress when a confirmed assist is added, with a short handshake response at a milestone. A static presentation for reduced motion. Artwork ticks are illustrative; a later implementation must calculate progress and render localized text using live data. No release or deployment.
 
 ## Prompts
 
