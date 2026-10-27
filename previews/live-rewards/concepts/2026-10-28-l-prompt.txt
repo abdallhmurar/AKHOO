@@ -1,0 +1,24 @@
+Use case: ui-mockup.
+Create ONE beautiful polished ARABIC MOBILE APP UI concept for AKHOO, a community roadside-help app. The owner wants to feature the actual helper and their success story so other people feel encouraged to help. Completely different from points cards and abstract 3D sculptures: focus on authentic human contribution and a clear invitation to help. This is a design-review sample, NOT a real published story. All names should be placeholder text; do not invent a named person, testimonial, quote, success statistics, response time or location.
+
+Composition: portrait 1024x1536, one mobile screen section, no phone hardware, no status bar, no bottom nav. Very pale ice-blue page, clean white cards, AKHOO cobalt blue #1469e8, teal #0b8c83 and dark navy #102b44. Warm editorial photography, refined rounded corners, airy spacing and contemporary clearly shaped Arabic typography. The interface should feel mature, local, human and encouraging, with minimal icons.
+
+Top right small teal eyebrow exactly "قصص الفزعة"
+Large right-aligned heading exactly "ناس منّا، فزعات بتفرق"
+Smaller subtitle exactly "كل مساعدة وراها حدا قرّر يساعد"
+At top left, a small understated outlined label exactly "تصوّر توضيحي" to clearly mark the entire screen as illustrative.
+
+Below header a compact RTL story selector row with THREE small circular portrait/placeholders and restrained blue/teal rings. FIRST on RIGHT is selected: use a tight portrait crop of the SAME fictional adult male helper seen in the hero photo below; caption "اسم المساعد". The other TWO circles should use neutral tasteful silhouette placeholders, NOT other fake portraits, caption exactly "قصة ثانية" and "قصة ثالثة". These circles are navigation previews, not rankings.
+
+Main white feature card: full-width editorial-style PHOTO with softly rounded top corners, approximately 1.4:1 landscape photo. Show a realistic friendly Palestinian/Levantine adult man about30, short dark hair, neat beard, wearing a simple teal casual jacket over a plain white shirt, helping another adult with jumper cables at a BLUE car on a calm safe roadside. Hood open. The helper's face clearly visible, warm natural daylight, ordinary believable surroundings, no heroic posing, no danger, no text or logos within the photo, no overtly flashy styling. Two people remain fully natural and appropriately proportioned. The main helper is the exact SAME man as the selected portrait avatar. This is fictional demonstration photography, not a real person's claimed assistance story. No smoke or emergency effects.
+
+Under the photo, an RTL attribution row with the SAME helper's small circular photo on the RIGHT, bold placeholder name exactly "اسم المساعد", smaller descriptor exactly "من مجتمع أخوو". Opposite on left a tiny soft mint status capsule exactly "مساعدة مكتملة", no verification shield.
+
+Editorial headline below, right aligned: "بطارية وقفتها… وفزعة رجّعتها"
+A short subdued description exactly "هون بنحكي الموقف بكلمات المساعد نفسه، بعد موافقته."
+Then a subtle teal text action "اقرأ القصة" with one small left arrow.
+Keep all this typography clean, generous separation, no strange dots, no overlapping Arabic.
+
+At bottom OUTSIDE the story card, one calm short invitation centered exactly "يمكن الفزعة الجايّة تكون منك"
+Below it a large blue rounded primary button exactly "أنا كمان بدي أساعد", with no icon.
+No fabricated first-person quote, no ratings, no likes/hearts counters, no confetti, no medal, no points balance, no tree, no sculpture, no permanent play/pause controls, no watermark. The main message must be the helper as a relatable person and the completed-help story. Precise readable Arabic throughout. A single final screen concept only.

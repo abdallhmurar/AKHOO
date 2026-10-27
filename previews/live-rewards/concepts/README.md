@@ -107,13 +107,25 @@ Official documentation/product articles were read, not installed apps or their l
 
 Recommendation (design judgment): start with the **3D impact field**, or the **help-story stack** if the owner wants a warmer personal experience. Both make actual activity the visual subject instead of swapping a mascot/key/heart beside unchanged counters. No design is selected yet. A total-only prototype can preview an abstract field, but meaningful per-event cards/tiles require checking the authenticated activity data first. Keep rank thresholds, spendable points, RTL/localized native text and reduced-motion support unchanged. No location trails or other people's private details should be introduced.
 
-## Direction K — personal 3D impact field, awaiting image review
+## Direction K — personal 3D impact field, rejected
+
+Rejected on 2026-10-28; the owner requested success stories featuring the actual helper instead.
 
 `2026-10-28-k-impact-field.png`: “بصمتك بأخوو”, a blue/teal field of raised ceramic tiles with a newly completed tile joining its slot. The owner requested a preview after the interaction research; the recommended first direction was used. Built-in ImageGen; exact prompt in `2026-10-28-k-prompt.txt`.
 
 Visually inspected: legible Arabic, varied tile heights, one selected-tile callout, separate point balance and right-to-left progress fill. The generated tile arrangement is illustrative; a real implementation must derive the exact tile count from actual completed assists. Sample values: 42 completed assistance requests, 320 available points, 18 assists remaining. No distinct-people claim.
 
 Proposed interaction: a tile settles into place after confirmed progress, with restrained touch rotation and optional event details if authenticated data supports them. Existing thresholds and native/localized text remain required. Image-only, not imported into the application; no implementation or new animation started. Prior rejected drafts are preserved locally; no release, deployment or backend action.
+
+## Direction L — helper-led success stories, awaiting image review
+
+`2026-10-28-l-success-stories.png`: “قصص الفزعة / ناس منّا، فزعات بتفرق”. The actual helper should be the protagonist: matching profile portrait, story photo, name, a short account of the completed assist and an invitation for others to help. Built-in ImageGen; exact prompt in `2026-10-28-l-prompt.txt`.
+
+The review image is explicitly marked “تصوّر توضيحي”. Its people are synthetic, the helper name is a placeholder, and the body describes where approved story copy would go. It is not a real user's photo, actual assistance evidence, endorsement or published testimonial. Visual inspection checked readable Arabic, consistent helper identity across photo/avatar and a clear assistance CTA. The existing mobile space/placement still needs selection before implementation.
+
+The owner selected **both** story sources: (1) editorial selection from completed assistance requests; (2) a helper submits their own story for review. Proposed flow: choose or submit a completed-assist story, review its wording and media with the helper, obtain publication permission, then publish through moderation. A later UI can offer “ساعدت حدا؟ احكيلنا قصتك”. Submission is not automatically public. No actual story records, moderation tools, uploads, permission tracking or publication were implemented in this image-only task.
+
+Proposed interaction: a compact story selector opens a full story with factual helper-authored wording; “أنا كمان بدي أساعد” leads into the existing volunteer path. Any future implementation should show real approved identities/photos only, handle empty states and localization, and omit invented testimonials, response times, exact locations, or unique-person totals. Earlier rejected code drafts remain local and uncommitted. No app, backend, store or production change.
 
 ## Prompts
 
