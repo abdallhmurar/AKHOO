@@ -33,11 +33,29 @@ The owner rejected E on 2026-10-27 and requested another stronger idea. Retained
 
 Proposed motion: restrained touch tilt; the track gains progress when a confirmed assist is added, with a short handshake response at a milestone. A static presentation for reduced motion. Artwork ticks are illustrative; a later implementation must calculate progress and render localized text using live data. No release or deployment.
 
-## Direction F — automotive assist gauge, awaiting review
+## Direction F — automotive assist gauge, rejected
+
+The owner rejected F on 2026-10-27 and asked to take inspiration from established products before another design attempt.
 
 `2026-10-27-f-assist-gauge.png`: “عدّاد الفزعات”, a tangible blue/teal automotive-style instrument measuring completed assists (not speed). Gold needle at 42 out of 60, separate 320-point balance and gold-helper status. Built-in ImageGen; exact prompt in `2026-10-27-f-prompt.txt`. Visually inspected; no app implementation. The rendered footer bar is LTR: a selected implementation must correct it to RTL and use live/native localized text instead of flattening this bitmap.
 
 Proposed motion: needle eases to the real count and advances on confirmed assists; touch tilt is restrained, with a static reduced-motion state. No continuously rising fake count. Existing reward thresholds/data remain unchanged. No deployment or store upload; tree-detail draft preserved.
+
+## Established-product research — 2026-10-27
+
+Official product/design pages reviewed, with their published static examples inspected. These are reference patterns, not a claim that we tested current installed versions. Duolingo's examples include older design articles, Spotify's are Wrapped 2025, and Apple's page includes older device imagery. No borrowed artwork is committed or imported by AKHOO; local inspection downloads are ignored.
+
+| Reference | Observed pattern | Proposed AKHOO adaptation |
+|---|---|---|
+| [Apple Activity](https://www.apple.com/watch/close-your-rings/) | Immediately legible completion rings and milestone awards. | One restrained progress arc tied to completed assists; legible remaining count and next level. |
+| [Nike Run Club](https://www.nike.com/help/a/nrc-activity) | Prominent activity total, secondary metrics and a separate achievements area. | Clear 42-assist headline, smaller 320-point balance, earned milestones available in detail. |
+| [Duolingo milestone motion](https://blog.duolingo.com/streak-milestone-design-animation/) and [achievements](https://blog.duolingo.com/achievement-badges/) | Character transformation at milestones and a visible achievement collection. | Optional original AKHOO character changes pose/accessory on rank-up; animation triggered by confirmed progress, not daily attendance. |
+| [Spotify Wrapped 2025](https://newsroom.spotify.com/2025-12-03/2025-wrapped-user-experience/) | Personal data presented as expressive stories and share cards; the minutes example uses a dominant number. | Make the assist count visually central; an optional personal achievement-share view in the user's selected language. |
+| [Airbnb Superhost](https://www.airbnb.com/help/article/829) | Status tied to explicit requirements and visible on profile. | Show why a helper has a rank and exactly how far to the next existing level; don't imply a rank guarantees safety. |
+
+Design recommendation (our judgment): a personal helper-achievement card combining Nike's numeric hierarchy, Apple's legible progress and a brief Duolingo-style rank-up response, all in AKHOO blue/teal. One central message, a small current-rank element, 42 confirmed assists, 18 remaining to the existing 60 threshold, and 320 spendable points kept separate. Compact layout first; depth only where it reinforces interaction. A character-led alternative can be reviewed if the owner prefers a warmer direction.
+
+No new design or implementation is selected. Proposed share/story/character behavior is not implemented. Existing thresholds and backend data remain unchanged. Reduced-motion presentation should be static and text/data must remain live, localized and accessible.
 
 ## Prompts
 

@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-27 — Codex — Owner rejected gauge F and requested established-product inspiration. Reviewed official Apple, Nike, Duolingo, Spotify and Airbnb sources; notes in the concept README.
+  Research/docs only; official static examples inspected, no claims of live-app QA. No new mockup, implementation, deployment or store action; tree draft preserved.
+
 - 2026-10-27 — Codex — Owner rejected solidarity concept E; created automotive assist-gauge concept F (“عدّاد الفزعات”) with built-in ImageGen for selection. Image inspected; implementation still pending approval.
   Image/prompt/docs only, GitHub sync with deployment disabled; no runtime, store or backend change. Tree draft remains local and uncommitted.
 
