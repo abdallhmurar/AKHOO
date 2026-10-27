@@ -85,11 +85,27 @@ Visually inspected: legible Arabic, distinct materials, uncluttered composition,
 
 Possible motion if selected: small touch-responsive tilt and a restrained material highlight on a confirmed milestone, static with reduced motion. Image-only; no code or animation work started for I. Earlier rejected drafts remain uncommitted locally. No deployment or store action.
 
-## Direction J — interlocking heart on navy, awaiting image review
+## Direction J — interlocking heart on navy, rejected
+
+Rejected on 2026-10-28. The owner requested research into ideas rather than another immediate object substitution.
 
 `2026-10-28-j-heart.png`: “أثرك بيفرق”, a tactile heart sculpture made from interlocking cobalt and teal pieces, representing mutual support. The card changes to deep navy, white completed-assist total, restrained gold rank label, turquoise point balance and integrated progress strip. Built-in ImageGen; exact prompt in `2026-10-28-j-prompt.txt`.
 
 Visually inspected: legible Arabic, clear object silhouette, no overlap and right-to-left progress fill. Sample values are unchanged: 42 completed assists, 320 points, 18 remaining. This is image-only, not imported into the application. Possible motion after selection: a gentle breathing movement and touch tilt, with a static reduced-motion state. Any implementation must use real localized text and the existing reward thresholds. No code, new motion, backend, store or deployment action for J.
+
+## Interaction research after J — 2026-10-28
+
+Official documentation/product articles were read, not installed apps or their live animations. These are proposed AKHOO adaptations, not features promised by the reference brands. No new mockup, asset download, package installation or implementation in this research step.
+
+| Source and verified pattern | Proposed AKHOO direction | Meaningful interaction |
+|---|---|---|
+| [GitHub Skyline](https://github.com/github/gh-skyline) generates a 3D-printable model from contribution history. | **Your 3D impact:** a compact field of blue/teal raised tiles whose shape comes from completed assists, not an unrelated decorative object. | A new tile/height appears only on confirmed progress; touching a tile reveals its own activity summary. The aggregate balance stays separate. |
+| [Spotify Wrapped Archive](https://engineering.atspotify.com/2026/3/inside-the-archive-2025-wrapped) selects remarkable days and creates stories grounded in listening history. [Wrapped 2025 design](https://newsroom.spotify.com/2025-12-03/wrapped-marketing-campaign/) uses a layered visual-mixtape language. | **Your help stories:** a small stack of tactile cards for completed assistance types and earned milestones. | Swipe through actual events, flip a card for its short factual summary, and see a newly completed event settle into the stack. No fabricated gratitude/testimonials or unique-person totals. |
+| [ustwo / Monument Valley](https://ustwo.com/work/monument-valley/) explores architectural interaction, hidden paths and unfolding optical illusions. | **The connection you complete:** a small clean folding structure with two separated sides, joined progressively through earned milestones. | Touch reveals how the structure fits together; confirmed progress adds a segment. This is an interaction study, not a revival of the rejected static roadside diorama or garage. |
+
+[Strava's official 2025 article](https://press.strava.com/en-gb/articles/strava-mid-year-data-shows-how-athletes-are-tracking-toward-2025-goals) also describes personal recaps highlighting progress and milestones, supporting the story direction. Apple/Nike/Duolingo were revisited but mainly repeat patterns already explored. [Apple's activity-ring guidance](https://developer.apple.com/design/human-interface-guidelines/activity-rings) limits that specific component to its own fitness meanings, so do not clone its branded rings for assistance totals.
+
+Recommendation (design judgment): start with the **3D impact field**, or the **help-story stack** if the owner wants a warmer personal experience. Both make actual activity the visual subject instead of swapping a mascot/key/heart beside unchanged counters. No design is selected yet. A total-only prototype can preview an abstract field, but meaningful per-event cards/tiles require checking the authenticated activity data first. Keep rank thresholds, spendable points, RTL/localized native text and reduced-motion support unchanged. No location trails or other people's private details should be introduced.
 
 ## Prompts
 
