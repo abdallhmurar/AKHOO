@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-27 — Codex — Created original evolving-helper character concept G after the reference research, with a compact card and four rank looks; built-in ImageGen, visually inspected, awaiting selection.
+  Image/prompt/docs only, GitHub sync with deployment disabled. No application, store, backend or deployment change; interrupted tree draft preserved.
+
 - 2026-10-27 — Codex — Owner rejected gauge F and requested established-product inspiration. Reviewed official Apple, Nike, Duolingo, Spotify and Airbnb sources; notes in the concept README.
   Research/docs only; official static examples inspected, no claims of live-app QA. No new mockup, implementation, deployment or store action; tree draft preserved.
 

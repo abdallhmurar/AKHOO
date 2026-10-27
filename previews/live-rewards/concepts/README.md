@@ -57,6 +57,14 @@ Design recommendation (our judgment): a personal helper-achievement card combini
 
 No new design or implementation is selected. Proposed share/story/character behavior is not implemented. Existing thresholds and backend data remain unchanged. Reduced-motion presentation should be static and text/data must remain live, localized and accessible.
 
+## Direction G — evolving helper character, awaiting review
+
+`2026-10-27-g-helper-character.png`: original AKHOO helper character with blue/teal clothing and gold details for the sample current level, under “أثرك بأخوو”. The separate strip beneath the card previews bronze, silver, gold and green appearance changes; it is a design exploration, not extra in-app UI. Built-in ImageGen; full prompt in `2026-10-27-g-prompt.txt`.
+
+Inspired by Duolingo's milestone-transformation principle and Apple's clear information hierarchy, without copying their characters or artwork. Sample values: 42 confirmed assists, 320 points, 18 assists remaining. Visual inspection confirmed readable Arabic and the intended RTL progress direction; final progress geometry/text would be data-driven if selected.
+
+Proposed animation remains unimplemented: subtle idle character life and a brief greeting on a confirmed milestone, static under reduced motion. The outfit progression is only a proposal and must not change existing rank thresholds or claim additional benefits. No production or app change.
+
 ## Prompts
 
 ### A

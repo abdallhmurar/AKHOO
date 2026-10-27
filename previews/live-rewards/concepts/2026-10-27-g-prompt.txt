@@ -1,0 +1,24 @@
+Tool: built-in image_gen. Mode: new generation, opaque background, no reference images.
+
+Use case: ui-mockup.
+Create one exceptionally polished Arabic mobile app achievement-card concept for AKHOO, a Palestinian community roadside-help app. The chosen direction is an ORIGINAL evolving 3D helper character, inspired by the principle of character-based milestone celebration used by Duolingo and the clear restrained information hierarchy of Apple. Do NOT copy any Duolingo character, owl, logo, Apple icon or UI. Make a new AKHOO identity.
+
+Create a beautiful compact pearl-white rounded card, displayed large on a quiet pale sky-blue canvas. No phone frame, no desktop webpage, no generic presentation title, no extra screens. Card width/height around 1.45:1 and designed to be readable at 390px mobile width. This is a real usable app component with typography and data, not a promotional poster. Finely spaced Arabic RTL layout, subtle border and short soft shadows, minimal nested boxes.
+
+MAIN FOCAL POINT on the left half: an appealing full-body original stylized 3D adult male community-helper mascot, friendly and quietly confident, warm medium olive skin, short dark curly hair, neatly trimmed short beard, expressive warm eyes, human adult proportions with gently enlarged head and hands (premium soft 3D mobile illustration, not a baby toy). He wears a beautifully tailored teal zip-up hoodie over a royal-blue shirt, off-white trousers and blue/white sneakers. Small neat gold seam detailing and a small gold pin on his chest subtly identify the current gold level. His shirt reads the small clean Arabic word "أخوو". One hand casually rests at his waist, the other gives a relaxed friendly thumbs-up, anatomically correct hands. A very small practical navy roadside-help pouch clipped to his belt, no big toolbox. Clear silhouette, charming memorable face, realistic fabric folds and gently textured materials, soft daylight, warm believable skin. His shoes rest on the card surface with a fine contact shadow. Behind him a broad very pale mint circular recess, not a shiny badge. No car, no road scene, no trees or trophy.
+Character should look like someone from the world of AKHOO who could greet the user and do a short happy gesture on reaching a milestone. A character you can care about, not a generic corporate avatar. Avoid superhero costume, cape, helmet, uniform or emergency-service imagery.
+
+RIGHT half clean text with excellent hierarchy:
+Title "أثرك بأخوو"
+Smaller subtitle "كل مساعدة بتفرق"
+Large navy "42"
+Under it "مساعدة عملتها"
+Small subtle warm gold rounded status tag "مساعد ذهبي"
+Separate smaller points balance "320 نقطة".
+Arabic is clean modern Cairo-style typography, correct joined letters and clearly separated dots, sufficient line-height. Text must feel like native UI laid over artwork, not painted into the illustration.
+
+BOTTOM of the card: a compact progress area with a crisp horizontal blue-to-teal line filled 70% FROM THE RIGHT, the remaining pale segment on the LEFT. Caption "باقي 18 مساعدة للمستوى الجاي". Small calm visual hint of next rank at far left: a tiny green outline circle with a green shirt silhouette, no misleading lock icon or payment symbols. Progress and labels with comfortable spacing. Preserve meaning: 42 confirmed assists, not 42 different people; points are separate.
+
+BELOW the main card, outside it on the same pale background, show a small tasteful character-evolution reference strip: four tiny versions of this SAME helper character with identical identity and face, from simpler blue outfit through silver-accent outfit, gold-accent outfit (the current large hero) to refined emerald-green outfit. Align in Arabic reading order RIGHT to LEFT. Small exact labels below them from RIGHT to LEFT: "برونزي", "فضي", "ذهبي", "أخوو الأخضر". Keep this strip subordinate and clearly an evolution preview, not four extra app cards. No arrows with motion blur, no decorative confetti. These should show purposeful clothing/pose evolution, not the same colored sticker repeated.
+
+Palette: authentic AKHOO blue #1769ed, teal #0ea899, deep navy #102a43, pearl white and light sky blue, small warm gold accents for current rank. Friendly premium modern app aesthetic. No dramatic lights, neon, metallic dashboards, giant medals, clasped-hands sculpture, gifts, racing gauge, sparks, particle effects, watermarks or extra English text. The whole result should be beautifully calm, charismatic and distinctive, with exceptional 3D character craft.
