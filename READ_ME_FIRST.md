@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-27 — Codex — Owner requested a different idea: prepared roadside-help journey concept D with built-in ImageGen, visually reviewed; awaiting design selection.
+  Review image only (`previews/live-rewards/concepts/`), GitHub sync with deployment disabled. Tree-detail draft paused and left uncommitted; no application, store or backend change.
+
 - 2026-10-27 — Codex — Implemented approved impact-tree concept for local iOS/web review: curved bark, individual leaves, grassy base, progressive growth and responsive live text. Added only related ar/en/he translation keys in Claude's area.
   GitHub branch sync only, Vercel disabled; no store, OTA, Android/backend or production change. Typecheck/lint, 310 tests and iOS/web exports passed; browser QA in ar/en/he. Real iPhone and live-account flow not verified.
 - 2026-10-27 — Codex — Owner rejected the medal direction. Prepared impact/tree concept C; archived the uncommitted medal-layout draft and kept A/B as rejected history.

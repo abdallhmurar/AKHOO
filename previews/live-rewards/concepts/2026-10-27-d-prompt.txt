@@ -1,0 +1,20 @@
+Tool: built-in image_gen. Mode: new generation, opaque background, no reference images.
+
+Use case: ui-mockup.
+Create ONE polished visual design proposal for a compact Arabic RTL impact-and-points card in AKHOO, a friendly Palestinian community roadside assistance mobile app. This is a new alternative to the rejected growing-tree visualization. Show only the single card enlarged on a quiet ice blue background, no phone frame, no presentation labels, no extra screens.
+
+Visual concept: "مشوارك مع أخوو". The meaningful hero is a beautifully crafted miniature 3D roadside assistance moment: one royal blue compact sedan, hood raised, two friendly adult men one wearing a teal sweatshirt and one cream sweatshirt helping with a battery, realistic proportions softly stylized like high-end 3D mobile app illustrations. A small elegant S-shaped road ribbon passes the scene and ends at a simple teal location/check marker. Road should be short, broad, and legible, integrate naturally into the pearl white surface, not a map UI. Few tasteful details, fine shadows, softened edges, believable materials. This is NOT a racing game, city simulator or emergency service. No ambulance, no tree as focal subject, no giant medal, no repetitive gift, no excessive scenery, no neon glow, no sparks, no floating confetti.
+
+Composition: restrained, sophisticated rounded rectangular card with thin pale cyan outline. Width to height roughly 1.6:1, as a compact dashboard card. Upper right clear Arabic text title, below a compact navy bold big "42" with label. Upper/central left a beautiful 3D miniature scene with generous breathing room. Bottom has clean separated info/progress band, RTL 70% blue-to-teal progress line filled from the right. Points balance as small secondary statistic bottom left, not the dominant number. Status as subtle teal rounded pill bottom right. Keep everything inside comfortable padding. The 3D scene must feel like part of the UI, not a rectangular inserted video or image.
+Palette: AKHOO royal blue #1769ed, teal #078b80, deep navy #0e2d43, pearl white, very pale sky blue. Warm human details, soft daylight, no dramatic stage lighting, minimal shadows.
+
+Exact Arabic text, correctly connected Arabic letters, fully readable, natural spacing and dots:
+Title at upper right: "مشوارك مع أخوو"
+Subtitle: "كل وقفة منك بتفرق"
+Primary stat: "42"
+Stat label: "مساعدة عملتها"
+Small rank pill: "مساعد ذهبي"
+Progress caption: "باقي 18 مساعدة للمستوى الجاي"
+Secondary balance: "320 نقطة"
+Use a clean modern Arabic font similar to Cairo, bold titles, no calligraphy, no mangled text. No additional words or labels, no watermarks. Do not claim 42 unique people, it is 42 help events.
+This must feel inviting and warm, directly related to real people helping one another on the road, with the clean recognizable style of the AKHOO app. Render a finished high fidelity visual concept.
