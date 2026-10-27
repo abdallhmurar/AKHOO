@@ -1,0 +1,26 @@
+Use case: ui-mockup.
+Generate ONE gorgeous, convincing mobile app rewards interface concept for AKHOO, an Arabic community roadside-help app. The idea is "بطاقة مساعد أخوو": a personal digital helper membership card with tactile materials, earned rank, completed assists and spendable point balance. This is a DESIGN REVIEW image, not a payment card or a real identity. No bank chip, credit-card numbers, payment networks, security shield, barcode or QR code. No physical card offer or invented paid subscription.
+
+Canvas approximately 4:3 landscape, pale ice-blue background. Center a compact portrait mobile-section composition, seen straight-on with NO phone hardware, no status bar, no bottom navigation. A small right-aligned section title above the card exactly "بطاقتك بأخوو". A tiny understated top-left label exactly "تصوّر توضيحي". Contemporary correctly shaped Arabic sans typography, clear dot separation and precise spacing.
+
+The MAIN HERO is one beautifully crafted rounded digital membership card, landscape 1.58:1 proportion, shown at a VERY SLIGHT three-quarter tilt so its thin beveled edge is visible while every word remains easy to read. Most of the front is sophisticated cobalt blue satin metal blending into deep teal, with restrained champagne-gold edging and one minimal gold corner accent indicating GOLD rank. Subtle brushed texture, fine embossed topographic curves integrated into material, realistic soft reflections and shadow. NO oversized abstract 3D object, medal, heart, key, car, tree, building or cartoon character beside the stats. The CARD itself is the tangible object. Mature, inviting, premium, not flashy luxury, no neon or sparkle.
+
+Card face RTL layout:
+Top RIGHT a small beautifully embossed white Arabic brand exactly "أخوو".
+Top LEFT a restrained warm-gold pill exactly "مساعد ذهبي".
+Upper-right identity row below the brand: a clean round neutral silhouette avatar placeholder (no invented real face), next to placeholder name exactly "اسمك هون", and smaller muted pale-mint line exactly "من مجتمع أخوو".
+Lower half in two clearly separated groups:
+RIGHT: huge crisp white "42", underneath exactly "مساعدة مكتملة".
+LEFT: large crisp white "320", underneath exactly "رصيد النقاط".
+A subtle slim divider between these number groups. All typography lies naturally on the same card surface. Preserve clear hierarchy. No fake dates, personal details, signatures or ID number.
+
+Directly BELOW the hero card, within the overall same mobile section, an integrated pale-white rounded progress area:
+right-aligned line exactly "باقي 18 مساعدة لأخوو الأخضر"
+small restrained green pill on left exactly "المستوى الجاي".
+A slim rounded progress track underneath fills70% from RIGHT to LEFT, teal filled part on right, pale blue remainder on left.
+Beneath that, a centered subtle text-link exactly "شوف طريقك للمستوى الجاي" with one small left arrow.
+This indicates a later deliberate card flip/details interaction without showing a second full card.
+
+At very bottom of canvas add a tasteful small MATERIAL SAMPLE STRIP, four tiny unlabelled overlapping card CORNERS only, not full repeated cards: bronze, silver, blue/teal with gold edging (current), green. Their purpose is to suggest changing material at earned milestones. No captions, text or symbols on this strip, no extra reward claims.
+
+Make the main membership card dominate with beautiful balanced negative space, compact layout suitable for a390px mobile screen, crisp readable Arabic and clear numeric information. Soft studio light. Palette cobalt #1469e8, deep teal #087e80, navy #102b44, restrained warm gold and pearl white. One finished concept, no device frame, no watermark. Sample values42/320/18 are illustrative only. The identity placeholder must stay anonymous.

@@ -139,6 +139,14 @@ The owner asked to continue ideas after saving success stories as a separate fut
 
 [Rive's official product page](https://rive.app/) was also reviewed for state-driven interactive art and runtime tooling. No CLI, app, account or package was installed, and no compatibility/performance claim has been validated for this project. If selected later, verify actual iOS/web support and Arabic rendering before choosing a renderer. The existing reward thresholds and data meanings remain authoritative. Suggested first visual comparison: these two genuinely different structures, rather than another decorative-object substitution. Success stories remain deferred.
 
+## Direction M — personal helper card, awaiting image review
+
+`2026-10-28-m-helper-card.png`: “بطاقتك بأخوو”, a blue/teal membership-style card with restrained gold edging for the current gold rank, anonymous identity placeholder, 42 completed assists and 320 available points. A separate compact section shows 18 remaining to the existing green rank; small material samples illustrate bronze/silver/gold/green. Built-in ImageGen; exact prompt in `2026-10-28-m-prompt.txt`.
+
+The owner requested an image after the two further directions were proposed; the recommended personal-card direction was used. Visual inspection checked Arabic readability, separate count/balance labels, material depth and right-to-left progress. The material strip is review context, not promised additional runtime UI. The identity remains anonymous and the values are samples.
+
+Possible interaction after selection: restrained touch tilt, deliberate flip/details action for next-rank requirements, and material change on a confirmed rank-up. No implementation, animation or payment/physical-card feature exists. Keep existing rank thresholds, account data, native/localized text and reduced motion. Success stories L remain a separate deferred page. Prior rejected code drafts stay local and uncommitted; no deployment or store/backend action.
+
 ## Prompts
 
 ### A
