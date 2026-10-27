@@ -75,13 +75,21 @@ Sample values: 42 completed assists, 320 points, 18 remaining. Visually inspecte
 
 Possible motion if selected: the service bay opens briefly on confirmed progress, a car arrives gently and the station gains a small detail at earned milestones. No implementation or new animation has started. G's rejected draft is preserved separately; no store, deployment or backend action.
 
-## Direction I — premium car key, awaiting image review
+## Direction I — premium car key, rejected
+
+Rejected by the owner on 2026-10-28; retained as image-only history.
 
 `2026-10-28-i-help-key.png`: “مفتاح الخير بإيدك”, a tactile cobalt/teal car-key fob with chrome ring, woven loop and restrained gold accent. One object beside clear completed-assist totals, rank and a separate point balance; no scene or character. Built-in ImageGen; exact prompt in `2026-10-28-i-prompt.txt`.
 
 Visually inspected: legible Arabic, distinct materials, uncluttered composition, right-to-left progress fill. Sample values remain 42 completed assists, 320 points and 18 assists remaining. The rendered lock symbols are part of the illustration, not usable controls or a claim of remote car access. Any implementation would retain native/localized text and existing thresholds; no rank-gated benefits are invented.
 
 Possible motion if selected: small touch-responsive tilt and a restrained material highlight on a confirmed milestone, static with reduced motion. Image-only; no code or animation work started for I. Earlier rejected drafts remain uncommitted locally. No deployment or store action.
+
+## Direction J — interlocking heart on navy, awaiting image review
+
+`2026-10-28-j-heart.png`: “أثرك بيفرق”, a tactile heart sculpture made from interlocking cobalt and teal pieces, representing mutual support. The card changes to deep navy, white completed-assist total, restrained gold rank label, turquoise point balance and integrated progress strip. Built-in ImageGen; exact prompt in `2026-10-28-j-prompt.txt`.
+
+Visually inspected: legible Arabic, clear object silhouette, no overlap and right-to-left progress fill. Sample values are unchanged: 42 completed assists, 320 points, 18 remaining. This is image-only, not imported into the application. Possible motion after selection: a gentle breathing movement and touch tilt, with a static reduced-motion state. Any implementation must use real localized text and the existing reward thresholds. No code, new motion, backend, store or deployment action for J.
 
 ## Prompts
 

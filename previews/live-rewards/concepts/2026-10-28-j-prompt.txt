@@ -1,0 +1,16 @@
+Use case: ui-mockup.
+Generate a beautiful completely new rewards-card concept for AKHOO, an Arabic community roadside-help app. One compact app card on a light ice-blue canvas, landscape 3:2 composition, no phone frame. CHANGE the previous conventional white-card look: the card is rich deep navy with an elegant subtle cobalt gradient along the bottom, smooth large corners, no neon, no sparkles. Sophisticated tactile product UI.
+
+Hero object on LEFT half: a large beautiful sculptural 3D HEART formed by TWO gently interlocking curved solid ceramic ribbons, one rich cobalt blue and one fresh teal, symbolizing two people supporting each other. A small heart-shaped negative space is visible between the two pieces. The sculpture is at a slight three-quarter angle with convincing thickness, rounded smooth edges, soft satin highlights, restrained reflections, realistic deep contact shadows. It feels warm, premium and sculptural, not a medical heart, not a toy, not a flat logo, not a medal. No hand figures, no human characters, no car, no key, no machinery. Carefully lit so blue and teal remain clearly visible against navy. No pedestal. No glows, no particles, no additional floating objects. The heart should feel as if it could gently breathe in a future interactive design.
+
+On RIGHT half, a beautiful precise RTL Arabic hierarchy with lots of space:
+small white heading exactly "أثرك بيفرق"
+large bold white number "42"
+beneath exactly "مساعدة مكتملة"
+then a small restrained warm-gold dot and label "مساعد ذهبي".
+Below them a small separate turquoise balance "320 نقطة".
+No more copy in the hero. Text never overlaps the sculpture. Correct Arabic shaping, fully separate dots and generous baseline spacing. Use an elegant contemporary Arabic sans typeface suitable for a real app.
+
+Bottom: a gently recessed darker navy horizontal strip integrated into the SAME card (not a white panel). Above a fine rounded progress track, exact right-aligned text "باقي 18 مساعدة للمستوى الجاي" in muted pale mint. Progress bar fills70% from RIGHT toward LEFT, teal filled segment at right, muted blue empty segment at left. Very slight inset material depth, no tick marks, no gauge, no fake extra statistics.
+
+Render as crisp polished UI design with photorealistic 3D sculpture, restrained premium art direction. AKHOO navy #102b44, royal blue #1469e8, teal #08b8af. Compact without feeling cramped; mature and welcoming, not fintech clutter, not game scenery, not a promotional poster. No stage thumbnails, no watermark, no button labels, no play/pause control. Numbers are illustrative sample data. Single finished concept only.
