@@ -137,7 +137,7 @@ export function CommunityHubScreen() {
         <Image source={require('../../../assets/images/perks-coupon-icon.png')} style={styles.headerCoupon} resizeMode="cover" accessible={false} />
       </View>}
 
-      <GuideTarget id="perks.points">{Platform.OS !== 'android' && statsReady ? <PointsPanel balance={balance} count={completedCount} target={nextThreshold ?? TOP_THRESHOLD} level={level} levelLabel={t(levelLabelKey)} remainingLabel={nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')} /> : <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <GuideTarget id="perks.points">{Platform.OS !== 'android' && statsReady ? <PointsPanel name={profile?.full_name} avatar={profile?.avatar_url} balance={balance} count={completedCount} target={nextThreshold ?? TOP_THRESHOLD} level={level} levelLabel={t(levelLabelKey)} remainingLabel={nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')} /> : <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         {!statsReady ? (
           pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
         ) : <>

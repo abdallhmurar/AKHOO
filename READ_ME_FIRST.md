@@ -11,7 +11,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
 - **فكرة محفوظة لبعدين:** «قصص الفزعة» صفحة جديدة مستقلة، مش بديل لبطاقة النقاط. بتبرز نفس الشخص اللي ساعد، وبتجمع قصص من المساعدات المكتملة وقصص بيبعتها المساعد للمراجعة. الصورة محفوظة؛ التنفيذ مؤجّل بطلبك.
-- **بطاقة النقاط:** صورة «بطاقتك بأخوو» جاهزة للمراجعة: بطاقة شخصية بخامة حسب المستوى، وعدد المساعدات ورصيد النقاط. لسا صورة فقط، ما اعتمدنا التنفيذ.
+- **بطاقة النقاط:** «بطاقتك بأخوو» صارت معاينة لوكل بنفس اتجاه الصورة المعتمدة: خامات المستويات، اسم وصورة الحساب، المساعدات والنقاط، ميلان وقلب باللمس. الرابط على الكمبيوتر `http://127.0.0.1:4186/?lang=ar`. جاهزة لرأيك؛ ما نُشر تحديث.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -54,7 +54,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Local design review (Codex):** K is rejected. New image-only concept M shows a personal helper membership-style rewards card; image/prompt in `previews/live-rewards/concepts/`, awaiting selection, no implementation. “قصص الفزعة” (L) remains a **separate deferred page**, with curated completed assists and helper submissions for review/publication permission. Its labelled illustrative image is preserved; no real story is published. Prior character/tree code remains uncommitted; no deployment, backend/store action or build/migration number consumed.
+**Local design review (Codex):** Owner approved M and asked to reproduce the image. The local iOS/web card now uses extracted blank materials with native/localized identity, rank, balance, assist total, progress and touch/pointer tilt/flip; preview `http://127.0.0.1:4186/?lang=ar`, docs `previews/live-rewards/README.md`. Existing thresholds/queries remain unchanged; actual name/avatar pass through the existing parent. iOS/web exports, typecheck/lint and working-copy tests passed; Chrome ar/en/he,320/390px, keyboard, pointer, reduced motion and large sample values checked. Physical iPhone/live-account/Safari QA remains unverified. “قصص الفزعة” (L) stays a **separate deferred page**. Prior rejected character/tree drafts stay uncommitted and unused by the active card. No deployment, backend/store action or build number consumed.
 
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Codex — Implemented approved M for local iOS/web review using ImageGen-extracted blank card materials and live text/data; added related ar/en/he keys in Claude's area. Details/proof in `previews/live-rewards/`.
+  Typecheck/lint (one existing warning), working-copy316 tests, iOS/web exports and Chrome ar/en/he interaction checks passed. GitHub sync only, deployment disabled; no store/backend/Android change; physical iPhone/live-account QA pending.
 
 - 2026-10-28 — Codex — Created image-only concept M, a personal helper membership-style card with level materials, assist count and point balance, using built-in ImageGen. PNG/prompt in `previews/live-rewards/concepts/`; visually inspected.
   Awaiting selection; image/docs GitHub sync only, deployment disabled. No implementation, new animation, store or backend action; success stories remain deferred.

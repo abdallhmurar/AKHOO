@@ -642,6 +642,22 @@
     "title": "AKHOO Perks",
     "subtitle": "Exclusive offers every week",
     "searchPlaceholder": "Search a business or offer",
+    "helperCard": {
+      "title": "Your AKHOO card",
+      "namePlaceholder": "Your name",
+      "community": "Part of the AKHOO community",
+      "helps": "completed helps",
+      "balance": "Points balance",
+      "next": "Next level",
+      "remaining": "{{remaining}} more helps to reach {{levelName}}",
+      "current": "Current level",
+      "path": "See your path to the next level",
+      "showFront": "Back to your card",
+      "showBack": "View card level requirements",
+      "flipHint": "Activate to flip the card and view level requirements",
+      "backHint": "Your level follows completed help requests",
+      "requirement": "{{count}} completed helps"
+    },
     "impactTree": {
       "title": "Your impact",
       "subtitle": "Every helping hand matters",

@@ -4,6 +4,8 @@ const { defineConfig } = require('eslint/config')
 module.exports = defineConfig([
   {
     ignores: [
+      // Local preview bundles and private tooling artifacts are not source.
+      'credentials/**',
       'dist/**',
       'dist-v2-check/**',
       'dist-v2-android-check/**',

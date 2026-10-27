@@ -642,6 +642,23 @@
     "title": "مزايا أخوو",
     "subtitle": "عروض حصرية كل أسبوع",
     "searchPlaceholder": "دوّر على عمل تجاري أو عرض",
+    "helperCard": {
+      "title": "بطاقتك بأخوو",
+      "namePlaceholder": "اسمك هون",
+      "community": "من مجتمع أخوو",
+      "helps": "مساعدة مكتملة",
+      "balance": "رصيد النقاط",
+      "next": "المستوى الجاي",
+      "remaining": "باقي {{remaining}} مساعدة ل{{levelName}}",
+      "current": "مستواك الحالي",
+      "path": "شوف طريقك للمستوى الجاي",
+      "showFront": "ارجع لبطاقتك",
+      "showBack": "شوف تفاصيل مستويات البطاقة",
+      "flipHint": "اضغط لتقلب البطاقة وتشوف شروط المستويات",
+      "backHint": "مستواك حسب المساعدات المكتملة",
+      "requirement": "{{count}} مساعدة مكتملة",
+      "requirement_few": "{{count}} مساعدات مكتملة"
+    },
     "impactTree": {
       "title": "أثر مساعدتك",
       "subtitle": "كل مساعدة بتترك أثر",

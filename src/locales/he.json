@@ -642,6 +642,22 @@
     "title": "הטבות אחוו",
     "subtitle": "מבצעים בלעדיים כל שבוע",
     "searchPlaceholder": "חיפוש עסק או מבצע",
+    "helperCard": {
+      "title": "הכרטיס שלך באח׳ו",
+      "namePlaceholder": "השם שלך",
+      "community": "חלק מקהילת אח׳ו",
+      "helps": "עזרות שהושלמו",
+      "balance": "יתרת נקודות",
+      "next": "הרמה הבאה",
+      "remaining": "עוד {{remaining}} עזרות ל-{{levelName}}",
+      "current": "הרמה הנוכחית",
+      "path": "הדרך שלך לרמה הבאה",
+      "showFront": "בחזרה לכרטיס שלך",
+      "showBack": "הצגת הדרישות לרמות הכרטיס",
+      "flipHint": "לחצו כדי להפוך את הכרטיס ולהציג את דרישות הרמות",
+      "backHint": "הרמה נקבעת לפי בקשות עזרה שהושלמו",
+      "requirement": "{{count}} עזרות שהושלמו"
+    },
     "impactTree": {
       "title": "ההשפעה שלך",
       "subtitle": "כל עזרה משאירה חותם",
