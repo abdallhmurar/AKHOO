@@ -9,9 +9,9 @@ const eas = require('../../eas.json')
 // to the Production track as a completed release (the owner asked for it to be published on 2026-10-27), and must not be
 // mistaken for the iOS versions.
 describe('Android 2.0.4 production release settings', () => {
-  it('uses version name 2.0.4 and the versionCode of the last published build (8; the next build raises it)', () => {
+  it('uses version name 2.0.4 and the versionCode of the EAS build 4a679c37 (9; the next build raises it)', () => {
     expect(app.version).toBe('2.0.4')
-    expect(app.android.versionCode).toBe(8)
+    expect(app.android.versionCode).toBe(9)
     expect(eas.build.production.autoIncrement).toBe(true)
   })
 
