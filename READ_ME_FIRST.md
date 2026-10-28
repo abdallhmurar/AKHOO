@@ -6,10 +6,10 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
-- **أندرويد:** 2.0.3 (رقم 8) حي على Google Play لإسرائيل (انتشر بتاريخ 28/10؛ Play Console بيقول "منشور" وصفحة التطبيق بتفتح).
+- **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** لا شي.
+- **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -47,7 +47,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **2.0.3 (versionCode 8) is LIVE on Google Play for Israel only**: Play Console "Submission activity" shows the Production request as Published; the public page https://play.google.com/store/apps/details?id=app.akhoo.help answers 200 ("أخوو - التطبيقات على Google Play") from an Israeli IP on 2026-10-28. EAS build `71dbeb05-6575-4993-8668-2434a3c89434`, source `main`. The closed test still has 2.0.0 (7) for the 12 testers. Users in other countries (for example Palestine) do not see it until countries are added in Play Console.
+- **2.0.4 (versionCode 9) is on the Production track (Israel only), `completed`, in Google review since 2026-10-28**; EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`, source `android/partner-home-20261028` (merged into `main`). It shows the same partner / home layout as the iPhone 2.0.4 (Android files `PartnerHomeScreen.tsx`, `PartnerEnrollment.tsx`, `PartnerMotion.tsx`; the old layout is `LegacyHomeScreen`). It also has an over-the-air update (runtime 2.0.4, update group `636bde81-f12d-4223-a7bf-12322016eef1`) that adds the `akhoo://auth-callback` route, which fixes "Unmatched Route" after Google sign-in on Android. 2.0.3 (8) stays live until Google approves 2.0.4. Internal and closed testing tracks also have 2.0.4 (9). The Android UI was not seen on a device by Claude; the owner tried it on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
@@ -83,7 +83,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Platform | Used | Next free |
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
-| Android | versionCode 7 (closed test), 8 (2.0.3, production) | **9** |
+| Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
 ## 6. Credentials map (never commit)
@@ -95,6 +95,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Claude — Android 2.0.4 (9) = the iPhone partner/home design ported to Android; built on EAS, tested by the owner from the internal/closed tracks, then sent to Production (Israel) through the Play API after his OK. During his test he found "Unmatched Route" after Google sign-in: added `app/auth-callback.tsx` and shipped it as an Android OTA (runtime 2.0.4). Not verified: Google's review result; the layout on a real phone beyond the owner's own look.
 
 - 2026-10-28 — Claude — Android 2.0.3 (8) is live on Google Play for Israel (Play Console shows Published; the public page opens). The Google watcher was stopped. Not verified: installing it on a phone.
 
