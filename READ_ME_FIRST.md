@@ -6,10 +6,10 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
-- **أندرويد:** 2.0.3 (رقم 8) أرسلتها لمراجعة Google لإسرائيل بتاريخ 27/10. لسا ما ظهرت على Play.
+- **أندرويد:** 2.0.3 (رقم 8) حي على Google Play لإسرائيل (انتشر بتاريخ 28/10؛ Play Console بيقول "منشور" وصفحة التطبيق بتفتح).
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** Google (أندرويد 2.0.3).
+- **بانتظار طرف ثالث:** لا شي.
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
 ## 1. Rules (non-negotiable)
@@ -47,7 +47,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **2.0.3 (versionCode 8)** is on the Production track for **Israel only**, sent for review by the owner on 2026-10-27, not visible on Play yet. EAS build `71dbeb05-6575-4993-8668-2434a3c89434`, source `main`. The closed test still has 2.0.0 (7) for the 12 testers.
+- **2.0.3 (versionCode 8) is LIVE on Google Play for Israel only**: Play Console "Submission activity" shows the Production request as Published; the public page https://play.google.com/store/apps/details?id=app.akhoo.help answers 200 ("أخوو - التطبيقات على Google Play") from an Israeli IP on 2026-10-28. EAS build `71dbeb05-6575-4993-8668-2434a3c89434`, source `main`. The closed test still has 2.0.0 (7) for the 12 testers. Users in other countries (for example Palestine) do not see it until countries are added in Play Console.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
@@ -95,6 +95,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-28 — Claude — Android 2.0.3 (8) is live on Google Play for Israel (Play Console shows Published; the public page opens). The Google watcher was stopped. Not verified: installing it on a phone.
 
 - 2026-10-27 — Claude — iOS 2.0.4 (31) approved by Apple and released through the API (`READY_FOR_SALE`) under the owner's standing OK. The release is public. Not verified: the public store page and an update on a real phone.
 
