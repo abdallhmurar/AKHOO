@@ -8,9 +8,9 @@ const eas = require('../../eas.json')
 // The first Android production release must not ask for background location (that needs Google's declaration), is sent
 // to the Production track as a completed release (the owner asked for it to be published on 2026-10-27), and must not be
 // mistaken for the iOS versions.
-describe('Android 2.0.3 production release settings', () => {
-  it('uses version name 2.0.3 and the versionCode of the EAS build that was published (8)', () => {
-    expect(app.version).toBe('2.0.3')
+describe('Android 2.0.4 production release settings', () => {
+  it('uses version name 2.0.4 and the versionCode of the last published build (8; the next build raises it)', () => {
+    expect(app.version).toBe('2.0.4')
     expect(app.android.versionCode).toBe(8)
     expect(eas.build.production.autoIncrement).toBe(true)
   })

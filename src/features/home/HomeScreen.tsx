@@ -12,6 +12,7 @@ import { Card, StatusBadge, Surface } from '../../components/ui'
 import HelpCardLottie from '../../components/help-card/HelpCardLottie'
 import WantToHelpCard from '../../components/want-to-help-card/WantToHelpCard'
 import DiscoverCard from '../../components/discover-card/DiscoverCard'
+import { PartnerHomeScreen } from './PartnerHomeScreen'
 
 // Real SANAD Home: two equal-weight core actions (Request Help / Help
 // Mode), a light discovery link to Perks, and the real "no call center"
@@ -19,7 +20,13 @@ import DiscoverCard from '../../components/discover-card/DiscoverCard'
 // UI, no invented copy system). Business logic comes from the real
 // providers (useAuth/useMission, which already fall back to the live
 // help_requests table).
+// Android shows the same partner / home layout as the iPhone 2.0.4 build. The previous layout stays below as
+// LegacyHomeScreen, so going back is a one-line change.
 export function HomeScreen() {
+  return <PartnerHomeScreen />
+}
+
+export function LegacyHomeScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
   const isRTL = useIsRTL()
