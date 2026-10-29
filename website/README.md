@@ -1,8 +1,9 @@
-# AKHOO marketing website — standalone preview
+# AKHOO marketing website
 
 This is a standalone public introduction to AKHOO, separate from the
-authenticated Expo application. The mobile-accessible preview is
-https://dist-mu-lilac-59.vercel.app/?lang=ar . Its Vercel project is `dist`
+authenticated Expo application. Its official domain is **https://akhoo.app**
+(connected 2026-10-29); `www.akhoo.app` redirects to it. The existing alias
+https://dist-mu-lilac-59.vercel.app/?lang=ar remains available. Its Vercel project is `dist`
 (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`); do not deploy this static directory to the
 root repository's `akhoo` app project. Only `website/dist/` is uploaded.
 
@@ -75,8 +76,10 @@ viewport and has a static fallback when WebGL is unavailable.
 
 ## Preview limitations
 
-No marketing domain, analytics, mailing-list database, store release, or production
-hosting is configured. The preview has `noindex` metadata. Contact information and
+The marketing domain is connected to the existing hosted site. Analytics and a
+mailing-list database are not configured. Existing `noindex,nofollow` metadata
+remains, so search indexing is not enabled. Domain and DNS details are in
+`docs/akhoo-app-domain-2026-10-29.md` at the repository root. Contact information and
 store links use existing public project details. There are no fabricated user
 counts, testimonials, response-time promises, or fixed Android release dates.
 

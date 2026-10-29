@@ -8,6 +8,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
+- **دومين الموقع الرسمي:** https://akhoo.app شغّال من 29/10، وwww بيحوّل عليه. إعدادات إيميل أخوو محفوظة؛ الموقع لسه عليه منع الظهور بمحركات البحث من نسخة المعاينة.
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
 - **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
@@ -53,7 +54,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
+**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app connected on 2026-10-29; `www.akhoo.app` redirects with 308, preserving paths and queries. The existing public alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains available. Both use Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). Existing `noindex,nofollow` metadata remains; search indexing is not enabled. Cloudflare retains DNS and all nine pre-existing email/verification records. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Content last deployed 2026-10-26; domain connection did not rebuild or change it. Report: `docs/akhoo-app-domain-2026-10-29.md`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
 - Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
@@ -97,6 +98,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Connected akhoo.app to the existing marketing site, www → apex 308; DNS-only additions in Cloudflare preserve all 9 existing records and nameservers. No application/content deployment.
+  Verified Vercel domain status, public DNS, HTTPS, redirect path/query, ar/en/he mobile rendering, partner-feed 200 and existing-site content hashes. Claude-area edits: DNS coordination and branch-only deploy suppression; `noindex` remains. Report: `docs/akhoo-app-domain-2026-10-29.md`.
 
 - 2026-10-29 — Claude — Partner form made real after the owner's OK: migration 0053 applied to the live database (tested first with a rollback), edge function `submit-partner-application` deployed, admin page "Partner applications", web/Android/iOS forms call it; small edits in Codex files `PartnerEnrollment*.tsx` and `partnerBetaCopy.ts` (the "test" wording is gone in ar/en/he). Not done: the `RESEND_API_KEY` secret (blocked), the Android OTA and the iPhone release. Not verified: the privacy policy mentions partner contact data.
 - 2026-10-29 — Claude — Password-reset email redesigned: logo plus Arabic, Hebrew and English in one message (`supabase/email-templates/recovery.html`), applied in Supabase after the owner approved the mock. Verified: real reset emails reached his Gmail inbox with working links. Not verified: how it looks in Outlook or on Android Gmail; the custom subject is ignored by Supabase so far.
