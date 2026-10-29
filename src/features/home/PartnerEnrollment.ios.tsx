@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Keyboard, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { MotionScene } from '../../components/motion/Motion.ios'
@@ -42,7 +42,7 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
   const fields = ['business', 'city', 'phone', 'offer'] as const
 
   return <Modal visible animationType="slide" presentationStyle="fullScreen" onRequestClose={back}>
-    <KeyboardAvoidingView behavior="padding" style={[styles.root, { backgroundColor: theme.colors.background, paddingTop: inset.top }]}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={[styles.root, { backgroundColor: theme.colors.background, paddingTop: inset.top }]}>
       <View style={[styles.header, dirStyles(rtl).row, { borderColor: theme.colors.border }]}>
         <Pressable accessibilityRole="button" accessibilityLabel={copy.back} onPress={back} style={[styles.back, panel]}><Text style={[type.h2, ink]}>{rtl ? '→' : '←'}</Text></Pressable>
         <Text accessibilityRole="header" style={[type.h3, ink, align, styles.flex]}>{copy.brand}</Text>

@@ -1,5 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react'
-import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { NativeSafeAreaView as SafeAreaView } from '../../components/NativeSafeArea'
 import { X } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '../../components/ui'

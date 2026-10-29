@@ -17,8 +17,10 @@ describe('iOS language direction and Arabic metrics', () => {
     expect(typography.h1.lineHeight).toBeGreaterThanOrEqual(typography.h1.fontSize! * 1.5)
     expect(typography.h1.letterSpacing).toBeUndefined()
   })
-  it('keeps existing Android typography metrics', () => {
+  it('matches published iOS Arabic metrics on Android', () => {
+    setPlatform('ios')
+    const published = createTypography('ar')
     setPlatform('android')
-    expect(createTypography('ar').body.lineHeight).toBe(21)
+    expect(createTypography('ar')).toEqual(published)
   })
 })

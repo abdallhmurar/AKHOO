@@ -7,10 +7,23 @@ const base = require('./app.json')
 // stays the single source of truth otherwise.
 module.exports = () => {
   const testflight = process.env.AKHOO_BUILD_TARGET === 'testflight'
+  const androidRelease = process.env.AKHOO_BUILD_TARGET === 'android-release'
   if (testflight && process.env.EAS_BUILD_PLATFORM === 'android') {
     throw new Error('The TestFlight profile is restricted to iOS.')
   }
-  const config = testflight ? {
+  if (androidRelease && process.env.EAS_BUILD_PLATFORM === 'ios') {
+    throw new Error('The Android release profile is restricted to Android.')
+  }
+  if (androidRelease && (!/^\d+\.\d+\.\d+$/.test(process.env.AKHOO_ANDROID_VERSION || '') || !/^[1-9]\d*$/.test(process.env.AKHOO_ANDROID_VERSION_CODE || ''))) {
+    throw new Error('Android releases require an explicit version and positive versionCode.')
+  }
+  const config = androidRelease ? {
+    ...base.expo,
+    version: process.env.AKHOO_ANDROID_VERSION,
+    android: { ...base.expo.android, versionCode: Number(process.env.AKHOO_ANDROID_VERSION_CODE) },
+    // Isolate this binary from the earlier 2.0.4 Android OTA.
+    runtimeVersion: process.env.AKHOO_ANDROID_VERSION,
+  } : testflight ? {
     ...base.expo,
     version: process.env.AKHOO_IOS_VERSION || base.expo.version,
     ios: { ...base.expo.ios, buildNumber: process.env.AKHOO_IOS_BUILD_NUMBER || base.expo.ios.buildNumber },

@@ -36,7 +36,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Codex | Complete Android parity with published iOS 2.0.4 (31), validate and release to Google Play as authorized by owner | android/ios-parity-release-20261029 | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -47,6 +47,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
+- **2.0.5 (10) قيد التجهيز — Codex، 29/10:** بأمر المالك، مطابقة باقي شاشات الآيفون المنشور ثم الإرسال للنشر العام. 2.0.4 (9) نقلت الرئيسية والنموذج فقط؛ توثيق المطابقة والفحص: `docs/android-ios-parity-2.0.5.md`. لا تشمل تجارب بطاقة النقاط اللوكل.
 - **2.0.4 (versionCode 9) is on the Production track (Israel only), `completed`, in Google review since 2026-10-28**; EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`, source `android/partner-home-20261028` (merged into `main`). It shows the same partner / home layout as the iPhone 2.0.4 (Android files `PartnerHomeScreen.tsx`, `PartnerEnrollment.tsx`, `PartnerMotion.tsx`; the old layout is `LegacyHomeScreen`). It also has an over-the-air update (runtime 2.0.4, update group `636bde81-f12d-4223-a7bf-12322016eef1`) that adds the `akhoo://auth-callback` route, which fixes "Unmatched Route" after Google sign-in on Android. 2.0.3 (8) stays live until Google approves 2.0.4. Internal and closed testing tracks also have 2.0.4 (9). The Android UI was not seen on a device by Claude; the owner tried it on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
@@ -83,7 +84,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Platform | Used | Next free |
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
-| Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
+| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4); **10 reserved by Codex for 2.0.5 full published-iOS parity, 2026-10-29** | **11** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
 ## 6. Credentials map (never commit)
@@ -95,6 +96,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Preparing complete Android parity with published iOS 2.0.4 (31), including screens, fonts, motion and native adapters; Android 2.0.5 (10) reserved. Owner explicitly authorized public Google Play release.
+  Build/store pipeline in Claude's area is touched only for this Android release. Validation/delivery: `docs/android-ios-parity-2.0.5.md`; no Apple, backend or Vercel action.
 
 - 2026-10-28 — Claude — Google Play listing: new Arabic screenshots (current design) plus new `en-US` and `iw-IL` listings (translated text, own 4 screenshots each) committed through the Play API after his OK; Google reviews them. Not verified: Hebrew wording by a native reader; Google's result. English Home banner title touches the wrench icon on a 405 px screen (web CSS, not changed).
 - 2026-10-28 — Claude — Android 2.0.4 (9) = the iPhone partner/home design ported to Android; built on EAS, tested by the owner from the internal/closed tracks, then sent to Production (Israel) through the Play API after his OK. During his test he found "Unmatched Route" after Google sign-in: added `app/auth-callback.tsx` and shipped it as an Android OTA (runtime 2.0.4). Not verified: Google's review result; the layout on a real phone beyond the owner's own look.

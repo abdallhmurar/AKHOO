@@ -1,7 +1,8 @@
 import { MotionScene, ArtIcon } from '../../components/motion/Motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { ActivityIndicator, Animated, Easing, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Animated, Easing, Image, Linking, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
+import { NativeSafeAreaView as SafeAreaView } from '../../components/NativeSafeArea'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Svg, { Path } from 'react-native-svg'
@@ -32,7 +33,6 @@ import { queryKeys } from '../../services/queryKeys'
 import { Avatar, Button, Card, IconButton, useToast } from '../../components/ui'
 import { AppScreen, MapPanel, MissionTimeline, ScreenHeader } from '../../components/v2'
 import { SanadMap } from '../../components/SanadMap'
-import { ConfettiBurst } from '../../components/ConfettiBurst'
 import { NavigationAppIcon } from '../../components/NavigationAppIcon'
 import { SuccessCheckmark } from '../../components/SuccessCheckmark'
 import { VolunteerActivityBadge } from '../../components/VolunteerActivityBadge'
@@ -684,7 +684,7 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
       <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobTop, { backgroundColor: theme.colors.primarySoft }]} />
       <View pointerEvents="none" style={[styles.completionBlob, styles.completionBlobBottom, { backgroundColor: theme.colors.communitySoft }]} />
       <ScrollView contentContainerStyle={styles.completionScroll} showsVerticalScrollIndicator={false}>
-        {Platform.OS !== 'android' ? <MotionScene name="success" style={{ height: 220, aspectRatio: 'auto' }} fit="contain" /> : <><Image source={require('../../../assets/images/icon.png')} style={styles.completionLogo} resizeMode="contain" /><SuccessCheckmark tone="success" /></>}
+        <MotionScene name="success" style={{ height: 220, aspectRatio: 'auto' }} fit="contain" />
         <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('activeRequest.completion.title')}</Animated.Text>
         <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('activeRequest.subtitleCompleted')}</Animated.Text>
         <Animated.Text style={[typography.small, styles.centerText, stageStyle(1), { color: theme.colors.textMuted, marginTop: -space.sm }]}>{t('activeRequest.completion.subtitle2')}</Animated.Text>
@@ -705,7 +705,7 @@ function RequesterCompletion({ mission, volunteerName, onDone, onNewRequest }: {
             <View style={styles.starsRow}>
               {[1, 2, 3, 4, 5].map(value => (
                 <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
-                  {Platform.OS !== 'android' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
+                  {value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight="regular" color={theme.colors.borderStrong} />}
                 </Pressable>
               ))}
             </View>
@@ -801,7 +801,7 @@ function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { poi
   const CompletionFrame = Platform.OS === 'web' ? ScrollView : SafeAreaView
   return (
     <CompletionFrame style={[styles.fill, Platform.OS !== 'web' && styles.completionContent, { backgroundColor: theme.colors.background }]} {...(Platform.OS === 'web' ? { contentContainerStyle: { ...styles.completionContent, width: '100%' as const, maxWidth: 480, alignSelf: 'center' as const } } : {})}>
-      {Platform.OS !== 'android' ? <MotionScene name="success" style={{ height: 210, aspectRatio: 'auto' }} fit="contain" /> : <><ConfettiBurst /><SuccessCheckmark tone="success" size={112} pulse /></>}
+      <MotionScene name="success" style={{ height: 210, aspectRatio: 'auto' }} fit="contain" />
       <Animated.Text style={[typography.h1, styles.centerText, stageStyle(0), { color: theme.colors.textPrimary }]}>{t('volunteerJob.completion.title')}</Animated.Text>
       <Animated.Text style={[typography.body, styles.centerText, stageStyle(1), { color: theme.colors.textSecondary }]}>{t('volunteerJob.completion.message')}</Animated.Text>
       {stats ? (
@@ -838,7 +838,7 @@ function HelperCompletion({ stats, requestId, helperId, onDone }: { stats: { poi
               <View style={styles.starsRow}>
                 {[1, 2, 3, 4, 5].map(value => (
                   <Pressable key={value} disabled={showThanks} onPress={() => setSelectedStars(value)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${value}`}>
-                    {Platform.OS !== 'android' && value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight={value <= displayedStars ? 'fill' : 'regular'} color={value <= displayedStars ? theme.colors.reward : theme.colors.borderStrong} />}
+                    {value <= displayedStars ? <ArtIcon name="rating-star" size={32} /> : <Star size={32} weight="regular" color={theme.colors.borderStrong} />}
                   </Pressable>
                 ))}
               </View>

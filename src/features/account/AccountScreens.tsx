@@ -6,7 +6,7 @@ import { Alert, Image, Linking, Platform, Pressable, StyleSheet, Switch, Text, V
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import * as Clipboard from 'expo-clipboard'
-import { ArrowLeft, ArrowRight, Bell, CaretLeft, CaretRight, ChatCircleDots, Camera, Check, Compass, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
+import { ArrowLeft, ArrowRight, Bell, CaretLeft, CaretRight, ChatCircleDots, Check, Compass, Copy, FileText, Globe, Lifebuoy, Moon, ShieldCheck, SignOut, Trash, UserCircle, Warning, WhatsappLogo } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { normalizePhone } from '../../lib/phone'
@@ -129,22 +129,8 @@ export function AccountHomeScreen() {
 
   return (
     <AppScreen contentStyle={styles.content}>
-      {Platform.OS !== 'android' ? <AccountHeading title={t('account.title')} subtitle={t('account.subtitle')} /> : <ScreenHeader title={t('account.title')} subtitle={t('account.subtitle')} />}
-
-      {Platform.OS !== 'android' ? <AccountIdentity name={profile.full_name?.trim() || t('account.title')} email={session?.user.email ?? ''} avatar={profile.avatar_url} busy={avatarUploading} onPhoto={pickAvatar} onEdit={() => router.push('/(tabs)/account/profile')} /> : <View style={styles.identity}>
-        <Pressable onPress={pickAvatar} disabled={avatarUploading} style={[styles.avatarPicker, { backgroundColor: theme.colors.surfaceMuted, borderColor: theme.colors.border }]}>
-          {profile.avatar_url ? (
-            <Image source={{ uri: profile.avatar_url }} style={styles.avatarImage} />
-          ) : (
-            <Camera size={34} color={theme.colors.textMuted} weight="light" />
-          )}
-          <View style={[styles.avatarEditBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.background }]}>
-            <Camera size={15} color={theme.colors.onPrimary} weight="fill" />
-          </View>
-        </Pressable>
-        <Text style={[typography.h2, { color: theme.colors.textPrimary, marginTop: space.md }]}>{profile.full_name?.trim() || t('account.title')}</Text>
-        <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{session?.user.email ?? ''}</Text>
-      </View>}
+      <AccountHeading title={t('account.title')} subtitle={t('account.subtitle')} />
+      <AccountIdentity name={profile.full_name?.trim() || t('account.title')} email={session?.user.email ?? ''} avatar={profile.avatar_url} busy={avatarUploading} onPhoto={pickAvatar} onEdit={() => router.push('/(tabs)/account/profile')} />
 
       <View style={[styles.menu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
         <GuideTarget id="account.profile"><ListRow Icon={UserCircle} title={t('account.menu.profile')} onPress={() => router.push('/(tabs)/account/profile')} /></GuideTarget>

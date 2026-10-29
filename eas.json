@@ -4,6 +4,17 @@
     "appVersionSource": "local"
   },
   "build": {
+    "android-parity": {
+      "extends": "production",
+      "autoIncrement": false,
+      "environment": "production",
+      "env": {
+        "AKHOO_BUILD_TARGET": "android-release",
+        "AKHOO_ANDROID_VERSION": "2.0.5",
+        "AKHOO_ANDROID_VERSION_CODE": "10"
+      },
+      "android": { "buildType": "app-bundle" }
+    },
     "partner-testflight": {
       "extends": "testflight",
       "env": {

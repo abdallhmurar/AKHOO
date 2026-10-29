@@ -41,7 +41,7 @@ export function AppProviders({ children }: PropsWithChildren) {
   return (
     <ThemeModeProvider>
       {!fontsLoaded ? <LaunchScreen /> : (
-        <GestureHandlerRootView style={[styles.fill, Platform.OS === 'ios' && { direction: 'ltr' }]}>
+        <GestureHandlerRootView style={[styles.fill, Platform.OS !== 'web' && { direction: 'ltr' }]}>
           <SafeAreaProvider>
             <LanguageDirectionProvider>
               <LanguageReadyGate>

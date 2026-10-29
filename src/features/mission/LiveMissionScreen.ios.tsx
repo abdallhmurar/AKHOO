@@ -1,6 +1,7 @@
 import { MotionScene } from '../../components/motion/Motion'
 import { useCallback, useEffect, useState } from 'react'
-import { Image, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { NativeSafeAreaView as SafeAreaView } from '../../components/NativeSafeArea'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, Car, ChatCircleDots, Check, CheckCircle, FlagCheckered, Handshake, MapPin, Phone, SealCheck } from 'phosphor-react-native'

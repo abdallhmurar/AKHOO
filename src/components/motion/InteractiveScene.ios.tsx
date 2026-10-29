@@ -77,7 +77,7 @@ function SceneSurface({ state, fallback, onUnavailable }: { state: NativeSceneSt
     <WebView ref={web} source={SCENE_SOURCE} originWhitelist={['*']} onShouldStartLoadWithRequest={request => isLocalSceneNavigation(request.url)}
       style={styles.web} containerStyle={styles.web} scrollEnabled={false} bounces={false} javaScriptEnabled
       allowsInlineMediaPlayback={false} allowsLinkPreview={false} dataDetectorTypes="none" allowsBackForwardNavigationGestures={false}
-      onLoadEnd={() => web.current?.injectJavaScript(command)} onError={onUnavailable} onContentProcessDidTerminate={onUnavailable}
+      onLoadEnd={() => web.current?.injectJavaScript(command)} onError={onUnavailable} onContentProcessDidTerminate={onUnavailable} onRenderProcessGone={onUnavailable}
       onMessage={event => { const value = event.nativeEvent.data; if (!isSceneMessage(value)) return; if (value === 'ready') setReady(true); else onUnavailable() }} />
     {!ready ? <View style={StyleSheet.absoluteFill}>{fallback}</View> : null}
   </View>

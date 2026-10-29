@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { AccessibilityInfo, AppState, Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { AccessibilityInfo, AppState, Image, Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import type { ViewStyle } from 'react-native'
 import { useFocusEffect } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
@@ -76,7 +76,7 @@ function Scene({ media, name, style, fit = 'cover', children, paused = false }: 
   }
   const artwork = mediaFrame(size.width, size.height, name === 'partner-home' ? 1648 / 544 : name === 'help-rose' ? 2 : name === 'perks' ? 7 / 3 : 1168 / 784, fit, name === 'help' || name === 'help-rose' || name === 'helper-home' ? 'left' : 'center')
   const content = <>
-    {!failed && !reduced ? <VideoView player={player} style={styles.fill} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
+    {!failed && !reduced ? <VideoView player={player} surfaceType={Platform.OS === 'android' ? 'textureView' : undefined} style={styles.fill} nativeControls={false} contentFit="contain" fullscreenOptions={{ enable: false }} allowsPictureInPicture={false} allowsVideoFrameAnalysis={false} onFirstFrameRender={() => setReady(true)} /> : null}
     {!ready || failed || reduced ? <Image source={media.poster} style={styles.fill} resizeMode="cover" /> : null}
   </>
   return <View ref={ref} collapsable={false} style={[styles.scene, frame]} onLayout={event => setSize(event.nativeEvent.layout)}>
