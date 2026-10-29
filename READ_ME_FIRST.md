@@ -8,7 +8,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي. نسخة 2.0.5 (البناء 32، نموذج الشركاء الحقيقي + صورة رئيسية جديدة بالستور) انبعتت لمراجعة آبل بتاريخ 29/10 (بانتظار المراجعة). بأمرك: بينزل للناس لحاله أول ما آبل توافق (إطلاق تلقائي).
 - **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
-- **الموقع الرسمي:** https://akhoo.app شغّال؛ أزرار التنزيل والتواصل صارت بشعارات Apple وGoogle Play وواتساب، وباقي أيقونات الموقع توحّدت من 29/10. الروابط شغّالة باللغات الثلاث؛ إعداد منع الظهور بجوجل لسه موجود.
+- **الموقع الرسمي:** https://akhoo.app شغّال؛ كرت «محتاج مساعدة؟» الوردي الجديد مع السيارة البيضاء والفيديو صار مكان مشهد البطارية القديم بأول الموقع. شعارات المتاجر وواتساب موجودة؛ فُحصت الحركة والكبسة باللغات الثلاث. إعداد منع الظهور بجوجل لسه موجود.
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
 - **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
@@ -38,7 +38,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Replace website hero scene with approved rose need-help app card | web/current-scenes-20261029 | 2026-10-29 |
 | Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
@@ -56,7 +55,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/brand-icons-20261029` (`37680db`): recognizable Apple/Google Play/WhatsApp logos and shared outline action icons; store links and partner draft flow preserved. Local/live ar/en/he checks and all 59 deployed file hashes pass. Report: `docs/website-icons-2026-10-29.md`.
+**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/current-scenes-20261029` (`0d2333c`): hero uses the approved rose need-help card and white-car video, opening the existing website request demo. Brand icons and public store links preserved. Local/live ar/en/he motion, responsive and keyboard checks and all 61 file hashes pass. Report: `docs/website-rose-card-2026-10-29.md`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
 - Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
@@ -102,7 +101,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 Format: `date — who — what (where) — external effect — verified how`
 
 - 2026-10-29 — Codex — Replaced the website hero battery picker with the owner-confirmed rose help card and approved app video; the CTA opens the existing request demo.
-  Local ar/en/he responsive, motion/fallback/keyboard checks and build pass; publication verification pending. Report: `docs/website-rose-card-2026-10-29.md`.
+  Published on akhoo.app; local/live ar/en/he responsive, motion/fallback/keyboard checks, build and all 61 deployed hashes pass. Report: `docs/website-rose-card-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Published Apple, Google Play and WhatsApp logos plus consistent Lucide action icons on akhoo.app; public links and app behavior unchanged.
   Local/live ar/en/he mobile/desktop flows, static build and all 59 deployed file hashes pass. Branch-only root/admin deployment suppression is the small Claude-area edit. Report: `docs/website-icons-2026-10-29.md`.

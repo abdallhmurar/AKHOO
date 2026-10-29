@@ -17,4 +17,6 @@ Validation:
 
 Scope: marketing website only. Existing app/native assets were read and reused, not edited. Feature-branch deployment suppression in root/admin Vercel configs is the small Claude-area edit. Current coordination notes were merged from main without discarding the previous website updates.
 
-Publication details will be recorded after deployment verification.
+Published to https://akhoo.app on 2026-10-29 from source commit `0d2333c`. Deployment `dpl_5jKfKNywdpyWhKih7TR3Pg6TzMfu`: https://dist-6h1onocxl-abad003-6200s-projects.vercel.app. Staged without assigning domains; authenticated staged `journey.js` matched the build before promotion.
+
+The same responsive, localized, video/pause/error-fallback and keyboard checks passed on the live site, with zero page errors. All 61 publicly deployed file hashes match the local build. No app store release, native build, OTA or backend change.
