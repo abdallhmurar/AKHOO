@@ -23,7 +23,7 @@ The Android export check now rejects the iOS medal, gift, `InteractiveScene.ios`
 - TypeScript, targeted ESLint and 327 tests across 56 files pass. React review: platform imports are statically resolved; no added data requests, effects or event listeners; decorative gift remains hidden from accessibility because the tab owns its label.
 - The production Android export passes the Metro graph check: 28 presentation/auth entries and four Arabic fonts, with both iOS WebGL paths absent. The separate iOS export still resolves `TabBarGift.ios`, `RewardsGift.ios`, `HelperMedal.ios` and `InteractiveScene.ios`; it does not contain the Android gift fallback.
 - Google crash-report access is unavailable: Play Developer Reporting API is disabled, and the existing service account cannot read its Service Usage configuration. The existing Supabase management token also returned 401; no backend data/configuration was changed. Categorical client diagnostics would not provide a native stack trace in any case.
-- No affected physical device is connected. The WebView path is the strongest shared regression identified in the reported screens, but the precise native exception is not confirmed. Verification on the owner's phone remains required.
+- No affected physical device is connected to the development machine. The WebView path is the strongest shared regression identified in the reported screens, but the precise native exception is not confirmed. The owner subsequently verified recovery on the affected phone, as recorded below; this is not a full-device or full-app QA pass.
 
 ## Delivery
 
@@ -36,4 +36,4 @@ Published the inspected export to **Android runtime 2.0.5 only** on the producti
 
 The published build 10 manifest confirms updates enabled, runtime 2.0.5, channel `production`, launch checks `ALWAYS` and launch wait 0 ms. A cold launch downloads an available update in the background; a subsequent cold launch loads it. Before publication, the update endpoint returns 204 for Android runtime 2.0.5 and iOS runtime 2.0.4.
 
-The owner was asked to cold-open the app online, wait on home for approximately a minute, cold-open again, and retry all three reported entry points. **Affected-device outcome is pending.** If exits persist, obtain native Android crash evidence before changing additional unrelated UI or data paths.
+The owner was asked to cold-open the app online, wait on home for approximately a minute, cold-open again, and retry all three reported entry points. On **2026-10-29**, the owner replied **«صاروا يفتحوا»** (they now open). The reported benefits-tab, home-benefits-ticket and activity-tab failure is therefore **resolved on the owner's affected phone after the OTA**. No additional app change or publication was made to record this confirmation. If a native exit recurs, obtain crash evidence before changing unrelated UI or data paths.
