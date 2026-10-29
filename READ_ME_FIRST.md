@@ -5,7 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
-- **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي. نسخة 2.0.5 (البناء 32، نموذج الشركاء الحقيقي + صورة رئيسية جديدة بالستور) انبعتت لمراجعة آبل بتاريخ 29/10 (بانتظار المراجعة). بأمرك: بينزل للناس لحاله أول ما آبل توافق (إطلاق تلقائي).
+- **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي. نسخة 2.0.5 (البناء 32، نموذج الشركاء الحقيقي + صورة رئيسية جديدة بالستور) وافقت عليها آبل ونزلت للناس ليلة 29/10 (READY_FOR_SALE).
 - **أندرويد (انتبه):** كودكس نشر نسخة 2.0.5 (رقم 10، شاشات الآيفون كاملة) على Google Play لإسرائيل بتاريخ 29/10، وهي اللي عند الناس هلأ، ونموذج الشركاء فيها كان تجريبي (انبنت قبل ما يصير حقيقي). نزّلت تحديث سريع لـ2.0.5 بأمرك (29/10) فيه النموذج الحقيقي فوق كود كودكس وإصلاحه، وبيوصل للناس لما يفتحوا التطبيق مرة أو مرتين.
 - **أندرويد (قبلها):** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
@@ -38,12 +38,12 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
+| — | nothing claimed | — | — |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
-- **2.0.5 (32): SUBMITTED to App Review 2026-10-29** (`WAITING_FOR_REVIEW`, release set to `AFTER_APPROVAL` at the owner's order, so it goes live by itself when Apple approves; review submission `2157a57a-2314-4478-8f85-74b973fc9254`; the owner ordered it) (prepared the same day): App Store version `02393e3d-4044-4947-bbae-a45ae3019496` (`PREPARE_FOR_SUBMISSION`, manual release), build 32 `VALID` (built by `.github/workflows/ios-release-205.yml` on branch `ios/release-2.0.5-20261029`, profile `partner-release-205`, same settings as 2.0.4 plus the real partner form). Arabic "what's new" and review notes updated (the partner form is real now). Screenshots: the Home picture (first one) of the iPhone set was replaced by a new one captured from the web app at 360 px wide (1284x2778); the old Home was removed from the iPad set (3 left). Next: nothing to press when Apple approves; check that the state becomes `READY_FOR_SALE`.
+- **2.0.5 (32): LIVE (`READY_FOR_SALE`) since the night of 2026-10-29; was SUBMITTED to App Review the same day** (`WAITING_FOR_REVIEW`, release set to `AFTER_APPROVAL` at the owner's order, so it goes live by itself when Apple approves; review submission `2157a57a-2314-4478-8f85-74b973fc9254`; the owner ordered it) (prepared the same day): App Store version `02393e3d-4044-4947-bbae-a45ae3019496` (`PREPARE_FOR_SUBMISSION`, manual release), build 32 `VALID` (built by `.github/workflows/ios-release-205.yml` on branch `ios/release-2.0.5-20261029`, profile `partner-release-205`, same settings as 2.0.4 plus the real partner form). Arabic "what's new" and review notes updated (the partner form is real now). Screenshots: the Home picture (first one) of the iPhone set was replaced by a new one captured from the web app at 360 px wide (1284x2778); the old Home was removed from the iPad set (3 left). Next: nothing to press when Apple approves; check that the state becomes `READY_FOR_SALE`.
 - 2.0.3 (29) and 2.0.2 (28) are the previous live versions; users update normally.
 - Users still on 2.0.1 (build 17) get iOS OTAs (channel `production`, runtime 2.0.1) from `ota/ios-2.0.1-translations`. **Builds 28 and later have OTA disabled** (built with the `testflight` profile), so only a new App Store version can change their screens.
 - TestFlight: latest 2.0.4 (31) in the internal group "Test"; TestFlight binaries never receive OTAs.
@@ -87,7 +87,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, in progress) | build **33** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live) | build **33** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
 | Supabase SQL migrations | `0001`–`0053` | **0054** |
 
@@ -101,6 +101,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-30 — Claude — iOS 2.0.5 (32) approved by Apple and released automatically (`READY_FOR_SALE`, read back from App Store Connect; the public lookup still showed 2.0.4 a few minutes later, a normal delay). The review watcher was stopped. Not verified: the partner form on a real iPhone with 2.0.5.
 - 2026-10-29 — Claude — Security cleanup at the owner's order: Resend admin key deleted, local Cloudflare token copy removed. Owner decisions recorded: no more store countries (Israel only), and he reports that everything released today was tried on real phones (his word; the iPhone 2.0.5 is still in Apple's review).
 - 2026-10-29 — Claude — Verified end to end at the owner's test: a partner application sent from his Android phone (after the 2.0.5 OTA) is stored (`source` shows `ios`, see open items), appears in the admin and produced the team email to support@akhoo.app (`delivered`, arrived in the inbox he checks). The web application he sent earlier also arrived.
 - 2026-10-29 — Claude — Found that Codex's Android 2.0.5 (10) is the live Android version and still has the test partner form. Published an OTA for runtime 2.0.5 (Codex's code + the real form, branch `android/partner-form-205-20261029`) at the owner's explicit order; the update server returns it. Touched nothing on Codex's branch. Not verified: on a phone.
