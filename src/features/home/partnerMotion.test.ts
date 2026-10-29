@@ -21,8 +21,11 @@ describe('Android partner home', () => {
     expect(home).toContain('export function LegacyHomeScreen()')
   })
 
-  it('keeps the partner form memory-only (no network or storage calls)', () => {
-    const form = read('PartnerEnrollment.tsx')
-    for (const forbidden of ['fetch(', 'supabase', 'AsyncStorage', 'XMLHttpRequest']) expect(form).not.toContain(forbidden)
+  it('sends the partner form only through submitPartnerApplication and keeps nothing on the device', () => {
+    for (const file of ['PartnerEnrollment.tsx', 'PartnerEnrollment.ios.tsx', 'PartnerEnrollment.web.tsx']) {
+      const form = read(file)
+      expect(form).toContain('submitPartnerApplication(')
+      for (const forbidden of ['fetch(', 'supabase', 'AsyncStorage', 'localStorage', 'XMLHttpRequest']) expect(form).not.toContain(forbidden)
+    }
   })
 })

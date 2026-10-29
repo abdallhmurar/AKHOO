@@ -47,7 +47,8 @@
     "reports": "תלונות",
     "notifications": "התראות",
     "map": "מפה",
-    "support": "תיבת תמיכה"
+    "support": "תיבת תמיכה",
+    "partnerApplications": "בקשות שותפות"
   },
   "auth": {
     "loginTitle": "אחוו",
@@ -792,5 +793,36 @@
     "businessSavedUntranslated": "העסק נשמר עם הטקסט בערבית בלבד כי התרגום נכשל. לחצו על «תרגום כל התוכן» מאוחר יותר כדי להשלים.",
     "translateAllNothing": "כל התוכן כבר מתורגם.",
     "translateAllPartial": "{{count}} פריטים תורגמו, {{failed}} נכשלו. נסו שוב."
+  },
+  "partnerApplications": {
+    "title": "בקשות שותפות",
+    "subtitle": "עסקים שמבקשים להצטרף לשותפי AKHOO מהאפליקציה ומהאתר.",
+    "table": {
+      "date": "תאריך",
+      "business": "עסק",
+      "category": "תחום",
+      "phone": "מספר ליצירת קשר",
+      "offer": "הצעה",
+      "source": "מקור",
+      "status": "סטטוס"
+    },
+    "status": {
+      "new": "חדש",
+      "contacted": "נוצר קשר",
+      "approved": "אושר",
+      "rejected": "נדחה"
+    },
+    "categories": {
+      "cars": "שירותי רכב",
+      "food": "מסעדות ובתי קפה",
+      "shops": "חנויות",
+      "professional": "שירותים מקצועיים",
+      "other": "תחום אחר"
+    },
+    "sources": {
+      "web": "אתר",
+      "ios": "אייפון",
+      "android": "אנדרואיד"
+    }
   }
 }

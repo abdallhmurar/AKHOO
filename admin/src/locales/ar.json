@@ -47,7 +47,8 @@
     "reports": "التقارير",
     "notifications": "الإشعارات",
     "map": "الخريطة",
-    "support": "صندوق الدعم"
+    "support": "صندوق الدعم",
+    "partnerApplications": "طلبات الشراكة"
   },
   "auth": {
     "loginTitle": "أخوو",
@@ -792,5 +793,36 @@
     "businessSavedUntranslated": "تم حفظ العمل بالنص العربي فقط لأن الترجمة تعذّرت. اضغط «ترجمة كل المحتوى» لاحقاً لإكمالها.",
     "translateAllNothing": "كل المحتوى مترجم مسبقاً.",
     "translateAllPartial": "تمت ترجمة {{count}} عنصر، وتعذّرت ترجمة {{failed}}. أعد المحاولة."
+  },
+  "partnerApplications": {
+    "title": "طلبات الشراكة",
+    "subtitle": "طلبات المصالح اللي بدها تنضم لشركاء أخوو من التطبيق والويب.",
+    "table": {
+      "date": "التاريخ",
+      "business": "المصلحة",
+      "category": "المجال",
+      "phone": "رقم التواصل",
+      "offer": "العرض المقترح",
+      "source": "المصدر",
+      "status": "الحالة"
+    },
+    "status": {
+      "new": "جديد",
+      "contacted": "تم التواصل",
+      "approved": "تمت الموافقة",
+      "rejected": "مرفوض"
+    },
+    "categories": {
+      "cars": "خدمات سيارات",
+      "food": "مطاعم وكافيهات",
+      "shops": "محلات ومتاجر",
+      "professional": "خدمات مهنية",
+      "other": "مجال ثاني"
+    },
+    "sources": {
+      "web": "الويب",
+      "ios": "آيفون",
+      "android": "أندرويد"
+    }
   }
 }

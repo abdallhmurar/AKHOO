@@ -47,7 +47,8 @@
     "reports": "Reports",
     "notifications": "Notifications",
     "map": "Map",
-    "support": "Support inbox"
+    "support": "Support inbox",
+    "partnerApplications": "Partner applications"
   },
   "auth": {
     "loginTitle": "AKHOO",
@@ -792,5 +793,36 @@
     "businessSavedUntranslated": "The business was saved with its Arabic text only because translation failed. Press “Translate all content” later to complete it.",
     "translateAllNothing": "Everything is already translated.",
     "translateAllPartial": "{{count}} items translated, {{failed}} failed. Try again."
+  },
+  "partnerApplications": {
+    "title": "Partner applications",
+    "subtitle": "Businesses asking to join AKHOO partners from the app and the web.",
+    "table": {
+      "date": "Date",
+      "business": "Business",
+      "category": "Category",
+      "phone": "Contact number",
+      "offer": "Proposed offer",
+      "source": "Source",
+      "status": "Status"
+    },
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "categories": {
+      "cars": "Car services",
+      "food": "Food & cafés",
+      "shops": "Shops & retail",
+      "professional": "Professional services",
+      "other": "Something else"
+    },
+    "sources": {
+      "web": "Web",
+      "ios": "iPhone",
+      "android": "Android"
+    }
   }
 }
