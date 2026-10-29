@@ -1,0 +1,61 @@
+name: iOS 2.0.5 release build (GitHub macOS runner)
+
+# Only builds the signed IPA of iOS 2.0.5 (build 32) with `eas build --local`, so it does not use the Expo cloud quota.
+# Never submits App Review, releases an App Store version or builds Android. The IPA is kept for one day as an artifact.
+on:
+  push:
+    branches: ['ios/release-2.0.5-20261029']
+    paths:
+      - 'src/**'
+      - 'app/**'
+      - 'assets/**'
+      - 'app.config.js'
+      - 'app.json'
+      - 'eas.json'
+      - 'package*.json'
+      - '.github/workflows/ios-release-205.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ios-release-205
+  cancel-in-progress: false
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/ios/release-2.0.5-20261029'
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+      - name: Select Xcode 26
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then echo '::error::Xcode 26 is required'; exit 1; fi
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck && npm test
+      - name: Configure existing Expo credentials
+        env:
+          RAW_EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          TOKEN=$(printf '%s' "$RAW_EXPO_TOKEN" | tr -d '[:space:]"')
+          if [ -z "$TOKEN" ]; then echo '::error::EXPO_TOKEN is missing'; exit 1; fi
+          echo "::add-mask::$TOKEN"
+          echo "EXPO_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+      - name: Build the signed iOS 2.0.5 binary with OTA disabled
+        run: npx --yes eas-cli@25.3.0 build --platform ios --profile partner-release-205 --local --non-interactive --output "$RUNNER_TEMP/akhoo-ios-205.ipa"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: akhoo-ios-205-ipa
+          path: ${{ runner.temp }}/akhoo-ios-205.ipa
+          retention-days: 1
+          if-no-files-found: error
