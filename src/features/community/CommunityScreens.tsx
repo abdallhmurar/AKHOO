@@ -1,13 +1,10 @@
-import { PerksHeader } from '../../components/motion/Motion'
-import { PointsPanel } from '../../components/motion/ApprovedPanels'
-import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
 import { localizeContent, BUSINESS_TEXT_FIELDS, OFFER_TEXT_FIELDS } from '../../../shared/contentTranslations'
 import { useEffect, useState } from 'react'
-import { Animated, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import QRCode from 'react-native-qrcode-svg'
-import { ClockCountdown, MapPin, Phone, Star, Tag, Ticket, WhatsappLogo } from 'phosphor-react-native'
+import { ClockCountdown, MapPin, Phone, Star, Tag, WhatsappLogo } from 'phosphor-react-native'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
@@ -15,9 +12,9 @@ import { businessCategoryIcons } from '../../lib/businessCategories'
 import { telHref, whatsappHref, directionsHref } from '../../lib/contactLinks'
 import { useNavigationApp } from '../../lib/navigationPreference'
 import { CURRENT_MARKET, CURRENT_MARKET_CODE } from '../../lib/market'
-import { computeOfferPriceDisplay, formatPrice, type OfferPriceDisplay } from '../../lib/offerPricing'
-import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
-import { useStaggeredReveal } from '../../lib/useStaggeredReveal'
+import { computeOfferPriceDisplay, formatPrice } from '../../lib/offerPricing'
+
+
 import { dirStyles, useIsRTL } from '../../lib/direction'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
@@ -34,40 +31,7 @@ import { OfferGallery } from '../../components/OfferGallery'
 import { RatingStars } from '../../components/RatingStars'
 import { Skeleton } from '../../components/Skeleton'
 import { TranslatableText } from '../../components/TranslatableText'
-import { HelperMedal } from '../../components/HelperMedal'
 
-const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
-const TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
-const TIER_KEYS = ['bronze', 'silver', 'gold', 'green'] as const
-
-type WeeklyOffersData = { offers: PartnerOffer[]; partnersById: Record<string, Partner> }
-
-// public_offers is already server-filtered to approved/valid/active-partner
-// rows (see 0015_businesses_offers_reviews.sql's view definition) - an
-// expired offer simply stops appearing here on its own, no client-side
-// "hide expired" logic needed. `weekly_slot` (0021_weekly_offers.sql) is the
-// admin's curated pick of up to 3 offers - filtering + ordering by it here is
-// what makes this "this week's offers" instead of "every valid offer".
-// Partners are fetched separately (not via a PostgREST embed on the view)
-// for the exact same reason loadBusinessDetail below does it that way, and
-// partner_id can be null (a general, no-partner offer), which is why it's
-// filtered out before the partners lookup rather than passed straight in.
-async function loadWeeklyOffers(): Promise<WeeklyOffersData> {
-  const { data: offers, error } = await supabase.from('public_offers').select('*').not('weekly_slot', 'is', null).order('weekly_slot', { ascending: true })
-  if (error) throw error
-  const rows = (offers ?? []) as PartnerOffer[]
-  const partnerIds = [...new Set(rows.map(o => o.partner_id).filter((id): id is string => id !== null))]
-  const { data: partners, error: partnersError } = partnerIds.length ? await supabase.from('partners').select('*').in('id', partnerIds) : { data: [] as Partner[], error: null }
-  if (partnersError) throw partnersError
-  return { offers: rows, partnersById: Object.fromEntries((partners ?? []).map(p => [(p as Partner).id, p as Partner])) }
-}
-
-function computeSavings(price: OfferPriceDisplay): number | null {
-  if (price.kind === 'free_benefit') return null
-  if (price.originalPrice == null || price.offerPrice == null) return null
-  const diff = price.originalPrice - price.offerPrice
-  return diff > 0 ? diff : null
-}
 
 // Redemption windows are short-lived, so refresh the countdown every second.
 function useCountdownTo(iso: string | null) {
@@ -83,136 +47,7 @@ function useCountdownTo(iso: string | null) {
   return { minutes: Math.floor(diff / 60_000), seconds: Math.floor((diff % 60_000) / 1000) }
 }
 
-export function CommunityHubScreen() {
-  const theme = useSanadTheme()
-  const typography = useAppTypography()
-  const isRTL = useIsRTL()
-  const { t } = useTranslation()
-  const router = useRouter()
-  const { profile } = useAuth()
-  const { stageStyle } = useStaggeredReveal(3)
-
-  const pointsQuery = useQuery({
-    queryKey: profile ? ['community', 'points', profile.id] : ['community', 'points'],
-    queryFn: () => rewardRepository.points(profile!.id),
-    enabled: !!profile
-  })
-  const completedCountQuery = useQuery({
-    queryKey: profile ? ['community', 'completed-count', profile.id] : ['community', 'completed-count'],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_volunteer_completed_count', { p_volunteer_id: profile!.id })
-      if (error) throw error
-      return (data as number | null) ?? 0
-    },
-    enabled: !!profile
-  })
-  const offersQuery = useQuery({ queryKey: ['community', 'weekly-offers'], queryFn: loadWeeklyOffers })
-
-  const balance = pointsQuery.data?.balance ?? 0
-  const completedCount = completedCountQuery.data ?? 0
-  const level = getVolunteerActivityLevel(completedCount)
-  const nextThresholdIndex = TIER_MARKS.findIndex(mark => mark > completedCount)
-  const nextThreshold = nextThresholdIndex === -1 ? null : (TIER_MARKS[nextThresholdIndex] ?? null)
-  const nextLevelKey = nextThresholdIndex === -1 ? null : (TIER_KEYS[nextThresholdIndex] ?? null)
-  const progressFraction = Math.min(completedCount / (nextThreshold ?? TOP_THRESHOLD), 1)
-  const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
-
-  const offers = offersQuery.data?.offers ?? []
-  const partnersById = offersQuery.data?.partnersById ?? {}
-  const statsReady = pointsQuery.isSuccess && completedCountQuery.isSuccess
-  useGuidePage('perks', statsReady && offersQuery.isSuccess)
-
-  function openOffer(id: string) {
-    Haptics.selectionAsync().catch(() => {})
-    router.push({ pathname: '/community/offer/[offerId]', params: { offerId: id } })
-  }
-
-  return (
-    <AppScreen contentStyle={styles.hubContent}>
-      <PerksHeader />
-
-      <GuideTarget id="perks.points">{statsReady ? <PointsPanel balance={balance} count={completedCount} target={nextThreshold ?? TOP_THRESHOLD} level={level} levelLabel={t(levelLabelKey)} remainingLabel={nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')} /> : <Animated.View style={[styles.pointsCard, stageStyle(0), { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        {!statsReady ? (
-          pointsQuery.isError || completedCountQuery.isError ? <Button label={t('perks.retry')} variant="outline" onPress={() => { void pointsQuery.refetch(); void completedCountQuery.refetch() }} /> : <Skeleton width="100%" height={100} />
-        ) : <>
-          <View style={[styles.pointsTopRow, dirStyles(isRTL).row]}>
-            <View style={[styles.levelGroup, dirStyles(isRTL).row]}>
-              <HelperMedal level={level} size={42} />
-              <View style={styles.levelCopy}>
-                <Text style={[typography.h3, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
-                <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
-                  {nextThreshold !== null && nextLevelKey ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - completedCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevelKey]) }) : t('points.topTier')}
-                </Text>
-              </View>
-            </View>
-            <View style={[styles.balanceBlock, { borderColor: theme.colors.border, borderStartWidth: isRTL ? 0 : 1, borderEndWidth: isRTL ? 1 : 0 }]}>
-              <Text style={[typography.h1, styles.balanceValue, { color: theme.colors.textPrimary }]}>{balance}</Text>
-              <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.pointsUnit')}</Text>
-            </View>
-          </View>
-          <View accessibilityRole="progressbar" accessibilityLabel={t('perks.pointsCard.levelLabel')} accessibilityValue={{ min: 0, max: nextThreshold ?? TOP_THRESHOLD, now: Math.min(completedCount, nextThreshold ?? TOP_THRESHOLD) }} style={[styles.progressTrack, { backgroundColor: theme.colors.surfaceStrong }]}>
-            <View style={[styles.progressFill, { width: `${progressFraction * 100}%`, backgroundColor: theme.colors.primary, [isRTL ? 'right' : 'left']: 0 }]} />
-          </View>
-          <Text style={[typography.caption, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: completedCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
-        </>}
-      </Animated.View>}</GuideTarget>
-
-      <Animated.View style={[styles.weeklyHeaderRow, dirStyles(isRTL).row, Platform.OS !== 'web' && stageStyle(1)]}>
-        <Text accessibilityRole="header" style={[typography.h3, { color: theme.colors.textPrimary, flexShrink: 1 }]}>{t('perks.weeklyHeading')}</Text>
-        {offersQuery.isSuccess ? <Text style={[typography.small, { color: theme.colors.textSecondary }]}>{t('perks.availableOffers', { count: offers.length })}</Text> : null}
-      </Animated.View>
-      <GuideTarget id="perks.offers"><Animated.View style={[styles.offersList, Platform.OS !== 'web' && stageStyle(2)]}>
-        {offersQuery.isLoading ? <><Skeleton width="100%" height={190} /><Skeleton width="100%" height={190} /></> : offersQuery.isError ? (
-          <Button label={t('perks.retry')} variant="outline" onPress={() => { void offersQuery.refetch() }} />
-        ) : offers.length === 0 ? (
-          <EmptyState Icon={Tag} title={t('perks.empty.offersTitle')} message={t('perks.empty.offersMessage')} />
-        ) : offers.map(offer => <RealOfferCard key={offer.id} offer={offer} business={offer.partner_id ? partnersById[offer.partner_id] : undefined} onUse={() => openOffer(offer.id)} />)}
-      </Animated.View></GuideTarget>
-    </AppScreen>
-  )
-}
-
-function RealOfferCard({ offer, business: originalBusiness, onUse }: { offer: PartnerOffer; business?: Partner; onUse: () => void }) {
-  const theme = useSanadTheme()
-  const typography = useAppTypography()
-  const isRTL = useIsRTL()
-  const { t, i18n } = useTranslation()
-  offer = localizeContent(offer, i18n.language, OFFER_TEXT_FIELDS)
-  const business = originalBusiness ? localizeContent(originalBusiness, i18n.language, BUSINESS_TEXT_FIELDS) : undefined
-  const price = computeOfferPriceDisplay(offer)
-  const savings = computeSavings(price)
-  const CategoryIcon = business ? businessCategoryIcons[business.category] : Tag
-  const imageUri = offer.image_urls?.[0] ?? offer.image_url ?? business?.logo_url
-  const textAlign = isRTL ? 'right' : 'left'
-  return (
-    <View style={[styles.realOfferCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, padding: 8, borderRadius: 24 }]}>
-      <View style={[styles.realOfferTopRow, dirStyles(isRTL).row, { flexDirection: 'column', alignItems: 'stretch' }]}>
-        <View style={[styles.realOfferImageWrap, { backgroundColor: theme.colors.surfaceMuted, width: '100%', height: undefined, aspectRatio: 1.95, borderRadius: 18 }]}>
-          {imageUri ? <Image source={{ uri: imageUri }} style={styles.realOfferImage} resizeMode="contain" accessible={false} /> : <CategoryIcon size={36} color={theme.colors.textMuted} weight="duotone" />}
-        </View>
-        <View style={[styles.realOfferBody, { padding: 10, gap: 6 }]}>
-          <Text numberOfLines={2} style={[typography.h3, { color: theme.colors.textPrimary, textAlign }]}>{offer.title}</Text>
-          {offer.offer_type_label ? <Text style={[typography.smallMedium, { color: theme.colors.community, textAlign }]}>{offer.offer_type_label}</Text> : null}
-          {business ? <Text numberOfLines={1} style={[typography.small, { color: theme.colors.textSecondary, textAlign }]}>{business.name}</Text> : null}
-          {price.kind === 'free_benefit' ? <Text style={[typography.bodyMedium, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft, textAlign }]}>{t('perks.offer.free')}</Text> : (
-            <View style={[styles.hubPriceRow, dirStyles(isRTL).row]}>
-              {price.offerPrice != null ? <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>{formatPrice(price.offerPrice, CURRENT_MARKET.currencySymbol)}</Text> : null}
-              {price.originalPrice != null ? <Text style={[typography.small, { color: theme.colors.textMuted, textDecorationLine: 'line-through' }]}>{formatPrice(price.originalPrice, CURRENT_MARKET.currencySymbol)}</Text> : null}
-              {savings != null ? <Text style={[typography.caption, styles.savingsBadge, { color: theme.colors.community, backgroundColor: theme.colors.communitySoft }]}>{t('perks.weeklyOffers.savings', { amount: formatPrice(savings, CURRENT_MARKET.currencySymbol) })}</Text> : price.kind === 'percentage' ? <Text style={[typography.smallMedium, { color: theme.colors.community }]}>-{price.percent}%</Text> : price.kind === 'fixed' ? <Text style={[typography.smallMedium, { color: theme.colors.community }]}>-{formatPrice(price.amountOff, CURRENT_MARKET.currencySymbol)}</Text> : null}
-            </View>
-          )}
-        </View>
-      </View>
-      <View style={[styles.offerFooter, dirStyles(isRTL).row, { borderColor: theme.colors.border }]}>
-        <View style={[styles.offerCost, dirStyles(isRTL).row]}>
-          <Ticket size={21} color={theme.colors.textMuted} weight="fill" />
-          <Text style={[typography.smallMedium, { color: theme.colors.textSecondary, flexShrink: 1 }]}>{(offer.points_required ?? 0) > 0 ? t('perks.weeklyOffers.pointsCost', { points: offer.points_required }) : t('perks.noPoints')}</Text>
-        </View>
-        <Button label={t('perks.offerDetails')} accessibilityLabel={t('perks.offerDetailsFor', { title: offer.title })} onPress={onUse} fullWidth={false} style={styles.detailsButton} />
-      </View>
-    </View>
-  )
-}
+export { BenefitsScreen as CommunityHubScreen } from '../mobileHub/BenefitsScreen'
 
 async function loadBusinessDetail(businessId: string) {
   const { data: business } = await supabase.from('partners').select('*').eq('id', businessId).eq('status', 'verified').eq('is_active', true).eq('market', CURRENT_MARKET_CODE).maybeSingle()

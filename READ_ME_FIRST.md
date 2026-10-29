@@ -5,6 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
+- **معاينة لوكل:** تصميم المزايا والنشاط الجديد جاهز للمراجعة على `/design-preview`؛ مربوط بالبيانات الحقيقية بالصفحات الأصلية. ما اننشر للناس. الفحص البصري على المتصفح والجهاز لسه غير مؤكّد.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.5 (10) منشورة على Google Play. تصحيح الميدالية والهدية وصل، والمالك أكد بتاريخ 29/10 إن «مزايا أخوو» و«نشاطي» وزر المزايا بالرئيسية صاروا يفتحوا على تلفونه. التوزيع الحالي لإسرائيل.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
@@ -38,6 +39,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|---|
 
 ## 3. Current state (2026-10-29)
+**Local benefits/activity redesign:** `ui/perks-activity-local-20261029` implements the approved wallet/impact design. Local web showcase: `http://localhost:4188/design-preview`; fixtures labelled, real routes retain live data. No deployment; branch auto-deploy disabled. Report: `docs/mobile-hub-local-2026-10-29.md`.
+
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
 - 2.0.3 (29) and 2.0.2 (28) are the previous live versions; users update normally.
@@ -96,6 +99,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; custom SMTP; make the `request-photos` bucket private (after most Android users run 2.0.3, because build 7 reads public URLs); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-10-29 — Codex — Implemented approved mobile benefits/activity locally; real data, affordable offers, month/all-time impact and dev-only preview. Tests/typecheck/platform exports pass; browser/device visual QA not verified.
+  Claude-area touches: read-only data adapter, locale keys, explicit existing asset dependency and branch deployment suppression. No deployment. See `docs/mobile-hub-local-2026-10-29.md`.
 Format: `date — who — what (where) — external effect — verified how`
 
 - 2026-10-29 — Codex — Refined the mobile concept after reviewing official Revolut RevPoints, Starbucks Rewards and Strava activity documentation: points wallet, affordable-offer filter, period summary and compact activity rows. Image preview only; illustrative data labelled, owner review pending; no app/deployment change.
