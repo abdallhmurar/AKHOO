@@ -1,3 +1,4 @@
+import {buildReadiness} from './build-readiness.mjs';
 import {mkdir,copyFile,writeFile,readFile} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -6,7 +7,7 @@ import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} f
 import {parseEnv} from 'node:util';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-feed.js','site.js','icons.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
+for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-feed.js','site.js','icons.js','content.js','readiness-copy.js','readiness.css','seo.js','app-links.js','partner-form.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
 // Only public connection settings are emitted. No session or service-role key.
 let localEnv={};
 try{localEnv=parseEnv(await readFile(resolve(root,'.env.local'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
@@ -58,10 +59,15 @@ const assets={
  'THREE-LICENSE.txt':'previews/home-motion/assets/perks/vendor/THREE-LICENSE.txt'
 };
 await Promise.all(Object.entries(assets).map(([to,from])=>copyFile(resolve(root,from),resolve(out,'assets',to))));
+await Promise.all(['ar-regular','ar-bold','ar-extra','en-regular','en-bold','he-regular','he-bold'].map(name=>copyFile(resolve(base,'vendor/fonts',name+'.woff2'),resolve(out,'assets',name+'.woff2'))));
 await writeFile(resolve(out,'legal.json'),JSON.stringify({contact:LEGAL_CONTACT,updated:LEGAL_LAST_UPDATED,privacy:privacyPolicyBlocks,terms:termsOfUseBlocks}));
 await build({entryPoints:[resolve(root,'src/features/home/rewardsGiftScene.web.ts')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,legalComments:'eof',outfile:resolve(out,'gift-scene.js')});
 await build({entryPoints:[resolve(base,'experience.js')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'eof',outfile:resolve(out,'experience.js')});
 await copyFile(resolve(base,'node_modules/motion/LICENSE.md'),resolve(out,'assets/MOTION-LICENSE.txt'));
+await build({entryPoints:[resolve(base,'partner-api.js')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,outfile:resolve(out,'partner-api.js')});
+// One startup module avoids a serial module-fetch waterfall on phone networks.
+// The large gift engine remains lazy and the connection config stays public-only.
+await build({entryPoints:[resolve(base,'site.js')],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'eof',external:['./partner-config.js','./gift-scene.js'],outfile:resolve(out,'site.js')});
 const html=await readFile(resolve(base,'index.html'),'utf8');
-for(const page of ['privacy','terms','delete-account','licenses']) await writeFile(resolve(out,page+'.html'),html);
+await buildReadiness(out,html);
 console.log('AKHOO website ready: '+out+' — approved app assets and three languages.');

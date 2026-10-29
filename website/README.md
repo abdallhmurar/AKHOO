@@ -9,8 +9,10 @@ root repository's `akhoo` app project. Only `website/dist/` is uploaded.
 
 ## Run locally
 
-Use Node.js 24 (for the existing app's TypeScript legal-content source) and the
-repository's installed dependencies. Install the website's pinned Motion library
+Use Node.js 24 (for the existing app's TypeScript legal-content source), the
+repository's installed dependencies and Playwright Chromium (installed Chrome on
+Windows). The build prerenders localized pages and creates WebP/sharing images.
+Install the website's pinned Motion library
 once (or after its lockfile changes):
 
 ```powershell
@@ -19,8 +21,8 @@ node website/build.mjs
 node website/server.mjs
 ```
 
-Open **http://127.0.0.1:4180/?lang=ar**. English and Hebrew are available from the
-language menu or `?lang=en` / `?lang=he`. The server binds to loopback only and
+Open **http://127.0.0.1:4180/**. English and Hebrew have `/en/` and `/he/` routes;
+the language menu and legacy `?lang=` links also work. The server binds to loopback only and
 serves only `website/dist/`; it cannot serve the repository or environment files.
 The optional `AKHOO_WEBSITE_PORT` variable changes the local port.
 
@@ -41,14 +43,20 @@ the ignored `dist/` directory. `website/` is excluded from future EAS uploads.
   creates requests, reads a real location or uploads photos. Notes last only for
   the current demonstration and are cleared when the page or language changes.
 - Helper community, animated perks artwork, and the app's real Three.js gift.
-- Partnership form with local validation and a review dialog. It only prepares a
-  WhatsApp message. Nothing is submitted or stored by this website; visitors send
-  the message themselves in WhatsApp. The copy button is an alternative.
+- Partnership form with validation, a review step and explicit final submission
+  to the existing `submit-partner-application` function. Applications have `source:
+  web`, appear in the existing admin and use its existing team email notification.
+  Success requires a confirmed saved application; failures retain the fields.
+- The rose help CTA opens a chooser for the installed app, the web app or store
+  downloads. Android uses an intent with a Play fallback; iOS uses the existing
+  `akhoo://requester` scheme with visible browser/store alternatives. No native
+  release or associated-domain changes are required.
 - FAQ, support phone/WhatsApp, and iPhone download link.
 - Android links directly to `https://play.google.com/store/apps/details?id=app.akhoo.help`.
   The closed-testing dialog and copy were removed in all three languages on 2026-10-29.
 - Privacy, terms, and account-deletion instructions in all three languages.
-  Privacy/terms are copied directly from the app's existing `legalContent.ts`.
+  Privacy/terms reuse the app's existing `legalContent.ts`; website privacy also
+  explains partnership contact data, admin review and notification.
   Credits are accessible from those pages, without repeated icon-credit footers.
 
 ## Approved source assets
@@ -78,9 +86,24 @@ viewport and has a static fallback when WebGL is unavailable.
 ## Preview limitations
 
 The marketing domain and production hosting are configured. Analytics and a
-mailing-list database are not configured. The site retains `noindex` metadata. Contact information and
+mailing-list database are not configured. The site now allows indexing and emits
+15 prerendered localized pages, reciprocal hreflang/canonical links, sitemap,
+robots.txt and three 1200×630 social cards. Search-engine indexing is not instant.
+Contact information and
 store links use existing public project details. There are no fabricated user
 counts, testimonials, response-time promises, or fixed Android release dates.
+
+## Current readiness checks (2026-10-29)
+
+After building and starting the server, run `node website/readiness.test.mjs`.
+Install the test engine with `npx playwright install webkit` if needed. Set
+`TEST_SITE=https://akhoo.app` to repeat against production; all submissions in this
+suite are intercepted, so it never creates applications or sends notifications.
+It covers raw localized HTML/SEO, Chrome and WebKit mobile layouts, app-link
+selection, review/validation, duplicate protection, success, failure, rate limits,
+language retention, reduced motion, desktop and save-data fallbacks. Screenshots
+go to ignored `credentials/site-checks/`. Engine emulation is not an actual phone
+test. The historical checks below describe earlier versions of the site.
 
 ## Verification, 2026-10-21
 

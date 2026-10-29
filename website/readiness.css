@@ -1,0 +1,21 @@
+.field select { width:100%; min-height:48px; border:1px solid #cddfea; border-radius:12px; background:#f7fbff; color:#14334a; padding:10px 12px; font:inherit; font-size:16px; }
+.field input[type=tel] { direction:ltr; text-align:start; font-size:16px; }
+.field input,.field textarea { font-size:16px; }
+.field select:focus-visible { outline:3px solid #1768e5; outline-offset:2px; }
+.field select[aria-invalid=true] { border-color:#ad1248; }
+.partner-form-action .privacy-note { font-size:12px; line-height:1.7; }
+.partner-form-action .privacy-note a { text-decoration:underline; }
+#partner-status { min-height:1.5em; color:#a10d43; line-height:1.7; font-size:14px; }
+#partner-form-result:empty { display:none; }
+#partner-form-result { padding:14px; background:#e6f7f1; color:#08765e; border-radius:12px; line-height:1.7; }
+.partner-success { padding:10px 0; line-height:1.8; }
+.partner-success[hidden],.partner-review[hidden],[data-native-app][hidden] { display:none; }
+button:disabled { cursor:wait; opacity:.65; }
+.app-open-actions { display:flex; flex-direction:column; gap:12px; margin:22px 0; }
+.app-store-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.app-store-actions .button { flex:1; font-size:13px; padding:12px; min-width:140px; }
+.app-open-note { color:#52657a; font-size:14px; line-height:1.7; }
+.rose-help-card { text-decoration:none; }
+.site-fallback { max-width:960px; margin:auto; padding:30px 20px; line-height:1.8; }
+.site-fallback nav { display:flex; flex-wrap:wrap; gap:20px; margin-block:16px; }
+.site-fallback section { margin-block:36px; }

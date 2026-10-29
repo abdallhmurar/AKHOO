@@ -1,42 +1,42 @@
 @font-face {
   font-family: Tajawal;
-  src: url(./assets/ar-regular.ttf) format("truetype");
+  src: url(./assets/ar-regular.woff2) format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: Tajawal;
-  src: url(./assets/ar-bold.ttf) format("truetype");
+  src: url(./assets/ar-bold.woff2) format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 @font-face {
   font-family: Tajawal;
-  src: url(./assets/ar-extra.ttf) format("truetype");
+  src: url(./assets/ar-extra.woff2) format("woff2");
   font-weight: 800;
   font-display: swap;
 }
 @font-face {
   font-family: Inter;
-  src: url(./assets/en-regular.ttf) format("truetype");
+  src: url(./assets/en-regular.woff2) format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: Inter;
-  src: url(./assets/en-bold.ttf) format("truetype");
+  src: url(./assets/en-bold.woff2) format("woff2");
   font-weight: 700 900;
   font-display: swap;
 }
 @font-face {
   font-family: Hebrew;
-  src: url(./assets/he-regular.ttf) format("truetype");
+  src: url(./assets/he-regular.woff2) format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: Hebrew;
-  src: url(./assets/he-bold.ttf) format("truetype");
+  src: url(./assets/he-bold.woff2) format("woff2");
   font-weight: 700 900;
   font-display: swap;
 }

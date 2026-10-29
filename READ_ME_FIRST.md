@@ -104,6 +104,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Codex — Prepared the five marketing-site improvements: localized SEO, real partnership submission, app links, social cards and mobile/performance fixes.
+  Chrome/WebKit and API-response checks pass locally; publication/live verification in progress. Root/admin branch-only deployment suppression is the small Claude-area edit. Report: `docs/website-readiness-2026-10-29.md`.
+
 - 2026-10-29 — Codex — Replaced the website hero battery picker with the owner-confirmed rose help card and approved app video; the CTA opens the existing request demo.
   Published on akhoo.app; local/live ar/en/he responsive, motion/fallback/keyboard checks, build and all 61 deployed hashes pass. Report: `docs/website-rose-card-2026-10-29.md`.
 
