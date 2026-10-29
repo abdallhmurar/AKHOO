@@ -18,10 +18,20 @@ Android entry files re-export the existing published implementation, so future f
 
 ## Verification and delivery
 
-Source validation passed: TypeScript, ESLint (one pre-existing import-resolver warning), 319 tests and the Android Hermes export. The actual exported graph contains all 26 checked presentation/auth entries and four Tajawal fonts, and excludes old request/helper/activity/tab screens and the unapproved local prototypes. Native signed build and Play delivery are pending.
+Source validation passed: TypeScript, ESLint (one pre-existing import-resolver warning), 319 tests across 54 files, Android Hermes export and iOS regression export. The actual Android graph contains all 26 checked presentation/auth entries and four Tajawal fonts, and excludes old request/helper/activity/tab screens and the unapproved local prototypes. The final helper-inset adjustment passed TypeScript, targeted lint, Android export and the full test suite.
+
+- Signed [EAS build](https://expo.dev/accounts/abad003/projects/sanad/builds/238792da-a807-4eea-985c-11c39d2ebcb3) finished successfully on 2026-10-29. Built source: [`a10d00be8fe152ae63899d76bc804d8a544de2ed`](https://github.com/abdallhmurar/AKHOO/commit/a10d00be8fe152ae63899d76bc804d8a544de2ed).
+- Native AAB: 177,807,152 bytes; SHA-256 `e9e61a66f2bc6f80158848a4d614cf19812c81e4bf6d512ed96f1a06cc05e3a2`.
+- Decoded the AAB manifest/resource table: package `app.akhoo.help`, version 2.0.5, code 10, native runtime 2.0.5, non-debuggable, no background-location or foreground-service permission. Signature metadata present. Verified production backend and auth callback in the embedded bundle, 108 offline asset entries, and matching content hashes for all 14 presentation videos and four Tajawal fonts.
+- Google accepted code 10 with the identical SHA-256. Production edit validated and committed with `changesNotSentForReview=false` and rollout status `completed` (all eligible users after approval). Release notes supplied in Arabic, English and Hebrew.
+- Fresh read-back at **2026-10-29 00:55 UTC**: **2.0.5 (10) `RELEASE_LIFECYCLE_STATE_IN_REVIEW`**; 2.0.4 (9) remains `PUBLISHED`. Country availability (`IL`), internal/closed tracks and store listings are unchanged.
 
 Use `expo export --platform android --source-maps` with the release environment, then `node scripts/verify-android-presentation.cjs <export-dir>` to verify the actual Android graph, including all new presentation routes/fonts and exclusion of the old screens/local prototypes. Unit tests include platform typography equality, release/runtime/permission isolation and existing auth, mission and video lifecycle checks.
 
 Physical Android device testing and a new installation from Google Play are not yet verified. Compilation/source-graph checks do not replace device QA. Play track status `completed` describes the requested rollout; it alone does not prove Google's approval or public availability.
 
-Reference: [Expo Video Android surface types](https://docs.expo.dev/versions/latest/sdk/video/), [Google Play edit commit/review semantics](https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit).
+## Store-state verification
+
+The production release lifecycle endpoint confirmed 2.0.4 (9) as `RELEASE_LIFECYCLE_STATE_PUBLISHED` at 2026-10-29 00:38 UTC, superseding the previous README statement that it was awaiting review. After submission it confirmed 2.0.5 (10) as `IN_REVIEW`. Use `GET /androidpublisher/v3/applications/app.akhoo.help/tracks/production/releases` for actual review/publication state, rather than inferring it from edit-track `completed`. Production country availability is Israel (`IL`).
+
+Reference: [Expo Video Android surface types](https://docs.expo.dev/versions/latest/sdk/video/), [Google Play edit commit/review semantics](https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit), [Google Play release lifecycle](https://developers.google.com/android-publisher/api-ref/rest/v3/applications.tracks.releases).

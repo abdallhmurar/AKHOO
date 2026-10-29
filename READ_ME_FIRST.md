@@ -4,13 +4,13 @@
 
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
-## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
+## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
-- **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
+- **أندرويد:** 2.0.4 (9) صارت منشورة على Google Play. 2.0.5 (10)، اللي بتنقل باقي تصميم الآيفون كمان، انرسلت للنشر العام بتاريخ 29/10 وحالتها مؤكدة «تحت المراجعة». التوزيع الحالي لإسرائيل؛ نسخة 9 بتضل للناس لحين الموافقة على 10.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
-- **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
+- **بانتظار طرف ثالث:** Google (أندرويد 2.0.5).
+- **ما انفحص:** أندرويد 2.0.5 لسه ما انجرّبت على جهاز حقيقي. فحوص الكود والبناء والملف النهائي نجحت؛ باقي فحوص الأجهزة بالبنود المفتوحة في القسم 7.
 
 ## 1. Rules (non-negotiable)
 1. **Official steps need the owner's explicit OK in that task**, his own words in chat: submit to App Review, release an approved iOS version, upload or send for review on Google Play, change a store listing, deploy the marketing site. Say in one line what you are about to do. Standing OKs are listed in section 0 and nowhere else. Builds and TestFlight uploads only when he asked.
@@ -36,9 +36,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Complete Android parity with published iOS 2.0.4 (31), validate and release to Google Play as authorized by owner | android/ios-parity-release-20261029 | 2026-10-29 |
 
-## 3. Current state (2026-10-27)
+## 3. Current state (2026-10-29)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
 - 2.0.3 (29) and 2.0.2 (28) are the previous live versions; users update normally.
@@ -47,8 +46,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **2.0.5 (10) قيد التجهيز — Codex، 29/10:** بأمر المالك، مطابقة باقي شاشات الآيفون المنشور ثم الإرسال للنشر العام. 2.0.4 (9) نقلت الرئيسية والنموذج فقط؛ توثيق المطابقة والفحص: `docs/android-ios-parity-2.0.5.md`. لا تشمل تجارب بطاقة النقاط اللوكل.
-- **2.0.4 (versionCode 9) is on the Production track (Israel only), `completed`, in Google review since 2026-10-28**; EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`, source `android/partner-home-20261028` (merged into `main`). It shows the same partner / home layout as the iPhone 2.0.4 (Android files `PartnerHomeScreen.tsx`, `PartnerEnrollment.tsx`, `PartnerMotion.tsx`; the old layout is `LegacyHomeScreen`). It also has an over-the-air update (runtime 2.0.4, update group `636bde81-f12d-4223-a7bf-12322016eef1`) that adds the `akhoo://auth-callback` route, which fixes "Unmatched Route" after Google sign-in on Android. 2.0.3 (8) stays live until Google approves 2.0.4. Internal and closed testing tracks also have 2.0.4 (9). The Android UI was not seen on a device by Claude; the owner tried it on his phone.
+- **2.0.5 (10): IN REVIEW for public Production (Israel), confirmed 2026-10-29 00:55 UTC.** Full published-iOS presentation, including request/helper/mission/activity/account/perks, fonts, motion and Android insets/video adapters; OAuth callback retained. EAS build `238792da-a807-4eea-985c-11c39d2ebcb3`, source `a10d00be8fe152ae63899d76bc804d8a544de2ed` on `android/ios-parity-release-20261029`; runtime 2.0.5. Not merged to main or published to Apple/OTA/Vercel. Report: `docs/android-ios-parity-2.0.5.md`. Local points/tree/character experiments excluded; physical-device QA unverified.
+- **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
@@ -62,13 +61,14 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - Auth: Google and Apple sign-in on; email auto-confirm on; the default Supabase mailer (2 emails an hour) is unusable for password reset, custom SMTP is pending.
 - Content: 2 verified businesses and 2 live offers, translated to he/en.
 
-**Branches** (everything else is merged into `main`; old names are in the archive)
+**Branches** (the Android 2.0.5 release below is not merged into `main`; old names are in the archive)
 | Branch | What it is | Owner |
 |---|---|---|
 | `main` | Everything shipped or shippable: web, admin, backend, apps, website source, build settings. Native exports (iOS, Android, web) pass. | Claude |
 | `ota/ios-2.0.1-translations` | The only base for iOS OTAs to the live 2.0.1 users. Never merge it. | Claude |
 | `ios/testflight-partner-home-20261024` | Codex's TestFlight beta line (2.0.4 builds 30 and 31); its code is already in `main`, gated by `extra.partnerHomeBeta`. | Codex |
 | `android/release-2.0.3-20261025` | Source of the Android 2.0.3 build; merged into `main`. | Claude |
+| `android/ios-parity-release-20261029` | Android 2.0.5 (10) production submission; complete published-iOS presentation, isolated Android profile. Not merged; Vercel deploy disabled on this branch. | Codex |
 
 ## 4. How to ship (checked recipes)
 - **Web and admin:** push to `main`, Vercel deploys. A Vercel preview of the admin is blank (its variables exist only for Production); for a real preview build locally with the public values and `VITE_BASE_PATH=/` and run `vercel deploy --prebuilt`. Remove deployments with `vercel remove <url> --yes`.
@@ -77,6 +77,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - **iOS OTA to 2.0.1 users:** cherry-pick onto `ota/ios-2.0.1-translations` in a separate worktree, `npm ci`, `npx expo export --platform ios`, then `eas update --branch production --platform ios --environment production`. Never from `main`.
 - **TestFlight build:** bump the build number in `eas.json`, `eas build --platform ios --profile testflight` (or the macOS runner), then `eas submit --platform ios --profile testflight --id <build>`.
 - **Android:** `eas build --platform android --profile production` works on the Free plan (about 35 minutes, versionCode auto-increments). `eas submit --profile android-production` fails with "Release in track targeting no countries" until the Production track has countries; the owner sets them in Play Console (Production, Countries/regions) and sends the release and the countries for review together as one change set. A draft release can be uploaded with the Play Developer API and the service account key. Fallback build without Expo: the manual GitHub workflow "Android release build" (never run).
+- **Android 2.0.5 recipe:** profile `android-parity` pins version/code/runtime; reserve and change the numbers before a future build. Play API bundle upload → Production `completed` → validate → commit with `changesNotSentForReview=false` succeeded on 29/10. `GET /androidpublisher/v3/applications/app.akhoo.help/tracks/production/releases` returns actual review/publication state; edit-track `completed` alone does not. Countries already contain `IL`.
 - **Supabase:** SQL through the Management API with `credentials/supabase-token.txt`; functions with `supabase functions deploy <name> --project-ref zmpwdufahjmlxfwzafvr --use-api`. Test risky database changes inside a `DO` block that ends with `raise exception`, so everything rolls back.
 - **Gotchas:** `expo export` caches environment variables, so use `--clear` when they change. Git Bash rewrites values that start with `/` (for example `VITE_BASE_PATH=/`); set `MSYS_NO_PATHCONV=1`. Copies of `credentials/` inside a worktree stay git-ignored; delete them afterwards.
 
@@ -84,7 +85,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Platform | Used | Next free |
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
-| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4); **10 reserved by Codex for 2.0.5 full published-iOS parity, 2026-10-29** | **11** |
+| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4 live), **10 (2.0.5 full published-iOS parity, Production review 2026-10-29)** | **11** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
 ## 6. Credentials map (never commit)
@@ -97,8 +98,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
-- 2026-10-29 — Codex — Preparing complete Android parity with published iOS 2.0.4 (31), including screens, fonts, motion and native adapters; Android 2.0.5 (10) reserved. Owner explicitly authorized public Google Play release.
-  Build/store pipeline in Claude's area is touched only for this Android release. Validation/delivery: `docs/android-ios-parity-2.0.5.md`; no Apple, backend or Vercel action.
+- 2026-10-29 — Codex — Android 2.0.5 (10) submitted to public Production after owner's explicit OK; full published-iOS presentation with Android adapters. Google lifecycle read-back: 10 `IN_REVIEW`, 9 `PUBLISHED`.
+  Touched Claude's build/store area only for this release. Typecheck/lint, 319 tests, native exports, signed build and AAB/Play hash checks passed; report `docs/android-ios-parity-2.0.5.md`. No Apple, OTA, backend or Vercel action; device QA unverified.
 
 - 2026-10-28 — Claude — Google Play listing: new Arabic screenshots (current design) plus new `en-US` and `iw-IL` listings (translated text, own 4 screenshots each) committed through the Play API after his OK; Google reviews them. Not verified: Hebrew wording by a native reader; Google's result. English Home banner title touches the wrench icon on a 405 px screen (web CSS, not changed).
 - 2026-10-28 — Claude — Android 2.0.4 (9) = the iPhone partner/home design ported to Android; built on EAS, tested by the owner from the internal/closed tracks, then sent to Production (Israel) through the Play API after his OK. During his test he found "Unmatched Route" after Google sign-in: added `app/auth-callback.tsx` and shipped it as an Android OTA (runtime 2.0.4). Not verified: Google's review result; the layout on a real phone beyond the owner's own look.
