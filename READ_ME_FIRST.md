@@ -92,7 +92,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Supabase SQL migrations | `0001`–`0053` | **0054** |
 
 ## 6. Credentials map (never commit)
-`credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Email (2026-10-29): `credentials/resend-api-key.txt` (send-only, used as the SMTP password), `credentials/resend-admin-key.txt` (Full access, manages domains), `credentials/cloudflare-dns-token.txt` (edit DNS of `akhoo.app`). The owner may delete the admin key and the DNS token in Resend / Cloudflare when no longer needed.
+`credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Email (2026-10-29): `credentials/resend-api-key.txt` (send-only: the SMTP password in Supabase and the function secret `RESEND_API_KEY`; do not delete it). The Resend admin key was deleted on 2026-10-29 at the owner's order (identified by its last-used time, so the sending key was not touched). The local copy of the Cloudflare DNS token was removed; the token itself expires on 2026-11-05 (the owner can revoke it earlier in Cloudflare, My Profile, API Tokens). Ask the owner for a new token when DNS work is needed.
 
 ## 7. Open items
 **Decisions waiting for the owner:** widen push notifications after launch or not; when to ship the real partner form to Android (OTA) and iPhone (new App Store version).
@@ -101,6 +101,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Claude — Security cleanup at the owner's order: Resend admin key deleted, local Cloudflare token copy removed. Owner decisions recorded: no more store countries (Israel only), and he reports that everything released today was tried on real phones (his word; the iPhone 2.0.5 is still in Apple's review).
 - 2026-10-29 — Claude — Verified end to end at the owner's test: a partner application sent from his Android phone (after the 2.0.5 OTA) is stored (`source` shows `ios`, see open items), appears in the admin and produced the team email to support@akhoo.app (`delivered`, arrived in the inbox he checks). The web application he sent earlier also arrived.
 - 2026-10-29 — Claude — Found that Codex's Android 2.0.5 (10) is the live Android version and still has the test partner form. Published an OTA for runtime 2.0.5 (Codex's code + the real form, branch `android/partner-form-205-20261029`) at the owner's explicit order; the update server returns it. Touched nothing on Codex's branch. Not verified: on a phone.
 - 2026-10-29 — Claude — iOS 2.0.5 (32) built on the GitHub macOS runner, uploaded to App Store Connect and prepared at the owner's order: real partner form, new Arabic what's new and review notes, new Home screenshot, old iPad Home removed. Sent to Apple later the same day at his order (state `WAITING_FOR_REVIEW`). Verified: read-back of the version, build `VALID`, screenshots `COMPLETE`. Not verified: the build on a device.
