@@ -1,6 +1,6 @@
 # Benefits and activity — local implementation
 
-**Owner decision, 2026-10-29:** This implemented design was rejected after review and is not approved for publication. A replacement image-only concept was shown (offers-first discovery, compact points balance, activity calendar and timeline). Its examples are illustrative; no replacement app changes have been made.
+**Owner scope clarification, 2026-10-29:** The requested redesign concerns ONLY the supplied level/medal card, not entire pages. The earlier interpretation of a whole-page rejection was too broad. A new isolated card image uses circular progress with the same gold level, 42/60 assists and 18 remaining; approval is pending. No further app code was changed. The earlier full-page implementation below remains an unpublished exploration and must not be treated as the requested final scope.
 
 The owner approved the mobile wallet/impact concept and requested local implementation. This branch changes the real Benefits and Activity screens and adds a development-only web showcase at `http://localhost:4188/design-preview`.
 
