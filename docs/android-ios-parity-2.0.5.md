@@ -6,7 +6,7 @@ Owner authorized public Google Play release on 2026-10-29. Reference: iOS 2.0.4 
 
 - Android resolves the published native implementations for welcome/launch, home, request selection/details/location, helper map/details sheets, requester waiting/tracking, helper mission, activity, tab bar, buttons and page/list containers.
 - Account identity/header, benefits header/points/offers and mission completion/rating now use the same presentation on Android. The points panel is the published medal panel, not the experimental local membership card/tree/character.
-- Tajawal Arabic fonts and paragraph metrics match iOS. Existing English/Hebrew fonts remain. Native direction is explicit and system insets are applied to Android mission/sheet containers.
+- Tajawal Arabic fonts and paragraph metrics match iOS. Existing English/Hebrew fonts remain. Native direction is explicit and system insets are applied to Android helper, mission and sheet containers.
 - Android video uses TextureView for compositing under masks/gradients. Android WebView renderer failure falls back to the existing illustration. Partner form keyboard handling keeps Android resizing; the form remains labelled memory-only.
 - Native auth, OAuth callback fix, maps, notifications, location permission restrictions, backend queries and rank thresholds remain. No Apple binary, OTA, backend or Vercel publication.
 
