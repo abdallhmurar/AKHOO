@@ -37,7 +37,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -48,7 +48,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **2.0.4 (versionCode 9) is on the Production track (Israel only), `completed`, in Google review since 2026-10-28**; EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`, source `android/partner-home-20261028` (merged into `main`). It shows the same partner / home layout as the iPhone 2.0.4 (Android files `PartnerHomeScreen.tsx`, `PartnerEnrollment.tsx`, `PartnerMotion.tsx`; the old layout is `LegacyHomeScreen`). It also has an over-the-air update (runtime 2.0.4, update group `636bde81-f12d-4223-a7bf-12322016eef1`) that adds the `akhoo://auth-callback` route, which fixes "Unmatched Route" after Google sign-in on Android. 2.0.3 (8) stays live until Google approves 2.0.4. Internal and closed testing tracks also have 2.0.4 (9). The Android UI was not seen on a device by Claude; the owner tried it on his phone.
+- **2.0.4 (versionCode 9) is on the Production track (Israel only), `completed`, in Google review since 2026-10-28**; EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`, source `android/partner-home-20261028` (merged into `main`). It shows the same partner / home layout as the iPhone 2.0.4 (Android files `PartnerHomeScreen.tsx`, `PartnerEnrollment.tsx`, `PartnerMotion.tsx`; the old layout is `LegacyHomeScreen`). It also has an over-the-air update (runtime 2.0.4, update group `636bde81-f12d-4223-a7bf-12322016eef1`) that adds the `akhoo://auth-callback` route, which fixes "Unmatched Route" after Google sign-in on Android. 2.0.3 (8) stays live until Google approves 2.0.4. Internal and closed testing tracks also have 2.0.4 (9). The Android UI was not seen on a device by Claude; the owner tried it on his phone. A second OTA (update group `9f5983f2-fd59-40cd-aeb7-dcf164bd0562`, runtime 2.0.4, 2026-10-29) makes its partner form send real applications.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
@@ -84,7 +84,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, in progress) | build **33** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
 | Supabase SQL migrations | `0001`–`0053` | **0054** |
 
@@ -98,6 +98,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Claude — Android OTA published at the owner's order (runtime 2.0.4, group `9f5983f2…`): the Android partner form sends real applications. iOS 2.0.5 (build 32) started: same real form plus new store screenshots; needs a new App Store version because Apple locks screenshots of a live version. Not verified: the update on a phone.
 - 2026-10-29 — Claude — Partner form made real after the owner's OK: migration 0053 applied to the live database (tested first with a rollback), edge function `submit-partner-application` deployed, admin page "Partner applications", web/Android/iOS forms call it; small edits in Codex files `PartnerEnrollment*.tsx` and `partnerBetaCopy.ts` (the "test" wording is gone in ar/en/he). Not done: the `RESEND_API_KEY` secret (blocked), the Android OTA and the iPhone release. Not verified: the privacy policy mentions partner contact data.
 - 2026-10-29 — Claude — Password-reset email redesigned: logo plus Arabic, Hebrew and English in one message (`supabase/email-templates/recovery.html`), applied in Supabase after the owner approved the mock. Verified: real reset emails reached his Gmail inbox with working links. Not verified: how it looks in Outlook or on Android Gmail; the custom subject is ignored by Supabase so far.
 - 2026-10-29 — Claude — Domain `akhoo.app` bought by the owner on Cloudflare (renews 2027-10-29, 14.20 USD a year, auto-renew on). `support@akhoo.app` is forwarded by Cloudflare Email Routing to the new inbox `akhooapp@gmail.com` (no mailbox, forward only). Resend sends from it (DNS records added in Cloudflare) and Supabase auth uses it as SMTP. Verified: a real password-reset email for the owner's account reached his Gmail inbox. Not verified: delivery to other providers; the forward into `akhooapp@gmail.com`; Cloudflare says the domain contact email still needs checking only if a warning shows.
