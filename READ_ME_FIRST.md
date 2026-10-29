@@ -8,7 +8,8 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
-- **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
+- **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
+- **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
 - **ما انفحص:** ولا شي من اللي طلع اليوم انجرّب على جهاز حقيقي (آيفون 2.0.3 و2.0.4، أندرويد 2.0.3، الويب الجديد على سفاري).
 
@@ -36,7 +37,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Claude | Real partner application form: migration 0053, edge function `submit-partner-application`, admin list, wiring in the web, Android and iOS partner forms (small edits in Codex files `PartnerEnrollment*.tsx`, `partnerBetaCopy.ts`) | `feat/partner-applications-20261029` | 2026-10-29 |
+| — | nothing claimed | — | — |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -55,9 +56,10 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
-- Migrations `0001`–`0052` applied (`0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
+- Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
 - Website partners: table `website_partners`, `admin_save_website_partner` (admin), `get_website_partners` (public by design: name, logo, caption of enabled, verified, active businesses). Two businesses are enabled.
-- Edge functions deployed: `delete-account`, `geocode`, `notify-event`, `notify-new-message`, `notify-new-request`, `notify-support-reply`, `send-broadcast-notification`, `translate-content`, `translate-user-text`. Notification events run through `notify-event` and a `pg_cron` job every 2 minutes.
+- Partner applications (2026-10-29): table `partner_applications` (RLS: only admins read; rows are written only by the edge function), `admin_set_partner_application` (admin), edge function `submit-partner-application` (public, validated, two per phone a day, sixty an hour). The web form uses it; the Android form needs an OTA and the iPhone form a new App Store version (their source already calls it). The email to the team needs the function secret `RESEND_API_KEY` (the send-only Resend key) and optionally `PARTNER_NOTIFY_EMAIL` (default support@akhoo.app); **not set yet**, the classifier blocked writing secrets, so the owner sets them in the Supabase dashboard (Edge Functions, Secrets) or approves it. Without the secret the application is still stored and shown in the admin. Admin page: "Partner applications" under Commerce, with a badge for new ones.
+- Edge functions deployed: `submit-partner-application`, `delete-account`, `geocode`, `notify-event`, `notify-new-message`, `notify-new-request`, `notify-support-reply`, `send-broadcast-notification`, `translate-content`, `translate-user-text`. Notification events run through `notify-event` and a `pg_cron` job every 2 minutes.
 - Auth: Google and Apple sign-in on; email auto-confirm on; custom SMTP is on since 2026-10-29 (Resend, `smtp.resend.com:465`, sender "AKHOO" <support@akhoo.app>, limit 30 emails an hour in Supabase; Resend Free = 100 a day, 3,000 a month). The password-reset email (the only one the app triggers) uses a three-language template with the logo: source `supabase/email-templates/recovery.html`, logo `public/email/akhoo-logo.png` (live at akhoo.vercel.app/email/akhoo-logo.png); it is pasted into Supabase through the Management API (`mailer_templates_recovery_content`). The other auth emails keep the Supabase defaults.
 - Content: 2 verified businesses and 2 live offers, translated to he/en.
 
@@ -84,18 +86,19 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
-| Supabase SQL migrations | `0001`–`0052`, `0053` reserved (partner applications) | **0054** |
+| Supabase SQL migrations | `0001`–`0053` | **0054** |
 
 ## 6. Credentials map (never commit)
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Email (2026-10-29): `credentials/resend-api-key.txt` (send-only, used as the SMTP password), `credentials/resend-admin-key.txt` (Full access, manages domains), `credentials/cloudflare-dns-token.txt` (edit DNS of `akhoo.app`). The owner may delete the admin key and the DNS token in Resend / Cloudflare when no longer needed.
 
 ## 7. Open items
-**Decisions waiting for the owner:** the partner form (real submission flow or hide it); which Gmail account the app emails use; widen push notifications after launch or not.
+**Decisions waiting for the owner:** widen push notifications after launch or not; when to ship the real partner form to Android (OTA) and iPhone (new App Store version).
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; the reset email subject still arrives as the old English "Reset your password" although `mailer_subjects_recovery` is saved (the body and logo did change); per-language emails need the app to store the user language in auth metadata; make the `request-photos` bucket private (after most Android users run 2.0.3, because build 7 reads public URLs); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Claude — Partner form made real after the owner's OK: migration 0053 applied to the live database (tested first with a rollback), edge function `submit-partner-application` deployed, admin page "Partner applications", web/Android/iOS forms call it; small edits in Codex files `PartnerEnrollment*.tsx` and `partnerBetaCopy.ts` (the "test" wording is gone in ar/en/he). Not done: the `RESEND_API_KEY` secret (blocked), the Android OTA and the iPhone release. Not verified: the privacy policy mentions partner contact data.
 - 2026-10-29 — Claude — Password-reset email redesigned: logo plus Arabic, Hebrew and English in one message (`supabase/email-templates/recovery.html`), applied in Supabase after the owner approved the mock. Verified: real reset emails reached his Gmail inbox with working links. Not verified: how it looks in Outlook or on Android Gmail; the custom subject is ignored by Supabase so far.
 - 2026-10-29 — Claude — Domain `akhoo.app` bought by the owner on Cloudflare (renews 2027-10-29, 14.20 USD a year, auto-renew on). `support@akhoo.app` is forwarded by Cloudflare Email Routing to the new inbox `akhooapp@gmail.com` (no mailbox, forward only). Resend sends from it (DNS records added in Cloudflare) and Supabase auth uses it as SMTP. Verified: a real password-reset email for the owner's account reached his Gmail inbox. Not verified: delivery to other providers; the forward into `akhooapp@gmail.com`; Cloudflare says the domain contact email still needs checking only if a warning shows.
 - 2026-10-28 — Claude — Google Play listing: new Arabic screenshots (current design) plus new `en-US` and `iw-IL` listings (translated text, own 4 screenshots each) committed through the Play API after his OK; Google reviews them. Not verified: Hebrew wording by a native reader; Google's result. English Home banner title touches the wrench icon on a 405 px screen (web CSS, not changed).
