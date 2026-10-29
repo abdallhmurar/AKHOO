@@ -98,6 +98,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Codex — Generated a preview-only mobile concept: benefits wallet/offer cards and activity impact/timeline. Illustrative data labelled; owner review pending. No app code, runtime update or deployment.
+
 - 2026-10-29 — Codex — Published Android 2.0.5 OTA replacing WebGL medal/tab gift with native artwork to mitigate benefits/activity exits. TypeScript/lint, 327 tests, platform exports and downloaded bundle/artwork hashes pass; owner confirmed all three entry points now open on the affected phone.
   Release-pipeline work in Claude's area limited to Android runtime 2.0.5; report `docs/android-benefits-activity-crash-2026-10-29.md`. No backend, Apple or Vercel change.
 
