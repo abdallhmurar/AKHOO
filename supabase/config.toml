@@ -12,6 +12,9 @@ verify_jwt = false
 verify_jwt = false
 [functions.translate-user-text]
 verify_jwt = false
+# Public partner form: input is validated and rate limited inside the handler.
+[functions.submit-partner-application]
+verify_jwt = false
 
 # Database webhooks authenticate with x-webhook-secret, never a client key.
 [functions.notify-new-request]

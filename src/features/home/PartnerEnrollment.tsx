@@ -8,18 +8,22 @@ import { useSanadTheme } from '../../lib/theme'
 import { PartnerScene as MotionScene } from './PartnerMotion'
 import { partnerBetaCopy } from './partnerBetaCopy'
 import { emptyPartnerDraft, normalizePartnerPhone, partnerDraftErrors, type PartnerDraft } from './partnerBetaModel'
+import { submitPartnerApplication } from './partnerApplication'
 
-// The partner application preview for Android (same screens as `PartnerEnrollment.ios.tsx`). Intentionally memory-only:
-//  There is no network or storage write.
+// The partner application form for Android (same screens as `PartnerEnrollment.ios.tsx`). The request is sent through
+// `submitPartnerApplication`; nothing is stored on the phone.
 export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
   const { i18n } = useTranslation()
-  const copy = partnerBetaCopy[normalizeTypographyLanguage(i18n.language)]
+  const language = normalizeTypographyLanguage(i18n.language)
+  const copy = partnerBetaCopy[language]
   const type = useAppTypography(), theme = useSanadTheme(), rtl = useIsRTL()
   const inset = useSafeAreaInsets()
   const [draft, setDraft] = useState<PartnerDraft>({ ...emptyPartnerDraft })
   const [stage, setStage] = useState<'details' | 'review' | 'done'>('details')
   const [faq, setFaq] = useState<number | null>(0)
   const [attempted, setAttempted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState<'rate_limited' | 'failed' | null>(null)
   const scroll = useRef<ScrollView>(null)
   const inputRefs = useRef<Partial<Record<keyof PartnerDraft, TextInput | null>>>({})
   const errors = attempted ? partnerDraftErrors(draft) : []
@@ -37,7 +41,16 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
   }
   const back = () => {
     if (stage === 'details' || stage === 'done') onClose()
-    else { setStage('details'); scroll.current?.scrollTo({ y: 0, animated: false }) }
+    else { setStage('details'); setSendError(null); scroll.current?.scrollTo({ y: 0, animated: false }) }
+  }
+  const submit = async () => {
+    if (sending) return
+    setSending(true)
+    setSendError(null)
+    const result = await submitPartnerApplication(draft, language, 'android')
+    setSending(false)
+    if (result === 'sent') { setStage('done'); scroll.current?.scrollTo({ y: 0, animated: false }) }
+    else setSendError(result === 'rate_limited' ? 'rate_limited' : 'failed')
   }
   const set = (key: keyof PartnerDraft, value: string | number) => setDraft(current => ({ ...current, [key]: value }))
   const fields = ['business', 'city', 'phone', 'offer'] as const
@@ -96,7 +109,8 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
             </View>)}
           </View>
           <Text style={[type.body, secondary, align]}>{copy.notice}</Text>
-          <Pressable accessibilityRole="button" onPress={() => { setStage('done'); scroll.current?.scrollTo({ y: 0, animated: false }) }} style={({ pressed }) => [styles.primary, pressed && styles.pressed]}><Text style={[type.button, styles.white]}>{copy.send}</Text></Pressable>
+          {sendError ? <Text accessibilityRole="alert" style={[type.caption, align, styles.error]}>{sendError === 'rate_limited' ? copy.sendLimited : copy.sendFailed}</Text> : null}
+          <Pressable accessibilityRole="button" disabled={sending} accessibilityState={{ busy: sending, disabled: sending }} onPress={submit} style={({ pressed }) => [styles.primary, (pressed || sending) && styles.pressed]}><Text style={[type.button, styles.white]}>{sending ? copy.sending : copy.send}</Text></Pressable>
           <Pressable accessibilityRole="button" onPress={back} style={[styles.secondary, panel]}><Text style={[type.button, ink]}>{copy.edit}</Text></Pressable>
         </> : <View style={[styles.panel, panel]}>
           <Text style={styles.check} accessibilityElementsHidden>✓</Text>
