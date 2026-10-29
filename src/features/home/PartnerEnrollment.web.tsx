@@ -7,13 +7,14 @@ import { useSanadTheme } from '../../lib/theme'
 import { useAppFont, normalizeTypographyLanguage } from '../../lib/typography'
 import { partnerBetaCopy } from './partnerBetaCopy'
 import { emptyPartnerDraft, normalizePartnerPhone, partnerDraftErrors, type PartnerDraft } from './partnerBetaModel'
+import { submitPartnerApplication } from './partnerApplication'
 import './partner-home.web.css'
 
 const fields = ['business', 'city', 'phone', 'offer'] as const
 const limits = { business: 80, city: 60, phone: 24, offer: 280 } as const
 
-// The partner application preview of the iPhone beta, for the web app. It is memory-only on purpose: nothing is sent,
-// stored or logged, and the screen says so. Full-screen dialog, closes with Escape or the back button.
+// The partner application form of the iPhone app, for the web app. The request is sent through `submitPartnerApplication`
+// (nothing is kept in the browser). Full-screen dialog, closes with Escape or the back button.
 export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
   const { i18n } = useTranslation()
   const language = normalizeTypographyLanguage(i18n.language)
@@ -26,6 +27,8 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
   const [stage, setStage] = useState<'details' | 'review' | 'done'>('details')
   const [faq, setFaq] = useState<number | null>(0)
   const [attempted, setAttempted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState<'rate_limited' | 'failed' | null>(null)
   const root = useRef<HTMLDivElement>(null)
   const backButton = useRef<HTMLButtonElement>(null)
   const inputs = useRef<Partial<Record<keyof PartnerDraft, HTMLInputElement | HTMLTextAreaElement | null>>>({})
@@ -34,7 +37,16 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
 
   const back = () => {
     if (stage === 'details' || stage === 'done') onClose()
-    else { setStage('details'); root.current?.scrollTo({ top: 0 }) }
+    else { setStage('details'); setSendError(null); root.current?.scrollTo({ top: 0 }) }
+  }
+  const submit = async () => {
+    if (sending) return
+    setSending(true)
+    setSendError(null)
+    const result = await submitPartnerApplication(draft, language, 'web')
+    setSending(false)
+    if (result === 'sent') { setStage('done'); root.current?.scrollTo({ top: 0 }) }
+    else setSendError(result === 'rate_limited' ? 'rate_limited' : 'failed')
   }
   const backRef = useRef(back)
   backRef.current = back
@@ -123,7 +135,8 @@ export function PartnerEnrollment({ onClose }: { onClose: () => void }) {
             </div>)}
           </section>
           <p className="akh-pe-notice">{copy.notice}</p>
-          <button className="akh-pe-primary" type="button" onClick={() => { setStage('done'); root.current?.scrollTo({ top: 0 }) }}>{copy.send}</button>
+          {sendError ? <p className="akh-pe-error" role="alert">{sendError === 'rate_limited' ? copy.sendLimited : copy.sendFailed}</p> : null}
+          <button className="akh-pe-primary" type="button" disabled={sending} aria-busy={sending} onClick={submit}>{sending ? copy.sending : copy.send}</button>
           <button className="akh-pe-secondary" type="button" onClick={back}>{copy.edit}</button>
         </> : <section className="akh-pe-panel">
           <span className="akh-pe-check" aria-hidden="true">✓</span>

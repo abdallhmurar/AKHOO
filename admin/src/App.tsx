@@ -23,6 +23,7 @@ import { ReportsPage } from '@/pages/reports/ReportsPage'
 import { ReportDetailPage } from '@/pages/reports/ReportDetailPage'
 import { NotificationsPage } from '@/pages/notifications/NotificationsPage'
 import { SupportPage } from '@/pages/support/SupportPage'
+import { PartnerApplicationsPage } from '@/pages/partnerApplications/PartnerApplicationsPage'
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="offers/:id" element={<OfferDetailPage />} />
           <Route path="redemptions" element={<RedemptionsPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="partner-applications" element={<PartnerApplicationsPage />} />
           <Route path="mission-ratings" element={<MissionRatingsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="reports/:id" element={<ReportDetailPage />} />

@@ -1,9 +1,10 @@
 import {
   LayoutDashboard, ClipboardList, Users, Award, Store, Tag, Star, Map,
-  Medal, Ticket, Flag, Bell, MessagesSquare
+  Medal, Ticket, Flag, Bell, MessagesSquare, Inbox
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSupportOpenCount, useSupportRealtime } from '@/pages/support/useSupport'
+import { useNewPartnerApplicationsCount } from '@/pages/partnerApplications/usePartnerApplications'
 import { NavItem } from './NavItem'
 
 function SectionLabel({ children }: { children: string }) {
@@ -16,6 +17,7 @@ export function SidebarNav() {
   // mounted at a time; the count is what tells the admin someone is waiting.
   const openSupport = useSupportOpenCount().data ?? 0
   useSupportRealtime()
+  const newApplications = useNewPartnerApplicationsCount().data ?? 0
   return (
     <nav className="flex flex-col gap-1 p-3">
       <SectionLabel>{t('nav.sections.overview')}</SectionLabel>
@@ -34,6 +36,7 @@ export function SidebarNav() {
       <NavItem to="/offers" icon={Tag} label={t('nav.offers')} />
       <NavItem to="/redemptions" icon={Ticket} label={t('nav.redemptions')} />
       <NavItem to="/reviews" icon={Star} label={t('nav.reviews')} />
+      <NavItem to="/partner-applications" icon={Inbox} label={t('nav.partnerApplications')} badge={newApplications > 0 ? String(newApplications) : undefined} />
 
       <SectionLabel>{t('nav.sections.safety')}</SectionLabel>
       <NavItem to="/reports" icon={Flag} label={t('nav.reports')} />
