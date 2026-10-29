@@ -38,6 +38,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
+| Codex | Use recognizable brand logos and consistent website action icons | web/brand-icons-20261029 | 2026-10-29 |
 | Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
@@ -98,6 +99,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Prepared recognizable website brand icons and shared Lucide actions; ar/en/he mobile/desktop flows and static build pass. Publication pending final staging check.
+  Only the marketing site and feature-branch deployment suppression changed. Report: `docs/website-icons-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Published the marketing Android download link to Google Play on akhoo.app; removed the closed-test dialog and updated its FAQ/copy in ar/en/he. Only site.js/content.js differ from the prior site.
   Build, syntax, locale keys, 2 feed tests, local/live mobile clicks and all 56 deployed file hashes verified. No app/store/backend change; branch-only Vercel suppression is the small Claude-area edit. Report: `docs/website-android-download-2026-10-29.md`.

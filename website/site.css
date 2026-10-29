@@ -151,6 +151,34 @@ h3 {
   width: 22px;
   height: 22px;
   flex: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+/* Brand silhouettes stay upright in every language. Labels remain visible. */
+.brand-icon {
+  transform: none;
+}
+.download-copy .button svg.brand-icon {
+  width: 25px;
+  height: 25px;
+}
+.store-button .brand-icon--apple {
+  color: #152536;
+}
+.outline .brand-icon--whatsapp,
+.partner-form-icon .brand-icon--whatsapp {
+  color: #07875e;
+  width: 25px;
+  height: 25px;
+}
+.phone-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.phone-label .icon {
+  width: 18px;
+  height: 18px;
 }
 html[dir=rtl] .directional {
   transform: rotate(180deg);

@@ -1,3 +1,4 @@
+import {icon} from './icons.js';
 import {partnerConfig} from './partner-config.js';
 import {fetchWebsitePartners} from './partner-feed.js';
 
@@ -25,7 +26,7 @@ export function partnerStrip(lang) {
       </div>
       <div class="partner-invitation">
         <div class="partner-invitation-copy"><span class="eyebrow">${escape(t.eyebrow)}</span><h3 id="partner-invitation-heading">${escape(t.titleInvite)}</h3><p>${escape(t.text)}</p></div>
-        <a class="button partner-join" href="#partner-form"><span>${escape(t.action)}</span><svg class="icon directional" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a>
+        <a class="button partner-join" href="#partner-form"><span>${escape(t.action)}</span>${icon('arrow','directional')}</a>
       </div>
     </div>
   </section>`;

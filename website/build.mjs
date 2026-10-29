@@ -6,7 +6,7 @@ import {LEGAL_CONTACT,LEGAL_LAST_UPDATED,privacyPolicyBlocks,termsOfUseBlocks} f
 import {parseEnv} from 'node:util';
 const base=dirname(fileURLToPath(import.meta.url)), root=resolve(base,'..'), out=resolve(base,'dist');
 await mkdir(resolve(out,'assets'),{recursive:true});
-for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-feed.js','site.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
+for(const file of ['index.html','site.css','editorial.css','journey.css','brand-motion.css','partners.css','partner-strip.css','partner-strip.js','partner-feed.js','site.js','icons.js','content.js','journey.js','journey-copy.js','brand-motion.js']) await copyFile(resolve(base,file),resolve(out,file));
 // Only public connection settings are emitted. No session or service-role key.
 let localEnv={};
 try{localEnv=parseEnv(await readFile(resolve(root,'.env.local'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
@@ -50,6 +50,8 @@ const assets={
  'TAJAWAL-LICENSE.txt':'node_modules/@expo-google-fonts/tajawal/LICENSE_FONT',
  'INTER-LICENSE.txt':'node_modules/@expo-google-fonts/inter/LICENSE_FONT',
  'HEBREW-LICENSE.txt':'node_modules/@expo-google-fonts/noto-sans-hebrew/LICENSE_FONT',
+ 'LUCIDE-LICENSE.txt':'website/vendor/icons/LUCIDE-LICENSE.txt',
+ 'SIMPLE-ICONS-LICENSE.txt':'website/vendor/icons/SIMPLE-ICONS-LICENSE.txt',
  'ICON-LICENSE.md':'src/components/dock-assets/README.md',
  'THREE-LICENSE.txt':'previews/home-motion/assets/perks/vendor/THREE-LICENSE.txt'
 };

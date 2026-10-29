@@ -1,9 +1,10 @@
+import { icon } from './icons.js';
 import { animate, inView, scroll } from "motion";
 import { experienceCopy } from "./experience-copy.js";
 const escape = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const kinds = ["battery", "fuel", "tire", "other"];
-const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
-const arrow = '<svg viewBox="0 0 24 24" class="icon directional" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
+const tick = icon("check");
+const arrow = icon("arrow", "directional");
 export function upgradeExperience(t, lang, art) {
   const c = experienceCopy[lang];
   document.body.dataset.experience = "v2";
