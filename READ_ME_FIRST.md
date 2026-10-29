@@ -6,10 +6,10 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
-- **أندرويد:** 2.0.4 (9) صارت منشورة على Google Play. 2.0.5 (10)، اللي بتنقل باقي تصميم الآيفون كمان، انرسلت للنشر العام بتاريخ 29/10 وحالتها مؤكدة «تحت المراجعة». التوزيع الحالي لإسرائيل؛ نسخة 9 بتضل للناس لحين الموافقة على 10.
+- **أندرويد:** 2.0.5 (10) صارت منشورة على Google Play، مؤكد من Google بتاريخ 29/10. المالك بلّغ عن خروج التطبيق عند فتح «مزايا أخوو» و«نشاطي»؛ تصحيح عرض الميدالية والهدية على أندرويد اجتاز الفحوص وجاهز للإرسال. التوزيع الحالي لإسرائيل.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
 - **بانتظارك:** (1) نموذج الشركاء تجريبي ولا بيبعت شي. القرار: نربطه بطلب حقيقي ولا نخبّيه؟ (2) حساب Gmail لإيميلات التطبيق. (3) نوسّع الإشعارات بعد الإطلاق ولا لأ؟
-- **بانتظار طرف ثالث:** Google (أندرويد 2.0.5).
+- **بانتظار طرف ثالث:** تأكيد تجربة تصحيح إغلاق صفحات المزايا والنشاط على جهاز المالك.
 - **ما انفحص:** أندرويد 2.0.5 لسه ما انجرّبت على جهاز حقيقي. فحوص الكود والبناء والملف النهائي نجحت؛ باقي فحوص الأجهزة بالبنود المفتوحة في القسم 7.
 
 ## 1. Rules (non-negotiable)
@@ -36,6 +36,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
+| Codex | Diagnose and fix reported crashes/freezes opening benefits and activity after the Android parity release | android/ios-parity-release-20261029 | 2026-10-29 |
 
 ## 3. Current state (2026-10-29)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -46,7 +47,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **2.0.5 (10): IN REVIEW for public Production (Israel), confirmed 2026-10-29 00:55 UTC.** Full published-iOS presentation, including request/helper/mission/activity/account/perks, fonts, motion and Android insets/video adapters; OAuth callback retained. EAS build `238792da-a807-4eea-985c-11c39d2ebcb3`, source `a10d00be8fe152ae63899d76bc804d8a544de2ed` on `android/ios-parity-release-20261029`; runtime 2.0.5. Not merged to main or published to Apple/OTA/Vercel. Report: `docs/android-ios-parity-2.0.5.md`. Local points/tree/character experiments excluded; physical-device QA unverified.
+- **2.0.5 (10): LIVE in Production (Israel), confirmed 2026-10-29 02:21 UTC.** Full published-iOS presentation, including request/helper/mission/activity/account/perks, fonts, motion and Android insets/video adapters; OAuth callback retained. EAS build `238792da-a807-4eea-985c-11c39d2ebcb3`, source `a10d00be8fe152ae63899d76bc804d8a544de2ed` on `android/ios-parity-release-20261029`; runtime 2.0.5. Not merged to main or published to Apple/Vercel. Release report: `docs/android-ios-parity-2.0.5.md`. Owner reported benefits/activity native exits; Android medal mitigation in progress: `docs/android-benefits-activity-crash-2026-10-29.md`.
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
@@ -85,7 +86,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | Platform | Used | Next free |
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
-| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4 live), **10 (2.0.5 full published-iOS parity, Production review 2026-10-29)** | **11** |
+| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live, confirmed 2026-10-29)** | **11** |
 | Supabase SQL migrations | `0001`–`0052` | **0053** |
 
 ## 6. Credentials map (never commit)
@@ -97,6 +98,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Mitigating native exits opening Android benefits/activity: native medal and tab gift replace iOS WebGL surfaces. TypeScript/lint, 327 tests and Android/iOS graph checks pass; affected-device result pending.
+  Release-pipeline work in Claude's area is limited to Android runtime 2.0.5; delivery record: `docs/android-benefits-activity-crash-2026-10-29.md`. No backend, Apple or Vercel change.
 
 - 2026-10-29 — Codex — Android 2.0.5 (10) submitted to public Production after owner's explicit OK; full published-iOS presentation with Android adapters. Google lifecycle read-back: 10 `IN_REVIEW`, 9 `PUBLISHED`.
   Touched Claude's build/store area only for this release. Typecheck/lint, 319 tests, native exports, signed build and AAB/Play hash checks passed; report `docs/android-ios-parity-2.0.5.md`. No Apple, OTA, backend or Vercel action; device QA unverified.

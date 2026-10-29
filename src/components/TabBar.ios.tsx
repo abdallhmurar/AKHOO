@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { RewardsGift } from '../features/home/RewardsGift.ios'
+import { TabBarGift } from './TabBarGift'
 import { GuideTarget } from '../features/guide/GuideProvider'
 import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -108,7 +108,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
             >
               <Animated.View style={[styles.tabContent, { transform: [{ translateY }, { scale }] }]}>
                 <View style={[styles.iconFrame, { backgroundColor: isFocused ? '#ffffff20' : theme.colors.primarySoft }]}>
-                  {route.name === 'community' ? <RewardsGift label={label} size={44} interactive={false} active={isFocused} interaction={giftPress} idle={false} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
+                  {route.name === 'community' ? <TabBarGift label={label} size={44} interactive={false} active={isFocused} interaction={giftPress} idle={false} /> : route.name === 'index' || route.name === 'activity' || route.name === 'account' ? <Image accessible={false} source={route.name === 'index' ? require('./dock-assets/home.png') : route.name === 'activity' ? require('./dock-assets/activity.png') : require('./dock-assets/account.png')} style={{ width: 30, height: 30 }} resizeMode="contain" /> : options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
                 </View>
                 <Text style={[styles.label, { color, fontFamily: isFocused ? activeFont : inactiveFont }]} numberOfLines={1}>
                   {label}

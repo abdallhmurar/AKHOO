@@ -23,6 +23,7 @@ const required = [
   'components/motion/ApprovedPanels.android.tsx', 'components/motion/ApprovedPanels.ios.tsx',
   'components/motion/Motion.android.tsx', 'components/motion/media.ios.ts',
   'providers/iosFonts.android.ts', 'app/auth-callback.tsx',
+  'components/TabBarGift.tsx', 'components/HelperMedalArtwork.tsx',
 ]
 for (const file of required) assert(sources.some(source => source.endsWith(file)), `Missing shipped presentation: ${file}`)
 for (const file of ['features/requester/RequestFlowScreens.tsx', 'features/helper/HelperScreens.tsx', 'features/activity/ActivityScreen.tsx', 'components/TabBar.tsx']) {
@@ -31,7 +32,10 @@ for (const file of ['features/requester/RequestFlowScreens.tsx', 'features/helpe
 for (const name of ['LivePointsCard', 'HelperCharacter', 'impactTreeScene', 'helperCardMaterials']) {
   assert(!sources.some(source => source.includes(name)), `Unapproved local prototype bundled: ${name}`)
 }
+for (const name of ['HelperMedal.ios.tsx', 'TabBarGift.ios.tsx', 'RewardsGift.ios.tsx', 'InteractiveScene.ios.tsx', 'generated/sceneHtml.ts']) {
+  assert(!sources.some(source => source.endsWith(name)), `Android benefits/activity must not load the iOS WebGL surface: ${name}`)
+}
 for (const weight of ['400Regular', '500Medium', '700Bold', '800ExtraBold']) {
   assert(sources.some(source => source.includes(`Tajawal_${weight}.ttf`)), `Missing Arabic font ${weight}`)
 }
-console.log(`Android release graph verified: ${required.length} presentation/auth entries, four Arabic fonts; old screens and local prototypes excluded.`)
+console.log(`Android release graph verified: ${required.length} presentation/auth entries, four Arabic fonts; old screens, local prototypes and iOS WebGL surfaces excluded.`)
