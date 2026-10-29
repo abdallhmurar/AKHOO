@@ -1,8 +1,9 @@
-# AKHOO marketing website — standalone preview
+# AKHOO marketing website
 
 This is a standalone public introduction to AKHOO, separate from the
-authenticated Expo application. The mobile-accessible preview is
-https://dist-mu-lilac-59.vercel.app/?lang=ar . Its Vercel project is `dist`
+authenticated Expo application. The official website is https://akhoo.app;
+`www.akhoo.app` redirects to it. The existing alias
+https://dist-mu-lilac-59.vercel.app/?lang=ar remains available. Its Vercel project is `dist`
 (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`); do not deploy this static directory to the
 root repository's `akhoo` app project. Only `website/dist/` is uploaded.
 
@@ -44,7 +45,8 @@ the ignored `dist/` directory. `website/` is excluded from future EAS uploads.
   WhatsApp message. Nothing is submitted or stored by this website; visitors send
   the message themselves in WhatsApp. The copy button is an alternative.
 - FAQ, support phone/WhatsApp, and iPhone download link.
-- Android is described as **closed testing**, without a public-download claim.
+- Android links directly to `https://play.google.com/store/apps/details?id=app.akhoo.help`.
+  The closed-testing dialog and copy were removed in all three languages on 2026-10-29.
 - Privacy, terms, and account-deletion instructions in all three languages.
   Privacy/terms are copied directly from the app's existing `legalContent.ts`.
   Credits are accessible from those pages, without repeated icon-credit footers.
@@ -75,8 +77,8 @@ viewport and has a static fallback when WebGL is unavailable.
 
 ## Preview limitations
 
-No marketing domain, analytics, mailing-list database, store release, or production
-hosting is configured. The preview has `noindex` metadata. Contact information and
+The marketing domain and production hosting are configured. Analytics and a
+mailing-list database are not configured. The site retains `noindex` metadata. Contact information and
 store links use existing public project details. There are no fabricated user
 counts, testimonials, response-time promises, or fixed Android release dates.
 

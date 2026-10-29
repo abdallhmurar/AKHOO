@@ -8,6 +8,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
+- **الموقع الرسمي:** https://akhoo.app شغّال، وزر «حمّل من Google Play» صار يفتح صفحة أخوو مباشرة من 29/10. نص التجربة القديم انشال باللغات الثلاث؛ إعداد منع الظهور بجوجل لسه موجود.
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
 - **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
@@ -53,7 +54,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
+**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/android-download-20261029` (`832a63e`): Android download links directly to Google Play; old testing dialog/copy removed in ar/en/he. Report: `docs/website-android-download-2026-10-29.md`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
 - Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
@@ -97,6 +98,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Published the marketing Android download link to Google Play on akhoo.app; removed the closed-test dialog and updated its FAQ/copy in ar/en/he. Only site.js/content.js differ from the prior site.
+  Build, syntax, locale keys, 2 feed tests, local/live mobile clicks and all 56 deployed file hashes verified. No app/store/backend change; branch-only Vercel suppression is the small Claude-area edit. Report: `docs/website-android-download-2026-10-29.md`.
 
 - 2026-10-29 — Claude — Android OTA published at the owner's order (runtime 2.0.4, group `9f5983f2…`): the Android partner form sends real applications. iOS 2.0.5 (build 32) started: same real form plus new store screenshots; needs a new App Store version because Apple locks screenshots of a live version. Not verified: the update on a phone.
 - 2026-10-29 — Claude — Partner form made real after the owner's OK: migration 0053 applied to the live database (tested first with a rollback), edge function `submit-partner-application` deployed, admin page "Partner applications", web/Android/iOS forms call it; small edits in Codex files `PartnerEnrollment*.tsx` and `partnerBetaCopy.ts` (the "test" wording is gone in ar/en/he). Not done: the `RESEND_API_KEY` secret (blocked), the Android OTA and the iPhone release. Not verified: the privacy policy mentions partner contact data.
