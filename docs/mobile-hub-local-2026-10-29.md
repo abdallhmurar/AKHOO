@@ -1,5 +1,7 @@
 # Benefits and activity — local implementation
 
+**Owner decision, 2026-10-29:** This implemented design was rejected after review and is not approved for publication. A replacement image-only concept was shown (offers-first discovery, compact points balance, activity calendar and timeline). Its examples are illustrative; no replacement app changes have been made.
+
 The owner approved the mobile wallet/impact concept and requested local implementation. This branch changes the real Benefits and Activity screens and adds a development-only web showcase at `http://localhost:4188/design-preview`.
 
 ## Behavior
