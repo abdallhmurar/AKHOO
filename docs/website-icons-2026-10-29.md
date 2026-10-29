@@ -15,4 +15,6 @@ Validation completed before publication:
 
 Only the marketing site is eligible for this publication. The root/admin `vercel.json` changes disable automatic deployments for this feature branch; this is the small coordination edit in Claude's area. Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`) retains its `exit 0` ignored build step. No native application, store listing, backend or email configuration changed.
 
-Publication verification will be recorded here after the staged deployment is checked and promoted.
+Published to https://akhoo.app on 2026-10-29 from source commit 37680db. Deployment: `dpl_82NnrLPN2mi37Kv6bP1V4cDqPd9N`, https://dist-f26j3rc9a-abad003-6200s-projects.vercel.app. The deployment was staged without domain assignment, its protected icon module matched the local SHA-256, then it was promoted.
+
+Live verification repeated the full local icon/action/locale checks successfully, with zero page errors. All 59 public deployed files match the local build byte-for-byte. The www redirect remains 308 and preserves the language query. Existing noindex metadata, website partner feed, application projects and native releases are unchanged.

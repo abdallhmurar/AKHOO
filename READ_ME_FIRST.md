@@ -8,7 +8,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
-- **الموقع الرسمي:** https://akhoo.app شغّال، وزر «حمّل من Google Play» صار يفتح صفحة أخوو مباشرة من 29/10. نص التجربة القديم انشال باللغات الثلاث؛ إعداد منع الظهور بجوجل لسه موجود.
+- **الموقع الرسمي:** https://akhoo.app شغّال؛ أزرار التنزيل والتواصل صارت بشعارات Apple وGoogle Play وواتساب، وباقي أيقونات الموقع توحّدت من 29/10. الروابط شغّالة باللغات الثلاث؛ إعداد منع الظهور بجوجل لسه موجود.
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
 - **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
 - **بانتظار طرف ثالث:** Google (أندرويد 2.0.4).
@@ -38,7 +38,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Use recognizable brand logos and consistent website action icons | web/brand-icons-20261029 | 2026-10-29 |
 | Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
@@ -55,7 +54,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/android-download-20261029` (`832a63e`): Android download links directly to Google Play; old testing dialog/copy removed in ar/en/he. Report: `docs/website-android-download-2026-10-29.md`.
+**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/brand-icons-20261029` (`37680db`): recognizable Apple/Google Play/WhatsApp logos and shared outline action icons; store links and partner draft flow preserved. Local/live ar/en/he checks and all 59 deployed file hashes pass. Report: `docs/website-icons-2026-10-29.md`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
 - Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
@@ -100,8 +99,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
-- 2026-10-29 — Codex — Prepared recognizable website brand icons and shared Lucide actions; ar/en/he mobile/desktop flows and static build pass. Publication pending final staging check.
-  Only the marketing site and feature-branch deployment suppression changed. Report: `docs/website-icons-2026-10-29.md`.
+- 2026-10-29 — Codex — Published Apple, Google Play and WhatsApp logos plus consistent Lucide action icons on akhoo.app; public links and app behavior unchanged.
+  Local/live ar/en/he mobile/desktop flows, static build and all 59 deployed file hashes pass. Branch-only root/admin deployment suppression is the small Claude-area edit. Report: `docs/website-icons-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Published the marketing Android download link to Google Play on akhoo.app; removed the closed-test dialog and updated its FAQ/copy in ar/en/he. Only site.js/content.js differ from the prior site.
   Build, syntax, locale keys, 2 feed tests, local/live mobile clicks and all 56 deployed file hashes verified. No app/store/backend change; branch-only Vercel suppression is the small Claude-area edit. Report: `docs/website-android-download-2026-10-29.md`.
