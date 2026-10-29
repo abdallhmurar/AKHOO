@@ -1,5 +1,5 @@
 {
-  "git": { "deploymentEnabled": { "ios/testflight-partner-home-20261024": false } },
+  "git": { "deploymentEnabled": { "ios/testflight-partner-home-20261024": false, "web/android-download-20261029": false } },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

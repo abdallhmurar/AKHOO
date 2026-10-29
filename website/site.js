@@ -6,6 +6,7 @@ import {partnerStrip,setupPartnerStrip} from './partner-strip.js';
 
 const root=document.querySelector('#site');
 const store='https://apps.apple.com/app/id6809610412';
+const androidStore='https://play.google.com/store/apps/details?id=app.akhoo.help';
 const whatsapp='https://wa.me/972509956406';
 const page=location.pathname.split('/').pop().replace('.html','');
 const isLegal=['privacy','terms','delete-account','licenses'].includes(page);
@@ -69,7 +70,7 @@ function landing(t) {
     ${partnerStrip(lang)}
     ${partnership(t)}
     <section class="section faq" id="faq"><div class="container faq-grid"><div><span class="eyebrow">${e(t.faqEyebrow)}</span><h2>${e(t.faqTitle)}</h2><a class="text-link" href="#contact">${e(t.supportTitle)}${icon('arrow','directional')}</a></div><div class="faq-list">${t.faqs.map(([q,a])=>`<details><summary>${e(q)}${icon('plus')}</summary><p>${e(a)}</p></details>`).join('')}</div></div></section>
-    <section id="download" class="download-section"><div class="container download-panel"><div class="download-copy"><span class="eyebrow">${e(t.downloadEyebrow)}</span><h2>${e(t.downloadTitle)}</h2><p>${e(t.downloadText)}</p><div class="actions"><a class="button store-button" href="${store}" target="_blank" rel="noopener noreferrer">${icon('device')}${e(t.apple)}</a><button class="button android-button" data-android>${icon('device')}${e(t.android)}</button></div></div><div class="download-art"><img src="./assets/road.png" alt="" width="800" height="400" loading="lazy"><div class="download-brand"><img src="./assets/brand.png" alt="${e(t.brand)}" width="82" height="82"></div><div class="road-line"></div></div></div></section>
+    <section id="download" class="download-section"><div class="container download-panel"><div class="download-copy"><span class="eyebrow">${e(t.downloadEyebrow)}</span><h2>${e(t.downloadTitle)}</h2><p>${e(t.downloadText)}</p><div class="actions"><a class="button store-button" href="${store}" target="_blank" rel="noopener noreferrer">${icon('device')}${e(t.apple)}</a><a class="button android-button" href="${androidStore}" target="_blank" rel="noopener noreferrer">${icon('device')}${e(t.android)}</a></div></div><div class="download-art"><img src="./assets/road.png" alt="" width="800" height="400" loading="lazy"><div class="download-brand"><img src="./assets/brand.png" alt="${e(t.brand)}" width="82" height="82"></div><div class="road-line"></div></div></div></section>
     <section id="contact" class="contact container"><div><h2>${e(t.supportTitle)}</h2><p>${e(t.supportText)}</p></div><div class="actions"><a class="button outline" href="${whatsapp}" target="_blank" rel="noopener noreferrer">${icon('message')}${e(t.whatsapp)}</a><a class="text-link" href="tel:0509956406">${e(t.phone)}<bdi>050-995-6406</bdi></a></div></section>
   </main>`;
 }
@@ -78,8 +79,7 @@ function legal(t) {
   return `<main id="main" class="legal-main container"><a class="text-link" href="${home()}">${icon('arrow','back-arrow')} ${e(t.back)}</a><h1>${e(title)}</h1><article class="legal-content" id="legal-body" aria-busy="true"></article></main>`;
 }
 function dialogs(t) {
-  return `<dialog id="android-dialog" aria-labelledby="android-title"><button class="dialog-close" data-close aria-label="${e(t.close)}">${icon('close')}</button><span class="dialog-icon">${icon('device')}</span><h2 id="android-title">${e(t.androidTitle)}</h2><p>${e(t.androidText)}</p><a class="button" href="${whatsapp}?text=${encodeURIComponent(t.androidMessage)}" target="_blank" rel="noopener noreferrer">${e(t.androidAction)}${icon('message')}</a></dialog>
-    <dialog id="partner-dialog" aria-labelledby="partner-title"><button class="dialog-close" data-close aria-label="${e(t.close)}">${icon('close')}</button><h2 id="partner-title">${e(t.form.review)}</h2><p>${e(t.form.draftNote)}</p><label for="message-draft" class="sr-only">${e(t.form.review)}</label><textarea id="message-draft" readonly rows="8"></textarea><div class="dialog-actions"><a class="button" id="whatsapp-draft" target="_blank" rel="noopener noreferrer">${e(t.form.send)}${icon('message')}</a><button class="button outline" id="copy-draft">${e(t.form.copy)}</button></div><p id="copy-status" class="copy-status" role="status"></p></dialog>`;
+  return `<dialog id="partner-dialog" aria-labelledby="partner-title"><button class="dialog-close" data-close aria-label="${e(t.close)}">${icon('close')}</button><h2 id="partner-title">${e(t.form.review)}</h2><p>${e(t.form.draftNote)}</p><label for="message-draft" class="sr-only">${e(t.form.review)}</label><textarea id="message-draft" readonly rows="8"></textarea><div class="dialog-actions"><a class="button" id="whatsapp-draft" target="_blank" rel="noopener noreferrer">${e(t.form.send)}${icon('message')}</a><button class="button outline" id="copy-draft">${e(t.form.copy)}</button></div><p id="copy-status" class="copy-status" role="status"></p></dialog>`;
 }
 
 function render() {
@@ -107,7 +107,6 @@ function render() {
   document.addEventListener('keydown',escapeMenu);cleanups.push(()=>document.removeEventListener('keydown',escapeMenu));
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
-  document.querySelectorAll('[data-android]').forEach(b=>b.addEventListener('click',()=>document.querySelector('#android-dialog').showModal()));
   if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());cleanups.push(setupPartnerStrip(lang));}
 }
 function setupForm(t) {
