@@ -38,7 +38,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Verify the reported old battery scene against current app and website assets | web/current-scenes-20261029 | 2026-10-29 |
+| Codex | Replace website hero scene with approved rose need-help app card | web/current-scenes-20261029 | 2026-10-29 |
 | Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
@@ -100,6 +100,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-10-29 — Codex — Replaced the website hero battery picker with the owner-confirmed rose help card and approved app video; the CTA opens the existing request demo.
+  Local ar/en/he responsive, motion/fallback/keyboard checks and build pass; publication verification pending. Report: `docs/website-rose-card-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Published Apple, Google Play and WhatsApp logos plus consistent Lucide action icons on akhoo.app; public links and app behavior unchanged.
   Local/live ar/en/he mobile/desktop flows, static build and all 59 deployed file hashes pass. Branch-only root/admin deployment suppression is the small Claude-area edit. Report: `docs/website-icons-2026-10-29.md`.

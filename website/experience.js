@@ -131,7 +131,7 @@ export function setupEditorialMotion() {
       el.style.removeProperty("opacity");
       el.style.removeProperty("transform");
     });
-    tilt.style.removeProperty("transform");
+    tilt?.style.removeProperty("transform");
   }
   function start() {
     stopAnimations();
@@ -152,10 +152,10 @@ export function setupEditorialMotion() {
   };
   const reset = () => {
     cancelAnimationFrame(frame);
-    tilt.style.removeProperty("transform");
+    tilt?.style.removeProperty("transform");
   };
-  tilt.addEventListener("pointermove", pointer);
-  tilt.addEventListener("pointerleave", reset);
+  tilt?.addEventListener("pointermove", pointer);
+  tilt?.addEventListener("pointerleave", reset);
   preference.addEventListener("change", start);
   start();
   const navLinks = [...document.querySelectorAll("#main-nav a")];
@@ -177,8 +177,8 @@ export function setupEditorialMotion() {
     stopScroll();
     sectionObserver.disconnect();
     cancelAnimationFrame(frame);
-    tilt.removeEventListener("pointermove", pointer);
-    tilt.removeEventListener("pointerleave", reset);
+    tilt?.removeEventListener("pointermove", pointer);
+    tilt?.removeEventListener("pointerleave", reset);
     preference.removeEventListener("change", start);
   };
 }

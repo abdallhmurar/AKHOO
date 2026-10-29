@@ -19,6 +19,8 @@ if(!publicKey)throw new Error('Website requires a publishable or anon key');
 partnerConfig.url=partnerConfig.url.replace(/\/$/,'');
 await writeFile(resolve(out,'partner-config.js'),`export const partnerConfig=${JSON.stringify(partnerConfig)};\n`);
 const assets={
+ 'help-rose.jpg':'assets/help-rose/help-rose-poster.jpg',
+ 'help-rose.mp4':'assets/help-rose/help-rose-loop.mp4',
  'brand.png':'previews/home-motion/assets/brand.png',
  'road.png':'previews/home-motion/assets/road-header.png',
  'help.png':'previews/home-motion/assets/help-3d-poster.png',

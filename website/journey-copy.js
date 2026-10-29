@@ -1,5 +1,9 @@
 export const journeyCopy = {
   ar: {
+    helpTitle: "محتاج مساعدة؟",
+    helpText: "خلّينا نوصلك بحدا قريب",
+    helpAction: "بدي مساعدة",
+    helpPreviewNote: "من التطبيق الجديد · جرّب طريقة طلب المساعدة",
     eyebrow: "أخوو · ناس بتساعد ناس",
     title: "تعطّلت عالطريق؟",
     accent: "أخوك قريب.",
@@ -18,6 +22,10 @@ export const journeyCopy = {
     previews: { location: "مكان الطلب", request: "طلبك", issue: "مساعدة بطارية", helper: "مساعدك", chatLabel: "محادثتك بأخوو", tracking: "وين صار طلبك؟", chat: ["معي وصلة بطارية.", "تمام، بنرتّبها هون."], status: ["طلبك انبعت", "حدا قبل يساعدك", "المساعد بالطريق"], note: "هاي أمثلة عشان تشوف كيف بيشتغل أخوو" }
   },
   en: {
+    helpTitle: "Need help?",
+    helpText: "Connect with someone nearby",
+    helpAction: "I need help",
+    helpPreviewNote: "From the new app · Try the help request demo",
     eyebrow: "AKHOO · People helping people",
     title: "Stuck on the road?",
     accent: "Find a helping hand.",
@@ -36,6 +44,10 @@ export const journeyCopy = {
     previews: { location: "Request location", request: "Help request", issue: "Battery help", helper: "Your helper", chatLabel: "Chat in AKHOO", tracking: "Your request", chat: ["I have jumper cables.", "Great, let’s coordinate here."], status: ["Request sent", "A helper accepted", "Helper on the way"], note: "Illustrative examples of the AKHOO experience" }
   },
   he: {
+    helpTitle: "צריך עזרה?",
+    helpText: "נחבר אותך למישהו קרוב",
+    helpAction: "אני צריך עזרה",
+    helpPreviewNote: "מהאפליקציה החדשה · נסו את הדגמת בקשת העזרה",
     eyebrow: "אח׳ו · אנשים עוזרים לאנשים",
     title: "נתקעתם בדרך?",
     accent: "יש מי שיכול לעזור.",

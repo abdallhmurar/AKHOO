@@ -1,3 +1,107 @@
+/* Same approved rose help card as the app; its artwork is never mirrored. */
+.journey-stage.rose-help-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 196px;
+  padding: 0 0 54px;
+  border: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ff504b, #b20d4c, #970d43);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 20px 50px #a20c431a;
+}
+.rose-help-card:focus-visible {
+  outline: 3px solid #1768e5;
+  outline-offset: 5px;
+}
+.rose-help-media {
+  position: absolute;
+  inset: 0 auto 54px 0;
+  aspect-ratio: 2;
+  mask-image: linear-gradient(90deg, #000 58%, transparent);
+  pointer-events: none;
+}
+.rose-help-media img,
+.rose-help-media video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+.rose-help-card:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #a90e4800, #a90e48e6 62%, #9d1048);
+  pointer-events: none;
+}
+.rose-help-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  margin-left: 55%;
+  margin-right: 14px;
+  min-height: 142px;
+  padding: 6px 0 4px;
+  text-align: start;
+}
+.rose-help-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.rose-help-text {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.rose-help-action {
+  position: absolute;
+  z-index: 1;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 15px;
+  background: #fff;
+  color: #a20c43;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.rose-help-action .story-icon { width: 18px; height: 18px; }
+.help-preview-note {
+  margin: 14px 0 0;
+  color: #52657a;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+@media (max-width: 380px) {
+  .rose-help-title { font-size: 18px; }
+  .rose-help-copy { margin-left: 51%; margin-right: 12px; }
+}
 body[data-experience=journey] .hero {
   margin: 0;
   border-radius: 0;

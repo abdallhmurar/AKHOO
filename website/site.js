@@ -1,7 +1,7 @@
 import {icon} from './icons.js';
 import {content,languages} from './content.js';
 import {upgradeExperience,setupWalkthrough,setupEditorialMotion} from './experience.js';
-import {createJourney,setupJourney} from './journey.js';
+import {createJourney} from './journey.js';
 import {setupBrandMotion} from './brand-motion.js';
 import {partnerStrip,setupPartnerStrip} from './partner-strip.js';
 
@@ -89,7 +89,7 @@ function render() {
   document.title=isLegal?`${legalTitle(t)} · ${t.brand}`:t.title;
   document.querySelector('meta[name="description"]').content=t.description;
   root.innerHTML=header(t)+(isLegal?legal(t):landing(t))+footer(t)+dialogs(t);
-  if(!isLegal){upgradeExperience(t,lang,art);createJourney(t,lang,art);}
+  if(!isLegal){upgradeExperience(t,lang,art);createJourney(t,lang);}
   document.querySelector('#language').addEventListener('change',event=>{
     const form=document.querySelector('#partner-form');
     if(form) formValues=Object.fromEntries(new FormData(form));
@@ -106,7 +106,7 @@ function render() {
   document.addEventListener('keydown',escapeMenu);cleanups.push(()=>document.removeEventListener('keydown',escapeMenu));
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{const b=d.getBoundingClientRect();if(ev.target===d&&(ev.clientX<b.left||ev.clientX>b.right||ev.clientY<b.top||ev.clientY>b.bottom))d.close();}));
-  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupJourney(t,lang);setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());cleanups.push(setupPartnerStrip(lang));}
+  if(isLegal) loadLegal(t,generation); else {cleanups.push(setupWalkthrough(t,lang,currentMode,mode=>{currentMode=mode;}));setupForm(t);setupMotion();setupGift(t);cleanups.push(setupEditorialMotion());cleanups.push(setupBrandMotion());cleanups.push(setupPartnerStrip(lang));}
 }
 function setupForm(t) {
   const form=document.querySelector('#partner-form');

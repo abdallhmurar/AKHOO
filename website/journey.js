@@ -1,7 +1,6 @@
 import { icon as sharedIcon } from './icons.js';
 import { journeyCopy } from "./journey-copy.js";
 const escape = (value) => String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-const kinds = ["battery", "fuel", "tire", "other"];
 const icon = (name, extra = "") => sharedIcon(name, `story-icon ${extra}`);
 const arrow = icon("arrow", "directional");
 
@@ -13,7 +12,7 @@ function benefitPreviews(c) {
   ];
 }
 
-export function createJourney(t, lang, art) {
+export function createJourney(t, lang) {
   const c = journeyCopy[lang], hero = document.querySelector(".hero");
   document.body.dataset.experience = "journey";
   hero.innerHTML = `<div class="container hero-grid">
@@ -25,11 +24,12 @@ export function createJourney(t, lang, art) {
       <p class="hero-availability">${escape(c.availability)}</p>
     </div>
     <div class="hero-art journey-art">
-      <div class="journey-stage" data-tilt>
-        <div class="scenario-picker"><p id="scenario-label">${escape(c.select)}</p><div class="scenario-options" role="group" aria-labelledby="scenario-label">${t.services.map(([name], i) => `<button type="button" data-scene="${i}" aria-pressed="${i === 0}" aria-controls="journey-scene">${icon(kinds[i])}<span>${escape(name)}</span></button>`).join("")}</div></div>
-        <div class="journey-scene" id="journey-scene">${kinds.map((kind, i) => `<div class="journey-slide" data-slide="${i}" ${i ? "hidden" : ""}>${art(kind, t.services[i][0])}</div>`).join("")}<span class="scene-caption">${escape(c.sceneLabel)}</span></div>
-        <div class="journey-caption" aria-live="polite"><div><h2>${escape(c.questions[0])}</h2><p>${escape(c.descriptions[0])}</p></div><span class="scene-count" dir="ltr" aria-hidden="true">01 <small>/ 04</small></span></div>
-      </div>
+      <button class="journey-stage rose-help-card" type="button" data-service="0" aria-label="${escape(c.helpTitle)} ${escape(c.helpAction)}" aria-describedby="help-preview-note">
+        <span class="rose-help-media" aria-hidden="true"><img src="./assets/help-rose.jpg" alt="" width="1344" height="672" fetchpriority="high"><video data-src="./assets/help-rose.mp4" poster="./assets/help-rose.jpg" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true" disablepictureinpicture></video></span>
+        <span class="rose-help-copy" dir="${lang === 'en' ? 'ltr' : 'rtl'}"><span class="rose-help-title">${escape(c.helpTitle)}</span><span class="rose-help-text">${escape(c.helpText)}</span></span>
+        <span class="rose-help-action"><span>${escape(c.helpAction)}</span>${arrow}</span>
+      </button>
+      <p class="help-preview-note" id="help-preview-note">${escape(c.helpPreviewNote)}</p>
     </div>
   </div>`;
   const services = document.querySelector("#services");
@@ -38,21 +38,4 @@ export function createJourney(t, lang, art) {
   services.innerHTML = `<div class="container"><div class="route-intro"><span class="eyebrow">${escape(c.roadEyebrow)}</span><h2>${escape(c.roadTitle)}</h2><p>${escape(c.roadText)}</p></div><div class="route-moments">${c.moments.map(([title, body], i) => `<article class="route-moment benefit-${["location-card", "chat-card", "status-card"][i]}"><div class="benefit-copy"><h3>${escape(title)}</h3><p>${escape(body)}</p></div><div class="benefit-visual" aria-hidden="true">${previews[i]}</div></article>`).join("")}</div><div class="benefits-action"><a class="button benefits-try" href="#how">${escape(c.roadDemo)}${arrow}</a><p class="benefits-note">${escape(c.previews.note)}</p></div></div>`;
   document.querySelectorAll(".section-number,.community-sticker,.partner-symbol").forEach(element => element.remove());
   document.querySelector(".community").classList.add("journey-community");
-}
-
-export function setupJourney(t, lang) {
-  const c = journeyCopy[lang], buttons = [...document.querySelectorAll("[data-scene]")];
-  buttons.forEach((button) => button.addEventListener("click", () => {
-    const selected = Number(button.dataset.scene);
-    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
-    document.querySelectorAll("[data-slide]").forEach((slide) => {
-      slide.hidden = Number(slide.dataset.slide) !== selected;
-      if (slide.hidden) slide.querySelector("video")?.pause();
-    });
-    document.querySelector(".journey-caption h2").textContent = c.questions[selected];
-    document.querySelector(".journey-caption p").textContent = c.descriptions[selected];
-    document.querySelector(".scene-count").innerHTML = `0${selected + 1} <small>/ 04</small>`;
-    document.querySelector(".journey-try").dataset.service = String(selected);
-    document.querySelector(".journey-stage").dataset.scene = kinds[selected];
-  }));
 }
