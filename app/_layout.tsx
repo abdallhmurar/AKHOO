@@ -1,6 +1,7 @@
 import { GuideProvider } from '../src/features/guide/GuideProvider'
 import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
+import { Platform } from 'react-native'
 import { subscribeToNotificationNavigation } from '../src/lib/notifications'
 import { notificationRoute } from '../src/lib/notificationRoute'
 import { AppProviders, LaunchScreen, useAuth, useLanguageDirection } from '../src/providers'
@@ -28,6 +29,9 @@ function RootNavigator() {
       <Stack.Screen name="index" />
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="restricted" options={{ gestureEnabled: false }} />
+      <Stack.Protected guard={__DEV__ && Platform.OS === 'web'}>
+        <Stack.Screen name="level-card-preview" />
+      </Stack.Protected>
       <Stack.Protected guard={allowed}>
         <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
         <Stack.Screen name="(requester)" />

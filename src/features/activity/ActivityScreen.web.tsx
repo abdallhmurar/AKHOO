@@ -1,14 +1,13 @@
 import '../../components/motion/approved-activity.css'
 import { ArtIcon, MotionHeader } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useFocusEffect, useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
 import { BatteryWarning, CalendarBlank, CaretDown, CaretLeft, CaretRight, ClipboardText, ClockCounterClockwise, GasPump, Handshake, Lock, Tire, Trophy, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -18,7 +17,7 @@ import type { ServiceType } from '../../types'
 import { AppScreen } from '../../components/v2'
 import { BottomSheet, Button, EmptyState, Skeleton, StatusBadge } from '../../components/ui'
 
-import { HelperMedal } from '../../components/HelperMedal'
+import { VolunteerLevelCard } from '../../components/VolunteerLevelCard'
 import { supabase } from '../../lib/supabase'
 import { rewardRepository } from '../../repositories/rewardRepository'
 
@@ -40,8 +39,6 @@ const DURATION_OPTIONS: { value: Duration; labelKey: string }[] = [
   { value: 'all', labelKey: 'activity.duration.allTime' }
 ]
 
-const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
-const TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
 
 // Real SANAD Activity - a unified feed over the same real data as the intact
 // src/screens/HistoryScreen.tsx (requests + volunteer missions), plus real
@@ -88,11 +85,10 @@ export function ActivityScreen() {
       return count ?? 0
     }
   })
+  const { refetch: refreshCompleted } = completedQuery
+  const userId = session?.user.id
+  useFocusEffect(useCallback(() => { if (userId) void refreshCompleted() }, [userId, refreshCompleted]))
   const givenCount = completedQuery.data ?? 0
-  const level = getVolunteerActivityLevel(givenCount)
-  const nextThreshold = TIER_MARKS.find(mark => mark > givenCount) ?? null
-  const nextLevel = nextThreshold === null ? null : getVolunteerActivityLevel(nextThreshold)
-  const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
   const statsReady = completedQuery.isSuccess && receivedQuery.isSuccess && pointsQuery.isSuccess
   const statsError = completedQuery.isError || receivedQuery.isError || pointsQuery.isError
 
@@ -115,11 +111,7 @@ export function ActivityScreen() {
       </Pressable>
 
       {!statsReady ? statsError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void completedQuery.refetch(); void receivedQuery.refetch(); void pointsQuery.refetch() }} /> : <Skeleton height={210} /> : <>
-        <div className="approved-activity"><section className="level-card">
-          <div className="level-top"><div className="level-copy"><span className="level-tag">{t('activity.levelCard.title')}</span><h2>{t(levelLabelKey)}</h2><p>{nextThreshold !== null && nextLevel ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - givenCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevel]) }) : t('points.topTier')}</p></div><HelperMedal level={level} size={90} /></div>
-          <div className="progress-labels"><span>{t('perks.helpProgress', { count: givenCount, target: nextThreshold ?? TOP_THRESHOLD })}</span></div>
-          <progress max={nextThreshold ?? TOP_THRESHOLD} value={givenCount} aria-label={t('activity.levelCard.title')} />
-        </section></div>
+        <VolunteerLevelCard completedCount={givenCount} />
         <GuideTarget id="activity.stats"><div className="approved-activity"><section className="stats">
           {([{ key: 'given', icon: 'hands', value: givenCount, label: t('activity.givenShort') }, { key: 'received', icon: 'person', value: receivedQuery.data ?? 0, label: t('activity.stats.received') }, { key: 'points', icon: 'trophy', value: pointsQuery.data?.balance ?? 0, label: t('activity.stats.points') }] as const).map(stat => <button key={stat.key} type="button" className={`stat stat-${stat.key}`} aria-pressed={filter === stat.key} onClick={() => setFilter(stat.key)}><span className="stat-icon"><ArtIcon name={stat.icon} size={32} /></span><strong>{stat.value}</strong><span>{stat.label}</span></button>)}
         </section></div></GuideTarget>

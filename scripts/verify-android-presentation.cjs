@@ -24,12 +24,13 @@ const required = [
   'components/motion/Motion.android.tsx', 'components/motion/media.ios.ts',
   'providers/iosFonts.android.ts', 'app/auth-callback.tsx',
   'components/TabBarGift.tsx', 'components/HelperMedalArtwork.tsx',
+  'components/VolunteerLevelCard.tsx', 'components/levelCardModel.ts',
 ]
 for (const file of required) assert(sources.some(source => source.endsWith(file)), `Missing shipped presentation: ${file}`)
 for (const file of ['features/requester/RequestFlowScreens.tsx', 'features/helper/HelperScreens.tsx', 'features/activity/ActivityScreen.tsx', 'components/TabBar.tsx']) {
   assert(!sources.some(source => source.endsWith(file)), `Old Android presentation is still bundled: ${file}`)
 }
-for (const name of ['LivePointsCard', 'HelperCharacter', 'impactTreeScene', 'helperCardMaterials']) {
+for (const name of ['LivePointsCard', 'HelperCharacter', 'impactTreeScene', 'helperCardMaterials', 'features/mobileHub/']) {
   assert(!sources.some(source => source.includes(name)), `Unapproved local prototype bundled: ${name}`)
 }
 for (const name of ['HelperMedal.ios.tsx', 'TabBarGift.ios.tsx', 'RewardsGift.ios.tsx', 'InteractiveScene.ios.tsx', 'generated/sceneHtml.ts']) {

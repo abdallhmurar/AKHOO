@@ -1,13 +1,12 @@
 import { ArtIcon, MotionHeader } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage } from '../guide/GuideProvider'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useFocusEffect, useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
 import { BatteryWarning, CalendarBlank, CaretDown, CaretLeft, CaretRight, ClipboardText, ClockCounterClockwise, GasPump, Handshake, Lock, Tire, Trophy, Wrench } from 'phosphor-react-native'
 import { useTranslation } from 'react-i18next'
 import { dirStyles, useIsRTL } from '../../lib/direction'
-import { getVolunteerActivityLevel, ACTIVITY_LEVEL_LABEL_KEYS, ACTIVITY_LEVEL_THRESHOLDS } from '../../lib/activityLevel'
 import { radius, space, useSanadTheme } from '../../lib/theme'
 import { useAppTypography } from '../../lib/typography'
 import { useAuth } from '../../providers'
@@ -17,7 +16,7 @@ import type { ServiceType } from '../../types'
 import { AppScreen } from '../../components/v2'
 import { BottomSheet, Button, EmptyState, Skeleton, StatusBadge } from '../../components/ui'
 
-import { HelperMedal } from '../../components/HelperMedal'
+import { VolunteerLevelCard } from '../../components/VolunteerLevelCard'
 import { supabase } from '../../lib/supabase'
 import { rewardRepository } from '../../repositories/rewardRepository'
 
@@ -39,8 +38,6 @@ const DURATION_OPTIONS: { value: Duration; labelKey: string }[] = [
   { value: 'all', labelKey: 'activity.duration.allTime' }
 ]
 
-const TOP_THRESHOLD = ACTIVITY_LEVEL_THRESHOLDS.green
-const TIER_MARKS = [ACTIVITY_LEVEL_THRESHOLDS.bronze, ACTIVITY_LEVEL_THRESHOLDS.silver, ACTIVITY_LEVEL_THRESHOLDS.gold, ACTIVITY_LEVEL_THRESHOLDS.green]
 
 // Real SANAD Activity - a unified feed over the same real data as the intact
 // src/screens/HistoryScreen.tsx (requests + volunteer missions), plus real
@@ -87,11 +84,10 @@ export function ActivityScreen() {
       return count ?? 0
     }
   })
+  const { refetch: refreshCompleted } = completedQuery
+  const userId = session?.user.id
+  useFocusEffect(useCallback(() => { if (userId) void refreshCompleted() }, [userId, refreshCompleted]))
   const givenCount = completedQuery.data ?? 0
-  const level = getVolunteerActivityLevel(givenCount)
-  const nextThreshold = TIER_MARKS.find(mark => mark > givenCount) ?? null
-  const nextLevel = nextThreshold === null ? null : getVolunteerActivityLevel(nextThreshold)
-  const levelLabelKey = level === 'none' ? 'activityLevel.none' : ACTIVITY_LEVEL_LABEL_KEYS[level]
   const statsReady = completedQuery.isSuccess && receivedQuery.isSuccess && pointsQuery.isSuccess
   const statsError = completedQuery.isError || receivedQuery.isError || pointsQuery.isError
 
@@ -114,15 +110,7 @@ export function ActivityScreen() {
       </Pressable>
 
       {!statsReady ? statsError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void completedQuery.refetch(); void receivedQuery.refetch(); void pointsQuery.refetch() }} /> : <Skeleton height={210} /> : <>
-        <View style={[styles.levelCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-          <View style={[styles.levelTop, dirStyles(isRTL).row]}><View style={styles.levelTextCol}>
-            <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('activity.levelCard.title')}</Text>
-            <Text style={[typography.h2, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{t(levelLabelKey)}</Text>
-            <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{nextThreshold !== null && nextLevel ? t('perks.pointsCard.remainingToLevel', { remaining: nextThreshold - givenCount, levelName: t(ACTIVITY_LEVEL_LABEL_KEYS[nextLevel]) }) : t('points.topTier')}</Text>
-          </View><HelperMedal level={level} size={90} /></View>
-          <Text style={[typography.caption, { color: theme.colors.textMuted, textAlign: isRTL ? 'right' : 'left' }]}>{t('perks.helpProgress', { count: givenCount, target: nextThreshold ?? TOP_THRESHOLD })}</Text>
-          <View accessibilityRole="progressbar" accessibilityLabel={t('activity.levelCard.title')} accessibilityValue={{ min: 0, max: nextThreshold ?? TOP_THRESHOLD, now: Math.min(givenCount, nextThreshold ?? TOP_THRESHOLD) }} style={{ height: 8, borderRadius: 4, overflow: 'hidden', backgroundColor: theme.colors.border, alignItems: isRTL ? 'flex-end' : 'flex-start' }}><View style={{ height: '100%', borderRadius: 4, backgroundColor: theme.colors.primary, width: (Math.min(givenCount / (nextThreshold ?? TOP_THRESHOLD), 1) * 100 + '%') as `${number}%` }} /></View>
-        </View>
+        <VolunteerLevelCard completedCount={givenCount} />
         <GuideTarget id="activity.stats"><View style={[{ gap: 8 }, dirStyles(isRTL).row]}>
           {([{ key: 'given', icon: 'hands', value: givenCount, label: t('activity.givenShort'), color: theme.colors.community, background: theme.colors.communitySoft }, { key: 'received', icon: 'person', value: receivedQuery.data ?? 0, label: t('activity.stats.received'), color: theme.colors.primary, background: theme.colors.primarySoft }, { key: 'points', icon: 'trophy', value: pointsQuery.data?.balance ?? 0, label: t('activity.stats.points'), color: theme.colors.rewardPressed, background: theme.colors.rewardSoft }] as const).map(stat => <Pressable key={stat.key} accessibilityRole="button" accessibilityState={{ selected: filter === stat.key }} onPress={() => setFilter(stat.key)} style={{ flex: 1, minWidth: 0, borderRadius: 20, paddingVertical: 14, paddingHorizontal: 5, alignItems: 'center', gap: 5, backgroundColor: stat.background }}><ArtIcon name={stat.icon} size={32} /><Text style={[typography.h2, { color: stat.color }]}>{stat.value}</Text><Text style={[typography.caption, { textAlign: 'center', color: theme.colors.textSecondary }]}>{stat.label}</Text></Pressable>)}
         </View></GuideTarget>

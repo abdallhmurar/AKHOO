@@ -819,5 +819,21 @@
     "sendError": "We couldn't send the message. Try again.",
     "loadError": "We couldn't load the conversation.",
     "resolvedNotice": "The AKHOO team closed this conversation. Write a new message if you need anything else."
+  },
+  "levelCard": {
+    "remainingBefore": "Only",
+    "remaining": "{{remaining}} more assists",
+    "nextLevel": "to reach {{levelName}}",
+    "outOf": "of {{target}}",
+    "preview": "Local level card preview",
+    "previewNote": "Example numbers only. In the app, this uses your completed assists.",
+    "add": "+1 assist",
+    "reset": "Reset to 42",
+    "replay": "Replay",
+    "motionOn": "Motion on",
+    "motionOff": "Motion off",
+    "light": "Light",
+    "dark": "Dark",
+    "width": "Card width"
   }
 }
