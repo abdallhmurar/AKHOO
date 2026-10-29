@@ -45,10 +45,35 @@ installed-app state and iOS low-power mode need that actual-device result.
 
 ## Publication and live verification
 
-Pending the final build and live checks. Deploy only the static `website/dist/`
-directory to Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). The
-project's ignored-build command remains `exit 0`. The small root/admin Vercel
-changes only suppress automatic deployment of this task branch; no push to main.
+Published to https://akhoo.app from source commit `6bedf07` on 2026-10-29.
+Vercel deployment `dpl_7HMQXfzL7N2i4jsaqTax68BdgaHZ`, URL
+`https://dist-8nrwqkssh-abad003-6200s-projects.vercel.app`. The protected deployment
+was checked before promotion. All 104 served files match local SHA-256 hashes.
+All 15 pages and the same Chrome/WebKit readiness suite pass on production;
+www and legacy language redirects resolve correctly and there is no HTTP noindex.
+Live Chrome and WebKit both advanced the muted inline video, paused it offscreen
+and under reduced motion, and retained the poster after media failure. Chrome's
+failure was an intercepted/aborted request; WebKit media bypassed interception,
+so an isolated browser DOM was pointed to a real missing media URL to test its
+error fallback. No production file was changed for that test. JavaScript-disabled
+content and direct web links also passed. The signed-out web request link reaches
+the app's welcome page; no login or help request was submitted.
+
+One real, clearly marked application, `AKHOO website check 2026-10-29`, was sent
+through the production review/send UI. HTTP 200 `{ok:true}` and an exact read-only
+database lookup confirmed one new row, `source=web`, in the table used by the admin.
+No application was published as a business. The existing function attempts the
+owner notification; final mailbox delivery awaits the owner's confirmation.
+
+Cold production network emulation (1.5 Mbps, 150ms latency, 4× CPU slowdown)
+recorded LCP 4.5s and 894 KB transferred at the load event, without page errors or
+overflow. This is a single emulated run, not an actual phone result or a general
+speed guarantee; slow connections still take time to load the full page.
+
+Only `website/dist/` was uploaded to project `dist`
+(`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). The project's ignored-build command remains
+`exit 0`. The small root/admin Vercel changes only suppress automatic deployment
+of this task branch; no push to main.
 
 Search engines choose when to crawl/index; this work removes technical blockers,
 not a promise of search visibility. Email acceptance and final mailbox delivery

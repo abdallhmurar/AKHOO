@@ -9,7 +9,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **أندرويد (انتبه):** كودكس نشر نسخة 2.0.5 (رقم 10، شاشات الآيفون كاملة) على Google Play لإسرائيل بتاريخ 29/10، وهي اللي عند الناس هلأ، ونموذج الشركاء فيها كان تجريبي (انبنت قبل ما يصير حقيقي). نزّلت تحديث سريع لـ2.0.5 بأمرك (29/10) فيه النموذج الحقيقي فوق كود كودكس وإصلاحه، وبيوصل للناس لما يفتحوا التطبيق مرة أو مرتين.
 - **أندرويد (قبلها):** 2.0.3 حي على Google Play لإسرائيل. 2.0.4 (رقم 9، نفس تصميم الآيفون) انرسلت للإنتاج بتاريخ 28/10 بعد ما جرّبها المالك على جواله من الاختبار الداخلي/المغلق، وبانتظار Google. فلسطين مش موجودة كبلد توزيع عند Google ولا عند Apple.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
-- **الموقع الرسمي:** https://akhoo.app شغّال؛ كرت «محتاج مساعدة؟» الوردي الجديد مع السيارة البيضاء والفيديو صار مكان مشهد البطارية القديم بأول الموقع. شعارات المتاجر وواتساب موجودة؛ فُحصت الحركة والكبسة باللغات الثلاث. إعداد منع الظهور بجوجل لسه موجود.
+- **الموقع الرسمي:** https://akhoo.app محدّث: صفحات جاهزة لجوجل باللغات الثلاث، صور مشاركة، زر بيفتح التطبيق، ونموذج شراكة حقيقي. انحفظ طلب فحص واحد؛ فحص Chrome وWebKit ناجح. تأكيد تجربة الآيفون والأندرويد ووصول إيميل الفحص لسه من المالك.
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app بده مفتاح Resend بإعدادات الدالة (لسا ما انحط).
 - **نموذج الشركاء:** صار حقيقي على الويب من 29/10: الطلب بينحفظ وبيظهر بلوحة الإدارة تحت "طلبات الشراكة". على الأندرويد بده تحديث سريع، وعلى الآيفون بده نسخة جديدة من آبل (النسخة الحالية نموذجها تجريبي). إيميل التنبيه لـ support@akhoo.app شغّال من 29/10 (المفتاح انحط بأمرك).
 - **بانتظارك:** نوسّع الإشعارات بعد الإطلاق ولا لأ؟ وبدك نكمل نموذج الشركاء على الأندرويد (تحديث سريع) بعد ما تقول.
@@ -40,7 +40,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Website SEO, real partner applications, app links, sharing preview and mobile QA | web/site-ready-20261029 | 2026-10-29 |
 | Claude | iOS 2.0.5 (build 32): macOS runner build, App Store version with the real partner form and new screenshots (ar, maybe en/he) | `ios/release-2.0.5-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
@@ -59,7 +58,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
-**Marketing website**: folder `website/` (Codex). Official domain https://akhoo.app (`www` redirects to the apex); the existing alias https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) remains. Hosted on Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`), still `noindex,nofollow`. It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-29 from `web/current-scenes-20261029` (`0d2333c`): hero uses the approved rose need-help card and white-car video, opening the existing website request demo. Brand icons and public store links preserved. Local/live ar/en/he motion, responsive and keyboard checks and all 61 file hashes pass. Report: `docs/website-rose-card-2026-10-29.md`.
+**Marketing website**: https://akhoo.app (`www` redirects to apex), manual static deployment from `website/dist/` to Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). Keep the ignored-build command `exit 0`; never deploy the repository root to this project. Published 2026-10-29 from `web/site-ready-20261029` (`6bedf07`): indexable prerendered ar/en/he pages, sitemap and social cards; rose CTA opens the app; partnership form saves through the existing backend/admin and owner notification. Chrome/WebKit live checks and all 104 file hashes pass; one real test row verified. Real-device opening and final email receipt await owner confirmation. Report: `docs/website-readiness-2026-10-29.md`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
 - Migrations `0001`–`0053` applied (`0053` partner applications; `0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
@@ -104,8 +103,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
-- 2026-10-29 — Codex — Prepared the five marketing-site improvements: localized SEO, real partnership submission, app links, social cards and mobile/performance fixes.
-  Chrome/WebKit and API-response checks pass locally; publication/live verification in progress. Root/admin branch-only deployment suppression is the small Claude-area edit. Report: `docs/website-readiness-2026-10-29.md`.
+- 2026-10-29 — Codex — Published the five marketing-site improvements on akhoo.app: localized SEO, real partner requests, app links, social cards and mobile/performance fixes.
+  Local/live Chrome/WebKit checks and 104 hashes pass; one real test row saved. Actual phones/email receipt await owner. Root/admin branch deployment suppression only; report: `docs/website-readiness-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Replaced the website hero battery picker with the owner-confirmed rose help card and approved app video; the CTA opens the existing request demo.
   Published on akhoo.app; local/live ar/en/he responsive, motion/fallback/keyboard checks, build and all 61 deployed hashes pass. Report: `docs/website-rose-card-2026-10-29.md`.
