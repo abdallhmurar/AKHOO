@@ -27,6 +27,13 @@ The Android export check now rejects the iOS medal, gift, `InteractiveScene.ios`
 
 ## Delivery
 
-The inspected production Android export is ready for delivery to existing Android runtime **2.0.5 only**, using the production EAS environment/channel. No iOS update or web/admin deployment.
+Published the inspected export to **Android runtime 2.0.5 only** on the production branch/channel, at 2026-10-29 02:48:11 UTC. This is an OTA for the existing public version 2.0.5 (10), not a new Play binary. No iOS update or web/admin deployment.
+
+- Source: `c18123a496ce88c1e45c669428540b5a085f21ba` (pushed and remote hash verified).
+- Update group: `6967256c-e01a-4320-9216-99aebf641cc1`; Android update: `01a1858e-ce8f-78d1-bcf6-88e040eeb184`.
+- Production update endpoint returns the exact Android update ID/runtime. Downloaded the launch bundle using the native protocol's asset headers and matched its SHA-256 to the inspected local export: `54ca026805ca93cc086f5d7f5f716ea1cc83398147465cfb65b92e0849b981fd`.
+- The published native gift PNG was also downloaded and matched to its local source. iOS runtime 2.0.4 still returns 204, unchanged from the pre-publication baseline.
 
 The published build 10 manifest confirms updates enabled, runtime 2.0.5, channel `production`, launch checks `ALWAYS` and launch wait 0 ms. A cold launch downloads an available update in the background; a subsequent cold launch loads it. Before publication, the update endpoint returns 204 for Android runtime 2.0.5 and iOS runtime 2.0.4.
+
+The owner was asked to cold-open the app online, wait on home for approximately a minute, cold-open again, and retry all three reported entry points. **Affected-device outcome is pending.** If exits persist, obtain native Android crash evidence before changing additional unrelated UI or data paths.
