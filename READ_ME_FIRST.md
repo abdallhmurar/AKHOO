@@ -98,6 +98,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
 
+- 2026-10-29 — Codex — Refined the mobile concept after reviewing official Revolut RevPoints, Starbucks Rewards and Strava activity documentation: points wallet, affordable-offer filter, period summary and compact activity rows. Image preview only; illustrative data labelled, owner review pending; no app/deployment change.
+
 - 2026-10-29 — Codex — Generated a preview-only mobile concept: benefits wallet/offer cards and activity impact/timeline. Illustrative data labelled; owner review pending. No app code, runtime update or deployment.
 
 - 2026-10-29 — Codex — Published Android 2.0.5 OTA replacing WebGL medal/tab gift with native artwork to mitigate benefits/activity exits. TypeScript/lint, 327 tests, platform exports and downloaded bundle/artwork hashes pass; owner confirmed all three entry points now open on the affected phone.
