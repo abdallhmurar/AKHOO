@@ -36,7 +36,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Claude | Real partner application form: migration 0053, edge function `submit-partner-application`, admin list, wiring in the web, Android and iOS partner forms (small edits in Codex files `PartnerEnrollment*.tsx`, `partnerBetaCopy.ts`) | `feat/partner-applications-20261029` | 2026-10-29 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -84,7 +84,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
-| Supabase SQL migrations | `0001`–`0052` | **0053** |
+| Supabase SQL migrations | `0001`–`0052`, `0053` reserved (partner applications) | **0054** |
 
 ## 6. Credentials map (never commit)
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Email (2026-10-29): `credentials/resend-api-key.txt` (send-only, used as the SMTP password), `credentials/resend-admin-key.txt` (Full access, manages domains), `credentials/cloudflare-dns-token.txt` (edit DNS of `akhoo.app`). The owner may delete the admin key and the DNS token in Resend / Cloudflare when no longer needed.
