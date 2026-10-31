@@ -1,7 +1,8 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { MotionScene } from '../../components/motion/Motion'
 import { FlowHeader } from '../../components/motion/RequestPresentation.ios'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Image, Linking, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Linking, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { useFocusEffect, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowClockwise, Car, ChatCircleDots, Check, Crosshair, FlagCheckered, Handshake, MapPin, Phone, SealCheck } from 'phosphor-react-native'
@@ -171,7 +172,7 @@ export function RequesterTrackingScreen({ mission }: { mission: Mission }) {
         </View>
       </View> : null}
 
-      {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} resizeMode="contain" /> : null}
+      {mission.request?.photo_url ? <RequestPhoto reference={mission.request.photo_url} style={styles.photo} resizeMode="contain" /> : null}
     </AppScreen>
   )
 }

@@ -1,6 +1,7 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { MotionScene } from '../../components/motion/Motion'
 import { useCallback, useEffect, useState } from 'react'
-import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { NativeSafeAreaView as SafeAreaView } from '../../components/NativeSafeArea'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -200,7 +201,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
             onPress={() => Linking.openURL(directionsHref(mission.request?.latitude ?? 0, mission.request?.longitude ?? 0, navigationApp))}
           /> : null}
 
-          {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} resizeMode="contain" /> : null}
+          {mission.request?.photo_url ? <RequestPhoto reference={mission.request.photo_url} style={styles.photo} resizeMode="contain" /> : null}
 
           <Text style={[typography.caption, styles.requestNumber, { color: theme.colors.textMuted }]}>{t('volunteerJob.requestId')} · {mission.id.slice(0, 8).toUpperCase()}</Text>
 

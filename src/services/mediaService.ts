@@ -24,7 +24,8 @@ export const mediaService = {
       const bytes = await response.arrayBuffer()
       const { error } = await supabase.storage.from(input.bucket).upload(input.path, bytes, {
         contentType: input.contentType ?? response.headers.get('content-type') ?? 'application/octet-stream',
-        upsert: input.upsert ?? false
+        upsert: input.upsert ?? false,
+        ...(input.bucket === 'request-photos' ? { cacheControl: '0' } : {})
       })
       throwIfError(error, { domain: 'media', operation: 'upload' })
 

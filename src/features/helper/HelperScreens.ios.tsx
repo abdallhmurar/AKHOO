@@ -1,3 +1,4 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { motionImages } from '../../components/motion/media.ios'
 import { MotionScene } from '../../components/motion/Motion'
 import { BlendedArt } from '../../components/motion/BlendedArt.ios'
@@ -369,7 +370,7 @@ export function HelperHomeScreen() {
           <>
             <RequestSummary request={selectedRequest} now={now} />
             {selectedRequest.note ? <Text style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]}>{selectedRequest.note}</Text> : null}
-            {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} resizeMode="contain" /> : null}
+            {selectedRequest.photo_url ? <RequestPhoto reference={selectedRequest.photo_url} style={styles.sheetPhoto} resizeMode="contain" /> : null}
           </>
         ) : null}
       </HelperSheet>

@@ -238,8 +238,9 @@ export function RequestFlowScreen() {
         const response = await fetch(photoUri)
         const bytes = await response.arrayBuffer()
         const path = `${userId}/${Date.now()}.jpg`
-        const { error: uploadError } = await supabase.storage.from('request-photos').upload(path, bytes, { contentType: 'image/jpeg' })
+        const { error: uploadError } = await supabase.storage.from('request-photos').upload(path, bytes, { contentType: 'image/jpeg', cacheControl: '0' })
         if (uploadError) throw uploadError
+        // Keep the reference format for older clients; RequestPhoto signs it before display.
         photoUrl = supabase.storage.from('request-photos').getPublicUrl(path).data.publicUrl
       }
       const { data, error } = await supabase.from('help_requests').insert({
