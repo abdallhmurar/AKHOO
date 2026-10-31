@@ -34,6 +34,8 @@ export default defineConfig({
   base: process.env.VITE_BASE_PATH ?? '/admin/',
   plugins: [react(), maplibreWorkerAssets()],
   resolve: {
+    // Shared hooks outside admin/ must use the admin application's React/query instances.
+    dedupe: ['react', 'react-dom', '@tanstack/react-query'],
     alias: {
       '@': path.resolve(__dirname, './src')
     }

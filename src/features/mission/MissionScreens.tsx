@@ -1,3 +1,4 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { MotionScene, ArtIcon } from '../../components/motion/Motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -454,7 +455,7 @@ function RequesterMissionView({ mission }: { mission: Mission }) {
         </Card>
       ) : null}
 
-      {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+      {mission.request?.photo_url ? <RequestPhoto reference={mission.request.photo_url} style={styles.photo} /> : null}
     </AppScreen>
   )
 }
@@ -578,7 +579,7 @@ function HelperMissionView({ mission }: { mission: Mission }) {
 
           <Card title={t('volunteerJob.requestId')} subtitle={mission.id.slice(0, 8).toUpperCase()} />
 
-          {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} /> : null}
+          {mission.request?.photo_url ? <RequestPhoto reference={mission.request.photo_url} style={styles.photo} /> : null}
 
           {awaitingConfirmation ? null : (
             <>

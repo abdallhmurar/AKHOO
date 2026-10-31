@@ -1,3 +1,4 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { MotionScene } from '../../components/motion/Motion'
 import { GuideTarget, useGuidePage, GuideScrollView } from '../guide/GuideProvider'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -365,7 +366,7 @@ export function HelperHomeScreen() {
           <>
             <RequestSummary request={selectedRequest} now={now} />
             {selectedRequest.note ? <TranslatableText text={selectedRequest.note} style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]} /> : null}
-            {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} resizeMode="contain" /> : null}
+            {selectedRequest.photo_url ? <RequestPhoto reference={selectedRequest.photo_url} style={styles.sheetPhoto} resizeMode="contain" /> : null}
           </>
         ) : null}
       </HelperSheet>

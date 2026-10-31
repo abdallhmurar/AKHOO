@@ -1,3 +1,4 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { GuideTarget, useGuidePage, GuideScrollView } from '../guide/GuideProvider'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, AppState, Image, Linking, Platform, Pressable, SafeAreaView, useWindowDimensions, StyleSheet, Text, View } from 'react-native'
@@ -360,7 +361,7 @@ export function HelperHomeScreen() {
               </View>
             </View>
             {selectedRequest.note ? <TranslatableText text={selectedRequest.note} style={[typography.body, { color: theme.colors.textPrimary, textAlign: isRTL ? 'right' : 'left' }]} /> : null}
-            {selectedRequest.photo_url ? <Image source={{ uri: selectedRequest.photo_url }} style={styles.sheetPhoto} /> : null}
+            {selectedRequest.photo_url ? <RequestPhoto reference={selectedRequest.photo_url} style={styles.sheetPhoto} /> : null}
             <View style={[styles.sheetActions, dirStyles(isRTL).row]}>
               <Pressable onPress={() => Linking.openURL(directionsHref(selectedRequest.latitude, selectedRequest.longitude, navigationApp))} style={[styles.mapButton, { backgroundColor: theme.colors.primarySoft, ...dirStyles(isRTL).row }]}>
                 <NavigationAppIcon app={navigationApp} size={16} />

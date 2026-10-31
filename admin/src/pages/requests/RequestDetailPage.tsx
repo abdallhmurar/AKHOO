@@ -1,3 +1,4 @@
+import { RequestPhoto } from './RequestPhoto'
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -103,7 +104,7 @@ export function RequestDetailPage() {
             <Card>
               <CardContent className="p-4">
                 <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">{t('requests.detail.photo')}</p>
-                <img src={request.photo_url} alt="" className="max-h-72 rounded-lg border border-border object-cover" />
+                <RequestPhoto reference={request.photo_url} />
               </CardContent>
             </Card>
           ) : null}

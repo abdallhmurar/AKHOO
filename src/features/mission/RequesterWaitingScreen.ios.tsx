@@ -1,7 +1,8 @@
+import { RequestPhoto } from '../../components/RequestPhoto'
 import { MotionScene } from '../../components/motion/Motion'
 import { FlowHeader } from '../../components/motion/RequestPresentation.ios'
 import { useEffect, useRef, useState } from 'react'
-import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowClockwise, Check, Crosshair, UserFocus } from 'phosphor-react-native'
@@ -141,7 +142,7 @@ export function RequesterMissionIOSScreen({ mission }: { mission: Mission }) {
         <Text style={[typography.caption, styles.center, { color: theme.colors.textMuted }]}>{copy.waiting} · {formatElapsed(Math.max(0, now - new Date(mission.created_at).getTime()), t)}</Text>
       </View>
 
-      {mission.request?.photo_url ? <Image source={{ uri: mission.request.photo_url }} style={styles.photo} resizeMode="contain" /> : null}
+      {mission.request?.photo_url ? <RequestPhoto reference={mission.request.photo_url} style={styles.photo} resizeMode="contain" /> : null}
     </AppScreen>
   )
 }
