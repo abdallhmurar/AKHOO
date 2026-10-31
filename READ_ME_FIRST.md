@@ -38,7 +38,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Claude | iOS 2.0.6 (build 33): same app as 2.0.5, new App Store version only for search: English + Hebrew pages, better Arabic name/subtitle/keywords, akhoo.app URLs | `ios/release-2.0.6-20261031` | 2026-10-31 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -87,7 +87,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live) | build **33** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, in progress) | build **34** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
 | Supabase SQL migrations | `0001`–`0053` | **0054** |
 
