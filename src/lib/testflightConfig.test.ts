@@ -31,6 +31,21 @@ describe('TestFlight release isolation', () => {
     vi.stubEnv('AKHOO_PARTNER_HOME_BETA', '')
     expect(getConfig().extra.partnerHomeBeta).toBe(false)
   })
+  it('builds the 2.0.6 App Store binary (same app as 2.0.5) with the partner home on and OTA off', () => {
+    const profile = eas.build['partner-release-206']
+    for (const [key, value] of Object.entries(profile.env)) vi.stubEnv(key, String(value))
+    vi.stubEnv('EAS_BUILD_PLATFORM', 'ios')
+    vi.stubEnv('EXPO_WEB_BASE_PATH', '')
+    const config = getConfig()
+    expect(profile.extends).toBe('testflight')
+    expect(config.version).toBe('2.0.6')
+    expect(config.ios.buildNumber).toBe('33')
+    expect(config.extra.partnerHomeBeta).toBe(true)
+    expect(config.updates.enabled).toBe(false)
+    expect(config.runtimeVersion).toBe('2.0.6-testflight')
+    expect(config.android).toEqual(app.android)
+    expect(app.version).toBe('2.0.4')
+  })
   it('isolates the beta runtime and disables OTA updates without mutating app.json', () => {
     vi.stubEnv('AKHOO_BUILD_TARGET', 'testflight')
     vi.stubEnv('AKHOO_IOS_VERSION', '2.0.2')
