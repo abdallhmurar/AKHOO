@@ -38,7 +38,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Codex | Request-photo privacy: compatible signed reads, access-policy tests and staged cutover (no release or live bucket change) | fix/request-photo-privacy-20261101 | 2026-11-01 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -90,7 +90,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live) | build **34** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
-| Supabase SQL migrations | `0001`–`0053` | **0054** |
+| Supabase SQL migrations | `0001`–`0053`; `0054` reserved by Codex for request-photo access | **0055** |
 
 ## 6. Credentials map (never commit)
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Email (2026-10-29): `credentials/resend-api-key.txt` (send-only: the SMTP password in Supabase and the function secret `RESEND_API_KEY`; do not delete it). The Resend admin key was deleted on 2026-10-29 at the owner's order (identified by its last-used time, so the sending key was not touched). The local copy of the Cloudflare DNS token was removed; the token itself expires on 2026-11-05 (the owner can revoke it earlier in Cloudflare, My Profile, API Tokens). Ask the owner for a new token when DNS work is needed.
