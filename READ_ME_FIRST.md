@@ -5,6 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
+- **موافقة 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون وأندرويد. ننشر Android OTA للنسخة الحالية 2.0.5 فقط؛ إغلاق مخزن الصور بعد وصول العملاء وقرار النسخ القديمة.
 - **حماية الصور (2/11):** صلاحيات السيرفر 0054 مطبّقة ومفحوصة، وإصلاح أندرويد جاهز فوق النسخة الحالية مع الحفاظ على نموذج الشراكة وتصحيح الإغلاق. لم يُنشر OTA؛ الروابط العامة لسه مفتوحة لحد تحديث التطبيقات ووصولها للناس.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.5 (10) منشورة على Google Play. تصحيح الميدالية والهدية وصل، والمالك أكد بتاريخ 29/10 إن «مزايا أخوو» و«نشاطي» وزر المزايا بالرئيسية صاروا يفتحوا على تلفونه. التوزيع الحالي لإسرائيل.
@@ -37,7 +38,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Request-photo integration follow-up: bounded loading and retry, preserve published Android fixes | fix/android-photo-privacy-20261101 | 2026-11-02 |
+| Codex | Approved Android photo OTA publication for runtime 2.0.5; preserve all shipped fixes | fix/android-photo-privacy-20261101 | 2026-11-02 |
 
 ## 3. Current state (2026-10-29)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
