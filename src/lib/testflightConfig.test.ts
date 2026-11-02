@@ -9,6 +9,21 @@ const eas = require('../../eas.json')
 afterEach(() => vi.unstubAllEnvs())
 
 describe('TestFlight release isolation', () => {
+  it('builds the approved photo release without changing Android or enabling OTA', () => {
+    const profile = eas.build['photo-privacy-release-207']
+    for (const [key, value] of Object.entries(profile.env)) vi.stubEnv(key, String(value))
+    vi.stubEnv('EAS_BUILD_PLATFORM', 'ios')
+    vi.stubEnv('EXPO_WEB_BASE_PATH', '')
+    const config = getConfig()
+    expect(profile.extends).toBe('testflight')
+    expect(config.version).toBe('2.0.7')
+    expect(config.ios.buildNumber).toBe('34')
+    expect(config.ios.bundleIdentifier).toBe('app.akhoo.help')
+    expect(config.runtimeVersion).toBe('2.0.7-testflight')
+    expect(config.extra.partnerHomeBeta).toBe(true)
+    expect(config.updates.enabled).toBe(false)
+    expect(config.android).toEqual(app.android)
+  })
   it('preserves the existing app configuration outside the beta profile', () => {
     vi.stubEnv('AKHOO_BUILD_TARGET', '')
     vi.stubEnv('AKHOO_PARTNER_HOME_BETA', '1')

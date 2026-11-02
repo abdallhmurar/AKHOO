@@ -4,6 +4,15 @@
     "appVersionSource": "local"
   },
   "build": {
+    "photo-privacy-release-207": {
+      "extends": "testflight",
+      "env": {
+        "AKHOO_BUILD_TARGET": "testflight",
+        "AKHOO_IOS_VERSION": "2.0.7",
+        "AKHOO_IOS_BUILD_NUMBER": "34",
+        "AKHOO_PARTNER_HOME_BETA": "1"
+      }
+    },
     "partner-testflight": {
       "extends": "testflight",
       "env": {
