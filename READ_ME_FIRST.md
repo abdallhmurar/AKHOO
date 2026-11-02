@@ -5,6 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-27
+- **موافقة نشر 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون على App Store ولأندرويد كتحديث سريع. تجهيز آيفون 2.0.7 (34)، والإطلاق تلقائي بعد موافقة Apple. إغلاق الروابط العامة بعد وصول العملاء وقرار التعامل مع النسخ القديمة.
 - **حماية صور الطلبات (2/11):** صلاحيات السيرفر 0054 صارت مطبّقة ومفحوصة بصورة تجريبية، وإصلاح التطبيقات جاهز. الروابط العامة لسه مفتوحة لحد تحديث التطبيقات ووصولها للناس؛ الحماية الكاملة لسه مش مفعّلة.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي. نسخة 2.0.5 (البناء 32، نموذج الشركاء الحقيقي + صورة رئيسية جديدة بالستور) وافقت عليها آبل ونزلت للناس ليلة 29/10 (READY_FOR_SALE).
 - **أندرويد (انتبه):** كودكس نشر نسخة 2.0.5 (رقم 10، شاشات الآيفون كاملة) على Google Play لإسرائيل بتاريخ 29/10، وهي اللي عند الناس هلأ، ونموذج الشركاء فيها كان تجريبي (انبنت قبل ما يصير حقيقي). نزّلت تحديث سريع لـ2.0.5 بأمرك (29/10) فيه النموذج الحقيقي فوق كود كودكس وإصلاحه، وبيوصل للناس لما يفتحوا التطبيق مرة أو مرتين.
@@ -39,10 +40,11 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Resume request-photo privacy: production policy rollback check, phase-1 integration and request lifecycle audit | fix/request-photo-privacy-20261101 | 2026-11-02 |
+| Codex | Approved photo release: iOS 2.0.7 (34), Android runtime 2.0.5 OTA, web/admin verification | ios/release-2.0.7-20261102 + fix/android-photo-privacy-20261101 | 2026-11-02 |
 
 ## 3. Current state (2026-10-27)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
+- **2.0.7 (34) reserved 2026-11-02:** request-photo privacy client and bounded loading; owner approved App Store publication in chat. Build/submission pending; release automatically after Apple approval. Existing listings/screenshots stay. Public bucket closure remains a separate post-rollout step.
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
 - **2.0.5 (32): LIVE (`READY_FOR_SALE`) since the night of 2026-10-29; was SUBMITTED to App Review the same day** (`WAITING_FOR_REVIEW`, release set to `AFTER_APPROVAL` at the owner's order, so it goes live by itself when Apple approves; review submission `2157a57a-2314-4478-8f85-74b973fc9254`; the owner ordered it) (prepared the same day): App Store version `02393e3d-4044-4947-bbae-a45ae3019496` (`PREPARE_FOR_SUBMISSION`, manual release), build 32 `VALID` (built by `.github/workflows/ios-release-205.yml` on branch `ios/release-2.0.5-20261029`, profile `partner-release-205`, same settings as 2.0.4 plus the real partner form). Arabic "what's new" and review notes updated (the partner form is real now). Screenshots: the Home picture (first one) of the iPhone set was replaced by a new one captured from the web app at 360 px wide (1284x2778); the old Home was removed from the iPad set (3 left). Next: nothing to press when Apple approves; check that the state becomes `READY_FOR_SALE`.
 - **2.0.6 (33): LIVE (`READY_FOR_SALE`) since the night of 2026-10-31; was SUBMITTED to App Review on 2026-10-31** (`WAITING_FOR_REVIEW`, release `AFTER_APPROVAL` at the owner's word "publish"; review submission `77c9b38d-2d4f-44ac-bbcf-de21b21034b4`). Same app as 2.0.5, rebuilt (`ios/release-2.0.6-20261031`, profile `partner-release-206`, run `41204380851`) only so the listing can change: Arabic name `أخوو - مساعدة على الطريق` with a new subtitle and keywords, NEW English (`en-US`, name "AKHOO - Roadside Help") and Hebrew (`he`, name "AKHOO - עזרה בדרכים") pages with their own iPhone screenshots (English has Home last because of the banner overlap), support and marketing URLs now `akhoo.app`. Why: the app was hard to find in App Store search (not found by its own name, nothing for "AKHOO"). Hebrew text was read and approved by the owner. iPad screenshots exist only in Arabic; Apple accepted the submission without them. Texts: `meta-206.cjs` in the scratchpad (copy of the store texts is in the App Store Connect version).
@@ -90,7 +92,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live) | build **34** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live), **2.0.7 (34 reserved for photo privacy)** | build **35** |
 | Android | versionCode 7 (closed test), 8 (2.0.3, live), 9 (2.0.4, production in review) | **10** |
 | Supabase SQL migrations | `0001`–`0054` applied; `0054` applied 2026-11-02, public bucket unchanged | **0055** |
 
@@ -103,6 +105,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-02 — Codex — Owner explicitly approved App Store + Android OTA publication of photo privacy. Reserved iOS 2.0.7 build 34; Android keeps runtime 2.0.5/versionCode 10. Web/admin photo code is served on production; Chromium/WebKit public startup passed. Native publication pending.
 
 - 2026-11-02 — Codex — Applied phase-1 photo policy 0054 in Claude's backend area after rollback rehearsal; bucket still public. Fixed stalled signing/retry on both client candidates. Hosted synthetic upload/sign/denial + Chromium/WebKit decode and cleanup passed; app 354, admin 41, Android 359 tests passed. Mobile release/cutover pending; details in `docs/request-photo-privacy-2026-11-01.md`.
 
