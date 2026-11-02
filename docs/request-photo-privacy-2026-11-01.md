@@ -13,7 +13,7 @@
 - Migration `0054_request_photo_authorized_reads.sql` follows existing **help_requests RLS** for assigned helpers, eligible nearby helpers and admins. Uploaders can also preview their own unreferenced files. Banned accounts cannot read/sign or upload. A request cannot grant access to another requester's folder by re-linking its photo.
 - The migration deliberately preserves the bucket's public flag. The private switch is a separate guarded manual operation, outside the automatic migration directory.
 - Admin Vite deduplicates React/React Query so the shared hook uses the admin application's instances.
-- Admin TypeScript resolves the shared hook's React/Query imports using the admin dependencies. An isolated build outside the repo with only `admin/node_modules` reproduced missing-module errors before this fix; typecheck passes with the explicit paths. This matches Vercel's `admin` root, which includes outside-root source but does not install the Expo dependencies.
+- Admin TypeScript resolves the shared hook's React/Query imports using the admin dependencies. An isolated build outside the repo with only `admin/node_modules` reproduced missing-module errors before this fix; typecheck passes with the explicit paths. `shared/tsconfig.json` also prevents Vite from inheriting the root Expo config, which is unavailable in an admin-only install. The first Vercel admin build exposed that second issue; copying the root tsconfig into the isolated check reproduced it, and adding the shared config made the full `tsc -b` + Vite build pass. Vercel's `admin` root includes outside-root source but does not install the Expo dependencies.
 
 ## Release sources — preserve Android fixes
 
