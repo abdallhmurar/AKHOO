@@ -5,7 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
-- **حماية الصور (1/11):** جهزنا الإصلاح فوق أندرويد 2.0.5 المنشور، وحافظنا على نموذج الشراكة وتصحيح الإغلاق. لم يُنشر OTA؛ يلزم تطبيق صلاحيات السيرفر أولًا ثم نشر العملاء ثم إغلاق الوصول العام.
+- **حماية الصور (2/11):** صلاحيات السيرفر 0054 مطبّقة ومفحوصة، وإصلاح أندرويد جاهز فوق النسخة الحالية مع الحفاظ على نموذج الشراكة وتصحيح الإغلاق. لم يُنشر OTA؛ الروابط العامة لسه مفتوحة لحد تحديث التطبيقات ووصولها للناس.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.5 (10) منشورة على Google Play. تصحيح الميدالية والهدية وصل، والمالك أكد بتاريخ 29/10 إن «مزايا أخوو» و«نشاطي» وزر المزايا بالرئيسية صاروا يفتحوا على تلفونه. التوزيع الحالي لإسرائيل.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
@@ -37,7 +37,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| — | nothing claimed | — | — |
+| Codex | Request-photo integration follow-up: bounded loading and retry, preserve published Android fixes | fix/android-photo-privacy-20261101 | 2026-11-02 |
 
 ## 3. Current state (2026-10-29)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -48,7 +48,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **Prepared only:** `fix/android-photo-privacy-20261101` adds authorized photo rendering on top of `android/partner-form-205-20261029` (`3ba06c0`), preserving native safe areas, partner submissions and the benefits/activity fix. Runtime 2.0.5/versionCode 10 unchanged; not published. Backend migration 0054 is on `fix/request-photo-privacy-20261101`. See `docs/request-photo-privacy-2026-11-01.md`.
+- **Client prepared, not published:** `fix/android-photo-privacy-20261101` adds authorized photo rendering on top of `android/partner-form-205-20261029` (`3ba06c0`), preserving native safe areas, partner submissions and the benefits/activity fix. Runtime 2.0.5/versionCode 10 unchanged. Backend migration 0054 from `fix/request-photo-privacy-20261101` was applied November 2; public bucket unchanged. See `docs/request-photo-privacy-2026-11-01.md`.
 - **2.0.5 (10): LIVE in Production (Israel), confirmed 2026-10-29 02:21 UTC.** Full published-iOS presentation, including request/helper/mission/activity/account/perks, fonts, motion and Android insets/video adapters; OAuth callback retained. EAS build `238792da-a807-4eea-985c-11c39d2ebcb3`, source `a10d00be8fe152ae63899d76bc804d8a544de2ed` on `android/ios-parity-release-20261029`; runtime 2.0.5. Not merged to main or published to Apple/Vercel. Release report: `docs/android-ios-parity-2.0.5.md`. Android-only OTA group `6967256c-e01a-4320-9216-99aebf641cc1` published at 02:48 UTC from `c18123a` to mitigate benefits/activity exits: native gift/medal replace WebGL. Delivery verified; on 29/10 the owner confirmed all three reported entry points open on the affected phone. Details: `docs/android-benefits-activity-crash-2026-10-29.md`.
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
@@ -58,6 +58,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Marketing website**: folder `website/` (Codex). Public `noindex` preview https://dist-mu-lilac-59.vercel.app/?lang=ar (`en`, `he`) on the Vercel project `dist` (`prj_OQAAoAUvWmMBN1gVm7aMkhzTdhNz`). It is **deployed by hand** as static files (`website/dist/`), never from the repo root, and the project's "Ignored Build Step" (`exit 0`) must stay, or pushes to `main` replace the site with a 404 (it happened on 2026-10-22). It reads the public partner feed `get_website_partners`. Last deployed 2026-10-26, identical to the source on `main`.
 
 **Backend** (Supabase project `zmpwdufahjmlxfwzafvr`)
+- Migration 0054 photo access policies applied 2026-11-02 after rollback rehearsal; owner signing/upload and outsider/anonymous denial passed through hosted Storage. Public bucket still open until client rollout and cutover. Migration 0053 partner applications is also applied (see current main notebook).
 - Migrations `0001`–`0052` applied (`0048` website partners, applied under the file name `0045`; `0049` announcement video; `0050` GIF allowed in the `content` bucket; `0051` notification events; `0052` push sound pack). Migration `0047` revokes anonymous execute on every SECURITY DEFINER function that exists when it runs; do not re-run it.
 - Website partners: table `website_partners`, `admin_save_website_partner` (admin), `get_website_partners` (public by design: name, logo, caption of enabled, verified, active businesses). Two businesses are enabled.
 - Edge functions deployed: `delete-account`, `geocode`, `notify-event`, `notify-new-message`, `notify-new-request`, `notify-support-reply`, `send-broadcast-notification`, `translate-content`, `translate-user-text`. Notification events run through `notify-event` and a `pg_cron` job every 2 minutes.
@@ -89,17 +90,19 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|
 | iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
 | Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live, confirmed 2026-10-29)** | **11** |
-| Supabase SQL migrations | `0001`–`0052` | **0053** |
+| Supabase SQL migrations | `0001`–`0054` applied; `0054` applied 2026-11-02, public bucket unchanged | **0055** |
 
 ## 6. Credentials map (never commit)
 `credentials/expo-token.txt`, `credentials/supabase-token.txt`, `credentials/ios/AuthKey_*.p8`, `credentials/android/*.json` (the Play service account, used by EAS Submit and the Play API). Planned: `credentials/smtp-app-password.txt`.
 
 ## 7. Open items
 **Decisions waiting for the owner:** the partner form (real submission flow or hide it); which Gmail account the app emails use; widen push notifications after launch or not.
-**Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; custom SMTP; make the `request-photos` bucket private (after most Android users run 2.0.3, because build 7 reads public URLs); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
+**Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; custom SMTP; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (all current mobile versions still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-02 — Codex — Added 20-second signing timeout/retry and late-response regression test; kept published Android fixes. Typecheck/lint, 359 tests and runtime-2.0.5 export passed. Phase-1 backend 0054 is now applied; no Android OTA or private cutover. Report: `docs/request-photo-privacy-2026-11-01.md`.
 
 - 2026-11-01 — Codex — Prepared Android request-photo privacy on the actual shipped 2.0.5 OTA source, preserving partner submissions and crash fixes. No publication or live SQL change. Typecheck/lint, 358 tests and runtime-2.0.5 Android export passed; report: `docs/request-photo-privacy-2026-11-01.md`.
 

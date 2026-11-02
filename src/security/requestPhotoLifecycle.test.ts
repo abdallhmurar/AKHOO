@@ -62,6 +62,21 @@ describe('private photo lifecycle', () => {
     expect(photo.url).toBeNull()
   })
 
+  it('stops a stalled signing request, offers retry and ignores its late response', async () => {
+    let finish!: (value: ReturnType<typeof signed>) => void
+    sign.mockReturnValueOnce(new Promise(resolve => { finish = resolve }))
+    await mount()
+    expect(photo.loading).toBe(true)
+    await act(async () => { await vi.advanceTimersByTimeAsync(20_000) })
+    expect(photo.loading).toBe(false)
+    expect(photo.url).toBeNull()
+    await act(async () => { finish(signed('too-late')) })
+    expect(photo.url).toBeNull()
+    sign.mockResolvedValue(signed('retry-ok'))
+    await act(async () => { photo.retry() })
+    expect(photo.url).toBe('retry-ok')
+  })
+
   it('discards an in-flight URL when logging out or switching accounts', async () => {
     let finish!: (value: ReturnType<typeof signed>) => void
     sign.mockReturnValueOnce(new Promise(resolve => { finish = resolve }))

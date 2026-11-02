@@ -23,8 +23,13 @@ export function useRequestPhoto(client: RequestPhotoClient, supabaseUrl: string,
     let renewal: ReturnType<typeof setTimeout> | undefined
     let expiry: ReturnType<typeof setTimeout> | undefined
     setPhoto({ key, url: null, expiresAt: 0, status: 'loading' })
+    const timeout = setTimeout(() => {
+      active = false
+      setPhoto({ key, url: null, expiresAt: 0, status: 'error' })
+    }, 20_000)
     void signRequestPhoto(client, supabaseUrl, reference).then(result => {
       if (!active) return
+      clearTimeout(timeout)
       const remaining = result.expiresAt - Date.now()
       if (remaining <= 0) throw new Error('Request photo expired')
       setPhoto({ key, ...result, status: 'ready' })
@@ -35,9 +40,10 @@ export function useRequestPhoto(client: RequestPhotoClient, supabaseUrl: string,
         if (active) setPhoto({ key, url: null, expiresAt: 0, status: 'error' })
       }, remaining)
     }).catch(() => {
+      clearTimeout(timeout)
       if (active) setPhoto({ key, url: null, expiresAt: 0, status: 'error' })
     })
-    return () => { active = false; clearTimeout(renewal); clearTimeout(expiry) }
+    return () => { active = false; clearTimeout(timeout); clearTimeout(renewal); clearTimeout(expiry) }
   }, [client, supabaseUrl, reference, enabled, key, retry])
 
   useEffect(() => {
