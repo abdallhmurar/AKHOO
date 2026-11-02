@@ -1,6 +1,12 @@
 # Request photo privacy — implementation and rollout
 
-**الحالة (2/11):** طبّقنا صلاحيات السيرفر 0054 بعد تجربة ناجحة مع التراجع، وفحصنا صورة تجريبية عبر السيرفر والمتصفحات. إصلاح التطبيقات جاهز ومفحوص، ولم يُنشر تحديث للتلفونات. مخزن الصور لا يزال عامًا لحد وصول النسخ المتوافقة واتخاذ قرار بخصوص النسخ القديمة؛ الحماية الكاملة ليست مفعّلة بعد.
+**الحالة (2/11):** صلاحيات السيرفر 0054 مطبّقة، وإصلاح الويب والأدمن حي. تحديث أندرويد 2.0.5 نُشر وتأكدنا من وصوله لسيرفر التحديثات. المالك وافق على نشر الجهازين؛ آيفون 2.0.7 (34) قيد البناء. مخزن الصور لا يزال عامًا لحد وصول النسخ المتوافقة واتخاذ قرار بخصوص النسخ القديمة؛ الحماية الكاملة ليست مفعّلة بعد.
+
+## Rollout record — November 2
+
+- Owner explicitly approved App Store publication for iPhone and an OTA for the current Android version. iOS 2.0.7 build 34 is reserved; EAS build `c96016c6-153e-43e4-9400-5d65b2280d02`, source `039fcbb3cffa3400dd0d7c4bebd107a83088199f`, profile `photo-privacy-release-207`, OTA disabled. App Store draft `e1485c38-e567-4e93-9ac0-f17d4963e041` is set to `AFTER_APPROVAL`; Arabic/English/Hebrew release notes prepared, all 15 inherited screenshots COMPLETE, existing description/contact/demo login preserved. Build/submission still pending.
+- Android OTA is published to `production`, platform **android only**, runtime **2.0.5**, source `98db006738e34e2203267a765b737fbbe66a79f5`. Group `be88855b-d41d-4010-aa77-0d9495e26fb7`, update `01a19c0d-165a-757c-ab4e-091fda0599d4`, created `2026-11-02T11:37:45.818Z`. The live update endpoint returned that ID; the launch bundle downloaded using the manifest's asset headers and matched its SHA-256. It has 104 supporting assets plus one launch bundle. No new Android binary/versionCode or iOS OTA was published.
+- Web photo code served from production deployment `dpl_HPwjbTm1LvQ1oP4AeRSwiw5nWGFe` (`f2ae653`); admin from `dpl_ZUZmyT93rdqwrU6tEuSJyy46y58J` (`015aebf`). The initial admin deploy failed on the shared folder inheriting the Expo tsconfig; the isolated shared config fixed it. Both live aliases returned HTTP 200 and the new photo code in their served bundles; Chromium/WebKit mobile-size startup had zero page errors. GitHub CI run `41436829858` passed both app and admin jobs. These startup checks did not exercise authenticated request-photo screens on real phones.
 
 ## Implemented
 
@@ -13,11 +19,11 @@
 - Migration `0054_request_photo_authorized_reads.sql` follows existing **help_requests RLS** for assigned helpers, eligible nearby helpers and admins. Uploaders can also preview their own unreferenced files. Banned accounts cannot read/sign or upload. A request cannot grant access to another requester's folder by re-linking its photo.
 - The migration deliberately preserves the bucket's public flag. The private switch is a separate guarded manual operation, outside the automatic migration directory.
 - Admin Vite deduplicates React/React Query so the shared hook uses the admin application's instances.
-- Admin TypeScript resolves the shared hook's React/Query imports using the admin dependencies. An isolated build outside the repo with only `admin/node_modules` reproduced missing-module errors before this fix; typecheck passes with the explicit paths. This matches Vercel's `admin` root, which includes outside-root source but does not install the Expo dependencies.
+- Admin TypeScript resolves the shared hook's React/Query imports using the admin dependencies. An isolated build outside the repo with only `admin/node_modules` reproduced missing-module errors before this fix; typecheck passes with the explicit paths. `shared/tsconfig.json` also prevents Vite from inheriting the root Expo config, which is unavailable in an admin-only install. The first Vercel admin build exposed that second issue; copying the root tsconfig into the isolated check reproduced it, and adding the shared config made the full `tsc -b` + Vite build pass. Vercel's `admin` root includes outside-root source but does not install the Expo dependencies.
 
 ## Release sources — preserve Android fixes
 
-- Main-compatible implementation: `fix/request-photo-privacy-20261101`, based on `7a983d1`. iOS production source is `ios/release-2.0.6-20261031` (`1ebae4b`); its app source matches this base apart from a release-config test. This change does not reserve/bump a native build number or alter release settings.
+- Main-compatible implementation: `fix/request-photo-privacy-20261101`, based on `7a983d1`, integrated into main November 2. iOS 2.0.6 production source is `ios/release-2.0.6-20261031` (`1ebae4b`); its app source matches this base apart from a release-config test. The approved new release is isolated on `ios/release-2.0.7-20261102`, build 34; default app/Android settings remain unchanged.
 - Android candidate: `fix/android-photo-privacy-20261101`, based on the **actual published OTA source** `android/partner-form-205-20261029` (`3ba06c0`). It preserves the real partner form, native safe-area handling, platform adapters and benefits/activity crash fix. Only photo UI/shared logic and upload cache options were ported. It must NOT be replaced by an OTA built directly from main.
 - The backend migration and admin/web changes live only on the main-compatible branch. Do not merge the entire Android release branch into main just to deliver this fix.
 
@@ -47,7 +53,7 @@
 ## Limits and recovery
 
 - Signed URLs are bearer links: a recipient can share them while valid. Supabase documents that CDN/browser caches and token expiry are independent. A 300-second signing lifetime is **not** a promise that already cached bytes disappear after five minutes. New uploads disable cache reuse, but historical objects and old uploaders may retain earlier cache metadata. CDN purge cannot revoke a file already downloaded by a user.
-- Phase-1 SQL was applied November 2. No real-media deletion/rewrite, URL backfill, forced logout, store submission, OTA or marketing-site deployment was performed. Only the synthetic verification accounts/file were created and removed.
+- Phase-1 SQL and web/admin deployment completed November 2, followed by the explicitly approved Android OTA and iOS build/draft preparation above. No real-media deletion/rewrite, URL backfill, forced logout, private cutover or marketing-site deployment was performed. Only the synthetic verification accounts/file were created and removed.
 - If a client fails during phase 1, leave the bucket public while correcting the client/policy; do not proceed to phase 2. Once closed, prefer fixing authorized access forward. Reopening the bucket restores public exposure and requires an explicit owner decision; do not automatically roll it back to public.
 - After accepting old-client retirement, storing plain paths and restricting new writes to them can be a separate migration. It is intentionally not coupled to this rollout.
 

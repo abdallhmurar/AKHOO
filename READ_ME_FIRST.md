@@ -6,7 +6,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
 - **موافقة 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون وأندرويد. ننشر Android OTA للنسخة الحالية 2.0.5 فقط؛ إغلاق مخزن الصور بعد وصول العملاء وقرار النسخ القديمة.
-- **حماية الصور (2/11):** صلاحيات السيرفر 0054 مطبّقة ومفحوصة، وإصلاح أندرويد جاهز فوق النسخة الحالية مع الحفاظ على نموذج الشراكة وتصحيح الإغلاق. لم يُنشر OTA؛ الروابط العامة لسه مفتوحة لحد تحديث التطبيقات ووصولها للناس.
+- **حماية الصور (2/11):** نُشر التصحيح لأندرويد 2.0.5 كتحديث سريع، والسيرفر عم يقدّم النسخة الصحيحة. حافظنا على نموذج الشراكة وتصحيح الإغلاق. الروابط العامة لسه مفتوحة لحد وصول تحديث الآيفون وباقي العملاء؛ الحماية الكاملة لسه مش مفعّلة.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
 - **أندرويد:** 2.0.5 (10) منشورة على Google Play. تصحيح الميدالية والهدية وصل، والمالك أكد بتاريخ 29/10 إن «مزايا أخوو» و«نشاطي» وزر المزايا بالرئيسية صاروا يفتحوا على تلفونه. التوزيع الحالي لإسرائيل.
 - **الويب والأدمن وموقع التسويق:** حيين وبآخر نسخة. تطبيق الويب صار بنفس تصميم TestFlight 2.0.4 (31).
@@ -38,7 +38,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Approved Android photo OTA publication for runtime 2.0.5; preserve all shipped fixes | fix/android-photo-privacy-20261101 | 2026-11-02 |
 
 ## 3. Current state (2026-10-29)
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
@@ -49,7 +48,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - The Expo Free plan has no cloud iOS builds until 2026-11-01: build iOS on the GitHub macOS runner (`.github/workflows/ios-release-build.yml`, `ios-partner-testflight.yml`; repo secret `EXPO_TOKEN`).
 
 **Android** (`app.akhoo.help`)
-- **Client prepared, not published:** `fix/android-photo-privacy-20261101` adds authorized photo rendering on top of `android/partner-form-205-20261029` (`3ba06c0`), preserving native safe areas, partner submissions and the benefits/activity fix. Runtime 2.0.5/versionCode 10 unchanged. Backend migration 0054 from `fix/request-photo-privacy-20261101` was applied November 2; public bucket unchanged. See `docs/request-photo-privacy-2026-11-01.md`.
+- **Photo OTA PUBLISHED 2026-11-02 at the owner's explicit OK:** source `98db006`, group `be88855b-d41d-4010-aa77-0d9495e26fb7`, update `01a19c0d-165a-757c-ab4e-091fda0599d4`, production/android/runtime 2.0.5. Preserves native safe areas, partner submissions and the benefits/activity fix from the actual previous OTA source. Endpoint returned the new ID and the downloaded launch bundle hash matched. VersionCode stays 10; physical phone check pending. Backend 0054 is applied; public bucket unchanged. See `docs/request-photo-privacy-2026-11-01.md`.
 - **2.0.5 (10): LIVE in Production (Israel), confirmed 2026-10-29 02:21 UTC.** Full published-iOS presentation, including request/helper/mission/activity/account/perks, fonts, motion and Android insets/video adapters; OAuth callback retained. EAS build `238792da-a807-4eea-985c-11c39d2ebcb3`, source `a10d00be8fe152ae63899d76bc804d8a544de2ed` on `android/ios-parity-release-20261029`; runtime 2.0.5. Not merged to main or published to Apple/Vercel. Release report: `docs/android-ios-parity-2.0.5.md`. Android-only OTA group `6967256c-e01a-4320-9216-99aebf641cc1` published at 02:48 UTC from `c18123a` to mitigate benefits/activity exits: native gift/medal replace WebGL. Delivery verified; on 29/10 the owner confirmed all three reported entry points open on the affected phone. Details: `docs/android-benefits-activity-crash-2026-10-29.md`.
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
@@ -102,6 +101,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-02 — Codex — Published authorized Android photo OTA, runtime 2.0.5, group `be88855b-d41d-4010-aa77-0d9495e26fb7`, source `98db006`. Live endpoint and launch bundle hash verified; no new binary, no iOS OTA. Physical-device photo checks and private-bucket cutover pending.
 
 - 2026-11-02 — Codex — Added 20-second signing timeout/retry and late-response regression test; kept published Android fixes. Typecheck/lint, 359 tests and runtime-2.0.5 export passed. Phase-1 backend 0054 is now applied; no Android OTA or private cutover. Report: `docs/request-photo-privacy-2026-11-01.md`.
 
