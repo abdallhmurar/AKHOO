@@ -1,0 +1,12 @@
+{
+  "appId": "6809610412",
+  "version": "2.0.7",
+  "buildNumber": "34",
+  "releaseType": "AFTER_APPROVAL",
+  "whatsNew": {
+    "ar-SA": "حسّنّا عرض صور طلبات المساعدة وثباتها، وأضفنا إعادة المحاولة إذا ضعف الاتصال.",
+    "en-US": "Improved help-request photo loading and reliability, with retry support when a connection is interrupted.",
+    "he": "שיפרנו את טעינת התמונות בבקשות עזרה ואת יציבותן, והוספנו אפשרות לנסות שוב במקרה של בעיית חיבור."
+  },
+  "reviewNoteAddition": "Version 2.0.7 improves request-photo loading. Photo screens refresh short-lived image links using the signed-in user's existing permissions and show a retry option after network timeouts. Existing features, permissions and demo login are unchanged."
+}
