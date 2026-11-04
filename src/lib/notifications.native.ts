@@ -8,6 +8,9 @@ import { SOUND_CHANNELS, SOUND_PACK, type SoundCategory } from '../../shared/not
 
 // Reported to the server after the push token is registered, so it only names these channels and sounds for builds that have them.
 export const DEVICE_SOUND_PACK = SOUND_PACK
+export async function hasNotificationPermission() {
+  return (await Notifications.getPermissionsAsync()).status === 'granted'
+}
 
 Notifications.setNotificationHandler({
   handleNotification: async () => {

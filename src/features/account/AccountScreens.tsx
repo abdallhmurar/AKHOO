@@ -33,6 +33,8 @@ import { LegalDocumentScreen } from './LegalDocumentScreen'
 import { privacyPolicyBlocks, termsOfUseBlocks } from './legalContent'
 import { PartnerToolsEntry } from '../partner/PartnerToolsEntry'
 import { useSupportConversation } from '../support/useSupport'
+import { useNearbyAlerts } from '../../providers/NearbyAlertsProvider'
+import { getNearbyAlertCopy } from '../../lib/nearbyAlertCopy'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const HELP_WHATSAPP_DISPLAY = '0509956406'
@@ -51,6 +53,8 @@ export function AccountHomeScreen() {
   const typography = useAppTypography()
   const isRTL = useIsRTL()
   const { t, i18n } = useTranslation()
+  const nearbyAlerts = useNearbyAlerts()
+  const nearbyCopy = getNearbyAlertCopy(i18n.language)
   const router = useRouter()
   const { profile, session, refreshProfile, signOut } = useAuth()
   const { isDark, setDark } = useThemeMode()
@@ -86,6 +90,7 @@ export function AccountHomeScreen() {
       await setNotificationsEnabled(value)
       await syncPushRegistration(session.user.id)
       setNotificationsEnabledState(value)
+      nearbyAlerts.refresh()
     } catch (cause) {
       await setNotificationsEnabled(notificationsEnabled)
       toast.show(translateActionError(t, cause instanceof Error ? cause : null), 'error')
@@ -153,6 +158,13 @@ export function AccountHomeScreen() {
           title={t('account.menu.notifications')}
           onPress={() => toggleNotifications(!notificationsEnabled)}
           trailing={<Switch accessibilityLabel={t('account.menu.notifications')} disabled={notificationsSaving} value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
+        /> : null}
+        {nearbyAlerts.supported ? <ListRow
+          Icon={Compass}
+          title={nearbyCopy.setting}
+          subtitle={nearbyAlerts.state === 'on' ? nearbyCopy.on : nearbyAlerts.state === 'permission' ? nearbyCopy.needsPermission : nearbyCopy.off}
+          onPress={() => nearbyAlerts.state === 'on' ? void nearbyAlerts.disable() : nearbyAlerts.enable()}
+          trailing={<Switch accessibilityLabel={nearbyCopy.setting} disabled={nearbyAlerts.busy} value={nearbyAlerts.state === 'on'} onValueChange={value => value ? nearbyAlerts.enable() : void nearbyAlerts.disable()} trackColor={{ true: theme.colors.primary, false: theme.colors.border }} thumbColor="#fff" />}
         /> : null}
         <GuideTarget id="account.settings"><ListRow Icon={Globe} title={t('account.language')} onPress={() => setLanguageModalOpen(true)} /></GuideTarget>
         <ListRow Icon={Compass} title={t('account.navigationApp.title')} onPress={() => setNavigationModalOpen(true)} />

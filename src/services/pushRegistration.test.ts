@@ -32,7 +32,7 @@ describe('device push lifecycle', () => {
   it('still registers the device and saves its language when reporting the sound pack fails', async () => {
     const { syncPushRegistration } = await import('./pushRegistration')
     mocks.rpc.mockImplementation(async (name: string) => name === 'set_push_device_sound_pack' ? Promise.reject(new Error('older backend')) : { error: null })
-    await expect(syncPushRegistration('user')).resolves.toBeUndefined()
+    await expect(syncPushRegistration('user')).resolves.toBe(true)
     expect(mocks.rpc).toHaveBeenCalledWith('set_push_device_language', { p_token: 'ExpoPushToken[current]', p_language: 'he' })
   })
   it('does not attach an old account registration to a new session', async () => {

@@ -30,6 +30,7 @@ import { ConnectivityBanner, ErrorToastBridge } from './SystemFeedback'
 import { LaunchScreen } from './LaunchScreen'
 import { ThemeModeProvider } from './ThemeModeProvider'
 import { DiagnosticsBridge } from './DiagnosticsBridge'
+import { NearbyAlertsProvider } from './NearbyAlertsProvider'
 
 export function AppProviders({ children }: PropsWithChildren) {
   const [fontsLoaded] = useFonts({
@@ -47,11 +48,13 @@ export function AppProviders({ children }: PropsWithChildren) {
               <LanguageReadyGate>
                 <QueryProvider>
                   <AuthProvider>
-                    <MissionProvider>
-                      <BottomSheetModalProvider>
-                        <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /><DiagnosticsBridge /></ToastProvider>
-                      </BottomSheetModalProvider>
-                    </MissionProvider>
+                    <NearbyAlertsProvider>
+                      <MissionProvider>
+                        <BottomSheetModalProvider>
+                          <ToastProvider><AppErrorBoundary>{children}</AppErrorBoundary><ErrorToastBridge /><ConnectivityBanner /><DiagnosticsBridge /></ToastProvider>
+                        </BottomSheetModalProvider>
+                      </MissionProvider>
+                    </NearbyAlertsProvider>
                   </AuthProvider>
                 </QueryProvider>
               </LanguageReadyGate>
