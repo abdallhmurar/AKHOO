@@ -10,9 +10,9 @@ const TOKEN_KEY = 'akhoo_device_push_token'
 // Serialize registration/disable/logout so a slow OS permission response
 // cannot re-register a device after the user disabled notifications.
 let queue: Promise<void> = Promise.resolve()
-function serial(work: () => Promise<void>) {
+function serial<T>(work: () => Promise<T>): Promise<T> {
   const next = queue.catch(() => {}).then(work)
-  queue = next
+  queue = next.then(() => {}, () => {})
   return next
 }
 export function syncPushRegistration(userId: string) {
@@ -26,10 +26,10 @@ export function syncPushRegistration(userId: string) {
         const { error } = await supabase.rpc('unregister_push_device', { p_token: previous })
         throwIfError(error, { domain: 'profile', operation: 'disable-push' })
       }
-      return
+      return false
     }
     const { data } = await supabase.auth.getSession()
-    if (data.session?.user.id !== userId) return
+    if (data.session?.user.id !== userId) return false
     if (previous && previous !== token) {
       const { error } = await supabase.rpc('unregister_push_device', { p_token: previous })
       throwIfError(error, { domain: 'profile', operation: 'replace-push-token' })
@@ -40,6 +40,7 @@ export function syncPushRegistration(userId: string) {
     if (DEVICE_SOUND_PACK > 0) await supabase.rpc('set_push_device_sound_pack', { p_token: token, p_pack: DEVICE_SOUND_PACK }).then(() => {}, () => {})
     const { error: languageError } = await supabase.rpc('set_push_device_language', { p_token: token, p_language: contentLanguage(i18next.language) })
     throwIfError(languageError, { domain: 'profile', operation: 'push-language' })
+    return enabled
   })
 }
 export function syncPushLanguage(userId: string) {

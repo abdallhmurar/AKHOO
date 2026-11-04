@@ -1,29 +1,100 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mocks = vi.hoisted(() => ({ getItem: vi.fn(), setItem: vi.fn(), removeItem: vi.fn(), getSession: vi.fn(), upsert: vi.fn(), defineTask: vi.fn() }))
+const mocks = vi.hoisted(() => ({ getItem: vi.fn(), setItem: vi.fn(), removeItem: vi.fn(), getSession: vi.fn(), upsert: vi.fn(), defineTask: vi.fn(), supported: vi.fn(), consent: vi.fn(), enabled: vi.fn(), pushAllowed: vi.fn(), requestPermission: vi.fn(), getPermission: vi.fn(), started: vi.fn(), start: vi.fn(), stop: vi.fn() }))
+vi.mock('react-native', () => ({ Platform: { OS: 'android' } }))
 vi.mock('@react-native-async-storage/async-storage', () => ({ default: mocks }))
 vi.mock('expo-task-manager', () => ({ defineTask: mocks.defineTask }))
-vi.mock('expo-location', () => ({ Accuracy: { Balanced: 3 } }))
+vi.mock('expo-location', () => ({ Accuracy: { Balanced: 3 }, requestBackgroundPermissionsAsync: mocks.requestPermission, getBackgroundPermissionsAsync: mocks.getPermission, hasStartedLocationUpdatesAsync: mocks.started, startLocationUpdatesAsync: mocks.start, stopLocationUpdatesAsync: mocks.stop }))
 vi.mock('./supabase', () => ({ supabase: { auth: { getSession: mocks.getSession }, from: () => ({ upsert: mocks.upsert }) } }))
+vi.mock('./nearbyAlertPreference', () => ({ supportsNearbyBackgroundAlerts: mocks.supported, getNearbyAlertConsent: mocks.consent }))
+vi.mock('./notificationPreference', () => ({ getNotificationsEnabled: mocks.enabled }))
+vi.mock('./notifications', () => ({ hasNotificationPermission: mocks.pushAllowed }))
 beforeEach(() => {
+  vi.resetModules()
+  vi.clearAllMocks()
   vi.stubGlobal('__DEV__', false)
+  mocks.supported.mockReturnValue(true)
+  mocks.consent.mockResolvedValue(true)
+  mocks.enabled.mockResolvedValue(true)
+  mocks.pushAllowed.mockResolvedValue(true)
+  mocks.requestPermission.mockResolvedValue({ status: 'granted' })
+  mocks.getPermission.mockResolvedValue({ status: 'granted' })
+  mocks.started.mockResolvedValue(true)
+  mocks.stop.mockResolvedValue(undefined)
   mocks.upsert.mockClear().mockResolvedValue({ error: null })
   mocks.getItem.mockResolvedValue('restored-user')
   mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'restored-user' } } } })
 })
 describe('headless location identity', () => {
-  const event = { data: { locations: [{ coords: { latitude: 31.77, longitude: 35.21 } }] } }
+  const event = () => ({ data: { locations: [{ timestamp: Date.now(), coords: { latitude: 31.77, longitude: 35.21 } }] } })
   it('restores the authorized identity in a fresh background JS runtime', async () => {
     await import('./location')
     const task = mocks.defineTask.mock.calls[0]![1]
-    await task(event)
+    await task(event())
     expect(mocks.upsert).toHaveBeenCalledWith(expect.objectContaining({ user_id: 'restored-user', latitude: 31.77 }))
     expect(mocks.upsert.mock.calls[0]![0]).not.toHaveProperty('is_available')
   })
   it('never writes the previous user location after logout or an account change', async () => {
     await import('./location')
     mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'different-user' } } } })
-    await mocks.defineTask.mock.calls[0]![1](event)
+    await mocks.defineTask.mock.calls[0]![1](event())
     expect(mocks.upsert).not.toHaveBeenCalled()
+  })
+  it('does not renew proximity with an old queued location fix', async () => {
+    await import('./location')
+    const old = event()
+    old.data.locations[0]!.timestamp -= 25 * 60 * 60 * 1000
+    await mocks.defineTask.mock.calls[0]![1](old)
+    expect(mocks.upsert).not.toHaveBeenCalled()
+  })
+  it.each(['consent', 'notifications', 'osNotifications'])('stops the OS task after %s is revoked while the UI is closed', async revoked => {
+    await import('./location')
+    if (revoked === 'consent') mocks.consent.mockResolvedValue(false)
+    if (revoked === 'notifications') mocks.enabled.mockResolvedValue(false)
+    if (revoked === 'osNotifications') mocks.pushAllowed.mockResolvedValue(false)
+    await mocks.defineTask.mock.calls[0]![1](event())
+    expect(mocks.upsert).not.toHaveBeenCalled()
+    expect(mocks.stop).toHaveBeenCalledWith('sanad-background-location')
+    expect(mocks.removeItem).toHaveBeenCalled()
+  })
+  it('uses the GPS measurement time, not the background task wakeup time', async () => {
+    await import('./location')
+    const fix = event()
+    fix.data.locations[0]!.timestamp -= 5 * 60_000
+    await mocks.defineTask.mock.calls[0]![1](fix)
+    expect(mocks.upsert).toHaveBeenCalledWith(expect.objectContaining({ updated_at: new Date(fix.data.locations[0]!.timestamp).toISOString() }))
+  })
+})
+
+describe('native location service permissions and lifecycle', () => {
+  const notice = { title: 'Nearby', body: 'Location active' }
+  it.each(['oldBinary', 'noConsent'])('never prompts or starts on %s', async denied => {
+    if (denied === 'oldBinary') mocks.supported.mockReturnValue(false)
+    else mocks.consent.mockResolvedValue(false)
+    const { startBackgroundLocationUpdates } = await import('./location')
+    expect(await startBackgroundLocationUpdates('restored-user', notice)).toBe(false)
+    expect(mocks.requestPermission).not.toHaveBeenCalled()
+    expect(mocks.start).not.toHaveBeenCalled()
+  })
+  it('rechecks consent after the OS permission dialog returns', async () => {
+    mocks.consent.mockResolvedValueOnce(true).mockResolvedValue(false)
+    const { startBackgroundLocationUpdates } = await import('./location')
+    expect(await startBackgroundLocationUpdates('restored-user', notice)).toBe(false)
+    expect(mocks.setItem).not.toHaveBeenCalled()
+    expect(mocks.start).not.toHaveBeenCalled()
+  })
+  it('starts the persistent Android service on resume without another permission prompt', async () => {
+    mocks.started.mockResolvedValue(false)
+    const { startBackgroundLocationUpdates } = await import('./location')
+    expect(await startBackgroundLocationUpdates('restored-user', notice, false)).toBe(true)
+    expect(mocks.requestPermission).not.toHaveBeenCalled()
+    expect(mocks.getPermission).toHaveBeenCalled()
+    expect(mocks.start).toHaveBeenCalledWith('sanad-background-location', expect.objectContaining({ distanceInterval: 250, foregroundService: { notificationTitle: notice.title, notificationBody: notice.body, killServiceOnDestroy: false } }))
+  })
+  it('does not stop another account when an old operation finishes', async () => {
+    const { stopBackgroundLocationUpdates } = await import('./location')
+    await stopBackgroundLocationUpdates('previous-user')
+    expect(mocks.removeItem).not.toHaveBeenCalled()
+    expect(mocks.stop).not.toHaveBeenCalled()
   })
 })

@@ -4,14 +4,15 @@
 
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
-## 0. الوضع الآن (للمالك) — محدّث 2026-11-03
+## 0. الوضع الآن (للمالك) — محدّث 2026-11-04
+- **تنبيهات القرب:** جهّزنا تحديث الموقع بالخلفية بإذن المستخدم، بدون الحاجة لدخول «بدي أساعد». محلي ومفحوص، مش منشور؛ بدّه نسخ جديدة وتجربة تلفونات وموافقة النشر.
 - **موافقة نشر 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون على App Store ولأندرويد كتحديث سريع. إرسال الآيفون للمراجعة اكتمل 3/11، وأندرويد نُشر 2/11.
 - **آيفون:** نسخة إصلاح الصور 2.0.7 (34) بانتظار مراجعة Apple، وبتنزل تلقائيًا بعد الموافقة. النسخة المنشورة قبلها 2.0.6 (33).
 - **أندرويد:** 2.0.5 (10) منشورة على Google Play لإسرائيل، وتحديث الصور السريع وصل. المالك أكّد «ظهرت واشتغلت» بعد فتح صورة طلب على تلفونه. نموذج الشراكة الحقيقي وتصحيح الإغلاق محفوظين.
 - **الويب والأدمن:** إصلاح الصور حي ومفحوص بالمتصفحات. موقع التسويق ما تغيّر ضمن هالمهمة.
 - **حماية الصور:** صلاحيات السيرفر 0054 مطبّقة، بس الروابط العامة القديمة لسه مفتوحة؛ الحماية الكاملة لسه مش مفعّلة. إغلاقها بعد وصول النسخ الجديدة وتجربتها وقرار التعامل مع اللي ما حدّثوا.
 - **نموذج الشركاء:** حقيقي على الويب وأندرويد وآيفون، ووصول الطلبات انجرّب سابقًا حسب سجل 29–31/10؛ تنبيه البريد لـ support@akhoo.app شغّال.
-- **بانتظارك لاحقًا:** التعامل مع النسخ القديمة قبل إغلاق روابط الصور؛ وقرار توسيع الإشعارات ما زال مفتوحًا.
+- **بانتظارك لاحقًا:** التعامل مع النسخ القديمة قبل إغلاق روابط الصور؛ والموافقة على نسخ تجربة لتنبيهات القرب بعد اختيارك متابعة الموقع بالخلفية.
 - **ما انفحص بعد:** إصلاح الصور على آيفون حقيقي وكامل دورة الطلب بين الأجهزة. تأكيد أندرويد خاص بعرض صورة الطلب، مش فحص كل السيناريوهات.
 
 ## 1. Rules (non-negotiable)
@@ -40,6 +41,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|---|
 
 ## 3. Current state (photo release updated 2026-11-03)
+**Nearby alerts (4 November, prepared only):** `fix/nearby-background-alerts-20261104` and Android-specific `fix/android-nearby-alerts-20261104` add opt-in background enrollment/location. New native capability/runtime; default profiles untouched, no deployment or build numbers consumed. Physical QA and explicit native build/store approval remain. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **2.0.7 (34): WAITING_FOR_REVIEW since 2026-11-03 10:54 UTC**, submitted under the owner's explicit publication approval. Version `e1485c38-e567-4e93-9ac0-f17d4963e041`, build `e672a9ac-c25c-471d-97f1-1d9fb5c5f3b1` VALID, review submission `e77870e5-6bd1-4713-b8ee-5b68213c1339`; automatic release `AFTER_APPROVAL`, no future date. EAS build `c96016c6-153e-43e4-9400-5d65b2280d02` from `039fcbb` includes signed request photos and bounded loading; OTA disabled. All 15 inherited screenshots COMPLETE and ar/en/he release notes verified. Not live yet; physical iPhone QA and public-bucket cutover remain. Details: `docs/request-photo-privacy-2026-11-01.md`.
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
@@ -102,6 +104,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; the Android partner form labels its applications `source = ios` (Android runs `PartnerEnrollment.ios.tsx`; fix in the next Android OTA: use `Platform.OS`); per-language emails need the app to store the user language in auth metadata; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (iOS 2.0.6/older and Android installations without the photo OTA still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-11-04 — Codex — Prepared optional background location/nearby alerts and Android-preserving port; includes push-registration area (Claude ownership), no backend behavior/deployment change. Consent, account isolation, offline opt-out and native configuration tested; phone QA/build approval pending. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 Format: `date — who — what (where) — external effect — verified how`
 
 - 2026-11-03 — Codex — Completed the approved store-pipeline step in Claude's area: iOS 2.0.7 (34) submitted, WAITING_FOR_REVIEW, automatic release after approval; Android photo OTA already published and owner confirmed photo display. Verified Apple build/locales/15 screenshots and submission read-back; public bucket deliberately unchanged. Report: `docs/request-photo-privacy-2026-11-01.md`.

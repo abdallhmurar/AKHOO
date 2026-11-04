@@ -10,7 +10,7 @@ module.exports = () => {
   if (testflight && process.env.EAS_BUILD_PLATFORM === 'android') {
     throw new Error('The TestFlight profile is restricted to iOS.')
   }
-  const config = testflight ? {
+  let config = testflight ? {
     ...base.expo,
     version: process.env.AKHOO_IOS_VERSION || base.expo.version,
     ios: { ...base.expo.ios, buildNumber: process.env.AKHOO_IOS_BUILD_NUMBER || base.expo.ios.buildNumber },
@@ -20,6 +20,9 @@ module.exports = () => {
     extra: { ...base.expo.extra, partnerHomeBeta: process.env.AKHOO_PARTNER_HOME_BETA === '1' },
     runtimeVersion: `${process.env.AKHOO_IOS_VERSION || base.expo.version}-testflight`
   } : base.expo
+  if (process.env.AKHOO_NEARBY_BACKGROUND_ALERTS === '1') {
+    config = require('./plugins/withNearbyBackgroundAlerts')(config)
+  }
   const baseUrl = process.env.EXPO_WEB_BASE_PATH
   if (!baseUrl) return config
 

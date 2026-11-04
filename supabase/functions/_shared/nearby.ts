@@ -16,11 +16,12 @@ export const NEARBY_RADIUS_KM = 20
 // Who counts as reachable for a push: a volunteer whose app refreshed their availability in the last
 // 24 hours. This used to mirror the 20-minute bound of the "request read relevant" RLS policy
 // (0007_volunteer_staleness.sql), but a volunteer's availability and position only refresh while the
-// app is open (Android has no background location, see src/lib/location.ts), so with 20 minutes a
+// app is open in the shipped Android build, so with 20 minutes a
 // push could only reach someone who was already looking at the helper screen, which defeats a push.
 // Opening the app from the notification refreshes the volunteer's heartbeat, so the request is
 // readable again by the time they see it. Stale rows beyond a day are still skipped (uninstalled
-// apps that never switched availability off).
+// apps that never switched availability off). New opt-in native builds refresh the same location
+// from the OS background task; the freshness/radius limits still apply if the OS stops that task.
 export const PUSH_FRESHNESS_MS = 24 * 60 * 60 * 1000
 
 type Volunteer = { user_id: string; latitude: number | null; longitude: number | null }
