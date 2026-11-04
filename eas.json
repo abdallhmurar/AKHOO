@@ -74,14 +74,6 @@
     }
   },
   "submit": {
-    "nearby-internal": {
-      "android": {
-        "serviceAccountKeyPath": "./credentials/android/ahkoo-507219-f9a58ea16565.json",
-        "track": "internal",
-        "releaseStatus": "completed",
-        "changesNotSentForReview": true
-      }
-    },
     "testflight": {
       "ios": {
         "ascAppId": "6809610412",
