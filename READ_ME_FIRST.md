@@ -39,7 +39,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Deploy updated app to a separate Vercel preview and verify web/native demo boundary | web/nearby-preview-20261104 | 2026-11-04 |
 
 ## 3. Current state (nearby release updated 2026-11-04)
 **Nearby alerts, 4 November:** public publication authorized. iOS 2.0.8 (35) WAITING_FOR_REVIEW, auto-release; Android 2.0.6 (11) production draft committed but blocked by missing permission declaration. Public privacy policy deployed. Complete Play Console declaration/demo, then publish existing draft; no new authorization/build needed. Physical locked-phone QA remains unverified. Details: `docs/nearby-alerts-production-release-2026-11-04.md`.
@@ -107,6 +106,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; the Android partner form labels its applications `source = ios` (Android runs `PartnerEnrollment.ios.tsx`; fix in the next Android OTA: use `Platform.OS`); per-language emails need the app to store the user language in auth metadata; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (iOS 2.0.6/older and Android installations without the photo OTA still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-11-04 — Codex — Updated app deployed to a separate Vercel preview at the owner's request; production/store/backend unchanged. Typecheck/lint/389 tests, mobile Chromium/WebKit startup, asset hash and public API checks passed; web cannot demonstrate native background-location permission. Details: `docs/nearby-web-preview-2026-11-04.md`.
 - 2026-11-04 — Codex — Public-release request in build/store area: iOS 2.0.8 (35) WAITING_FOR_REVIEW/auto-release; Android 2.0.6 (11) production draft, blocked by Google permission declaration. Public privacy deployed; artifact/API checks, main typecheck/lint/354 tests passed. Details: `docs/nearby-alerts-production-release-2026-11-04.md`; physical QA pending.
 - 2026-11-04 — Codex — Reserved approved nearby-alert test builds iOS 35 / Android 11 (Claude-owned build/store area); iOS 2.0.7 rechecked live. This main change is documentation only; feature code stays on the separate test branches.
 Format: `date — who — what (where) — external effect — verified how`

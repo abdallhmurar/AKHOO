@@ -9,7 +9,9 @@ The owner requested a Vercel upload to inspect whether the web app could be used
 - Preview environment had no Supabase client configuration. The production pull returned secret placeholders, so the local export uses only the two existing verified public client values from the ignored local environment: the expected Supabase project URL and its `sb_publishable_` key. No service-role or deployment credentials are bundled.
 - Native-scene and approved-motion generation ran before checks. Typecheck passed; lint has zero errors and the existing resolver warning; **389 tests / 62 files passed**. Expo web production export completed with a clean Metro cache.
 - Deploy the generated static output with Build Output API v3 and SPA fallback. Git-triggered deployment is disabled for this preview branch only, because its server-side preview environment lacks the client values; this prevents a later documentation push from replacing the working manual preview with an unconfigured build. Other branches and production are unchanged.
-- Deployment URL and browser verification: pending.
+- Deployment **READY**: https://akhoo-a9ta0y0qu-abad003-6200s-projects.vercel.app, ID `dpl_BWFUgXivc1jiBcxcA7Giexm3Gqox`, source commit `435b2c4`. This is a preview; no production alias was promoted.
+- Public HTTP 200 and deployed entry-bundle SHA-256 matched the local export. Authentication configuration and the public partner-data endpoint both returned HTTP 200 (two public partner rows); no private records, sign-ins or test requests were created.
+- Chromium at 412×915 and WebKit at 390×844 rendered the Arabic welcome and login screens with HTTP 200, no page exceptions, no failed same-origin assets and no horizontal overflow. Screenshots were inspected. These are browser checks, not physical Android/iPhone QA or a completed login test.
 
 ## Video boundary
 
