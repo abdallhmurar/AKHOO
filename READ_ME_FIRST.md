@@ -5,6 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-11-04
+- **موافقة 4/11:** المالك طلب تجهيز ونشر نسخ تجربة لتنبيهات القرب بالخلفية على الآيفون وأندرويد وفحص الإشعار والتلفون مقفّل. الأرقام محجوزة على main؛ البناء والنشر التجريبي جاريين.
 - **تنبيهات القرب:** جهّزنا تحديث الموقع بالخلفية بإذن المستخدم، بدون الحاجة لدخول «بدي أساعد». محلي ومفحوص، مش منشور؛ بدّه نسخ جديدة وتجربة تلفونات وموافقة النشر.
 - **موافقة نشر 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون على App Store ولأندرويد كتحديث سريع. إرسال الآيفون للمراجعة اكتمل 3/11، وأندرويد نُشر 2/11.
 - **آيفون:** نسخة إصلاح الصور 2.0.7 (34) بانتظار مراجعة Apple، وبتنزل تلقائيًا بعد الموافقة. النسخة المنشورة قبلها 2.0.6 (33).
@@ -39,8 +40,10 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
+| Codex | Build and publish TestFlight 2.0.8 (35); native store pipeline | ios/testflight-nearby-20261104 | 2026-11-04 |
 
 ## 3. Current state (photo release updated 2026-11-03)
+**Approved native test release (4 November):** TestFlight 2.0.8 (35), branch `ios/testflight-nearby-20261104`; reserved in main. Details: `docs/nearby-alerts-test-release-2026-11-04.md`. Earlier preparation notes below describe the pre-approval state.
 **Nearby alerts (4 November, prepared only):** `fix/nearby-background-alerts-20261104` and Android-specific `fix/android-nearby-alerts-20261104` add opt-in background enrollment/location. New native capability/runtime; default profiles untouched, no deployment or build numbers consumed. Physical QA and explicit native build/store approval remain. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **2.0.7 (34): WAITING_FOR_REVIEW since 2026-11-03 10:54 UTC**, submitted under the owner's explicit publication approval. Version `e1485c38-e567-4e93-9ac0-f17d4963e041`, build `e672a9ac-c25c-471d-97f1-1d9fb5c5f3b1` VALID, review submission `e77870e5-6bd1-4713-b8ee-5b68213c1339`; automatic release `AFTER_APPROVAL`, no future date. EAS build `c96016c6-153e-43e4-9400-5d65b2280d02` from `039fcbb` includes signed request photos and bounded loading; OTA disabled. All 15 inherited screenshots COMPLETE and ar/en/he release notes verified. Not live yet; physical iPhone QA and public-bucket cutover remain. Details: `docs/request-photo-privacy-2026-11-01.md`.
@@ -92,8 +95,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live), **2.0.7 (34, waiting for review)** | build **35** |
-| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live; photo OTA 2026-11-02)** | **11** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live), **2.0.7 (34 live)**, **2.0.8 (35 reserved for nearby-alert TestFlight)** | build **36** |
+| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live; photo OTA 2026-11-02)**, **11 (2.0.6 reserved for nearby-alert internal test)** | **12** |
 | Supabase SQL migrations | `0001`–`0054` applied; `0054` applied 2026-11-02, public bucket unchanged | **0055** |
 
 ## 6. Credentials map (never commit)
@@ -104,6 +107,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; the Android partner form labels its applications `source = ios` (Android runs `PartnerEnrollment.ios.tsx`; fix in the next Android OTA: use `Platform.OS`); per-language emails need the app to store the user language in auth metadata; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (iOS 2.0.6/older and Android installations without the photo OTA still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-11-04 — Codex — Preparing approved TestFlight 2.0.8 (35) for locked-phone push QA, including Claude-owned build/store pipeline. Isolated runtime and test distribution; report: `docs/nearby-alerts-test-release-2026-11-04.md`.
 - 2026-11-04 — Codex — Prepared optional background location/nearby alerts and Android-preserving port; includes push-registration area (Claude ownership), no backend behavior/deployment change. Consent, account isolation, offline opt-out and native configuration tested; phone QA/build approval pending. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 Format: `date — who — what (where) — external effect — verified how`
 

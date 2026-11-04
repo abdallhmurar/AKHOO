@@ -4,6 +4,16 @@
     "appVersionSource": "local"
   },
   "build": {
+    "nearby-testflight-208": {
+      "extends": "testflight",
+      "env": {
+        "AKHOO_BUILD_TARGET": "testflight",
+        "AKHOO_IOS_VERSION": "2.0.8",
+        "AKHOO_IOS_BUILD_NUMBER": "35",
+        "AKHOO_PARTNER_HOME_BETA": "1",
+        "AKHOO_NEARBY_BACKGROUND_ALERTS": "1"
+      }
+    },
     "partner-testflight": {
       "extends": "testflight",
       "env": {
