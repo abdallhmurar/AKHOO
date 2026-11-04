@@ -1,5 +1,7 @@
 # Nearby help alerts while the UI is closed — 2026-11-04
 
+**Release update:** The implementation-stage scope below is historical. The owner subsequently authorized public publication; iOS 2.0.8 (35) is WAITING_FOR_REVIEW, Android 2.0.6 (11) is a committed production draft blocked by Google's permission declaration. See [the current release report](nearby-alerts-production-release-2026-11-04.md) for artifacts, privacy deployment and outstanding physical checks.
+
 ## Status and scope
 
 Implemented and validated locally, **not deployed, built for a store, uploaded, or sent to users**. The owner explicitly chose background location with user permission. This task does not include new store-publication approval. No build/versionCode or migration number has been consumed. The photo-release approval does not cover these new native permissions.
