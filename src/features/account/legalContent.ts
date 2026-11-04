@@ -16,9 +16,9 @@ export const LEGAL_CONTACT = {
 }
 
 export const LEGAL_LAST_UPDATED: Record<AppLanguage, string> = {
-  ar: '20 أكتوبر 2026',
-  en: 'October 20, 2026',
-  he: '20 באוקטובר 2026'
+  ar: '4 نوفمبر 2026',
+  en: 'November 4, 2026',
+  he: '4 בנובמבר 2026'
 }
 
 // English and Hebrew are AI-produced translations of the Arabic text the
@@ -71,6 +71,7 @@ export const privacyPolicyBlocks: Record<AppLanguage, LegalBlock[]> = {
 
     { type: 'h2', text: '4. استخدام الموقع الجغرافي' },
     { type: 'p', text: 'قد يكون الموقع ضروريًا لبعض وظائف أخوو.' },
+    { type: 'p', text: 'عند تفعيل تنبيهات طلبات المساعدة القريبة بالخلفية، وبعد موافقتك وإذن نظام الهاتف، يجمع أخوو موقعك ويحدّث آخر موقع معروف على خوادمه لإرسال تنبيهات الطلبات القريبة حتى عندما يكون التطبيق بالخلفية أو غير مستخدم. التفعيل اختياري ويمكن إيقافه من حسابي أو من إعدادات الهاتف، كما يتوقف جمع الموقع عند تسجيل الخروج. نحدّث آخر موقع ولا ننشئ سجلًا لمسار تحركك بهذه الميزة. قد توقف قيود النظام تحديث الموقع، وعندها نعتمد آخر موقع حديث متاح حتى إعادة فتح التطبيق. يعرض أندرويد إشعارًا مستمرًا أثناء تحديث الموقع.' },
     { type: 'p', text: 'قبل قبول المهمة، قد يتم عرض موقع تقريبي فقط.' },
     { type: 'p', text: 'بعد قبول المهمة، قد يتم توفير الموقع الأدق للمستخدمين المشاركين في المهمة عندما يكون ذلك ضروريًا للوصول وتقديم المساعدة.' },
     { type: 'p', text: 'عند انتهاء المهمة أو انتهاء الحاجة التشغيلية، لا يفترض استمرار استخدام الموقع المباشر لأغراض المهمة.' },
@@ -167,6 +168,7 @@ export const privacyPolicyBlocks: Record<AppLanguage, LegalBlock[]> = {
 
     { type: 'h2', text: '4. Use of Geographic Location' },
     { type: 'p', text: "Location may be necessary for some of AKHOO's functions." },
+    { type: 'p', text: 'If you enable background nearby-help alerts and grant the phone permissions after the disclosure, AKHOO collects your location and updates your last known location on its servers to send nearby request alerts even when the app is in the background or not in use. This is optional and can be disabled in My Account or phone settings. Location collection also stops on sign-out. This feature updates the latest location rather than creating a travel history. System restrictions may stop updates; we then use the last recent location until you reopen the app. Android displays an ongoing notification while location updates run.' },
     { type: 'p', text: 'Before a mission is accepted, only an approximate location may be shown.' },
     { type: 'p', text: 'After the mission is accepted, a more precise location may be provided to the users involved in the mission when necessary to reach the location and provide help.' },
     { type: 'p', text: "Once the mission ends or the operational need ends, continued use of live location for the mission's purposes should not be assumed." },
@@ -263,6 +265,7 @@ export const privacyPolicyBlocks: Record<AppLanguage, LegalBlock[]> = {
 
     { type: 'h2', text: '4. שימוש במיקום גאוגרפי' },
     { type: 'p', text: 'מיקום עשוי להיות נחוץ לחלק מהתפקודים של אחוו.' },
+    { type: 'p', text: 'אם תפעילו התראות על בקשות עזרה קרובות ברקע ותאשרו את הרשאות הטלפון לאחר ההסבר, AKHOO תאסוף את המיקום ותעדכן את המיקום האחרון בשרתים שלה לצורך שליחת התראות קרובות גם כשהאפליקציה ברקע או אינה בשימוש. ההפעלה היא לבחירתכם ואפשר לכבות אותה בחשבון שלי או בהגדרות הטלפון. איסוף המיקום נפסק גם ביציאה מהחשבון. התכונה מעדכנת את המיקום האחרון ואינה יוצרת היסטוריית מסלול. מגבלות מערכת עשויות לעצור עדכונים, ובמקרה כזה נשתמש במיקום האחרון העדכני עד לפתיחה מחדש. באנדרואיד מוצגת התראה קבועה בזמן עדכון המיקום.' },
     { type: 'p', text: 'לפני קבלת המשימה, ייתכן שיוצג מיקום משוער בלבד.' },
     { type: 'p', text: 'לאחר קבלת המשימה, ייתכן שיסופק מיקום מדויק יותר למשתמשים המעורבים במשימה כאשר הדבר נחוץ להגעה ולמתן העזרה.' },
     { type: 'p', text: 'עם סיום המשימה או תום הצורך התפעולי, אין להניח שהשימוש במיקום החי לצורכי המשימה נמשך.' },
