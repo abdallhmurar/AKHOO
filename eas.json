@@ -4,6 +4,19 @@
     "appVersionSource": "local"
   },
   "build": {
+    "nearby-internal-206": {
+      "extends": "production",
+      "autoIncrement": false,
+      "channel": "nearby-test",
+      "environment": "production",
+      "env": {
+        "AKHOO_BUILD_TARGET": "android-release",
+        "AKHOO_ANDROID_VERSION": "2.0.6",
+        "AKHOO_ANDROID_VERSION_CODE": "11",
+        "AKHOO_NEARBY_BACKGROUND_ALERTS": "1"
+      },
+      "android": { "buildType": "app-bundle" }
+    },
     "android-parity": {
       "extends": "production",
       "autoIncrement": false,
@@ -61,6 +74,14 @@
     }
   },
   "submit": {
+    "nearby-internal": {
+      "android": {
+        "serviceAccountKeyPath": "./credentials/android/ahkoo-507219-f9a58ea16565.json",
+        "track": "internal",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": true
+      }
+    },
     "testflight": {
       "ios": {
         "ascAppId": "6809610412",

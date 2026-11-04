@@ -5,6 +5,7 @@
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
 ## 0. الوضع الآن (للمالك) — محدّث 2026-11-04
+- **موافقة 4/11:** المالك طلب تجهيز ونشر نسخ تجربة لتنبيهات القرب بالخلفية على الآيفون وأندرويد وفحص الإشعار والتلفون مقفّل. الأرقام محجوزة على main؛ البناء والنشر التجريبي جاريين.
 - **تنبيهات القرب:** متابعة الموقع بالخلفية بإذن المستخدم جاهزة محليًا على فرع أندرويد مع الحفاظ على الإصلاحات المنشورة. مش منشورة؛ بدها نسخة جديدة وتجربة تلفون وتصريح الموقع من Google.
 - **موافقة 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون وأندرويد. ننشر Android OTA للنسخة الحالية 2.0.5 فقط؛ إغلاق مخزن الصور بعد وصول العملاء وقرار النسخ القديمة.
 - **حماية الصور (3/11):** نُشر التصحيح لأندرويد 2.0.5، والمالك أكّد «ظهرت واشتغلت» لما فتح صورة طلب. حافظنا على نموذج الشراكة وتصحيح الإغلاق. آيفون 2.0.7 (34) انرسل لمراجعة Apple؛ الروابط العامة لسه مفتوحة لحد وصول التحديثات وتجربة الآيفون وقرار النسخ القديمة.
@@ -39,8 +40,10 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
+| Codex | Build and publish Android internal 2.0.6 (11); native store pipeline | android/test-nearby-20261104 | 2026-11-04 |
 
 ## 3. Current state (2026-10-29)
+**Approved native test release (4 November):** Android internal 2.0.6 (11), branch `android/test-nearby-20261104`; reserved in main. Details: `docs/nearby-alerts-test-release-2026-11-04.md`. Earlier preparation notes below describe the pre-approval state.
 **Nearby alerts (4 November, prepared only):** this branch `fix/android-nearby-alerts-20261104` starts from the actual Android photo OTA source `dfa7622`. New opt-in native capability/runtime; defaults untouched, no deployment or build numbers consumed. Physical QA and explicit native build/store approval remain. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **Photo release 2.0.7 (34) submitted November 3:** WAITING_FOR_REVIEW, AFTER_APPROVAL, review `e77870e5-6bd1-4713-b8ee-5b68213c1339`. Not live yet; see the main notebook and shared privacy report. This Android branch is not an iOS release source.
@@ -91,8 +94,8 @@ If you must touch another owner's area, say so in the change log and keep the ch
 ## 5. Version registry (reserve before using)
 | Platform | Used | Next free |
 |---|---|---|
-| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live) | build **32** |
-| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live, confirmed 2026-10-29)** | **11** |
+| iOS App Store / TestFlight | 2.0.0 (≤16), 2.0.1 (17), 2.0.2 (28), 2.0.3 (29), 2.0.4 (30 beta, 31 live), 2.0.5 (32, live), 2.0.6 (33, live), **2.0.7 (34 live)**, **2.0.8 (35 reserved for nearby-alert TestFlight)** | build **36** |
+| Android | versionCode 7 (closed test), 8 (2.0.3), 9 (2.0.4), **10 (2.0.5 live; photo OTA 2026-11-02)**, **11 (2.0.6 reserved for nearby-alert internal test)** | **12** |
 | Supabase SQL migrations | `0001`–`0054` applied; `0054` applied 2026-11-02, public bucket unchanged | **0055** |
 
 ## 6. Credentials map (never commit)
@@ -103,6 +106,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; custom SMTP; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (all current mobile versions still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-11-04 — Codex — Preparing approved Android internal 2.0.6 (11) for locked-phone push QA, including Claude-owned build/store pipeline. Isolated runtime and test distribution; report: `docs/nearby-alerts-test-release-2026-11-04.md`.
 - 2026-11-04 — Codex — Prepared optional nearby/background alerts on the actual Android photo/parity branch; includes push-registration area (Claude ownership). Native configuration, app tests and Hermes export checked; no upload/OTA/deployment. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 Format: `date — who — what (where) — external effect — verified how`
 
