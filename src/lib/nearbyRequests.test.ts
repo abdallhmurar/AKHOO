@@ -9,6 +9,8 @@ import type { HelpRequest } from '../types'
 // bridge that isn't there.
 vi.mock('expo-location', () => ({ Accuracy: { Balanced: 3 } }))
 vi.mock('expo-task-manager', () => ({ defineTask: () => {} }))
+vi.mock('./nearbyAlertPreference', () => ({ supportsNearbyBackgroundAlerts: () => false }))
+vi.mock('./notifications', () => ({ hasNotificationPermission: async () => false }))
 vi.mock('./supabase', () => ({ supabase: { from: () => ({ select: () => ({ eq: () => Promise.resolve({ data: [] }) }) }) } }))
 
 const { filterNearbyRequests } = await import('./nearbyRequests')

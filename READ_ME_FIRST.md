@@ -4,7 +4,8 @@
 
 The complete text of this file as it was before the 2026-10-27 restructure (every old state detail, the 45 change-log entries, the owner's earlier instructions) is kept in `docs/archive/READ_ME_FIRST-until-2026-10-27.md`. Nothing was deleted, only moved.
 
-## 0. الوضع الآن (للمالك) — محدّث 2026-10-29
+## 0. الوضع الآن (للمالك) — محدّث 2026-11-04
+- **تنبيهات القرب:** متابعة الموقع بالخلفية بإذن المستخدم جاهزة محليًا على فرع أندرويد مع الحفاظ على الإصلاحات المنشورة. مش منشورة؛ بدها نسخة جديدة وتجربة تلفون وتصريح الموقع من Google.
 - **موافقة 2/11:** المالك وافق صراحة على نشر إصلاح الصور للآيفون وأندرويد. ننشر Android OTA للنسخة الحالية 2.0.5 فقط؛ إغلاق مخزن الصور بعد وصول العملاء وقرار النسخ القديمة.
 - **حماية الصور (3/11):** نُشر التصحيح لأندرويد 2.0.5، والمالك أكّد «ظهرت واشتغلت» لما فتح صورة طلب. حافظنا على نموذج الشراكة وتصحيح الإغلاق. آيفون 2.0.7 (34) انرسل لمراجعة Apple؛ الروابط العامة لسه مفتوحة لحد وصول التحديثات وتجربة الآيفون وقرار النسخ القديمة.
 - **آيفون:** 2.0.4 (التصميم الجديد) نزلت للناس بتاريخ 27/10 بعد موافقة Apple. اللي عند الناس هلأ هو التصميم الجديد (بانر الشركاء وكرت المساعدة الوردي) مع نموذج الشركاء التجريبي.
@@ -40,6 +41,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 |---|---|---|---|
 
 ## 3. Current state (2026-10-29)
+**Nearby alerts (4 November, prepared only):** this branch `fix/android-nearby-alerts-20261104` starts from the actual Android photo OTA source `dfa7622`. New opt-in native capability/runtime; defaults untouched, no deployment or build numbers consumed. Physical QA and explicit native build/store approval remain. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 **iOS** (App Store Connect app `6809610412`, bundle `app.akhoo.help`)
 - **Photo release 2.0.7 (34) submitted November 3:** WAITING_FOR_REVIEW, AFTER_APPROVAL, review `e77870e5-6bd1-4713-b8ee-5b68213c1339`. Not live yet; see the main notebook and shared privacy report. This Android branch is not an iOS release source.
 - **2.0.4 (31): LIVE** since 2026-10-27: approved by Apple, released through the API at the owner's standing OK (`READY_FOR_SALE`). Version `120ab703-e74f-40f4-aaa9-226475e3aa66`, build `e01db523-d49b-499f-9871-b93e7cd86306` (the TestFlight binary): partner banner, rose help card, rewards ticket. The partner form is a labelled test that sends nothing. Store screenshots are still the 2.0.3 ones.
@@ -101,6 +103,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Not done:** manual QA on real phones (request flow with push, delete account, password reset, the new releases); the volunteer screenshot is missing from the store sets (Arabic, English, Hebrew all show Home, request, perks, activity); a native Hebrew reader for the Hebrew store text; custom SMTP; finish request-photo private cutover after compatible iOS/Android/web/admin rollout and an explicit old-client decision (all current mobile versions still depend on public URLs; see the photo privacy report); human legal review of the English and Hebrew text; background location for Android volunteers (needs Google's permission declaration and a new build); iOS notification settings screen and tap routing for the new events; backlog: audit-log page, admin management, R8/DEX warning (deadline 2027).
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
+- 2026-11-04 — Codex — Prepared optional nearby/background alerts on the actual Android photo/parity branch; includes push-registration area (Claude ownership). Native configuration, app tests and Hermes export checked; no upload/OTA/deployment. Report: `docs/nearby-background-alerts-2026-11-04.md`.
 Format: `date — who — what (where) — external effect — verified how`
 
 - 2026-11-03 — Codex — Recorded the owner's successful Android request-photo check and iOS 2.0.7 (34) review submission. Documentation only; no additional Android OTA or binary. Public photo cutover still pending iOS rollout, QA and the old-client decision.

@@ -17,7 +17,7 @@ module.exports = () => {
   if (androidRelease && (!/^\d+\.\d+\.\d+$/.test(process.env.AKHOO_ANDROID_VERSION || '') || !/^[1-9]\d*$/.test(process.env.AKHOO_ANDROID_VERSION_CODE || ''))) {
     throw new Error('Android releases require an explicit version and positive versionCode.')
   }
-  const config = androidRelease ? {
+  let config = androidRelease ? {
     ...base.expo,
     version: process.env.AKHOO_ANDROID_VERSION,
     android: { ...base.expo.android, versionCode: Number(process.env.AKHOO_ANDROID_VERSION_CODE) },
@@ -33,6 +33,9 @@ module.exports = () => {
     extra: { ...base.expo.extra, partnerHomeBeta: process.env.AKHOO_PARTNER_HOME_BETA === '1' },
     runtimeVersion: `${process.env.AKHOO_IOS_VERSION || base.expo.version}-testflight`
   } : base.expo
+  if (process.env.AKHOO_NEARBY_BACKGROUND_ALERTS === '1') {
+    config = require('./plugins/withNearbyBackgroundAlerts')(config)
+  }
   const baseUrl = process.env.EXPO_WEB_BASE_PATH
   if (!baseUrl) return config
 

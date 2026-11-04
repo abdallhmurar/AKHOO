@@ -3,6 +3,7 @@
 // expo-notifications doesn't fully support web bundling anyway.
 // The web preview has no notification sounds to report.
 export const DEVICE_SOUND_PACK = 0
+export async function hasNotificationPermission() { return false }
 
 export async function registerForPushNotificationsAsync(): Promise<string | null> {
   return null
