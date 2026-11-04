@@ -1,41 +1,54 @@
-# Google Play location demo — recording handoff, 4 November 2026
+# Google Play location demo and Android device QA — 4 November 2026
 
-This follows the [authorized production release](nearby-alerts-production-release-2026-11-04.md). Android 2.0.6 (11) is already uploaded as a production draft. This task prepares a genuine Android recording for the location and foreground-service declarations; it does not create a new build or change a store track.
+This follows the [authorized production release](nearby-alerts-production-release-2026-11-04.md). Android 2.0.6 (11) remains a production draft. This task resolved installation on the owner's Android, captured actual native behavior, and verified a targeted push while the phone was locked. No new build, store-track change, production deployment or broadcast was made.
 
-## Verified installation artifact
+## Installation issue resolved without deleting data
 
-- Downloaded the universal APK for versionCode 11 through the Google Play generated APKs API.
-- Local, git-ignored path: `test-results/AKHOO-2.0.6-11-google-signed.apk` in the `AKHOO-play-video-handoff` worktree. Size: 255,724,021 bytes.
-- SHA-256: `9d66ce5dd05122f67ad6b35b33a13ba7b5660750a62d71ef00f444bcf082689c`.
-- `apksigner verify --print-certs` succeeded. Signing certificate SHA-256: `47cc138345e14dbbf9d63f2fa369e6053b38816c87372ada4b72176e98b04992`; matches the Google-generated APK metadata for the existing versionCode 10.
-- `aapt2` confirmed `app.akhoo.help`, versionName `2.0.6`, versionCode `11`, target SDK 36, background-location and location foreground-service permissions.
-- This is the Google-signed artifact from the uploaded bundle, not a debug APK. Signature checks do not establish successful installation or device behavior. Do not uninstall or clear the owner's existing app to install it.
+The Google-generated universal APK was signed correctly but displayed Google's “Get this app from Play” screen after sideloading. Authorized Samsung Flow inspection confirmed version 2.0.6, installation from My Files, and a Play update action that did not start a download. A read-only Play API inspection at 15:21 UTC confirmed production 2.0.5 (10) completed, candidate 2.0.6 (11) draft, and internal/alpha 2.0.4 (9). The inspection edit was deleted.
 
-## Device and recording state
+For the owner's developer device, Google's official `generatedApks.list` response provides `unprotectedGeneratedSplitApks`. Downloaded variant 3 (minimum SDK 29), selecting base, arm64-v8a, xxxhdpi and Arabic/English/Hebrew language splits for the connected Samsung phone. All six APKs passed `apksigner`; the certificate matched the installed app and Google's metadata. Package `app.akhoo.help`, version/code 2.0.6/11, target SDK 36, runtime `2.0.6-nearby-v1` and `nearbyBackgroundAlerts=true` were checked.
 
-The owner connected their Android phone through Samsung Flow and explicitly requested Astra control. Smart View displayed AKHOO, and navigation to Account and back to Home worked. The currently displayed Account screen lacked `طلبات قريبة بالخلفية`; it did not expose an installed version number. The exact installed version is therefore unverified.
+Installed with `adb install-multiple -r` over the USB connection authorized by the owner. Result: `Success`; first-install timestamp unchanged, account session retained, and the actual nearby-alert disclosure opened. No uninstall, data clearing, permission grant command, signature modification, Play Protect change or production automatic-protection setting change was used. The official developer APKs are private QA artifacts and must not be distributed to users as the public release.
 
-The APK transfer through Samsung Flow completed: the file remained in transfer history after the progress/cancel controls disappeared. The owner was guided to handle the installation-source prompt personally. A later fresh Smart View observation showed AKHOO open with Android's notification-permission prompt, and a subsequent observation showed the app without that prompt. The installed version number and new background-alert control have not yet been independently verified.
+- Google signing certificate SHA-256: `47cc138345e14dbbf9d63f2fa369e6053b38816c87372ada4b72176e98b04992`.
+- Developer base APK SHA-256: `25b7cf1f5b195c311415f7898d2d90efac87560e316c8015eb4e21d2e2c7bbd0`.
+- Original protected universal APK SHA-256: `9d66ce5dd05122f67ad6b35b33a13ba7b5660750a62d71ef00f444bcf082689c`.
+- Local ignored artifacts: `test-results/official-device-demo-11/` in the `AKHOO-play-video-handoff` worktree. Device identifiers, tokens and account data are not included in this report.
 
-The owner later confirmed starting native Samsung recording; the start sheet disappeared and a red recording-style indicator was observed. A numerical timer and saved output were not verified. A subsequent Account inspection still lacked the new nearby-background control. Smart View disappeared before recording could be stopped or the installed app version inspected. The owner was asked to stop/save and restore mirroring, then paused the phone work and requested a Vercel preview instead. No video has been retrieved or reviewed, and no locked-phone push receipt has been verified. No background-location consent or phone security setting has been changed by automation.
+## Native permissions and background service
 
-Windows Snipping Tool was prepared in video mode. Both Window and Rectangle capture attempts reached a picker not exposed as a targetable window by the automation host; no running PC recording was observed. Game Bar likewise exposed no targetable window. Samsung Flow's observed menu offers screenshots, not video recording. Native Samsung recording was reached from the top-left quick-settings gesture in this Arabic/RTL phone layout, using full screen/no sound, with privacy acceptance left to the owner. These are tooling observations, not evidence of an AKHOO app failure.
+The owner personally accepted the disclosure and Android background-location permission. The recording shows changing Android location access from “While using the app” to “Allow all the time”; foreground location was already granted. Account subsequently displayed `طلبات قريبة بالخلفية` / `مفعّلة`. The owner briefly disabled and later re-enabled it; the final enabled state was independently observed.
 
-The downloaded APK was rechecked after the missing-control observation: `assets/app.config` contains version 2.0.6/code 11, runtime `2.0.6-nearby-v1`, and `nearbyBackgroundAlerts: true`; its bundled JavaScript contains the capability and consent keys. This confirms the prepared artifact, not what is installed on the phone. Verify Android App info and successful update installation before another recording attempt.
+Read-only device inspection confirmed notification, fine/coarse location and background-location permissions granted. `expo.modules.location.services.LocationTaskService` was foreground-active with location type `0x8`. After returning to the phone's Home screen, the notification shade displayed the genuine ongoing notification `أخوو · طلبات المساعدة القريبة`. Privacy/security prompts were handled by the owner, not automation.
 
-## Capture sequence
+Samsung Flow initially enabled remote observation but had recording/control limitations. USB ADB ultimately provided the successful installation, native recordings and device-state evidence. No recording remains intentionally running.
 
-1. Transfer the verified APK to the owner's phone through Samsung Flow. The owner handles any installation-source/security prompts; do not bypass them or uninstall the existing app.
-2. Prepare a portrait screen recording of the actual Android app, excluding unrelated desktop content, calls and personal notifications. Start before accepting the new disclosure. Code 11 shows it automatically on first signed-in use; it can also be reopened from `حسابي` → `طلبات قريبة بالخلفية`.
-3. Show the disclosure `ننبّهك إذا حدا احتاج مساعدة قريب منك؟` and its text. The owner personally accepts `موافق، فعّل` and the Android permission flow, including background access. Do not automate security or privacy permission requests.
-4. Show the Account state `مفعّلة`, then put the app in the background and show the genuine persistent notification `أخوو · طلبات المساعدة القريبة`. Observe actual behavior; do not create a mock notification or substitute a web/iOS recording.
-5. Demonstrate the declared background feature with controlled consenting accounts. Before any test request, ensure it cannot alert unrelated users. A recipient-targeted diagnostic push checks delivery only and must not be represented as proof of nearby-request matching.
-6. The owner can demonstrate disabling the feature and disappearance of its foreground-service notification. Preserve the owner's chosen final preference.
+## Locked-phone diagnostic push — passed
 
-Aim for a short video (Google recommends 30 seconds or less), but retain the real disclosure, runtime prompt and background behavior. Do not fake permission dialogs, timestamps or notification results. Review the actual video before sharing; keep raw recordings and personal data out of git. No video link exists yet.
+At **15:47:24 UTC**, sent exactly one diagnostic push to the single recently refreshed device token belonging to the verified owner's account. The phone was already locked and Dozing. Title: `فحص أخوو — التلفون مقفّل`; body clearly said this was a test, not a real help request. Used the real requests channel and request sound. No help request was created and no unrelated user was notified.
+
+Expo accepted the push and its delivery receipt returned `ok`. At **15:48:50 UTC**, Android's notification record contained the exact diagnostic title under the AKHOO package, while keyguard was showing, input was restricted and wakefulness remained `Dozing`. The owner then confirmed: **«آه، وصل وأنا مقفّل التلفون»**.
+
+This verifies handset delivery of the targeted Android push while locked. It does **not** establish nearby-request selection, movement/location-refresh behavior, iPhone delivery or delivery after Android Force Stop. A pre-existing nearby battery-help notification was separately observed; it was not generated by this controlled test and is not claimed as matching-test evidence.
+
+## Reviewed video
+
+- [Watch the native Android demonstration](https://akhoo-922v7ljxu-abad003-6200s-projects.vercel.app/).
+- [Direct MP4](https://akhoo-922v7ljxu-abad003-6200s-projects.vercel.app/background-location-review.mp4).
+- Duration **24.88 seconds**, H.264, **1080 × 2480**, **2,260,329 bytes**, no audio or source data tracks.
+- SHA-256: `84bd95fa92a19f267286ee297dd7863079d42af1ba0a8be941c813a45b3679d8`.
+- Vercel preview `dpl_2gpcioHrQK51cSSV4khKP43SAhYR`, project `akhoo`, team `abad003-6200s-projects`, READY. No production target/domain assignment. Only the reviewed MP4, explanatory HTML and robots file were uploaded.
+- Anonymous HTTP 200, `video/mp4`, identical downloaded hash, noindex header and Chromium decoding through the last frame verified.
+
+The video contains actual native screen-recording excerpts: readable in-app disclosure, the owner's background-permission selection, enabled Account state, then the persistent service notification with the app in the background. The account email/avatar and unrelated messages/notifications are masked. Map/location and private phone Home-screen footage were excluded. No app UI, permission dialog or notification was generated or fabricated. Labels disclose that the video uses excerpts and privacy redactions.
+
+Raw recordings remain private and git-ignored: the owner's 32-second clip, the longer permission recording and a 62-second service recording. The short final video was fully decoded, visually reviewed with per-second contact sheets, and checked against the actual source permission/service frames. The existing battery-help notification remains visible in the service excerpt; the hosting page explicitly says it does not demonstrate a new request being created or matched.
 
 ## Remaining publication work
 
-Supply the real recording URL and complete both Google Play declarations, then resume publication of the existing draft 11. The public-release authorization remains valid. Physical locked-phone delivery, movement/location refresh and complete request matching remain unverified until observed separately.
+1. Complete both Play Console forms: background location and location foreground service, using accurate text from the [release report](nearby-alerts-production-release-2026-11-04.md). Supply the reviewed video URL. Google recommends YouTube or supports shared MP4 links; if the form requires a supported host specifically, upload this sanitized MP4 to that host, not the raw recordings.
+2. Do not claim that this clip proves new nearby-request triggering. A controlled two-account matching/arrival recording remains outstanding if needed for Google's declared-feature review; isolate recipients before creating any test request. Do not replace it with a fabricated or diagnostic “nearby request.”
+3. Play Console browser automation previously stopped because it could not verify the current URL safely. No alternate UI automation or private endpoint was used to bypass that refusal. The remaining form step needs an accessible authorized Console session or the owner completing the fields.
+4. Once declarations are accepted and release validation passes, publish the existing production draft 11 under the owner's existing authorization. Do not create code 12 just to retry the form. iOS 2.0.8 (35) was previously submitted with automatic release; physical iPhone QA is still outstanding.
 
-References: [Google background-location video requirements](https://support.google.com/googleplay/android-developer/answer/9799150?hl=en), [foreground-service declarations](https://support.google.com/googleplay/android-developer/answer/13392821), [Google-generated APK API](https://developers.google.com/android-publisher/api-ref/rest/v3/generatedapks/list).
+References: [Google automatic protection and developer APKs](https://support.google.com/googleplay/android-developer/answer/10183279?hl=en), [official generated APK API](https://developers.google.com/android-publisher/api-ref/rest/v3/generatedapks/list), [background-location video requirements](https://support.google.com/googleplay/android-developer/answer/9799150?hl=en), [foreground-service declarations](https://support.google.com/googleplay/android-developer/answer/13392821).
