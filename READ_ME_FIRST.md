@@ -39,7 +39,6 @@ If you must touch another owner's area, say so in the change log and keep the ch
 **Active work (claim before you start, remove when done)**
 | Agent | What | Branch | Since |
 |---|---|---|---|
-| Codex | Prepare genuine Android 11 permission-demo recording on the owner's phone; no app/release edits | docs/play-location-video-20261104 | 2026-11-04 |
 
 ## 3. Current state (nearby release updated 2026-11-04)
 **Nearby alerts, 4 November:** public publication authorized. iOS 2.0.8 (35) WAITING_FOR_REVIEW, auto-release; Android 2.0.6 (11) production draft committed but blocked by missing permission declaration. Public privacy policy deployed. Complete Play Console declaration/demo, then publish existing draft; no new authorization/build needed. Physical locked-phone QA remains unverified. Details: `docs/nearby-alerts-production-release-2026-11-04.md`.
