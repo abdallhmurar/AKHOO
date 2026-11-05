@@ -2,6 +2,14 @@
 
 The owner explicitly requested public App Store and Google Play publication, replacing the earlier testing-track target. The already-running builds use store distribution and are eligible for production; their historical profile/branch names do not select a store release track. No new TestFlight group or Play internal-track release is part of this publication.
 
+## Public status verified — 5 November 2026
+
+- At **12:59:49 UTC**, Apple's official API reported **2.0.8 READY_FOR_SALE / READY_FOR_DISTRIBUTION** and review submission `COMPLETE`. The public Israel lookup independently returned **2.0.8**, release timestamp **2026-11-04 22:47:38 UTC** (5 November 00:47 Jerusalem). [Public App Store page](https://apps.apple.com/il/app/akhoo-roadside-help/id6809610412).
+- The official Play API returned production **2.0.6 (11) completed**, IL-only availability, unchanged alpha/internal 9 and empty beta. The [public Google Play listing for Israel](https://play.google.com/store/apps/details?id=app.akhoo.help&hl=en&gl=IL) independently returned HTTP 200 with version **2.0.6** and the nearby-background-alert release notes. Public listing evidence now supports release availability; this is not just a track-status inference. Exact Google approval time was not obtained.
+- This check made no store changes: its temporary Play inspection edit was deleted without commit. No new build, upload, resubmission or release action. Installed update availability on a particular account/device, controlled request matching/movement and physical iPhone notification delivery remain unverified. Sanitized API results and public HTML are retained in ignored `test-results/`.
+
+The following sections preserve the 4 November submission history; the verified public status above supersedes their pending-review state.
+
 ## iOS
 
 - **2.0.8 (35), WAITING_FOR_REVIEW**, submitted **2026-11-04 11:53:33 UTC**. Automatic release `AFTER_APPROVAL`, no future date. This is an App Store submission, not a claim of public availability.
@@ -25,7 +33,7 @@ The owner explicitly requested public App Store and Google Play publication, rep
 - **Successful submission:** after owner-saved declarations, read-only inspection at **17:16:51 UTC** confirmed the expected draft and track/country baseline. Verified bundle 11's existing SHA-256 again; staged the same release with status `completed`, preserving its name and all three release notes. Official `edits.validate` passed. Commit used `changesInReviewBehavior=ERROR_IF_IN_REVIEW`, succeeded at **17:18:26.133 UTC**, and did not cancel another review. Fresh inspection confirmed production contains only 11 completed, IL-only availability and identical internal/alpha/beta tracks. Inspection edit deleted. No new upload, build, version number, OTA or testing-track release.
 - **Console confirmation:** owner replied «ظهرت قيد المراجعة» and supplied a screenshot listing production **2.0.6 (11)** / full rollout plus both permission declarations under changes in review. The displayed up-to-14-minute estimate was for initial automatic checks, not final approval. Managed publishing is OFF; release is intended to proceed after approval. Google has not yet approved the declarations or release.
 - Play Console UI automation stopped because it could not verify the current Chrome URL safely. No alternative desktop automation or private endpoints bypassed that refusal. The owner completed the forms manually using the real recorded/redacted native demonstration; the official API performed the already-authorized production submission. The final FGS checkbox selection was not independently inspected. See the [native demo and device QA report](play-location-demo-2026-11-04.md).
-- **Next:** await Google's review decision and verify the public store install/update after approval. Do not submit duplicates or create version 12 just to retry the same declaration. Controlled matching/movement and physical iPhone QA remain separate outstanding checks.
+- **Next (updated 5 November):** public listing is verified; check the public store install/update on a real device. Do not submit duplicates or create version 12 for the resolved declaration step. Controlled matching/movement and physical iPhone QA remain separate outstanding checks.
 
 ## Public privacy policy
 
