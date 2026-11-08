@@ -12,7 +12,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **بانتظار طرف ثالث:** لا يوجد انتظار متعلق بتصحيح إغلاق المزايا والنشاط؛ المالك أكد نجاحه.
 - **ما انفحص:** باقي فحوص الأجهزة بالبنود المفتوحة في القسم 7؛ تأكيد المالك الحالي خاص بالأزرار الثلاثة اللي كانت بتسكر التطبيق.
 
-- **معاينة لوكل — 9/11:** بعد مراجعة الكرت الملوّن، جهّزنا خيارين أفتح لعدّاد المساعدات: «الأثر» و«المختصر»، بدون مستويات. المعاينة: `http://localhost:4190/level-card-preview`؛ الأرقام للتجربة والاختيار بعد مراجعتك. بدون نشر.
+- **معاينة لوكل — 9/11:** جهّزنا رسمة سيارة أصلية بألوان أخوو مع حركة خفيفة وعدّاد المساعدات، بدون مستويات. المعاينة: `http://localhost:4190/level-card-preview`؛ الرقم 44 للتجربة، والخياران السابقان متاحان للمقارنة. القرار بعد مراجعتك؛ بدون نشر.
 
 ## 1. Rules (non-negotiable)
 1. **Official steps need the owner's explicit OK in that task**, his own words in chat: submit to App Review, release an approved iOS version, upload or send for review on Google Play, change a store listing, deploy the marketing site. Say in one line what you are about to do. Standing OKs are listed in section 0 and nowhere else. Builds and TestFlight uploads only when he asked.
@@ -52,7 +52,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
-**Local counter review (2026-11-09):** the saturated `CompletedHelpCard` proposal was not accepted. The dev-web preview at `http://localhost:4190/level-card-preview` now compares two lighter `HelpCounterConcept` variants, impact/compact, with example counts and motion. They are preview-only, not integrated into Activity; selection remains with the owner. No levels, release, or deployment. Report: `docs/level-card-local-2026-10-29.md`.
+**Local counter review (2026-11-09):** the dev-web preview at `http://localhost:4190/level-card-preview` now shows an original blue/teal car illustration with gentle motion and an example completed-help count. The two previous lighter concepts remain available for comparison. Preview-only, not integrated into Activity; selection remains with the owner. No levels, release, or deployment. Artwork, prompts and checks: `docs/help-counter-car-concept-2026-11-09.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
@@ -102,6 +102,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-09 — Codex — Generated original car artwork and a transparent layer; added gentle motion to the local counter preview only. No deployment or Activity integration.
+  Claude-area edits: four preview locale strings per language. Typecheck/targeted lint and isolated browser checks (320/390/480, counts, movement toggle, reduced motion, ar/en/he, dark) passed; no physical-device test. Report: `docs/help-counter-car-concept-2026-11-09.md`.
 
 - 2026-11-09 — Codex — Added two lighter help-counter concepts to the dev-only preview after the owner rejected the saturated card; Activity integration is unchanged pending selection. No deployment.
   Locale additions only in Claude's area. Typecheck/lint and isolated browser checks at 320/390/480, ar/en/he, zero/1000, reduced motion/replay and dark mode passed; physical phones not tested.

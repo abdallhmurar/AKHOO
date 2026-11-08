@@ -820,6 +820,12 @@
     "loadError": "We couldn't load the conversation.",
     "resolvedNotice": "The AKHOO team closed this conversation. Write a new message if you need anything else."
   },
+  "carCounter": {
+    "preview": "AKHOO car — motion concept",
+    "previewNote": "Our new illustration with an assist counter. 44 is an example only.",
+    "previous": "Show the previous concepts",
+    "hidePrevious": "Hide the previous concepts"
+  },
   "counterConcept": {
     "preview": "A new look for your assist counter",
     "previewNote": "Two local concepts for review. 44 is an example only.",
