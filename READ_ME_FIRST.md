@@ -12,7 +12,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **بانتظار طرف ثالث:** لا يوجد انتظار متعلق بتصحيح إغلاق المزايا والنشاط؛ المالك أكد نجاحه.
 - **ما انفحص:** باقي فحوص الأجهزة بالبنود المفتوحة في القسم 7؛ تأكيد المالك الحالي خاص بالأزرار الثلاثة اللي كانت بتسكر التطبيق.
 
-- **معاينة لوكل:** كرت المستوى لحاله صار بدائرة تقدّم متحركة، بدون نجمة؛ باقي الصفحة زي ما هو. المعاينة: `http://localhost:4190/level-card-preview`. محفوظ للمراجعة فقط، بدون نشر.
+- **معاينة لوكل — 9/11:** الكرت صار عدّاد مساعدات مكتملة بأزرق وأخضر أخوو؛ بدون مستويات أو هدف تقدّم. المعاينة: `http://localhost:4190/level-card-preview`، والأرقام فيها للتجربة. التعديل للمراجعة فقط، بدون نشر.
 
 ## 1. Rules (non-negotiable)
 1. **Official steps need the owner's explicit OK in that task**, his own words in chat: submit to App Review, release an approved iOS version, upload or send for review on Google Play, change a store listing, deploy the marketing site. Say in one line what you are about to do. Standing OKs are listed in section 0 and nowhere else. Builds and TestFlight uploads only when he asked.
@@ -52,7 +52,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
-**Local level-card review:** `ui/level-card-local-20261029` changes only the original Activity level card: animated progress ring, no star, real completed-help count. Dev-web preview: `http://localhost:4190/level-card-preview`; example controls are labelled and production-guarded. No Benefits/full-page redesign, release or deployment. Report: `docs/level-card-local-2026-10-29.md`.
+**Local counter review (2026-11-09):** `ui/level-card-local-20261029` now replaces only the Activity level card with `CompletedHelpCard`: lifetime help count, app blue/teal, brief count-change animation; no tiers, targets or progress semantics. Dev-web preview remains `http://localhost:4190/level-card-preview`; example controls are labelled and production-guarded. No release/deployment. Report: `docs/level-card-local-2026-10-29.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
@@ -73,7 +73,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 | `ios/testflight-partner-home-20261024` | Codex's TestFlight beta line (2.0.4 builds 30 and 31); its code is already in `main`, gated by `extra.partnerHomeBeta`. | Codex |
 | `android/release-2.0.3-20261025` | Source of the Android 2.0.3 build; merged into `main`. | Claude |
 | `android/ios-parity-release-20261029` | Android 2.0.5 (10) production submission; complete published-iOS presentation, isolated Android profile. Not merged; Vercel deploy disabled on this branch. | Codex |
-| `ui/level-card-local-20261029` | Only the level card, no star, local animated review; original remaining screens. No deploy; not merged. | Codex |
+| `ui/level-card-local-20261029` | Local completed-help counter in place of the level card; app colors, no tiers. No deploy; not merged. | Codex |
 
 ## 4. How to ship (checked recipes)
 - **Web and admin:** push to `main`, Vercel deploys. A Vercel preview of the admin is blank (its variables exist only for Production); for a real preview build locally with the public values and `VITE_BASE_PATH=/` and run `vercel deploy --prebuilt`. Remove deployments with `vercel remove <url> --yes`.
@@ -102,6 +102,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-09 — Codex — Replaced the local Activity level card with a branded completed-help counter at the owner's request; removed its tier/target logic, kept the real count source. No deployment or release.
+  Small Claude-area edits: ar/en/he labels and renamed presentation-graph assertion. Typecheck, source lint, 330 tests and isolated browser checks at 320/390/480 passed; native devices not tested. Details: `docs/level-card-local-2026-10-29.md`.
 
 - 2026-10-29 — Codex — Implemented only the approved animated level card without a star, with dev-only local preview. No release/deployment; original other screens preserved.
   Claude-area edits limited to new locale keys and branch deploy suppression. Typecheck/lint, 342 tests, mobile-width browser interactions and platform exports; physical devices/authenticated RPC unverified. Report: `docs/level-card-local-2026-10-29.md`.

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { VolunteerLevelCard } from '../../components/VolunteerLevelCard'
+import { CompletedHelpCard } from '../../components/CompletedHelpCard'
 import { useThemeMode } from '../../providers/ThemeModeProvider'
 import { useLanguageDirection } from '../../providers/LanguageDirectionProvider'
 import { useAppTypography } from '../../lib/typography'
@@ -13,7 +13,7 @@ export function LevelCardPreview() {
   const { t } = useTranslation(), typography = useAppTypography()
   const theme = useSanadTheme(), rtl = useIsRTL()
   const { isDark, setDark } = useThemeMode(), { language, setLanguage } = useLanguageDirection()
-  const [count, setCount] = useState(42), [replay, setReplay] = useState(0), [motion, setMotion] = useState(true), [width, setWidth] = useState(448)
+  const [count, setCount] = useState(44), [replay, setReplay] = useState(0), [motion, setMotion] = useState(true), [width, setWidth] = useState(448)
   useEffect(() => { void setLanguage('ar') }, [setLanguage])
   const colors = { color: theme.colors.textPrimary, textAlign: rtl ? 'right' as const : 'left' as const }
 
@@ -23,10 +23,10 @@ export function LevelCardPreview() {
 
   return <ScrollView contentContainerStyle={[styles.page, { backgroundColor: theme.isDark ? theme.colors.background : '#f1faff' }]}>
     <View style={styles.heading}><Text style={[typography.h2, colors]}>{t('levelCard.preview')}</Text><Text style={[typography.small, colors]}>{t('levelCard.previewNote')}</Text></View>
-    <View style={{ width, maxWidth: '100%' }}><VolunteerLevelCard completedCount={count} animate={motion} replay={replay} /></View>
+    <View style={{ width, maxWidth: '100%' }}><CompletedHelpCard completedCount={count} animate={motion} replay={replay} /></View>
     <View style={styles.controls}>
-      <View style={[styles.row, dirStyles(rtl).row]}>{control(t('levelCard.add'), () => setCount(value => value + 1), true)}{control(t('levelCard.replay'), () => setReplay(value => value + 1))}{control(t('levelCard.reset'), () => setCount(42))}</View>
-      <View style={[styles.row, dirStyles(rtl).row]}>{[0, 5, 15, 30, 42, 60, 75].map(value => control(String(value), () => setCount(value), count === value))}</View>
+      <View style={[styles.row, dirStyles(rtl).row]}>{control(t('levelCard.add'), () => setCount(value => value + 1), true)}{control(t('levelCard.replay'), () => setReplay(value => value + 1))}{control(t('levelCard.reset'), () => setCount(44))}</View>
+      <View style={[styles.row, dirStyles(rtl).row]}>{[0, 1, 12, 44, 120, 999, 1000].map(value => control(String(value), () => setCount(value), count === value))}</View>
       <View style={[styles.row, dirStyles(rtl).row]}>{control(t(motion ? 'levelCard.motionOn' : 'levelCard.motionOff'), () => setMotion(value => !value), motion)}{control(t(isDark ? 'levelCard.light' : 'levelCard.dark'), () => setDark(!isDark))}{(['ar', 'en', 'he'] as const).map(value => control(value.toUpperCase(), () => { void setLanguage(value) }, value === language))}</View>
       <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('levelCard.width')}</Text>
       <View style={[styles.row, dirStyles(rtl).row]}>{[288, 358, 448].map(value => control(`${value}px`, () => setWidth(value), value === width))}</View>

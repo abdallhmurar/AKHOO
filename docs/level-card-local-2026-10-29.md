@@ -1,5 +1,17 @@
 # Local volunteer level card — 2026-10-29
 
+## Latest revision — 2026-11-09
+
+The owner requested removing levels and keeping only the completed-help counter in AKHOO colors. `CompletedHelpCard` replaces the previous card in the same Activity entry points. Its background uses the existing signal-blue and community-teal brand tokens; it displays the total, “فزعاتك بتفرق”, and a short caption. There is no rank, medal, next target, denominator, percentage, or progressbar accessibility role. The displayed count is unbounded by the old 60-help threshold.
+
+The real lifetime `get_volunteer_completed_count` query, loading/error handling, points balance and rest of the page are unchanged. No backend change. The existing local URL still works; its initial **44** is explicitly an example, with zero, large-count, increment, replay, language, theme and width controls. A brief 420ms scale/fade runs on count changes, respects reduced motion, and cleans up. The old card-specific level model/tests were removed; shared level policy elsewhere was not changed by this local card task.
+
+Validation: TypeScript passed; source ESLint passed with the pre-existing `medal-element.js` resolver warning; 330 tests across 57 files passed, including adapted counter accessibility/update and reduced-motion cleanup checks. The initial unfiltered lint run also picked up ignored generated bundles in `credentials/`; rerunning with `--ignore-pattern 'credentials/**'` avoids those non-source files. Isolated headless Chrome at 320/390/480 passed without page errors/overflow; checked 44→45, zero/1000, ar/en/he, dark mode and reduced motion. Arabic narrow/normal and dark screenshots inspected. External requests were blocked. Native devices and the authenticated RPC were not tested this revision; no native build or new export was made.
+
+Saved on the same review branch; app/admin Vercel deployment remains explicitly disabled. No store build, OTA, backend write, or publication. The remaining sections describe the original October design and are kept as history.
+
+## Original October revision
+
 The owner approved replacing only the existing level/progress card, without a star. The rest of Activity and all of Benefits retain the original layout. This branch starts at `abe631a`, not the earlier full-page mobile-hub exploration.
 
 ## Preview

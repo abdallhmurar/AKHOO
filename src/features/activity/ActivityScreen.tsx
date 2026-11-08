@@ -15,7 +15,7 @@ import type { ServiceType } from '../../types'
 import { AppScreen } from '../../components/v2'
 import { BottomSheet, Button, EmptyState, Skeleton, StatusBadge, Tabs } from '../../components/ui'
 
-import { VolunteerLevelCard } from '../../components/VolunteerLevelCard'
+import { CompletedHelpCard } from '../../components/CompletedHelpCard'
 import { supabase } from '../../lib/supabase'
 import { rewardRepository } from '../../repositories/rewardRepository'
 
@@ -40,9 +40,8 @@ const DURATION_OPTIONS: { value: Duration; labelKey: string }[] = [
 
 // Real SANAD Activity - a unified feed over the same real data as the intact
 // src/screens/HistoryScreen.tsx (requests + volunteer missions), plus real
-// volunteer points. The duration pill and level card both read the same
-// real numbers used elsewhere (VolunteerPointsCard's progress mechanic,
-// rewardRepository's summed balance) rather than inventing new ones.
+// volunteer points. The counter uses the lifetime completed-help RPC;
+// the period filter applies only to the activity feed below it.
 export function ActivityScreen() {
   const theme = useSanadTheme()
   const typography = useAppTypography()
@@ -64,7 +63,7 @@ export function ActivityScreen() {
   )
 
   // Reuse the same lifetime count and spendable balance as the Perks screen.
-  // The activity feed is capped at 50 requests, so it cannot determine a tier.
+  // The activity feed is capped at 50 requests, so it cannot determine the total.
   const completedQuery = useQuery({
     queryKey: ['community', 'completed-count', session?.user.id],
     enabled: !!session,
@@ -109,7 +108,7 @@ export function ActivityScreen() {
       </Pressable>
 
       {!statsReady ? statsError ? <Button variant="outline" label={t('perks.retry')} onPress={() => { void completedQuery.refetch(); void receivedQuery.refetch(); void pointsQuery.refetch() }} /> : <Skeleton height={210} /> : <>
-        <VolunteerLevelCard completedCount={givenCount} />
+        <CompletedHelpCard completedCount={givenCount} />
         <GuideTarget id="activity.stats"><View style={[styles.stats, dirStyles(isRTL).row]}>
           <Stat Icon={UsersThree} value={receivedQuery.data ?? 0} label={t('activity.stats.received')} tone="primary" />
           <Stat Icon={Handshake} value={givenCount} label={t('activity.givenShort')} tone="community" />

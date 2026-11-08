@@ -24,7 +24,7 @@ const required = [
   'components/motion/Motion.android.tsx', 'components/motion/media.ios.ts',
   'providers/iosFonts.android.ts', 'app/auth-callback.tsx',
   'components/TabBarGift.tsx', 'components/HelperMedalArtwork.tsx',
-  'components/VolunteerLevelCard.tsx', 'components/levelCardModel.ts',
+  'components/CompletedHelpCard.tsx',
 ]
 for (const file of required) assert(sources.some(source => source.endsWith(file)), `Missing shipped presentation: ${file}`)
 for (const file of ['features/requester/RequestFlowScreens.tsx', 'features/helper/HelperScreens.tsx', 'features/activity/ActivityScreen.tsx', 'components/TabBar.tsx']) {
