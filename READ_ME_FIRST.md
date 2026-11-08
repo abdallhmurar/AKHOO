@@ -12,7 +12,7 @@ The complete text of this file as it was before the 2026-10-27 restructure (ever
 - **بانتظار طرف ثالث:** لا يوجد انتظار متعلق بتصحيح إغلاق المزايا والنشاط؛ المالك أكد نجاحه.
 - **ما انفحص:** باقي فحوص الأجهزة بالبنود المفتوحة في القسم 7؛ تأكيد المالك الحالي خاص بالأزرار الثلاثة اللي كانت بتسكر التطبيق.
 
-- **معاينة لوكل — 9/11:** المالك رفض رسمة السيارة وطلب صور أحسن أو شعار أخوو. جهّزنا صورة ثابتة بالشعار للمراجعة؛ المعاينة المتحركة القديمة بعدها على `http://localhost:4190/level-card-preview`. الرقم 44 للتجربة؛ بدون نشر.
+- **معاينة لوكل — 9/11:** الشعار صار يطلع من تحت، يلف 360° ويطلع لفوق، والعنوان «كل فزعة إلها أثر». جرّبه على `http://localhost:4190/level-card-preview`؛ الرقم 44 للتجربة. بدون نشر.
 
 ## 1. Rules (non-negotiable)
 1. **Official steps need the owner's explicit OK in that task**, his own words in chat: submit to App Review, release an approved iOS version, upload or send for review on Google Play, change a store listing, deploy the marketing site. Say in one line what you are about to do. Standing OKs are listed in section 0 and nowhere else. Builds and TestFlight uploads only when he asked.
@@ -52,7 +52,7 @@ If you must touch another owner's area, say so in the change log and keep the ch
 - **2.0.4 (9): LIVE**, confirmed by `RELEASE_LIFECYCLE_STATE_PUBLISHED` on 2026-10-29. This version ported the partner home/form only; 2.0.5 completes the remaining presentation. EAS build `4a679c37-8373-4651-ad87-4258ef53fe04`; source `android/partner-home-20261028` merged into main. Its Android OTA (runtime 2.0.4, group `636bde81-f12d-4223-a7bf-12322016eef1`) fixes `akhoo://auth-callback`. Internal/closed testing remain on 9; the owner tried that version on his phone.
 - No background-location permission (it needs Google's declaration first). The bundle was inspected: new launcher icon, four notification sounds, no foreground-service permission. Checklist: `docs/android-production-release-2.0.3.md`.
 
-**Local counter review (2026-11-09):** the owner rejected the car imagery and requested better images or the official logo. A logo-based still is saved in `docs/help-counter-logo-concept-2026-11-09.md`; no UI change yet. Previous prototypes remain at `http://localhost:4190/level-card-preview`, with example counts. No levels, release or deployment.
+**Local counter review (2026-11-09):** the dev-web preview at `http://localhost:4190/level-card-preview` now uses the dimensional logo with a bottom entrance, full 360-degree Y turn and upward exit; heading changed to «كل فزعة إلها أثر». It respects reduced motion and has replay controls. Example counts only, no Activity integration/release/deployment. Report: `docs/help-counter-logo-concept-2026-11-09.md`.
 
 **Web and admin** deploy from `main`. The web app home follows the TestFlight 2.0.4 (31) layout since 2026-10-26. CI runs on `main`.
 
@@ -102,6 +102,9 @@ If you must touch another owner's area, say so in the change log and keep the ch
 
 ## 8. Change log (newest first, 3 lines at most per entry; older entries are in the archive)
 Format: `date — who — what (where) — external effect — verified how`
+
+- 2026-11-09 — Codex — Implemented the requested logo rise/360 turn/upward exit and new heading in the dev-only counter preview. No production change.
+  Claude-area changes: three preview locale keys per language. Typecheck/targeted lint and browser sequence/layout/motion/accessibility checks passed; physical devices unverified. Report: `docs/help-counter-logo-concept-2026-11-09.md`.
 
 - 2026-11-09 — Codex — Created a logo-based counter still after the car was rejected; image and prompt in `docs/help-counter-logo-concept-2026-11-09.md`, visually checked.
   Image proposal only; no UI, deployment, release or backend changes. Owner selection pending.

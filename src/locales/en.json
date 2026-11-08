@@ -820,6 +820,11 @@
     "loadError": "We couldn't load the conversation.",
     "resolvedNotice": "The AKHOO team closed this conversation. Write a new message if you need anything else."
   },
+  "logoCounter": {
+    "title": "Every helping hand matters",
+    "preview": "AKHOO logo — new motion",
+    "previewNote": "Rises from below, makes a full turn, then exits above. 44 is sample data."
+  },
   "carCounter": {
     "preview": "AKHOO car — motion concept",
     "previewNote": "Our new illustration with an assist counter. 44 is an example only.",

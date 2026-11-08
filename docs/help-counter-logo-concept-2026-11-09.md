@@ -1,13 +1,30 @@
 # Logo counter concept — 9 November 2026
 
-The owner rejected the car imagery and suggested better imagery or the official AKHOO logo. This still uses the existing logo as a reference, with restrained dimensional depth, navy/turquoise colors and an example completed-help count of 44.
+The owner requested the logo rising from below, turning 360 degrees, then exiting upward, with a better heading. The local preview now implements that sequence with the new heading **كل فزعة إلها أثر**. The example completed-help count remains 44, clearly labelled as sample data.
 
 - [Saved image](../previews/help-counter/assets/akhoo-logo-counter-v1.png): `previews/help-counter/assets/akhoo-logo-counter-v1.png`.
 - Reference: `assets/images/icon.png`, inspected before generation.
 - Method: built-in `image_gen`; no fallback CLI.
 - Visually checked the logo silhouette, handshake/road, lettering, Arabic labels and absence of levels/stars.
-- Still proposal only, pending owner review. No UI, local preview, backend, deployment or release change. Previous car prototype remains at its existing URL.
-- Future motion could gently move the logo as one unit. This file is not animated and does not replace the official logo.
+- [Transparent dimensional logo layer](../previews/help-counter/assets/akhoo-logo-dimensional-v1.png): `previews/help-counter/assets/akhoo-logo-dimensional-v1.png`, extracted from the still with the built-in image tool. Original official logo assets are unchanged.
+- Live local preview: http://localhost:4190/level-card-preview. The previous still retains its original heading as a design-history artifact; current copy is rendered as native text in the preview, separate from the image.
+- `LogoHelpCounter.tsx` is imported only by the guarded dev-web preview. Real Activity, backend, store versions and deployments are unchanged. Branch deployment remains disabled.
+
+## Motion and checks
+
+One 5.55-second loop: 250 ms pause, 850 ms rise, 400 ms hold, 1.8 s full Y-axis turn, 600 ms hold, 950 ms upward exit, 700 ms pause. The counter and heading remain stationary. The replay control restarts this sequence. Both faces use the same logo with hidden backs, keeping the wordmark readable during the turn. This is a transformed image with a dimensional appearance; there is no WebGL renderer or 3D mesh.
+
+Disabling motion or enabling reduced motion displays the logo centered and fully visible. AppState inactivity also stops the sequence. Effects clean up their animations and subscriptions. Count changes produce a small independent pulse, with no database writes.
+
+Validation: TypeScript and targeted ESLint passed. Isolated headless Chrome (external requests blocked) sampled actual styles throughout a complete loop and verified: positive Y before turning, a centered turn, reaching 360 degrees, then negative Y. It also verified replay, motion-off stability, reduced-motion stability, 44 → 45, zero/1000, image loading, ar/en/he and compact bounds at 320/390/480 px. No page errors. Light/dark screenshots were visually inspected; the dark gradient was lightened behind the logo to preserve readability. Physical iOS/Android performance, native AppState behavior and authenticated real-data rendering are not verified by this local fixture.
+
+## Extraction prompt
+
+Reference: `previews/help-counter/assets/akhoo-logo-counter-v1.png`. Built-in image generation/editing, `transparent_background: true`.
+
+```text
+Precise background extraction edit. Extract ONLY the dimensional AKHOO logo on the LEFT of this reference image, including its two navy/turquoise people, handshake, heart-shaped opening, winding road, original Arabic wordmark and small AKHOO letters below. Preserve that exact logo's proportions, colors, letterforms, satin bevels and front-facing view. REMOVE the entire card, background, all text on the right and number 44. The output must be the standalone complete logo on genuine transparent alpha, with transparency through the heart/road openings and between all letters. No white rectangle, cyan wash, ground plane, surrounding glow or drop shadow. Keep only the object's own shading and raised edges. Tight centered square composition with 6 percent clear transparent margin around the complete logo. Do not redesign anything, no new text or objects.
+```
 
 ## Final prompt
 

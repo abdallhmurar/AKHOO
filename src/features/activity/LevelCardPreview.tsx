@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { HelpCounterConcept } from './HelpCounterConcept'
-import { IllustratedHelpCounter } from './IllustratedHelpCounter'
+import { LogoHelpCounter } from './LogoHelpCounter'
 import { useThemeMode } from '../../providers/ThemeModeProvider'
 import { useLanguageDirection } from '../../providers/LanguageDirectionProvider'
 import { useAppTypography } from '../../lib/typography'
@@ -25,8 +25,8 @@ export function LevelCardPreview() {
   }
 
   return <ScrollView contentContainerStyle={[styles.page, { backgroundColor: theme.isDark ? theme.colors.background : '#f1faff' }]}>
-    <View style={styles.heading}><Text style={[typography.h2, colors]}>{t('carCounter.preview')}</Text><Text style={[typography.small, { ...colors, color: theme.colors.textSecondary }]}>{t('carCounter.previewNote')}</Text></View>
-    <View style={{ width, maxWidth: '100%' }}><IllustratedHelpCounter completedCount={count} animate={motion} replay={replay} /></View>
+    <View style={styles.heading}><Text style={[typography.h2, colors]}>{t('logoCounter.preview')}</Text><Text style={[typography.small, { ...colors, color: theme.colors.textSecondary }]}>{t('logoCounter.previewNote')}</Text></View>
+    <View style={{ width, maxWidth: '100%' }}><LogoHelpCounter completedCount={count} animate={motion} replay={replay} /></View>
     {showPrevious ? <View style={[styles.proposals, { width, maxWidth: '100%' }]}>
       <View style={styles.proposal}>
         <Text style={[typography.smallMedium, colors]}>{t('counterConcept.optionOne')}</Text>
