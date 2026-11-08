@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { CompletedHelpCard } from '../../components/CompletedHelpCard'
+import { HelpCounterConcept } from './HelpCounterConcept'
 import { useThemeMode } from '../../providers/ThemeModeProvider'
 import { useLanguageDirection } from '../../providers/LanguageDirectionProvider'
 import { useAppTypography } from '../../lib/typography'
@@ -14,6 +14,7 @@ export function LevelCardPreview() {
   const theme = useSanadTheme(), rtl = useIsRTL()
   const { isDark, setDark } = useThemeMode(), { language, setLanguage } = useLanguageDirection()
   const [count, setCount] = useState(44), [replay, setReplay] = useState(0), [motion, setMotion] = useState(true), [width, setWidth] = useState(448)
+  const [showControls, setShowControls] = useState(false)
   useEffect(() => { void setLanguage('ar') }, [setLanguage])
   const colors = { color: theme.colors.textPrimary, textAlign: rtl ? 'right' as const : 'left' as const }
 
@@ -22,21 +23,36 @@ export function LevelCardPreview() {
   }
 
   return <ScrollView contentContainerStyle={[styles.page, { backgroundColor: theme.isDark ? theme.colors.background : '#f1faff' }]}>
-    <View style={styles.heading}><Text style={[typography.h2, colors]}>{t('levelCard.preview')}</Text><Text style={[typography.small, colors]}>{t('levelCard.previewNote')}</Text></View>
-    <View style={{ width, maxWidth: '100%' }}><CompletedHelpCard completedCount={count} animate={motion} replay={replay} /></View>
+    <View style={styles.heading}><Text style={[typography.h2, colors]}>{t('counterConcept.preview')}</Text><Text style={[typography.small, { ...colors, color: theme.colors.textSecondary }]}>{t('counterConcept.previewNote')}</Text></View>
+    <View style={[styles.proposals, { width, maxWidth: '100%' }]}>
+      <View style={styles.proposal}>
+        <Text style={[typography.smallMedium, colors]}>{t('counterConcept.optionOne')}</Text>
+        <HelpCounterConcept variant="impact" completedCount={count} animate={motion} replay={replay} />
+      </View>
+      <View style={styles.proposal}>
+        <Text style={[typography.smallMedium, colors]}>{t('counterConcept.optionTwo')}</Text>
+        <HelpCounterConcept variant="compact" completedCount={count} animate={motion} replay={replay} />
+      </View>
+    </View>
     <View style={styles.controls}>
       <View style={[styles.row, dirStyles(rtl).row]}>{control(t('levelCard.add'), () => setCount(value => value + 1), true)}{control(t('levelCard.replay'), () => setReplay(value => value + 1))}{control(t('levelCard.reset'), () => setCount(44))}</View>
+      <Pressable accessibilityRole="button" accessibilityState={{ expanded: showControls }} onPress={() => setShowControls(value => !value)} style={styles.more}><Text style={[typography.smallMedium, { color: theme.colors.textSecondary }]}>{t(showControls ? 'counterConcept.hideControls' : 'counterConcept.showControls')}</Text></Pressable>
+      {showControls ? <>
       <View style={[styles.row, dirStyles(rtl).row]}>{[0, 1, 12, 44, 120, 999, 1000].map(value => control(String(value), () => setCount(value), count === value))}</View>
       <View style={[styles.row, dirStyles(rtl).row]}>{control(t(motion ? 'levelCard.motionOn' : 'levelCard.motionOff'), () => setMotion(value => !value), motion)}{control(t(isDark ? 'levelCard.light' : 'levelCard.dark'), () => setDark(!isDark))}{(['ar', 'en', 'he'] as const).map(value => control(value.toUpperCase(), () => { void setLanguage(value) }, value === language))}</View>
       <Text style={[typography.small, { color: theme.colors.textSecondary, textAlign: 'center' }]}>{t('levelCard.width')}</Text>
       <View style={[styles.row, dirStyles(rtl).row]}>{[288, 358, 448].map(value => control(`${value}px`, () => setWidth(value), value === width))}</View>
+      </> : null}
     </View>
   </ScrollView>
 }
 
 const styles = StyleSheet.create({
-  page: { flexGrow: 1, alignItems: 'center', padding: 16, paddingTop: 35, gap: 24 },
+  page: { flexGrow: 1, alignItems: 'center', padding: 16, paddingTop: 30, paddingBottom: 40, gap: 24 },
   heading: { width: '100%', maxWidth: 448, gap: 8 },
+  proposals: { gap: 24 },
+  proposal: { gap: 10 },
+  more: { minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   controls: { width: '100%', maxWidth: 480, gap: 10, paddingTop: 5 },
   row: { flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 7 },
   button: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 13, paddingVertical: 8, borderRadius: 14, borderWidth: 1 },

@@ -1,5 +1,13 @@
 # Local volunteer level card — 2026-10-29
 
+## Latest visual options — 2026-11-09, after counter feedback
+
+The owner did not like the saturated gradient counter and requested something better. The dev-only preview now shows two different light concepts: **impact** (large blue count, subtle native handshake artwork, quiet footer) and **compact** (horizontal count with a slim tinted caption). Both omit levels and targets, retain the app's blue/teal colors, and animate only briefly on count changes. Numbers are example-only. The main controls stay visible; language/theme/width tools are collapsed by default so the cards are easy to compare.
+
+`HelpCounterConcept` is imported only by `LevelCardPreview`, behind the existing dev-web route guard. No Activity screen or `CompletedHelpCard` integration was changed in this follow-up. The earlier saturated design remains an unapproved local draft; neither proposal is published or selected for release. New ar/en/he copy is the only change in Claude-owned files. No backend calls/writes, store action or deployment.
+
+Validation: TypeScript and targeted ESLint passed. Isolated localhost browser checks passed at 320/390/480: both counters update 44→45, zero has accurate copy, 1000 fits at 320, no levels/untranslated keys/page errors, ar/en/he, dark mode, reduced motion and replay. Arabic normal/narrow and Hebrew compact screenshots were inspected. The compact footer spacing and long-number sizing were corrected before the final check. External requests were blocked. Physical devices and native large-font behavior were not tested. Existing unit tests were not rerun because production components/data logic were unchanged by this follow-up.
+
 ## Latest revision — 2026-11-09
 
 The owner requested removing levels and keeping only the completed-help counter in AKHOO colors. `CompletedHelpCard` replaces the previous card in the same Activity entry points. Its background uses the existing signal-blue and community-teal brand tokens; it displays the total, “فزعاتك بتفرق”, and a short caption. There is no rank, medal, next target, denominator, percentage, or progressbar accessibility role. The displayed count is unbounded by the old 60-help threshold.

@@ -820,6 +820,19 @@
     "loadError": "ما قدرنا نحمّل المحادثة.",
     "resolvedNotice": "فريق أخوو أغلق هاي المحادثة. اكتب رسالة جديدة إذا احتجت شي تاني."
   },
+  "counterConcept": {
+    "preview": "شكل جديد لعدّاد المساعدات",
+    "previewNote": "خيارين للمراجعة لوكل. الرقم 44 للتجربة بس.",
+    "optionOne": "01 · الأثر",
+    "optionTwo": "02 · المختصر",
+    "impactLabel": "أثرك مع أخوو",
+    "completed": "مساعدة مكتملة",
+    "impactCaption": "فزعة منك، بتفرق مع غيرك.",
+    "compactTitle": "مساعداتك",
+    "compactCaption": "كل فزعة منك بتفرق.",
+    "showControls": "خيارات التجربة والمقاسات",
+    "hideControls": "اخفي خيارات التجربة"
+  },
   "helpCounter": {
     "label": "مساعداتك المكتملة",
     "title": "فزعاتك بتفرق",

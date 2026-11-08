@@ -820,6 +820,19 @@
     "loadError": "We couldn't load the conversation.",
     "resolvedNotice": "The AKHOO team closed this conversation. Write a new message if you need anything else."
   },
+  "counterConcept": {
+    "preview": "A new look for your assist counter",
+    "previewNote": "Two local concepts for review. 44 is an example only.",
+    "optionOne": "01 · Impact",
+    "optionTwo": "02 · Compact",
+    "impactLabel": "Your impact with AKHOO",
+    "completed": "completed assists",
+    "impactCaption": "Your help makes a difference to someone.",
+    "compactTitle": "Your assists",
+    "compactCaption": "Every helping hand matters.",
+    "showControls": "Preview options and sizes",
+    "hideControls": "Hide preview options"
+  },
   "helpCounter": {
     "label": "Your completed assists",
     "title": "Your help matters",
